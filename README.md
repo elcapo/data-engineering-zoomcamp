@@ -19,7 +19,9 @@ Este repositorio contiene las notas que yo, [Carlos Capote](https://www.linkedin
 
 En 2025 participé en otro curso de los mismos organizadores, en particular, el [Machine Learning Zoomcamp](https://datatalks.club/blog/machine-learning-zoomcamp.html) pero en ese caso apenas tomé [notas](https://github.com/elcapo/ml-zoomcamp-notes-and-homework) y no produje vídeos, pese a que tenía ganas de hacerlo desde el primer día.
 
-En este caso, mi intención es crear una versión en castellano de los contenidos que contenga toda la teoría necesaria para seguir el curso, al menos tal y como está siendo impartido en 2026. Si estás pensando usar este repositorio para seguir el curso, ten en cuenta que si quieres el certificado, las entregas tendrás que hacerlas en inglés.
+En este caso, mi intención es crear una versión en castellano de los contenidos que contenga toda la teoría necesaria para seguir el curso, al menos tal y como está siendo impartido en 2026.
+
+Si estás pensando usar este repositorio para seguir el curso, ten en cuenta que si quieres el certificado, las entregas tendrás que hacerlas en inglés.
 
 ## Objetivos del curso
 
