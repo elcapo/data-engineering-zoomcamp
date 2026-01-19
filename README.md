@@ -80,39 +80,45 @@ Además, se recomienda (aunque no se considera requisito):
 
 ## Contenidos
 
-El curso organiza sus contenidos en 6 módulos y un proyecto final:
+El curso organiza sus contenidos en 6 módulos y un proyecto final.
 
-1. **Infraestructura y prerrequisitos**
+### 1. **Infraestructura y prerrequisitos**
+
   * Configurar el entorno de desarrollo con **Docker** y **PostgreSQL**
   * Aprender los fundamentos de la nube con **Google Cloud Platform (GCP)**
   * Usar **Terraform** para gestionar infraestructura como código
 
-2. **Orquestación de flujos de trabajo**
+### 2. **Orquestación de flujos de trabajo**
+
   * Dominar la orquestación de pipelines de datos con **Kestra**
   * Implementar y gestionar *Data Lakes* en **Google Cloud Storage**
   * Construir flujos de trabajo automatizados y reproducibles
 
-3. **Almacén de datos (Data Warehouse)**
+### 3. **Almacén de datos (Data Warehouse)**
+
   * Profundizar en **BigQuery** para almacenamiento de datos empresarial
   * Aprender técnicas de optimización como particionado y *clustering*
   * Aplicar buenas prácticas para almacenamiento y consulta de datos
 
-4. **Ingeniería analítica**
+### 4. **Ingeniería analítica**
+
   * Transformar datos crudos en modelos preparados para análisis con **dbt**
   * Desarrollar estrategias de pruebas y documentación
   * Crear visualizaciones significativas con herramientas modernas de BI
 
-5. **Procesamiento por lotes (Batch)**
+### 5. **Procesamiento por lotes (Batch)**
+
   * Procesar grandes volúmenes de datos con **Apache Spark**
   * Dominar Spark SQL y operaciones con *DataFrames*
   * Optimizar workflows de procesamiento por lotes
 
-6. **Procesamiento en tiempo real (Streaming)**
+### 6. **Procesamiento en tiempo real (Streaming)**
   * Construir pipelines de datos en tiempo real con **Kafka**
   * Desarrollar aplicaciones de streaming con **KSQL**
   * Manejar esquemas de datos con **Avro**
 
-7. **Proyecto final (Capstone)**
+### 7. **Proyecto final (Capstone)**
+
   * Construir una canalización *end-to-end* desde la ingesta hasta la visualización
   * Aplicar todos los conceptos aprendidos en un proyecto real
   * Documentar y presentar un proyecto listo para portafolio profesional
