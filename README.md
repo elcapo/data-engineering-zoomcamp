@@ -49,22 +49,22 @@ El curso, que es gratuito, termina con un proyecto "real" que te da derecho a ob
 
 Entre los recursos más importantes que debes de conocer para seguir el curso, están:
 
-* [Página web del curso](https://datatalks.club/blog/data-engineering-zoomcamp.html)
+* [Página web del curso](https://datatalks.club/blog/data-engineering-zoomcamp.html)  
   Introducción al curso, algo parecido a este mismo documento pero oficial y en inglés.
 
-* [Comunidad en Slack](https://datatalks-club.slack.com/)
+* [Comunidad en Slack](https://datatalks-club.slack.com/)  
   Uno de los puntos fuertes del curso es su comunidad, que se organiza en torno a Slack. En el sitio web de **DataTalks.Club** hay una página dedicada a explicarte [cómo unirte a su Slack](https://datatalks.club/slack.html). Una vez te unas, no te olvides de seguir el canal **#course-data-engineering**.
 
-* [Repositorio en GitHub](https://github.com/DataTalksClub/data-engineering-zoomcamp)
+* [Repositorio en GitHub](https://github.com/DataTalksClub/data-engineering-zoomcamp)  
   Diapositivas, notas de cada una de las sesiones, ejercicios y otros enlaces útiles.
 
-* [Lista de vídeos de Youtube Oficial](https://www.youtube.com/playlist?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb)
+* [Lista de vídeos de Youtube Oficial](https://www.youtube.com/playlist?list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb)  
   El tutor, normalmente Alexey Grigorev, ofrece explicaciones detalladas de cada una de las sesiones. Estos son los vídeos oficiales, en inglés.
 
-* [Canal de Telegram](https://t.me/dezoomcamp)
+* [Canal de Telegram](https://t.me/dezoomcamp)  
   Canal de Telegram específico para hacer anuncios sobre el curso.
 
-* [Preguntas frecuentes](https://datatalks.club/faq/data-engineering-zoomcamp.html)
+* [Preguntas frecuentes](https://datatalks.club/faq/data-engineering-zoomcamp.html)  
   Página colaborativa dedicada a compartir información sobre preguntas frecuentes relacionadas con el curso.
 
 ## Prerrequisitos
