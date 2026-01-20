@@ -1,27 +1,20 @@
 # Zoomcamp de ingeniería de datos
 
-Este repositorio contiene las notas que yo, [Carlos Capote](https://www.linkedin.com/in/carlos-capote-perez-andreu/), sin afiliación ninguna con los organizadores oficiales, he tomado en castellano durante la edición de 2026 del [Data Engineering Zoomcamp](https://datatalks.club/blog/data-engineering-zoomcamp.html) de [DataTalks.Club](https://datatalks.club).
+Este repositorio recopila notas en castellano del [Data Engineering Zoomcamp](https://datatalks.club/blog/data-engineering-zoomcamp.html) de [DataTalks.Club](https://datatalks.club) (edición 2026), elaboradas de forma independiente a partir de mi seguimiento del curso. No es material oficial ni una traducción literal: son apuntes propios, escritos como síntesis y repaso tras completar cada bloque.
 
-## Sobre estas notas
+## Objetivo de este repositorio
 
-**Qué no son**
+El objetivo es **hacer más accesibles los contenidos del curso a personas hispanohablantes**, concentrando la teoría necesaria para seguirlo con soltura y entender las decisiones técnicas que se van tomando a lo largo del programa.
 
-* No son notas oficiales.
-* No son una traducción al pie de la letra.
+La intención es que este repositorio acabe siendo una **versión coherente y completa de los contenidos teóricos** del curso, tal y como se imparten en 2026, sin depender de haber visto previamente los vídeos.
 
-**Qué son**
-
-* Son simplemente mis notas del curso.
-* Son notas que he escrito de cada capítulo tras finalizarlo, a modo de repaso.
-* Son un intento mío de hacer accesibles los contenidos del curso a personas de habla hispana.
+Estas notas están pensadas como **acompañamiento al curso original**: pueden servirte para estudiar, repasar conceptos o tener una referencia en español, pero el curso, los ejercicios y la certificación oficial siguen siendo en inglés.
 
 ## Contexto
 
-En 2025 participé en otro curso de los mismos organizadores, en particular, el [Machine Learning Zoomcamp](https://datatalks.club/blog/machine-learning-zoomcamp.html) pero en ese caso apenas tomé [notas](https://github.com/elcapo/ml-zoomcamp-notes-and-homework) y no produje vídeos, pese a que tenía ganas de hacerlo desde el primer día.
+En 2025 ya participé en otro curso de los mismos organizadores (el [Machine Learning Zoomcamp](https://datatalks.club/blog/machine-learning-zoomcamp.html)), pero entonces apenas tomé notas y no documenté el proceso como me habría gustado. En esta edición del Data Engineering Zoomcamp he querido hacer justo lo contrario: **documentar el aprendizaje** desde el principio, con calma y con vocación didáctica.
 
-En este caso, mi intención es crear una versión en castellano de los contenidos que contenga toda la teoría necesaria para seguir el curso, al menos tal y como está siendo impartido en 2026.
-
-Si estás pensando usar este repositorio para seguir el curso, ten en cuenta que si quieres el certificado, las entregas tendrás que hacerlas en inglés.
+Si tu objetivo es obtener el certificado oficial, ten en cuenta que **las entregas deben realizarse en inglés**, independientemente de que uses estas notas como apoyo.
 
 ## Objetivos del curso
 
@@ -51,8 +44,11 @@ El curso, que es gratuito, termina con un proyecto "real" que te da derecho a ob
 
 Entre los recursos más importantes que debes de conocer para seguir el curso, están:
 
-* [Página web del curso](https://datatalks.club/blog/data-engineering-zoomcamp.html)  
+* [Presentación del curso](https://datatalks.club/blog/data-engineering-zoomcamp.html)  
   Introducción al curso, algo parecido a este mismo documento pero oficial y en inglés.
+
+* [Página de entregas y calificaciones](https://courses.datatalks.club/de-zoomcamp-2026/)  
+  Lista las fechas límite de cada entrega e incluye enlaces para hacer los envíos tanto de cada ejercicio entregable como de los proyectos. Una vez corregidos, también puedes ver aquí tus calificaciones.
 
 * [Comunidad en Slack](https://datatalks-club.slack.com/)  
   Uno de los puntos fuertes del curso es su comunidad, que se organiza en torno a Slack. En el sitio web de **DataTalks.Club** hay una página dedicada a explicarte [cómo unirte a su Slack](https://datatalks.club/slack.html). Una vez te unas, no te olvides de seguir el canal **#course-data-engineering**.
@@ -126,3 +122,54 @@ El curso organiza sus contenidos en 6 módulos y un proyecto final.
   * Documentar y presentar un proyecto listo para portafolio profesional
 
 Puedes encontrar versiones oficiales (en inglés) de las tablas de contenidos del curso en la [página del curso](https://datatalks.club/blog/data-engineering-zoomcamp.html#course-curriculum-what-youll-learn-in-the-data-engineering-zoomcamp) y en el fichero "léeme" del [repositorio de GitHub](https://github.com/DataTalksClub/data-engineering-zoomcamp?tab=readme-ov-file#modules).
+
+## Formas de seguir el curso
+
+Puedes seguir el curso de dos maneras diferentes:
+
+* **Siguiendo en vivo una cohorte**  
+  * Se sigue una agenda fija de 9 semanas (de enero a marzo)
+  * La agenda impone entregas con fechas límite
+  * Recibirás evaluaciones de tus ejercicios y de tu proyecto final
+  * Recibirás un certificado al finalizar
+
+* **A tu propio ritmo**  
+  * Empiezas y terminas cuando quieras
+  * El ritmo de estudio lo pones tú
+  * No recibirás evaluaciones de tus ejercicios ni de tu proyecto
+  * No podrás acceder a un certificado
+
+En cualquiera de los casos:
+
+* Los materiales son totalmente accesibles de forma gratuita en Youtube y Github.
+* Puedes pedir apoyo a la comunidad a través del canal de Slack.
+
+Recuerda que los enlaces están en la sección de recursos.
+
+## Ejercicios para entregar
+
+Si optas por seguir el curso con una cohorte, recuerda que debes inscribirte. Este es el [enlace para la inscripción](https://airtable.com/appzbS8Pkg9PL254a/shr6oVXeQvSI5HuWD) en la cohorte de 2026. Ten en cuenta que hay fechas prestablecidas para las entregas, siendo la primera el próximo lunes 26.
+
+| **Entregable** | **Fecha límite** |
+| --- | --- |
+| Módulo 1: **[Docker, SQL y Terraform](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/cohorts/2026/01-docker-terraform/homework.md)** | 26 de enero de 2026 |
+| Módulo 2: **Orquestación de flujos de datos** | 2 de febrero de 2026 |
+| Módulo 3: **Almacenes de datos** | 9 de febrero de 2026 |
+| Módulo 4: **Ingeniería para el analísis de datos** | 16 de febrero de 2026
+| Módulo 5: **Plataformas de datos** | 28 de febrero de 2026 |
+| Taller 1: **Ingesta de datos** | 2 de marzo de 2026 |
+| Módulo 6: **Procesos por lotes** | 9 de marzo de 2026 |
+| Módulo 7: **Procesos en streaming** | 16 de marzo de 2026 |
+
+## Proyecto final
+
+En cuanto al proyecto, dispones de dos intentos con fechas límite diferentes.
+
+| **Entregable** | **Fecha límite** |
+| --- | --- |
+| Proyecto: **Primer intento** | 31 de marzo de 2026 |
+| Proyecto: **Segundo intento** | 21 de abril de 2026 |
+
+## Aprendizaje en público
+
+Cuando vayas a hacer tu primera entrega, verás que además de los ejercicios a resolver, te pedirán también enlaces en los que hayas compartido información sobre tu proceso de aprendizaje. Cada uno de esos enlaces añade puntos a tu calificación final, ayudándote a mejorar tu posición en el "tablón de líderes".
