@@ -85,7 +85,7 @@ Además, se recomienda (aunque no se considera requisito):
 
 El curso organiza sus contenidos en 6 módulos y un proyecto final.
 
-### 1. **Infraestructura y prerrequisitos**
+### 1. **[Infraestructura y prerrequisitos](01-infraestructura-y-prerrequisitos/README.md)**
 
   * Configurar el entorno de desarrollo con **Docker** y **PostgreSQL**
   * Aprender los fundamentos de la nube con **Google Cloud Platform (GCP)**
