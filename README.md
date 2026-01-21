@@ -2,6 +2,14 @@
 
 Este repositorio recopila notas en castellano del [Data Engineering Zoomcamp](https://datatalks.club/blog/data-engineering-zoomcamp.html) de [DataTalks.Club](https://datatalks.club) (edición 2026), elaboradas de forma independiente a partir de mi seguimiento del curso. No es material oficial ni una traducción literal: son apuntes propios, escritos como síntesis y repaso tras completar cada bloque.
 
+## Qué es la ingeniería de datos
+
+La necesidad de hacer ingeniería de datos surge en una organización **cuando los datos empiezan a estar dispersos** en muchas herramientas, se duplican, se contradicen o requieren demasiado esfuerzo manual para usarse.
+
+Por ejemplo, cuando **los informes tardan días en prepararse**, cada equipo maneja cifras distintas o un cambio pequeño rompe varios procesos, es señal de que faltan bases sólidas.
+
+En ese punto, la **ingeniería de datos permite ordenar los flujos**, automatizar tareas y asegurar que la información llegue a las personas adecuadas, en el momento adecuado y con la calidad necesaria.
+
 ## Objetivo de este repositorio
 
 El objetivo es **hacer más accesibles los contenidos del curso a personas hispanohablantes**, concentrando la teoría necesaria para seguirlo con soltura y entender las decisiones técnicas que se van tomando a lo largo del programa.
