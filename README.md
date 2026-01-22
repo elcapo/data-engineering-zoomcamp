@@ -15,36 +15,6 @@ Por ejemplo, cuando **los informes tardan días en prepararse**, cada equipo man
 
 En ese punto, la **ingeniería de datos permite ordenar los flujos**, automatizar tareas y asegurar que la información llegue a las personas adecuadas, en el momento adecuado y con la calidad necesaria.
 
-## Contexto
-
-En 2025 ya participé en otro curso de los mismos organizadores (el [Machine Learning Zoomcamp](https://datatalks.club/blog/machine-learning-zoomcamp.html)), pero entonces apenas tomé notas y no documenté el proceso como me habría gustado. En esta edición del Data Engineering Zoomcamp he querido hacer justo lo contrario: **documentar el aprendizaje** desde el principio, con calma y con vocación didáctica.
-
-Si tu objetivo es obtener el certificado oficial, ten en cuenta que **las entregas deben realizarse en inglés**, independientemente de que uses estas notas como apoyo.
-
-## Objetivos del curso
-
-El **Data Engineering Zoomcamp** es un curso práctico de 9 semanas que te enseña a implementar flujos de datos usando herramientas como:
-
-* [Docker](https://www.docker.com/)  
-  Plataforma de contenedores que permite empaquetar aplicaciones y sus dependencias para que se ejecuten de forma reproducible en cualquier entorno.
-
-* [Terraform](https://developer.hashicorp.com/terraform)  
-  Herramienta de *infraestructura como código* que permite definir, crear y versionar infraestructuras en la nube mediante archivos declarativos.
-
-* [BigQuery](https://cloud.google.com/bigquery)  
-  Almacén de datos analítico totalmente gestionado que permite consultar grandes volúmenes de datos mediante SQL de forma rápida y escalable.
-
-* [dbt](https://www.getdbt.com/)  
-  Framework para transformar y modelar datos dentro del *almacén de datos*, aplicando buenas prácticas de ingeniería de software como tests y versionado.
-
-* [Spark](https://spark.apache.org/)  
-  Motor de procesamiento distribuido diseñado para trabajar con grandes conjuntos de datos de forma eficiente, tanto en batch como en streaming.
-
-* [Kafka](https://kafka.apache.org/)  
-  Plataforma de mensajería distribuida orientada a eventos, utilizada para construir pipelines de datos en tiempo real y arquitecturas desacopladas.
-
-El curso, que es gratuito, termina con un proyecto "real" que te da derecho a obtener un certificado.
-
 ## Recursos
 
 Entre los recursos más importantes que debes de conocer para seguir el curso, están:
@@ -127,6 +97,28 @@ El curso organiza sus contenidos en 6 módulos y un proyecto final.
   * Documentar y presentar un proyecto listo para portafolio profesional
 
 Puedes encontrar versiones oficiales (en inglés) de las tablas de contenidos del curso en la [página del curso](https://datatalks.club/blog/data-engineering-zoomcamp.html#course-curriculum-what-youll-learn-in-the-data-engineering-zoomcamp) y en el fichero "léeme" del [repositorio de GitHub](https://github.com/DataTalksClub/data-engineering-zoomcamp?tab=readme-ov-file#modules).
+
+## Tecnologías utilizadas
+
+El **Data Engineering Zoomcamp** es un curso práctico de 9 semanas que te enseña a implementar flujos de datos usando herramientas como:
+
+* [Docker](https://www.docker.com/)  
+  Plataforma de contenedores que permite empaquetar aplicaciones y sus dependencias para que se ejecuten de forma reproducible en cualquier entorno.
+
+* [Terraform](https://developer.hashicorp.com/terraform)  
+  Herramienta de *infraestructura como código* que permite definir, crear y versionar infraestructuras en la nube mediante archivos declarativos.
+
+* [BigQuery](https://cloud.google.com/bigquery)  
+  Almacén de datos analítico totalmente gestionado que permite consultar grandes volúmenes de datos mediante SQL de forma rápida y escalable.
+
+* [dbt](https://www.getdbt.com/)  
+  Framework para transformar y modelar datos dentro del *almacén de datos*, aplicando buenas prácticas de ingeniería de software como tests y versionado.
+
+* [Spark](https://spark.apache.org/)  
+  Motor de procesamiento distribuido diseñado para trabajar con grandes conjuntos de datos de forma eficiente, tanto en batch como en streaming.
+
+* [Kafka](https://kafka.apache.org/)  
+  Plataforma de mensajería distribuida orientada a eventos, utilizada para construir pipelines de datos en tiempo real y arquitecturas desacopladas.
 
 ## Formas de seguir el curso
 
