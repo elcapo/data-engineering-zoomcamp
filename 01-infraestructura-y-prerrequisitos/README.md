@@ -153,13 +153,11 @@ Igual que con otros comandos, `docker ps` también acepta modificadores que nos 
 
 * `-q` (ó `--quiet`): Indica que solo quieres ver los identificadores de los contenedores.
 
-Recuerda que también estos modificadores puedes usarlos simultáneamente con un único guión, en la forma `-aq`.
-
 ```bash
 docker ps -a
 ```
 
-Si lanzásemos el comando en un host en el que únicamente tuviésemos el contenedor Apache que levantamos en el apartado anterior, veríamos algo más o menos así:
+Si lanzásemos este comando en un host en el que únicamente tuviésemos el contenedor Apache que levantamos en el apartado anterior, veríamos algo más o menos así:
 
 ```
 docker ps
@@ -167,6 +165,48 @@ CONTAINER ID   IMAGE   COMMAND              CREATED          STATUS          POR
 183fc3f0b910   httpd   "httpd-foreground"   11 minutes ago   Up 11 minutes   0.0.0.0:8880->80/tcp, [::]:8880->80/tcp    apache
 ```
 
-### Detener contenedores
 
-Un uso típico del modificador `-q` es en un comando que está dentro de otro y que devuelve los identificadores que querrías poner a mano.
+Y si quisiésemos obtener únicamente el identificador del contenedor para usarlo como entrada de otro comando, podríamos escribir:
+
+```bash
+docker ps -aq
+```
+
+... que devolvería:
+
+```
+183fc3f0b910
+```
+
+Recuerda que los modificadores que no requiren argumentos adicionales puedes combinarlos con un único guión. En cualquier caso, el comando anterior es equivalente a:
+
+```bash
+docker ps -a -q
+
+# que es lo mismo que
+docker ps --all --quiet
+```
+
+### Detener contenedores con `docker stop`
+
+En cualquier momento puedes detener contenedores con `docker stop` seguido del identificador del contenedor que quieres detener. Puedes añadir varios identificadores separados por espacios o saltos de línea para detenerlos con un único comando.
+
+```bash
+docker stop 183fc3f0b910
+```
+
+Un uso típico del modificador `-q` es en un comando que está dentro de otro y que devuelve los identificadores que querrías poner a mano. Si, por ejemplo, quisieses detener todos los contenedores activos, podrías ejecutar:
+
+```bash
+docker stop $(docker ps -q)
+```
+
+### Eliminar contenedores con `docker rm`
+
+Si una vez detenido un contenedor sabes que no vas a volver a usarlo y quieres eliminarlo para liberar espacio en el disco duro del host, puedes hacerlo con:
+
+```bash
+docker rm 183fc3f0b910
+```
+
+El "truco" de concatenar `$(docker ps -q)` también funcionaría aquí.
