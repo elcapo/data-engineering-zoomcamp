@@ -4,6 +4,19 @@
 
 * [Introducción a Docker](01-introduccion-a-docker.md)
 
+## Ejercicios entregables
+
+* [Ejercicios resueltos en inglés](homework/english.md)
+
+## Aprendizaje en público
+
+* [Presentación del Zoomcamp de ingeniería de datos](https://www.linkedin.com/posts/carlos-capote-perez-andreu_github-elcapodata-engineering-zoomcamp-activity-7420155615378849793-SI3_)
+* [Introducción a Docker](https://www.linkedin.com/posts/carlos-capote-perez-andreu_data-engineering-zoomcamp01-infraestructura-y-prerrequisitos-activity-7420878486086590464-yvtk)
+
+## Contribución FAQ
+
+* [¿Cuál es la diferencia entre i y t en docker run -it?](https://github.com/DataTalksClub/faq/issues/107)
+
 ---
 
 [Volver a: Zoomcamp de ingeniería de datos](../README.md)
