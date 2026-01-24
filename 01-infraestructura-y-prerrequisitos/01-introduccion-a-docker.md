@@ -5,7 +5,7 @@
 Docker es una herramienta que permite empaquetar aplicaciones junto con todo lo que necesitan para funcionar en _contenedores_. Estos contenedores pueden ejecutarse de forma consistente en distintos entornos, desde el ordenador de una persona desarrolladora hasta servidores en producción. Gracias a Docker, se reducen los problemas de "en mi máquina funciona" y se facilitan tanto el desarrollo como el despliegue y mantenimiento de aplicaciones.
 
 > [!NOTE]
-> Recuerda que 1) puedes consultar la [versión original](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/01-docker-terraform/docker-sql/01-introduction.md) de este documento, y 2) este documento no es una traducción fiel al original.
+> Recuerda que 1) puedes consultar la [versión original](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/01-docker-terraform/docker-sql/01-introduction.md) (en inglés) de este documento y que 2) este documento no pretende ser ni de lejos una traducción fiel.
 
 ## Instalación
 
