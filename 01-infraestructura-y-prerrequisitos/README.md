@@ -3,6 +3,7 @@
 ## Contenidos
 
 * [Introducción a Docker](01-introduccion-a-docker.md)
+* [Entornos virtuales](02-entornos-virtuales.md)
 
 ## Ejercicios entregables
 
