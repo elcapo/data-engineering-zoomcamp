@@ -123,6 +123,28 @@ Además de obtener la consulta que crea la tabla, también podemos decirle a Pan
 df.head(n=0).to_sql(name='yellow_taxi_data', con=engine, if_exists='replace')
 ```
 
+En la práctica, para nuestra implementación del flujo de datos, optamos por encapsular el código dos funciones:
+
+```python
+def read_header(filename):
+    return pd.read_csv(
+        filename,
+        dtype=get_column_types(),
+        parse_dates=get_date_columns(),
+        nrows=0,
+    )
+
+def create_table_schema(connection_string, table_name):
+    df = read_header()
+    engine = create_engine(connection_string)
+    df.head(0).to_sql(
+        name=table_name,
+        con=engine,
+        if_exists='replace',
+        index=False
+    )
+```
+
 ### Iterar datos por lotes
 
 Otra funcionalidad de Pandas que nos va a venir muy bien para cargar datos es la de iterar un conjunto de datos por lotes. El fichero que estamos tratando tiene más de un millón de filas (en concreto, 1.369.765) por lo que iterarlas e insertarlas una a una llevaría más tiempo del necesario.
@@ -158,15 +180,12 @@ Combinando las técnicas que acabamos de ver, ya podemos crear un primer bucle q
 
 ```python
 first = True
-
-for df_chunk in df_iter:
+for index, df_chunk in tqdm(enumerate(df_iter)):
     if first:
-        # Creamos la tabla
-        df_chunk.head(0).to_sql(name="yellow_taxi_data", con=engine, if_exists="replace")
+        create_table_schema(connection_string, target_table)
         first = False
 
-    # Insertamos los registros del lote
-    df_chunk.to_sql(name="yellow_taxi_data", con=engine, if_exists="append")
+    insert_chunk(df_chunk, connection_string, target_table, index)
 ```
 
 #### Versión informativa
