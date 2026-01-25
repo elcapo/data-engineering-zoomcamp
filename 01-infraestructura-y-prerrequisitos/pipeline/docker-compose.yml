@@ -1,0 +1,47 @@
+services:
+  pgdatabase:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
+      POSTGRES_DB: ${POSTGRES_DB:-taxi}
+    volumes:
+      - taxi_postgres_data:/var/lib/postgresql
+    ports:
+      - ${POSTGRES_HOST_PORT:-5432}:5432
+    networks:
+      - taxi_postgres_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-root}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - ${PGADMIN_HOST_PORT:-8085}:80
+    networks:
+      - taxi_postgres_network
+
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
+      POSTGRES_DB: ${POSTGRES_DB:-taxi}
+      POSTGRES_HOST: pgdatabase
+      POSTGRES_PORT: 5432
+    depends_on:
+      - pgdatabase
+    networks:
+      - taxi_postgres_network
+
+volumes:
+  taxi_postgres_data:
+  pgadmin_data:
+
+networks:
+  taxi_postgres_network:
