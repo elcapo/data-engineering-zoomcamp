@@ -21,6 +21,7 @@
 * [Dockerizar un proyecto `uv`](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieriadedatos-docker-python-share-7421125587718606848-TJS2)
 * [Dockerizar PostgreSQL](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-docker-postgresql-share-7421154365073362944-sFHD)
 * [Carga de datos](https://www.linkedin.com/posts/carlos-capote-perez-andreu_intenieraedadedatos-python-postgresql-share-7421221042720931840-sNw7)
+* [Script parametrizable](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-python-scripts-share-7421234934394011648-HhP4)
 
 ## Contribución FAQ
 
