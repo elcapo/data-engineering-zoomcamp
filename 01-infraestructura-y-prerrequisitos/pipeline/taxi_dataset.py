@@ -4,22 +4,22 @@ from urllib.request import urlretrieve
 import pandas as pd
 from sqlalchemy import create_engine
 
-def download_and_extract():
-    if os.path.isfile('yellow_tripdata_2021-01.csv'):
+def download_and_extract(year, month):
+    if os.path.isfile(f'yellow_tripdata_{year}-{month:02d}.csv'):
         return
 
     prefix = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/'
-    url = prefix + 'yellow_tripdata_2021-01.csv.gz'
+    url = prefix + f'yellow_tripdata_{year}-{month:02d}.csv.gz'
 
-    urlretrieve(url, 'yellow_tripdata_2021-01.csv.gz')
+    urlretrieve(url, f'yellow_tripdata_{year}-{month:02d}.csv.gz')
     
-    with gzip.open('yellow_tripdata_2021-01.csv.gz', 'rb') as f_in:
-        with open('yellow_tripdata_2021-01.csv', 'wb') as f_out:
+    with gzip.open(f'yellow_tripdata_{year}-{month:02d}.csv.gz', 'rb') as f_in:
+        with open(f'yellow_tripdata_{year}-{month:02d}.csv', 'wb') as f_out:
             f_out.writelines(f_in)
 
-def remove_files():
-    os.remove('yellow_tripdata_2021-01.csv.gz')
-    os.remove('yellow_tripdata_2021-01.csv')
+def remove_files(year, month):
+    os.remove(f'yellow_tripdata_{year}-{month:02d}.csv.gz')
+    os.remove(f'yellow_tripdata_{year}-{month:02d}.csv')
 
 def get_column_types():
     return {
@@ -47,27 +47,30 @@ def get_date_columns():
         'tpep_dropoff_datetime'
     ]
 
-def read_header():
+def read_header(year, month):
     return pd.read_csv(
-        'yellow_tripdata_2021-01.csv',
+        f'yellow_tripdata_{year}-{month:02d}.csv',
         dtype=get_column_types(),
         parse_dates=get_date_columns(),
         nrows=0,
     )
 
-def create_table_schema(connection_string, table_name):
-    df = read_header()
+def create_table_schema(connection_string, table_name, year, month):
+    df = read_header(year, month)
     engine = create_engine(connection_string)
+
+    if engine.dialect.has_table(engine.connect(), table_name):
+        return
+
     df.head(0).to_sql(
         name=table_name,
         con=engine,
-        if_exists='replace',
         index=False
     )
 
-def iterate_rows(chunksize):
+def iterate_rows(chunksize, year, month):
     return pd.read_csv(
-        'yellow_tripdata_2021-01.csv',
+        f'yellow_tripdata_{year}-{month:02d}.csv',
         dtype=get_column_types(),
         parse_dates=get_date_columns(),
         iterator=True,

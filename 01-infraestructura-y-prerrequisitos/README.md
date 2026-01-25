@@ -7,6 +7,7 @@
 * [Dockerizar un proyecto `uv`](03-dockerizar-un-proyecto-uv.md)
 * [Dockerizar PostgreSQL](04-dockerizar-postgresql.md)
 * [Carga de datos](05-carga-de-datos.md)
+* [Script parametrizable](06-script-parametrizable.md)
 
 ## Ejercicios entregables
 

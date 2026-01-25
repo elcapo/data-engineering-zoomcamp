@@ -227,6 +227,7 @@ name = "pipeline"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "click" },
     { name = "pandas" },
     { name = "psycopg2-binary" },
     { name = "sqlalchemy" },
@@ -240,6 +241,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "click", specifier = ">=8.1.7" },
     { name = "pandas", specifier = ">=3.0.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.11" },
     { name = "sqlalchemy", specifier = ">=2.0.46" },
