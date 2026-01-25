@@ -5,6 +5,7 @@
 * [Introducción a Docker](01-introduccion-a-docker.md)
 * [Entornos virtuales](02-entornos-virtuales.md)
 * [Dockerizar un proyecto `uv`](03-dockerizar-un-proyecto-uv.md)
+* [Dockerizar PostgreSQL](04-dockerizar-postgresql.md)
 
 ## Ejercicios entregables
 
@@ -16,6 +17,7 @@
 * [Introducción a Docker](https://www.linkedin.com/posts/carlos-capote-perez-andreu_data-engineering-zoomcamp01-infraestructura-y-prerrequisitos-activity-7420878486086590464-yvtk)
 * [Entornos virtuales](https://www.linkedin.com/posts/carlos-capote-perez-andreu_durante-la-sesi%C3%B3n-del-zoomcamp-de-ingenier%C3%ADa-share-7420924306370654209-jVSn)
 * [Dockerizar un proyecto `uv`](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieriadedatos-docker-python-share-7421125587718606848-TJS2)
+* [Dockerizar PostgreSQL](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-docker-postgresql-share-7421154365073362944-sFHD)
 
 ## Contribución FAQ
 
