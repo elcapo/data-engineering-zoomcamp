@@ -76,70 +76,78 @@ urlretrieve(zones_url, "zones.csv")
 
 > For the trips in November 2025 (lpep_pickup_datetime between '2025-11-01' and '2025-12-01', exclusive of the upper bound), how many trips had a `trip_distance` of less than or equal to 1 mile?
 
-Once the files have been downloaded to a `data/` folder, we can read them with:
+Once the files have been downloaded, we can read them with:
 
 ```python
 import pandas as pd
 
-tripdata_df = pd.read_parquet("tripdata.parquet")
+trips = pd.read_parquet('tripdata.parquet')
 ```
 
 Then we can perform the proposed query with:
 
 ```python
-tripdata_df[
-  (tripdata_df.lpep_pickup_datetime >= '2025-11-01') &
-  (tripdata_df.lpep_pickup_datetime < '2025-12-01') &
-  (tripdata_df.trip_distance <= 1)
+trips[
+  (trips.lpep_pickup_datetime >= '2025-11-01') &
+  (trips.lpep_pickup_datetime < '2025-12-01') &
+  (trips.trip_distance <= 1)
 ].shape[0]
 ```
 
-Which returns **8,007**.
+> **8,007**
 
 ## Question 4. Longest trip for each day
 
-Which was the pick up day with the longest trip distance? Only consider trips with `trip_distance` less than 100 miles (to exclude data errors).
+> Which was the pick up day with the longest trip distance? Only consider trips with `trip_distance` less than 100 miles (to exclude data errors).
 
-Use the pick up time for your calculations.
+```python
+(
+  trips
+    [trips.trip_distance < 100]
+    [['lpep_pickup_datetime', 'trip_distance']]
+    .sort_values(by=['trip_distance'], ascending=False)
+    .head(1)
+)
+```
 
-- 2025-11-14
-- 2025-11-20
-- 2025-11-23
-- 2025-11-25
-
+> **2025-11-14**
 
 ## Question 5. Biggest pickup zone
 
-Which was the pickup zone with the largest `total_amount` (sum of all trips) on November 18th, 2025?
+> Which was the pickup zone with the largest `total_amount` (sum of all trips) on November 18th, 2025?
 
-- East Harlem North
-- East Harlem South
-- Morningside Heights
-- Forest Hills
+```python
+(
+  trips
+    [(trips.lpep_pickup_datetime >= '2025-11-18') & (trips.lpep_pickup_datetime < '2025-11-19')]
+    [['PULocationID', 'total_amount']]
+    .groupby(by='PULocationID')
+    .sum()
+    .sort_values(by='total_amount', ascending=False)
+)
+```
 
+> **East Harlem North**
 
 ## Question 6. Largest tip
 
-For the passengers picked up in the zone named "East Harlem North" in November 2025, which was the drop off zone that had the largest tip?
+> For the passengers picked up in the zone named "East Harlem North" in November 2025, which was the drop off zone that had the largest tip?
 
-Note: it's `tip` , not `trip`. We need the name of the zone, not the ID.
+```python
+pickup_zone_id = zones[zones.Zone == 'East Harlem North'].index[0]
 
-- JFK Airport
-- Yorkville West
-- East Harlem North
-- LaGuardia Airport
+best_tips_by_drop_off_zone = (
+    trips
+        [(trips.PULocationID == pickup_zone_id) & (trips.lpep_pickup_datetime >= '2025-11-01') & (trips.lpep_pickup_datetime < '2025-12-01')]
+        [['DOLocationID', 'tip_amount']]
+        .sort_values(by='tip_amount', ascending=False)
+)
 
+drop_off_zone_id = best_tips_by_drop_off_zone.iloc[0].DOLocationID
+drop_off_zone = zones[zones.LocationID == drop_off_zone_id]
+```
 
-## Terraform
-
-In this section homework we'll prepare the environment by creating resources in GCP with Terraform.
-
-In your VM on GCP/Laptop/GitHub Codespace install Terraform.
-Copy the files from the course repo
-[here](../../../01-docker-terraform/terraform/terraform) to your VM/Laptop/GitHub Codespace.
-
-Modify the files as necessary to create a GCP Bucket and Big Query Dataset.
-
+> **Yorkville West**
 
 ## Question 7. Terraform Workflow
 
@@ -148,66 +156,4 @@ Which of the following sequences, respectively, describes the workflow for:
 2. Generating proposed changes and auto-executing the plan
 3. Remove all resources managed by terraform`
 
-Answers:
-- terraform import, terraform apply -y, terraform destroy
-- teraform init, terraform plan -auto-apply, terraform rm
-- terraform init, terraform run -auto-approve, terraform destroy
-- terraform init, terraform apply -auto-approve, terraform destroy
-- terraform import, terraform apply -y, terraform rm
-
-
-## Submitting the solutions
-
-* Form for submitting: https://courses.datatalks.club/de-zoomcamp-2026/homework/hw1
-
-
-## Learning in Public
-
-We encourage everyone to share what they learned. This is called "learning in public".
-
-### Why learn in public?
-
-- Accountability: Sharing your progress creates commitment and motivation to continue
-- Feedback: The community can provide valuable suggestions and corrections
-- Networking: You'll connect with like-minded people and potential collaborators
-- Documentation: Your posts become a learning journal you can reference later
-- Opportunities: Employers and clients often discover talent through public learning
-
-You can read more about the benefits [here](https://alexeyondata.substack.com/p/benefits-of-learning-in-public-and).
-
-Don't worry about being perfect. Everyone starts somewhere, and people love following genuine learning journeys!
-
-### Example post for LinkedIn
-
-```
-🚀 Week 1 of Data Engineering Zoomcamp by @DataTalksClub complete!
-
-Just finished Module 1 - Docker & Terraform. Learned how to:
-
-✅ Containerize applications with Docker and Docker Compose
-✅ Set up PostgreSQL databases and write SQL queries
-✅ Build data pipelines to ingest NYC taxi data
-✅ Provision cloud infrastructure with Terraform
-
-Here's my homework solution: <LINK>
-
-Following along with this amazing free course - who else is learning data engineering?
-
-You can sign up here: https://github.com/DataTalksClub/data-engineering-zoomcamp/
-```
-
-### Example post for Twitter/X
-
-
-```
-🐳 Module 1 of Data Engineering Zoomcamp done!
-
-- Docker containers
-- Postgres & SQL
-- Terraform & GCP
-- NYC taxi data pipeline
-
-My solution: <LINK>
-
-Free course by @DataTalksClub: https://github.com/DataTalksClub/data-engineering-zoomcamp/
-```
+> **terraform init, terraform apply -auto-approve, terraform destroy**
