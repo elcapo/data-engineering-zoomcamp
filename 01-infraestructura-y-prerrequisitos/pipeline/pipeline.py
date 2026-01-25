@@ -1,5 +1,8 @@
+from ingestion_parallel import ingest
+
+
 def main():
-    print("Hello from pipeline!")
+    ingest()
 
 
 if __name__ == "__main__":

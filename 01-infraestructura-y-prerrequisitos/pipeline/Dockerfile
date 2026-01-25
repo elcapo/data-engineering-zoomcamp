@@ -20,6 +20,9 @@ RUN uv sync --locked
 
 # Copiar el código de la aplicación al final
 # Si solo cambia el código, Docker reutiliza las capas anteriores
+COPY taxi_dataset.py taxi_dataset.py
+COPY ingestion_parallel.py ingestion_parallel.py
+COPY ingestion_chunked.py ingestion_chunked.py
 COPY pipeline.py pipeline.py
 
 # Lanzar el script `pipeline.py` al iniciar

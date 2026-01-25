@@ -1,1 +1,9 @@
+# Python cache
+__pycache__/
+
+# Environment variables
 .env
+
+# Data files
+*.csv
+*.csv.gz
