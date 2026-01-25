@@ -120,9 +120,9 @@ DROP TABLE test;
 \q
 ```
 
-## Interfaz gráfica de adminstración `pgadmin`
+## Interfaz gráfica de adminstración `pgAdmin`
 
-Además de `pgcli`, existe `pgadmin`, una interfaz web que permite administrar PostgreSQL de forma visual. Es especialmente útil cuando trabajas con bases de datos complejas o quieres visualizar datos de forma rápida.
+Además de `pgcli`, existe `pgAdmin`, una interfaz web que permite administrar PostgreSQL de forma visual. Es especialmente útil cuando trabajas con bases de datos complejas o quieres visualizar datos de forma rápida.
 
 Para levantar pgAdmin junto con PostgreSQL, podemos usar otro contenedor Docker:
 
