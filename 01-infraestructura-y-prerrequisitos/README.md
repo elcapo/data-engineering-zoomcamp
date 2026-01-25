@@ -4,6 +4,7 @@
 
 * [Introducción a Docker](01-introduccion-a-docker.md)
 * [Entornos virtuales](02-entornos-virtuales.md)
+* [Dockerizar un proyecto `uv`](03-dockerizar-un-proyecto-uv.md)
 
 ## Ejercicios entregables
 
@@ -14,6 +15,7 @@
 * [Presentación del Zoomcamp de ingeniería de datos](https://www.linkedin.com/posts/carlos-capote-perez-andreu_github-elcapodata-engineering-zoomcamp-activity-7420155615378849793-SI3_)
 * [Introducción a Docker](https://www.linkedin.com/posts/carlos-capote-perez-andreu_data-engineering-zoomcamp01-infraestructura-y-prerrequisitos-activity-7420878486086590464-yvtk)
 * [Entornos virtuales](https://www.linkedin.com/posts/carlos-capote-perez-andreu_durante-la-sesi%C3%B3n-del-zoomcamp-de-ingenier%C3%ADa-share-7420924306370654209-jVSn)
+* [Dockerizar un proyecto `uv`](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieriadedatos-docker-python-share-7421125587718606848-TJS2)
 
 ## Contribución FAQ
 
