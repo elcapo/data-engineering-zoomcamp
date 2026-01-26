@@ -122,147 +122,25 @@ DROP TABLE test;
 \q
 ```
 
-## Interfaz gráfica de adminstración `pgAdmin`
-
-Además de `pgcli`, existe `pgAdmin`, una interfaz web que permite administrar PostgreSQL de forma visual. Es especialmente útil cuando trabajas con bases de datos complejas o quieres visualizar datos de forma rápida.
-
-Para levantar pgAdmin junto con PostgreSQL, podemos usar otro contenedor Docker:
-
-```bash
-docker run -it --rm \
-    -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
-    -e PGADMIN_DEFAULT_PASSWORD="root" \
-    -p 8085:80 \
-    dpage/pgadmin4
-```
-
-Una vez iniciado, puedes acceder a pgAdmin desde tu navegador en `http://localhost:8085` usando las credenciales que especificaste.
-
-## Docker Compose: Orquestando múltiples servicios
-
-Hasta ahora hemos levantado servicios con `docker run`, pero cuando necesitamos varios contenedores trabajando juntos (PostgreSQL, pgAdmin, nuestra aplicación Python), gestionar cada uno por separado se vuelve tedioso.
-
-**Docker Compose** permite definir y ejecutar aplicaciones multi-contenedor con un único archivo de configuración.
-
-### Crear un archivo `docker-compose.yml`
-
-Crea un archivo `docker-compose.yml` en la raíz de tu proyecto:
-
-```yaml
-services:
-  pgdatabase:
-    image: postgres:18
-    environment:
-      POSTGRES_USER: "root"
-      POSTGRES_PASSWORD: "root"
-      POSTGRES_DB: "taxi"
-    volumes:
-      - taxi_postgres_data:/var/lib/postgresql
-    ports:
-      - 5432:5432
-    networks:
-      - taxi_network
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
-      PGADMIN_DEFAULT_PASSWORD: "root"
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    ports:
-      - 8085:80
-    networks:
-      - taxi_network
-
-volumes:
-  taxi_postgres_data:
-  pgadmin_data:
-
-networks:
-  taxi_network:
-```
-
-### Explicación de la estructura
-
-* **`services:`**: Define los servicios (contenedores) que queremos ejecutar
-* **`pgdatabase:`**: Nombre del servicio PostgreSQL (podemos elegir el nombre que queramos)
-* **`image:`**: La imagen Docker a utilizar
-* **`environment:`**: Variables de entorno, equivalente a `-e` en `docker run`
-* **`volumes:`**: Volúmenes para persistir datos
-* **`ports:`**: Mapeo de puertos, equivalente a `-p` en `docker run`
-* **`networks:`**: Red compartida para que los contenedores puedan comunicarse entre sí
-
-### Levantar los servicios
-
-Con Docker Compose, puedes iniciar todos los servicios con un único comando. Desde el mismo directorio en el que se encuentra tu `docker-compose.yml`:
-
-```bash
-docker compose up
-```
-
-Para ejecutarlos en segundo plano:
-
-```bash
-docker compose up -d
-```
-
-Para detener los servicios:
-
-```bash
-docker compose down
-```
-
-Y para detenerlos y eliminar también los volúmenes:
-
-```bash
-docker compose down -v
-```
-
-> [!NOTE]
-> Con Docker Compose, los servicios pueden referenciarse entre sí usando sus nombres. Por ejemplo, desde pgAdmin podrás conectarte al servidor PostgreSQL usando `pgdatabase` como hostname en lugar de `localhost`.
-
-## Networking entre contenedores
-
-Cuando ejecutas contenedores de forma individual con `docker run`, por defecto no pueden comunicarse entre sí fácilmente. Necesitas crear una red Docker compartida:
-
-```bash
-# Crear una red
-docker network create taxi_network
-
-# Levantar PostgreSQL en esa red
-docker run -d --rm \
-    --name pgdatabase \
-    --network taxi_network \
-    -e POSTGRES_USER="root" \
-    -e POSTGRES_PASSWORD="root" \
-    -e POSTGRES_DB="taxi" \
-    -v taxi_postgres_data:/var/lib/postgresql \
-    -p 5432:5432 \
-    postgres:18
-
-# Ejecutar tu script Python en la misma red
-docker run --rm \
-    --network taxi_network \
-    -e DB_HOST=pgdatabase \
-    -v $(pwd)/data:/app/data \
-    python_pipeline:3.13
-```
-
-Fíjate que:
-
-* Ambos contenedores están en la red `taxi_network`
-* El script Python usa `pgdatabase` como hostname (el nombre que le dimos al contenedor PostgreSQL)
-* No necesitamos publicar el puerto 5432 si solo vamos a acceder desde otros contenedores, pero lo mantenemos para poder conectarnos también desde el host
-
-> [!NOTE]
-> Docker Compose crea automáticamente una red compartida para todos los servicios definidos en el archivo `docker-compose.yml`, por eso no necesitamos crearla manualmente cuando lo usamos.
-
 ## Buenas prácticas para PostgreSQL en Docker
 
 ### Usa variables de entorno para credenciales
 
-Nunca escribas credenciales directamente en el código. Usa variables de entorno, o archivos `.env`:
+Nunca escribas credenciales directamente en el código o en comandos Docker. Puedes usar variables de entorno directamente en tus comandos `docker run`:
+
+```bash
+docker run -it --rm \
+    -e POSTGRES_USER="${POSTGRES_USER:-root}" \
+    -e POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-root}" \
+    -e POSTGRES_DB="${POSTGRES_DB:-taxi}" \
+    -v taxi_postgres_data:/var/lib/postgresql \
+    -p "${POSTGRES_HOST_PORT:-5432}:5432" \
+    postgres:18
+```
+
+La sintaxis `${VARIABLE:-default}` te permite definir valores por defecto si la variable no está configurada.
+
+También puedes crear un archivo `.env` para almacenar las credenciales:
 
 ```bash
 # .env
@@ -272,34 +150,27 @@ POSTGRES_USER=root
 POSTGRES_PASSWORD=1234
 ```
 
-Y referencia las variables desde tu Docker Compose para que, sin necesidad de modificarlo, pueda ser usado con diferentes valores:
+Y luego cargar las variables antes de ejecutar Docker:
 
-```yaml
-services:
-  pgdatabase:
-    image: postgres:18
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-root}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
-      POSTGRES_DB: ${POSTGRES_DB:-taxi}
-    volumes:
-      - taxi_postgres_data:/var/lib/postgresql
-    ports:
-      - ${POSTGRES_HOST_PORT:-5432}:5432
-    networks:
-      - taxi_postgres_network
+```bash
+source .env
+docker run -it --rm \
+    -e POSTGRES_USER="$POSTGRES_USER" \
+    -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+    -e POSTGRES_DB="$POSTGRES_DB" \
+    -v taxi_postgres_data:/var/lib/postgresql \
+    -p "$POSTGRES_HOST_PORT:5432" \
+    postgres:18
 ```
-
-Ahora, solo con lanzar 
 
 > [!NOTE]
 > Recuerda añadir `.env` a tu `.gitignore` para no subir credenciales a Git.
 
-Alternativamente, puedes especificar las variables en el momento de iniciar los servicios sin necesidad de crear un fichero `.env`:
+## Siguientes pasos: Docker Compose
 
-```bash
-POSTGRES_HOST_PORT=5433 docker compose up -d
-```
+Hasta ahora hemos levantado PostgreSQL con `docker run`, pero cuando necesitamos varios contenedores trabajando juntos (como añadir herramientas de administración o scripts de carga de datos), gestionar cada uno por separado se vuelve tedioso.
+
+**Docker Compose** permite definir y ejecutar aplicaciones multi-contenedor con un único archivo de configuración. Lo veremos en detalle cuando integremos [pgAdmin](07-administrar-postgre-con-pgadmin.md) y nuestro [script de carga dockerizado](08-dockerizar-el-script-de-carga.md).
 
 ## Resumen
 
@@ -307,9 +178,7 @@ En este módulo hemos aprendido a:
 
 1. Levantar un servidor PostgreSQL con Docker
 2. Conectarnos a PostgreSQL con `pgcli` para ejecutar consultas manualmente
-3. Usar pgAdmin como interfaz gráfica
-4. Orquestar múltiples servicios con Docker Compose
-5. Configurar networking entre contenedores
-6. Asegurar la persistencia de datos con volúmenes
+3. Entender la diferencia entre volúmenes internos y compartidos
+4. Gestionar credenciales y configuración con variables de entorno
 
-Con estas herramientas ya tienes lo fundamental para crear pipelines de datos que procesen información y la almacenen en PostgreSQL, todo ello usando contenedores Docker que facilitan el despliegue y la colaboración.
+Con PostgreSQL dockerizado, ya estamos preparados para añadir herramientas de administración visual y comenzar a cargar datos en nuestra base de datos.

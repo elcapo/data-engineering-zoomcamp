@@ -8,6 +8,8 @@
 * [Dockerizar PostgreSQL](04-dockerizar-postgresql.md)
 * [Carga de datos](05-carga-de-datos.md)
 * [Script parametrizable](06-script-parametrizable.md)
+* [Administrar PostgreSQL con pgAdmin](07-administrar-postgresql-con-pgadmin.md)
+* [Dockerizar el script de carga](08-dockerizar-el-script-de-carga.md)
 
 ## Ejercicios entregables
 
