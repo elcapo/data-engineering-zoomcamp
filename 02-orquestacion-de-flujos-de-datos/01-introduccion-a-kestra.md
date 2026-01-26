@@ -16,7 +16,7 @@ En el contexto de la orquestación de flujos de datos, la observabilidad es clav
 
 ### Qué es Kestra
 
-* Vídeo original (en inglés): [What is Kestra](https://www.youtube.com/watch?v=ZvVN_NmB_1s&list=PLEK3H8YwZn1p-pCYj46rRhA0HcdXXxzzP&index=2&pp=iAQB)
+* Vídeo original (en inglés): [What is Kestra?](https://www.youtube.com/watch?v=ZvVN_NmB_1s&list=PLEK3H8YwZn1p-pCYj46rRhA0HcdXXxzzP&index=2&pp=iAQB)
 
 Kestra es un orquestador de flujos de datos de código abierto diseñado para facilitar la creación, ejecución y supervisión de pipelines de datos de forma escalable y mantenible. Su objetivo principal es coordinar tareas que forman parte de un proceso de tratamiento de datos, asegurando que se ejecuten en el orden correcto y gestionando dependencias, errores y reintentos de manera automática.
 
