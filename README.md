@@ -61,11 +61,11 @@ El curso organiza sus contenidos en 6 módulos y un proyecto final.
   * Aprender los fundamentos de la nube con **Google Cloud Platform (GCP)**
   * Usar **Terraform** para gestionar infraestructura como código
 
-### 2. **Orquestación de flujos de trabajo**
+### 2. **[Orquestación de flujos de datos](02-orquestacion-de-flujos-de-datos/README.md)**
 
-  * Dominar la orquestación de pipelines de datos con **Kestra**
-  * Implementar y gestionar *Data Lakes* en **Google Cloud Storage**
-  * Construir flujos de trabajo automatizados y reproducibles
+  * Dominar la orquestación de flujos de datos con **Kestra**
+  * Transformar un script ETL en un flujo de datos observable
+  * Construir flujos de datos automatizados y reproducibles
 
 ### 3. **Almacén de datos (Data Warehouse)**
 
