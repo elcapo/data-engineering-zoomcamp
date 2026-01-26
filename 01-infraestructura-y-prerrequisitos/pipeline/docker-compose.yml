@@ -24,21 +24,6 @@ services:
     networks:
       - taxi_postgres_network
 
-  pipeline:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-root}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
-      POSTGRES_DB: ${POSTGRES_DB:-taxi}
-      POSTGRES_HOST: pgdatabase
-      POSTGRES_PORT: 5432
-    depends_on:
-      - pgdatabase
-    networks:
-      - taxi_postgres_network
-
 volumes:
   taxi_postgres_data:
   pgadmin_data:

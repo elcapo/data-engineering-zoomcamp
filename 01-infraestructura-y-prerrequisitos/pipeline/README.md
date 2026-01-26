@@ -18,9 +18,6 @@ Interfaz web para administrar la base de datos PostgreSQL.
 - **Email por defecto**: admin@admin.com
 - **URL de acceso**: http://localhost:8085
 
-### 3. pipeline
-Servicio que ejecuta el script `pipeline.py` para procesar datos y cargarlos en PostgreSQL.
-
 ## Requisitos previos
 
 - Docker
@@ -45,25 +42,15 @@ PGADMIN_HOST_PORT=8085
 
 ## Uso
 
-### Levantar todos los servicios
+### Levantar los servicios
 
 ```bash
 docker compose up -d
 ```
 
-### Levantar solo la base de datos y pgAdmin
+Esto iniciará PostgreSQL y pgAdmin. La pipeline se ejecuta manualmente según sea necesario (ver sección de Desarrollo).
 
-```bash
-docker compose up -d pgdatabase pgadmin
-```
-
-### Ver los logs de la pipeline
-
-```bash
-docker compose logs -f pipeline
-```
-
-### Detener todos los servicios
+### Detener los servicios
 
 ```bash
 docker compose down
@@ -117,19 +104,43 @@ conn = psycopg2.connect(
 conn.close()
 ```
 
+### Ejecutar la pipeline
+
+La pipeline no está incluida como un servicio en `docker-compose.yml` porque es un proceso que se ejecuta y termina (no necesita estar corriendo constantemente).
+
+Para ejecutar la pipeline manualmente:
+
+```bash
+docker compose run --rm \
+    --network pipeline_taxi_postgres_network \
+    -e POSTGRES_USER=${POSTGRES_USER:-root} \
+    -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-root} \
+    -e POSTGRES_DB=${POSTGRES_DB:-taxi} \
+    -e POSTGRES_HOST=pgdatabase \
+    -e POSTGRES_PORT=5432 \
+    $(docker build -q .)
+```
+
+O más fácil, si prefieres crear un comando personalizado, puedes usar:
+
+```bash
+docker build -t pipeline:latest .
+docker run --rm \
+    --network pipeline_taxi_postgres_network \
+    -e POSTGRES_USER=${POSTGRES_USER:-root} \
+    -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-root} \
+    -e POSTGRES_DB=${POSTGRES_DB:-taxi} \
+    -e POSTGRES_HOST=pgdatabase \
+    -e POSTGRES_PORT=5432 \
+    pipeline:latest
+```
+
 ### Reconstruir la imagen tras cambios
 
 Después de modificar el código o las dependencias:
 
 ```bash
-docker compose build pipeline
-docker compose up -d pipeline
-```
-
-### Ejecutar la pipeline manualmente
-
-```bash
-docker compose run --rm pipeline
+docker build -t pipeline:latest .
 ```
 
 ## Conectar pgAdmin a PostgreSQL
