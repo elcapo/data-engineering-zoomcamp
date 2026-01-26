@@ -10,6 +10,7 @@
 * [Script parametrizable](06-script-parametrizable.md)
 * [Administrar PostgreSQL con pgAdmin](07-administrar-postgresql-con-pgadmin.md)
 * [Dockerizar el script de carga](08-dockerizar-el-script-de-carga.md)
+* [Orquestar servicios con Docker Compose](09-orquestar-servicios-con-docker-compose.md)
 
 ## Ejercicios entregables
 
