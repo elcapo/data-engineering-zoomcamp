@@ -14,7 +14,12 @@
 
 ## Ejercicios entregables
 
-* [Ejercicios resueltos en inglés](homework/english.md)
+* [Ejercicios resueltos (en español)](homework/traduccion.md)
+* [Ejercicios resueltos (en inglés)](homework/README.md)
+
+## Flujo de datos
+
+* [Flujo de datos con el dataset de Taxis de Nueva Tork](pipeline/README.md)
 
 ## Aprendizaje en público
 
