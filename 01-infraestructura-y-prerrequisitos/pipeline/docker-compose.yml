@@ -1,5 +1,5 @@
 services:
-  pgdatabase:
+  postgres:
     image: postgres:18
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-root}

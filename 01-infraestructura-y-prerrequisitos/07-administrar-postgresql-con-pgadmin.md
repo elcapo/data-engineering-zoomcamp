@@ -36,7 +36,7 @@ Crea un archivo `docker-compose.yml` en la raíz de tu proyecto:
 
 ```yaml
 services:
-  pgdatabase:
+  postgres:
     image: postgres:18
     environment:
       POSTGRES_USER: "root"
@@ -72,7 +72,7 @@ networks:
 ### Explicación de la estructura
 
 * **`services:`**: Define los servicios (contenedores) que queremos ejecutar
-* **`pgdatabase:`**: Nombre del servicio PostgreSQL (podemos elegir el nombre que queramos)
+* **`postgres:`**: Nombre del servicio PostgreSQL (podemos elegir el nombre que queramos)
 * **`pgadmin:`**: Nombre del servicio pgAdmin
 * **`image:`**: La imagen Docker a utilizar
 * **`environment:`**: Variables de entorno, equivalente a `-e` en `docker run`
@@ -117,14 +117,14 @@ Una vez que ambos servicios estén corriendo, accede a pgAdmin en `http://localh
 2. Haz clic derecho en "Servers" y selecciona "Register > Server"
 3. En la pestaña "General", ponle un nombre al servidor (por ejemplo: "Local Docker Postgres")
 4. En la pestaña "Connection":
-   * **Host**: `pgdatabase` (el nombre del servicio PostgreSQL en Docker Compose)
+   * **Host**: `postgres` (el nombre del servicio PostgreSQL en Docker Compose)
    * **Port**: `5432`
    * **Username**: `root`
    * **Password**: `root`
 5. Guarda la configuración
 
 > [!NOTE]
-> Con Docker Compose, los servicios pueden referenciarse entre sí usando sus nombres. Por eso usamos `pgdatabase` como hostname en lugar de `localhost`.
+> Con Docker Compose, los servicios pueden referenciarse entre sí usando sus nombres. Por eso usamos `postgres` como hostname en lugar de `localhost`.
 
 ## Resumen
 

@@ -4,7 +4,7 @@ Este proyecto contiene una pipeline ETL dockerizada con PostgreSQL y pgAdmin par
 
 ## Servicios
 
-### 1. pgdatabase
+### 1. postgres
 Servidor PostgreSQL 18 donde se almacenan los datos procesados por la pipeline.
 
 - **Puerto**: 5432 (configurable)
@@ -116,7 +116,7 @@ docker compose run --rm \
     -e POSTGRES_USER=${POSTGRES_USER:-root} \
     -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-root} \
     -e POSTGRES_DB=${POSTGRES_DB:-taxi} \
-    -e POSTGRES_HOST=pgdatabase \
+    -e POSTGRES_HOST=postgres \
     -e POSTGRES_PORT=5432 \
     $(docker build -q .)
 ```
@@ -130,7 +130,7 @@ docker run --rm \
     -e POSTGRES_USER=${POSTGRES_USER:-root} \
     -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-root} \
     -e POSTGRES_DB=${POSTGRES_DB:-taxi} \
-    -e POSTGRES_HOST=pgdatabase \
+    -e POSTGRES_HOST=postgres \
     -e POSTGRES_PORT=5432 \
     pipeline:latest
 ```
@@ -148,7 +148,7 @@ docker build -t pipeline:latest .
 1. Accede a http://localhost:8085
 2. Inicia sesión con las credenciales configuradas
 3. Añade un nuevo servidor:
-   - **Host**: pgdatabase
+   - **Host**: postgres
    - **Port**: 5432
    - **Database**: taxi (o el configurado)
    - **Username**: root (o el configurado)

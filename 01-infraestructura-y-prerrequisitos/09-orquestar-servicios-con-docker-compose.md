@@ -25,7 +25,7 @@ Crea un archivo `docker-compose.yml` en la raíz de tu proyecto con la configura
 
 ```yaml
 services:
-  pgdatabase:
+  postgres:
     image: postgres:18
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-root}
@@ -64,7 +64,7 @@ networks:
 
 Define los contenedores que queremos ejecutar:
 
-* **`pgdatabase:`**: Servidor PostgreSQL 18
+* **`postgres:`**: Servidor PostgreSQL 18
   * **`image:`**: Usa la imagen oficial de PostgreSQL
   * **`environment:`**: Variables de entorno con valores por defecto usando la sintaxis `${VAR:-default}`
   * **`volumes:`**: Persiste los datos en un volumen nombrado
@@ -72,7 +72,7 @@ Define los contenedores que queremos ejecutar:
   * **`networks:`**: Conecta el servicio a la red compartida
 
 * **`pgadmin:`**: Interfaz web de administración
-  * Similar a pgdatabase pero usa la imagen de pgAdmin
+  * Similar a postgres pero usa la imagen de pgAdmin
   * Expone el puerto 80 del contenedor en el puerto 8085 del host (configurable)
 
 ### Sección `volumes:`
@@ -139,7 +139,7 @@ docker compose up --build
 Si solo quieres levantar PostgreSQL y pgAdmin (sin el script):
 
 ```bash
-docker compose up -d pgdatabase pgadmin
+docker compose up -d postgres pgadmin
 ```
 
 ### Ver logs de los servicios
@@ -153,7 +153,7 @@ docker compose logs
 Ver logs de un servicio específico:
 
 ```bash
-docker compose logs pgdatabase
+docker compose logs postgres
 ```
 
 Seguir los logs en tiempo real:
@@ -181,14 +181,14 @@ docker compose down -v
 Si modificas el código del script o el Dockerfile:
 
 ```bash
-docker compose build pgdatabase
-docker compose up -d pgdatabase
+docker compose build postgres
+docker compose up -d postgres
 ```
 
 O en un solo comando:
 
 ```bash
-docker compose up --build pgdatabase
+docker compose up --build postgres
 ```
 
 ## Conectar pgAdmin a PostgreSQL
@@ -198,14 +198,14 @@ Con Docker Compose, la configuración de pgAdmin es más sencilla:
 1. Accede a `http://localhost:8085` (o el puerto que hayas configurado)
 2. Inicia sesión con las credenciales configuradas
 3. Añade un nuevo servidor:
-   * **Host**: `pgdatabase` (el nombre del servicio, no `localhost`)
+   * **Host**: `postgres` (el nombre del servicio, no `localhost`)
    * **Port**: `5432`
    * **Database**: `taxi` (o el que hayas configurado)
    * **Username**: `root` (o el que hayas configurado)
    * **Password**: `root` (o el que hayas configurado)
 
 > [!NOTE]
-> El hostname es `pgdatabase` (el nombre del servicio en Docker Compose) porque los servicios se comunican a través de la red interna de Docker, no a través del host.
+> El hostname es `postgres` (el nombre del servicio en Docker Compose) porque los servicios se comunican a través de la red interna de Docker, no a través del host.
 
 ## Diferencias entre `docker run` y `docker compose`
 

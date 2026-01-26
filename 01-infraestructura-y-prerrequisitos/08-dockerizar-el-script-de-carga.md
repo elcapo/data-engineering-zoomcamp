@@ -83,7 +83,7 @@ docker network create taxi_network
 
 # Levantar PostgreSQL en esa red
 docker run -d \
-    --name pgdatabase \
+    --name postgres \
     --network taxi_network \
     -e POSTGRES_USER="root" \
     -e POSTGRES_PASSWORD="root" \
@@ -95,7 +95,7 @@ docker run -d \
 # Ejecutar tu script Python en la misma red
 docker run --rm \
     --network taxi_network \
-    -e DB_HOST=pgdatabase \
+    -e DB_HOST=postgres \
     -e DB_PORT=5432 \
     -e DB_NAME=taxi \
     -e DB_USER=root \
@@ -107,7 +107,7 @@ docker run --rm \
 ### Aspectos clave del networking
 
 * Ambos contenedores están en la red `taxi_network`
-* El script Python usa `pgdatabase` como hostname (el nombre que le dimos al contenedor PostgreSQL)
+* El script Python usa `postgres` como hostname (el nombre que le dimos al contenedor PostgreSQL)
 * No necesitamos publicar el puerto 5432 si solo vamos a acceder desde otros contenedores, pero lo mantenemos para poder conectarnos también desde el host
 * El flag `--rm` en el contenedor del script hace que se elimine automáticamente al terminar su ejecución
 
