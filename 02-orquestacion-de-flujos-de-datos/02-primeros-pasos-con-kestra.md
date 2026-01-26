@@ -35,3 +35,20 @@ Así como el hecho de que levanten este volumen:
 ```
 
 Esto es así porque Kestra lanza muchas de las tareas de nuestros flujos de trabajo en contenedores Docker dedicados. Gracias a esto puede soportar un montón de lenguajes de programación diferentes.
+
+### Iniciar Kestra
+
+Una vez completamos la creación de nuestro fichero Docker Compose (consulta [pipeline/docker-compose.yml](pipeline/docker-compose.yml)), podemos iniciar Kestra con el habitual:
+
+```bash
+docker compose up -d
+```
+
+Si hemos instalado Kestra con los valores por defecto, en http://localhost:8080 deberíamos de ver una pantalla de inicio de sesión. Los datos de inicio de sesión por defecto son:
+
+* Usuario: **admin@kestra.io** 
+* Contraseña: **Admin1234!**
+
+Una vez introducidos, deberías de ver un dashboard limpio de Kestra.
+
+![Captura de pantalla de Kestra recién instalado](resources/just-installed-kestra-screenshot.png)
