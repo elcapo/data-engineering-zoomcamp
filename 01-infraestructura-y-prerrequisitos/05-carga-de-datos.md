@@ -2,6 +2,8 @@
 
 ## Carga de datos
 
+* Notas originales (en inglés): [Data Ingestion](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/01-docker-terraform/docker-sql/05-data-ingestion.md)
+
 Por fin, vamos a comenzar a implementar nuestro script de carga de datos. En particular, vamos a leer uno de los ficheros del [New York City Tax Dataset](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page); en particular, el [fichero CSV de taxis amarillos de enero de 2021](https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz).
 
 > [!NOTE]

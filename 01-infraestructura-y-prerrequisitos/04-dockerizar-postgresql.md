@@ -2,6 +2,8 @@
 
 ## Dockerizar PostgreSQL
 
+* Notas originales (en inglés): [Running PostgreSQL with Docker](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/01-docker-terraform/docker-sql/04-postgres-docker.md)
+
 En este módulo vamos a empezar a entender los beneficios de usar Docker para contener las dependencias de nuestros proyectos. Porque las dependencias de un script de Python que se conecta a una base de datos (en este caso usaremos PostgreSQL) no son solo las librerías necesarias para que nuestro script se conecte a la base de datos. El motor de base de datos es también una dependencia y podemos dockerizarla.
 
 Para iniciar un servidor PostgreSQL con Docker, podemos usar la correspondiente imagen oficial:

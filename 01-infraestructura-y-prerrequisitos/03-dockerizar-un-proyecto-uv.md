@@ -2,6 +2,8 @@
 
 ## Dockerizar un proyecto `uv`
 
+* Notas originales (en inglés): [Dockerizing the Pipeline](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/01-docker-terraform/docker-sql/03-dockerizing-pipeline.md)
+
 ### `Dockerfile` y el comando `docker build`
 
 Antes de empezar a Dockerizar nuestra aplicación, vamos a echar un vistazo a una característica de Docker que no llegamos a explicar en la [introducción a Docker](01-introduccion-a-docker.md). Imagina que quieres crear un contenedor Docker con la imagen de Python pero que también incluya alguna librería adicional.

@@ -2,6 +2,8 @@
 
 ## Entornos virtuales
 
+* Notas originales (en inglés): [Virtual Environments and Data Pipelines](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/01-docker-terraform/docker-sql/02-virtual-environment.md)
+
 Antes de seguir hablando sobre cómo desplegar nuestras aplicaciones con Docker, vamos a hablar sobre entornos virutales y sobre `uv`, la herramienta que vamos a usar para gestionar esos entornos.
 
 ### ¿Qué es un entorno virtual y por qué lo necesitas?

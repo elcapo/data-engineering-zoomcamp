@@ -2,6 +2,8 @@
 
 ## Script parametrizable
 
+* Notas originales (en inglés): [Ingestion Script](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/01-docker-terraform/docker-sql/06-ingestion-script.md)
+
 Durante el capítulo anterior llegamos a completar dos versiones de nuestro script de ingestión de datos plenamente funcionales. Salvo que no son realmente útiles, porque únicamente importan el fichero correspondiente a un mes en particular.
 
 Además, aunque nuestro entorno Docker es parametrizable vía parámetros de entorno, nuestro script tiene "hardcodeados" (escritos a mano) los parámetros de conexión a PostgreSQL.
