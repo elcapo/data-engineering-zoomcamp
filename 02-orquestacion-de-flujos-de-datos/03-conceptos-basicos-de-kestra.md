@@ -75,6 +75,10 @@ inputs:
     required: true
 ```
 
+Al ejecutar manualmente en Kestra un flujo que tiene entrada de datos, aparece una interfaz que permite introducir los datos de entrada.
+
+![Captura de pantalla de una entrada de datos](resources/captura-de-pantalla-de-una-entrada-de-datos.png)
+
 Kestra soporta múltiples tipos de datos para las variables de entrada. Entre los más básicos, están:
 
 * **STRING**: Cualquier cadena de texto. Los valores se pasan sin ser parseados; para cualquier validación adicional, debes usar un validador por expresión regular.
@@ -121,3 +125,120 @@ Al definir tareas, también puedes hacer referencia a las salidas de tareas prev
 ```
 
 En este caso, hacemos referencia a la propiedad **generate_output**, que es el identificador de la tarea previa a la que nos referimos, a través del objeto **outputs**.
+
+### Disparadores
+
+Kestra soporta varios tipos de diparadores:
+
+* **Triggers programados**: Permiten ejecutar flujos con periodicidades prefijadas (ej. diariamente a una determinada hora)
+
+* **Triggers de flujos**: Permiten ejecutar un flujo cuando otros flujo termina.
+
+* **Triggers de webhooks**: Permiten disparar flujos basados en una petición HTTP.
+
+* **Triggers por sondeo**: Permiten comprobar un servicio externo y lanzar un flujo si se encuentran en él datos pendientes de procesar.
+
+* **Trigger en tiempo real**: Permiten ejecutar un flujo en cuanto ocurre un cierto evento con una latencia del orden de milisegundos.
+
+```yaml
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "@hourly"
+    allowConcurrent: false
+```
+
+#### Webhooks
+
+Una utilidad interesante es la facilidad con la que puedes disparar la ejecución de flujos de trabajo en Kestra desde otras herramientas usando su API. Solo tenemos que añadir un trigger de tipo webhook (que requiere una clave `key` secreta):
+
+```yaml
+triggers:
+  - id: webhook
+    type: io.kestra.plugin.core.trigger.Webhook
+    key: 7G7ia9aQofNT1GQjt5aFoM
+```
+
+Y esto nos permitirá lanzar el flujo con una simple llamada HTTP:
+
+```bash
+curl -X POST http://localhost:8080/api/v1/main/executions/webhook/zoomcamp/01_hello_world/7G7ia9aQofNT1GQjt5aFoM
+```
+
+### Ejecuciones
+
+Una de las ventajas principales de usar una herramienta de orquestación de flujos de datos es que organiza su observabilidad. En Kestra, cada vez que un flujo es iniciado, completado, o detenido porque ocurrió un error, se genera un registro con información sobre su ejecución.
+
+Los registros nos dan información sobre cuánto tardó el flujo, así como cada una de sus tareas, qué salidas generó cada una de ellas. Además, si alguna tarea falló y fue reintentada, también tendremos un registro que nos permitirá detectar la incidencia.
+
+![Captura de pantalla de una ejecución](resources/captura-de-pantalla-de-una-ejecucion.png)
+
+### Variables
+
+Las variables facilitan compartir valores entre diferentes tareas. Su rol es similar al de las variables de entrada, con la diferencia principal de que no están vinculadas a una entrada que puede ser sobreescrita por el usuario en el momento de la ejecución.
+
+```yaml
+variables:
+  salutation: "Hola"
+
+tasks:
+  - id: hello
+    type: io.kestra.plugin.core.log.Log
+    message: {{ vars.salutation }}
+```
+
+Resulta también útil que las variables pueden contener expresiones que pueden ser "renderizadas" cuando sea necesario.
+
+```yaml
+variables:
+  time: "{{ now() }}"
+
+tasks:
+  - id: hello
+    type: io.kestra.plugin.core.log.Log
+    message: "Son las: {{ render(vars.time) }}"
+```
+
+### Valores por defecto de plugins
+
+Los valores por defecto de plugins permiten establecer configuraciones que serán usadas por todas las tareas de un cierto tipo en el flujo en el que son definidos.
+
+```yaml
+pluginDefaults:
+  - type: io.kestra.plugin.scripts.python.Script
+    values:
+      docker:
+        image: python:3.11-slim
+
+tasks:
+  - id: hola_desde_python
+    type: io.kestra.plugin.scripts.python.Script
+    script: |
+      print("Hola desde Python 3.11")
+
+  - id: adios_desde_python
+    type: io.kestra.plugin.scripts.python.Script
+    script: |
+      print("Adiós desde Python 3.11")
+```
+
+En el ejemplo, las dos tareas Python se ejecutan usando la imagen de Docker `python:3.11-slim`.
+
+### Concurrencia
+
+Definir cuántas veces puede ejecutarse simultáneamente un flujo de trabajo es tan sencillo como añadir una clave de concurrencia `concurrency`.
+
+```yaml
+concurrency:
+  limit: 2
+```
+
+Además, podemos especificar cómo queremos que se comporte Kestra si se intentase ejecutar una instancia más de las que hemos declarado admisibles con `behavior`.
+
+```yaml
+concurrency:
+  limit: 2
+  behavior: FAIL
+```
+
+Los valores posibles son QUEUE, CANCEL y FAIL.
