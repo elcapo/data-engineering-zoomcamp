@@ -9,6 +9,7 @@
 ## Aprendizaje en público
 
 * [Introducción a Kestra y priperos pasos](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-zoomcamp-share-7421641226505981952-5A6p)
+* [Conceptos básicos en Kestra](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-workflows-share-7422005348015812608-BrUY)
 
 ## Contribución FAQ
 
