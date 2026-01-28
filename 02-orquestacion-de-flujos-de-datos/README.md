@@ -5,6 +5,7 @@
 * [Introducción a Kestra](01-introduccion-a-kestra.md)
 * [Primeros pasos con Kestra](02-primeros-pasos-con-kestra.md)
 * [Conceptos básicos de Kestra](03-conceptos-basicos-de-kestra.md)
+* [Orquestar código Python](04-orquestar-codigo-python.md)
 
 ## Aprendizaje en público
 
