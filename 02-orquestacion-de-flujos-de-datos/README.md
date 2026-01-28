@@ -13,6 +13,7 @@
 * [Introducción a Kestra y priperos pasos](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-zoomcamp-share-7421641226505981952-5A6p)
 * [Conceptos básicos en Kestra](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-workflows-share-7422005348015812608-BrUY)
 * [Orquestar código Python](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-python-share-7422285535617982465-NJ9o)
+* Caso práctico: [Primer flujo de datos en Kestra](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-orquestaciaejn-share-7422336365469634561-Di-T)
 
 ## Contribución FAQ
 
@@ -20,4 +21,4 @@
 
 ---
 
-[Volver a: Zoomcamp de ingeniería de datos](../README.md)
+Volver a: [Zoomcamp de ingeniería de datos](../README.md)
