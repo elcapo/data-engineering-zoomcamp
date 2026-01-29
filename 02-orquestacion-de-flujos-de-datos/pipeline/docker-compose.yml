@@ -1,4 +1,32 @@
 services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: taxi
+      POSTGRES_USER: ${POSTGRES_DATA_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_DATA_PASSWORD:-root}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - taxi-postgres-data:/var/lib/postgresql
+    networks:
+      - taxi-postgres-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-root}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - ${PGADMIN_HOST_PORT:-8085}:80
+    networks:
+      - taxi-postgres-network
+
   kestra_postgres:
     image: postgres:18
     volumes:
@@ -12,6 +40,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
+    networks:
+      - taxi-postgres-network
 
   kestra:
     image: kestra/kestra:v1.1
@@ -57,9 +87,14 @@ services:
     depends_on:
       kestra_postgres:
         condition: service_started
+    networks:
+      - taxi-postgres-network
 
 volumes:
+  taxi-postgres-data:
+  pgadmin-data:
   kestra-postgres-data:
-    driver: local
   kestra-data:
-    driver: local
+
+networks:
+  taxi-postgres-network:
