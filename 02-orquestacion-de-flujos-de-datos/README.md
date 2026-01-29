@@ -7,7 +7,7 @@
 * [Conceptos básicos de Kestra](03-conceptos-basicos-de-kestra.md)
 * [Orquestar código Python](04-orquestar-codigo-python.md)
 * Caso práctico: [Primer flujo de datos en Kestra](05-primer-flujo-de-datos-en-kestra.md)
-* Caso práctico: [Datos del dataset de taxis de Nueva York](06-datos-de-dataset-de-taxis-de-nueva-york.md)
+* Caso práctico: [Datos del dataset de taxis de Nueva York](06-datos-del-dataset-de-taxis-de-nueva-york.md)
 
 ## Aprendizaje en público
 
