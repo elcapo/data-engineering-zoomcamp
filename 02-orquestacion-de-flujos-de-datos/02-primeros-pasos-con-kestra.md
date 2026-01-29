@@ -51,4 +51,4 @@ Si hemos instalado Kestra con los valores por defecto, en http://localhost:8080 
 
 Una vez introducidos, deberías de ver un dashboard limpio de Kestra.
 
-![Captura de pantalla de Kestra recién instalado](resources/captura-de-pantalla-de-kestra-recien-instalado.png)
+![Captura de pantalla de Kestra recién instalado](resources/screenshots/kestra-recien-instalado.png)

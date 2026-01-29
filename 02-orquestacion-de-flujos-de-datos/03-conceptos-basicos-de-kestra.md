@@ -77,7 +77,7 @@ inputs:
 
 Al ejecutar manualmente en Kestra un flujo que tiene entrada de datos, aparece una interfaz que permite introducir los datos de entrada.
 
-![Captura de pantalla de una entrada de datos](resources/captura-de-pantalla-de-una-entrada-de-datos.png)
+![Captura de pantalla de una entrada de datos](resources/screenshots/entrada-de-datos.png)
 
 Kestra soporta múltiples tipos de datos para las variables de entrada. Entre los más básicos, están:
 
@@ -171,7 +171,7 @@ Una de las ventajas principales de usar una herramienta de orquestación de fluj
 
 Los registros nos dan información sobre cuánto tardó el flujo, así como cada una de sus tareas, qué salidas generó cada una de ellas. Además, si alguna tarea falló y fue reintentada, también tendremos un registro que nos permitirá detectar la incidencia.
 
-![Captura de pantalla de una ejecución](resources/captura-de-pantalla-de-una-ejecucion.png)
+![Captura de pantalla de una ejecución](resources/screenshots/ejecucion.png)
 
 ### Variables
 

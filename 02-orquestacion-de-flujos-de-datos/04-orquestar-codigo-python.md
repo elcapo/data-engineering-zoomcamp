@@ -142,7 +142,7 @@ logger.critical("Con `critical` podemos loguear errores graves")
 
 Una vez termine la ejecución de tu tarea, desde la vista de logs del flujo de trabajo verás algo así:
 
-![Captura de pantalla de los logs](resources/captura-de-pantalla-de-los-logs.png)
+![Captura de pantalla de los logs](resources/screenshots/logs.png)
 
 ### Registrar métricas
 
@@ -174,4 +174,4 @@ Kestra.counter('even_numbers', len(even_numbers))
 
 Una vez termine la ejecución de la tarea, desde la vista de métricas del flujo de trabajo verás una tabla con los datos de cada métrica generada:
 
-![Captura de pantalla de las métricas](resources/captura-de-pantalla-de-las-metricas.png)
+![Captura de pantalla de las métricas](resources/screenshots/metricas.png)

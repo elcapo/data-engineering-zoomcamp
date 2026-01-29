@@ -185,4 +185,4 @@ Si una vez ejecutado el flujo, abres la ejecución en Kestra y te diriges a la p
 
 Para el último paso, deberías de ver algo así:
 
-![Captura de pantalla de la salida de datos](resources/captura-de-pantalla-de-la-salida-de-datos.png)
+![Captura de pantalla de la salida de datos](resources/screenshots/salida-de-datos.png)
