@@ -15,6 +15,7 @@
 * [Conceptos básicos en Kestra](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-workflows-share-7422005348015812608-BrUY)
 * [Orquestar código Python](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-python-share-7422285535617982465-NJ9o)
 * Caso práctico: [Primer flujo de datos en Kestra](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-orquestaciaejn-share-7422336365469634561-Di-T)
+* Caso práctico: [Datos del dataset de taxis de Nueva York](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-pipelines-share-7422717807752241152-i6T_)
 
 ## Contribución FAQ
 
