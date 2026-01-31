@@ -1,6 +1,6 @@
 # Orquestación de flujos de datos
 
-## De ETL a ELT con Google Cloud
+## Caso práctico: De ETL a ELT con Google Cloud
 
 * Vídeo original (en inglés): [ETL vs ELT](https://www.youtube.com/watch?v=E04yurp1tSU)
 

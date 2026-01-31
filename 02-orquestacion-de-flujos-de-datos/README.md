@@ -9,6 +9,7 @@
 * Caso práctico: [Primer flujo de datos en Kestra](05-primer-flujo-de-datos-en-kestra.md)
 * Caso práctico: [Datos del dataset de taxis de Nueva York](06-datos-del-dataset-de-taxis-de-nueva-york.md)
 * Caso práctico: [Programaciones y relleno de históricos](07-programaciones-y-relleno-de-historicos.md)
+* Caso práctico: [De ETL a ELT con Google Cloud](08-de-etl-a-elt-con-google-cloud.md)
 
 ## Aprendizaje en público
 
