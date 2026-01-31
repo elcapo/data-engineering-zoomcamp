@@ -15,6 +15,7 @@ inputs:
     defaults: yellow
 
 variables:
+  source: "https://github.com/DataTalksClub/nyc-tlc-data/releases/download"
   file: "{{ inputs.taxi }}_tripdata_{{ trigger.date | dateAdd(-1, 'MONTHS') | date('yyyy-MM') }}.csv"
   staging_table: "public.{{ inputs.taxi }}_tripdata_staging"
   table: "public.{{ inputs.taxi }}_tripdata"
@@ -34,7 +35,7 @@ tasks:
     taskRunner:
       type: io.kestra.plugin.core.runner.Process
     commands:
-      - wget -qO- https://github.com/DataTalksClub/nyc-tlc-data/releases/download/{{ inputs.taxi }}/{{ render(vars.file) }}.gz | gunzip > {{ render(vars.file) }}
+      - wget -qO- {{ vars.source }}/{{ inputs.taxi }}/{{ render(vars.file) }}.gz | gunzip > {{ render(vars.file) }}
 
   - id: if_yellow_taxi
     type: io.kestra.plugin.core.flow.If
