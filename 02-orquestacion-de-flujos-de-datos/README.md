@@ -19,6 +19,7 @@
 * Caso práctico: [Primer flujo de datos en Kestra](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-orquestaciaejn-share-7422336365469634561-Di-T)
 * Caso práctico: [Datos del dataset de taxis de Nueva York](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-pipelines-share-7422717807752241152-i6T_)
 * Caso práctico: [Programaciones y relleno de históricos](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-pipelines-activity-7423012946580054017-oygW)
+* Caso práctico: [De ETL a ELT con Google Cloud](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-elt-googlecloud-share-7423386502258409472-quuA)
 
 ## Contribución FAQ
 
