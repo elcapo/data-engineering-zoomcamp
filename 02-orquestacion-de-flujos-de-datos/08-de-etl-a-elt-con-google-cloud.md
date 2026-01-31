@@ -128,10 +128,10 @@ En cuanto a las variables, esta vez nos será útil poder referirnos al bucket, 
 ```yaml
 variables:
   source: "https://github.com/DataTalksClub/nyc-tlc-data/releases/download"
-  file: "{{ inputs.taxi }}_tripdata_{{ inputs.year }}-{{ inputs.month }}.csv"
+  file: "{{ inputs.taxi }}_tripdata_{{ trigger.date | dateAdd(-1, 'MONTHS') | date('yyyy-MM') }}.csv"
   gcs_file: "gs://{{ kv('GCP_BUCKET_NAME') }}/{{ vars.file }}"
-  table: "{{ kv('GCP_DATASET') }}.{{ inputs.taxi }}_tripdata_{{ inputs.year }}_{{ inputs.month }}"
-  data: "{{ outputs.extract.outputFiles[inputs.taxi ~ '_tripdata_' ~ inputs.year ~ '-' ~ inputs.month ~ '.csv'] }}"
+  table: "{{ kv('GCP_DATASET') }}.{{ inputs.taxi }}_tripdata_{{ trigger.date | dateAdd(-1, 'MONTHS') | date('yyyy_MM') }}"
+  data: "{{ outputs.extract.outputFiles[inputs.taxi ~ '_tripdata_' ~ (trigger.date | dateAdd(-1, 'MONTHS') | date('yyyy-MM')) ~ '.csv'] }}"
 ```
 
 ### Tareas
@@ -344,6 +344,67 @@ Como hicimos en versiones previas del flujo de datos, terminamos asegurándonos 
   disabled: false
 ```
 
+En este momento, nuestro flujo de datos debería de tener un aspecto similar al del fichero [08-gcp-taxi.yaml](resources/flows/08-gcp-taxi.yaml).
+
+## Relleno de históricos en BigQuery
+
+* Vídeo original (en inglés): [Backfills with BigQuery](https://www.youtube.com/watch?v=b-6KhfWfk2M&pp=ugUEEgJlbg%3D%3D)
+
+En esta sección vamos a crear dos programaciones para nuestros datasets de taxis amarillos y verdes respectivamente, de la misma forma que hicimos en nuestra [versión del flujo con PostgreSQL](07-programaciones-y-relleno-de-historicos.md). Esto nos permitirá usar Kestra para lanzar rellenos de datos históricos en BigQuery.
+
+### Entradas
+
+Como vamos a modificar nuestro flujo para que la fecha que se use como referencia sea la "fecha del disparador", no será necesario que pidamos el año y el mes, por lo que modificaremos nuestra sección de entradas para que únicamente pida el conjunto de datos a descargar.
+
+```yaml
+inputs:
+  - id: taxi
+    type: SELECT
+    displayName: Select taxi type
+    values: [yellow, green]
+    defaults: green
+```
+
+### Variables
+
+En lo que respecta a las variables, eliminaremos las referencias al año y mes de las entradas y las reemplazaremos con referencias a la "fecha del disparador":
+
+```yaml
+variables:
+  source: "https://github.com/DataTalksClub/nyc-tlc-data/releases/download"
+  file: "{{ inputs.taxi }}_tripdata_{{ trigger.date | dateAdd(-1, 'MONTHS') | date('yyyy-MM') }}.csv"
+  gcs_file: "gs://{{ kv('GCP_BUCKET_NAME') }}/{{ vars.file }}"
+  table: "{{ kv('GCP_DATASET') }}.{{ inputs.taxi }}_tripdata_{{ trigger.date | dateAdd(-1, 'MONTHS') | date('yyyy_MM') }}"
+  data: "{{ outputs.extract.outputFiles[inputs.taxi ~ '_tripdata_' ~ (trigger.date | dateAdd(-1, 'MONTHS') | date('yyyy-MM')) ~ '.csv'] }}"
+```
+
+### Programación
+
+Por último, estableceremos una programación para que los conjuntos de datos de taxis amarillos y verdes se descarguen el primer día de mes.
+
+```yaml
+triggers:
+  - id: green_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 9 1 * *"
+    inputs:
+      taxi: green
+
+  - id: yellow_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 10 1 * *"
+    inputs:
+      taxi: yellow
+```
+
+Tras una ejecución para rellenar el histórico de 2020 de los taxis verdes, en nuestro bucket deberíamos de ver los ficheros correspondientes.
+
+![Google Cloud Bucket](resources/screenshots/google-cloud-bucket.png)
+
+Del mismo modo, los datos deberían de estar ya disponibles desde BigQuery.
+
+![BigQuery](resources/screenshots/bigquery.png)
+
 ## Resultado final
 
-Una vez terminado, nuestro flujo de datos tendrá un aspecto similar al del fichero [08-gcp-taxi.yaml](resources/flows/08-gcp-taxi.yaml).
+Una vez terminado, nuestro flujo de datos tendrá un aspecto similar al del fichero [09-gcp-taxi-scheduled.yaml](resources/flows/09-gcp-taxi-scheduled.yaml).
