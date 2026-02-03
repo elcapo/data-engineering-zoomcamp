@@ -6,25 +6,16 @@ from google.cloud import storage
 from google.api_core.exceptions import NotFound, Forbidden
 import time
 
-
-# Change this to your bucket name
-BUCKET_NAME = "dezoomcamp_hw3_2025"
-
-# If you authenticated through the GCP SDK you can comment out these two lines
-CREDENTIALS_FILE = "gcs.json"
+BUCKET_NAME = "newyork-taxi"
+CREDENTIALS_FILE = "service-account.json"
 client = storage.Client.from_service_account_json(CREDENTIALS_FILE)
-# If commented initialize client with the following
-# client = storage.Client(project='zoomcamp-mod3-datawarehouse')
-
 
 BASE_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024-"
 MONTHS = [f"{i:02d}" for i in range(1, 7)]
 DOWNLOAD_DIR = "."
-
 CHUNK_SIZE = 8 * 1024 * 1024
 
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
-
 bucket = client.bucket(BUCKET_NAME)
 
 

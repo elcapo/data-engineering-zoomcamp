@@ -63,7 +63,7 @@ Las tablas externas de BigQuery nos permiten crear tabla a partir de recursos ex
 Podemos crear las tablas externas permitiendo que BigQuery infiera el esquema de la tabla a partir de las columnas del CSV:
 
 ```sql
-CREATE OR REPLACE EXTERNAL TABLE `zoomcamp.nytaxi.yellow_tripdata_ext`
+CREATE OR REPLACE EXTERNAL TABLE `zoomcamp.yellow_tripdata_ext`
 OPTIONS (
   format = 'CSV',
   uris = ['gs://newyork-taxi/yellow_tripdata_*.csv']
