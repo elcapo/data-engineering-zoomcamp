@@ -1,0 +1,47 @@
+---
+config:
+  layout: elk
+  theme: mc
+---
+flowchart LR
+    subgraph DS["Orígenes de datos"]
+        OS1["Aplicación de gestión"]
+        OS2["Aplicación de gestión"]
+        FF["Ficheros diversos"]
+    end
+    subgraph ST["Área de preparación"]
+        SG["Staging"]
+    end
+    subgraph DW["Almacén de datos"]
+        MD["Metadatos"]
+        RD["Datos brutos"]
+        SD["Agregados"]
+    end
+    subgraph DM["Mercado de datos"]
+        P["Compras"]
+        S["Ventas"]
+        I["Inventario"]
+    end
+    subgraph U["Usuarios"]
+        A["Análisis"]
+        R["Informes"]
+        M["Exploración"]
+    end
+
+    DS --> SG
+    SG --> DW
+    DW --> DM
+    P <--> A & R
+    S <--> A & R
+    I <--> M
+
+    OS1@{ shape: cyl}
+    OS2@{ shape: cyl}
+    FF@{ shape: docs}
+    MD@{ shape: cyl}
+    RD@{ shape: cyl}
+    SD@{ shape: cyl}
+    AD@{ shape: cyl}
+    P@{ shape: cyl}
+    S@{ shape: cyl}
+    I@{ shape: cyl}

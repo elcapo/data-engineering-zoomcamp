@@ -67,7 +67,7 @@ El curso organiza sus contenidos en 6 módulos y un proyecto final.
   * Transformar un script ETL en un flujo de datos observable
   * Construir flujos de datos automatizados y reproducibles
 
-### 3. **Almacén de datos (Data Warehouse)**
+### 3. **[Almacenes de datos](03-almacenes-de-datos/README.md)**
 
   * Profundizar en **BigQuery** para almacenamiento de datos empresarial
   * Aprender técnicas de optimización como particionado y *clustering*
