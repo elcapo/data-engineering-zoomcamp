@@ -8,6 +8,7 @@
 ## Aprendizaje en público
 
 * [Almacenes de datos y BigQuery](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-datawarehouse-bigquery-share-7424492070221811713-tnda)
+* [Particionado y clustering](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-datawarehouse-share-7424576619568328704-3Jld)
 
 ## Contribución FAQ
 
