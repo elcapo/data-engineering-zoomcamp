@@ -43,3 +43,14 @@ Al igual que con las particiones, las tablas agrupadas en clústeres en BigQuery
 - En columnas de tipo `STRING` solo se usan los primeros 1024 caracteres para agrupar los datos.
 
 - Si se agregan clústeres a una tabla existente, solo los datos nuevos serán ordenados.
+
+### Cuándo usar uno u otro
+
+| Aspecto                              | Particionado                                                                                                               | Clustering                                                                                                                                        |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cómo organiza los datos**          | Divide la tabla en segmentos físicos independientes según valores de una columna.                                          | Ordena y agrupa los datos dentro de la tabla (o dentro de cada partición) según las columnas de cluster.                                          |
+| **Optimización de consultas**        | Reduce el escaneo al omitir particiones completas que no coinciden con los filtros.                                        | Mejora el escaneo interno porque los datos similares están próximos en almacenamiento, acelerando filtrado y agregaciones en columnas de cluster. |
+| **Costo estimado antes de ejecutar** | BigQuery puede estimar el coste de la consulta basándose en los metadatos de las particiones.                              | El coste real solo se sabe después de ejecutar la consulta, porque depende de cómo estén físicamente ordenados los datos.                         |
+| **Columnas soportadas**              | Solo una columna de partición.                                                                                             | Hasta cuatro columnas de clustering, para captar patrones complejos de consulta.                                                                  |
+| **Mejor uso típico**                 | Consultas frecuentes filtrando por ranges temporales o por un valor específico de columna.                                 | Consultas con múltiples filtros o agregaciones en columnas con alta cardinalidad.                                                                 |
+| **Combinación**                      | Se pueden aplicar particionado y clústeres para obtener beneficios de ambos métodos.                                       | Se puede aplicar clustering sobre una tabla particionada para optimización adicional.                                                             |
