@@ -153,6 +153,80 @@ SELECT AVG(valor) FROM datos;
 
 El **oversharding**, o fragmentación excesiva, consiste en generar demasiadas tablas pequeñas y luego consultarlas con **UNION** gigantes. Cuando sea posible, es mejor crear una única tabla grande y bien particionada.
 
-> [!NOTE]
-> Este artículo no esta acabado.
-> Voy por aquí: https://youtu.be/k81mLJVX08w?si=cDlSWH9YEd2qAoEQ&t=159
+### Evita funciones **JavaScript** de usuario
+
+Las funciones definidas por el usuario en JavaScript se ejecutan fuera del motor SQL nativo, lo que rompe muchas optimizaciones internas (vectorización, paralelismo eficiente, o _pushdown_ de filtros). En la práctica, usar las suele hacer que la consulta sea más lenta y más cara que usar funciones SQL nativas.
+
+```sql
+/* ☒ Intenta no usar JavaScript cuando tengas alternativas */
+CREATE TEMP FUNCTION normalizar(x STRING)
+RETURNS STRING
+LANGUAGE js AS """
+  return x.toLowerCase();
+""";
+
+SELECT normalizar(nombre) FROM usuarios;
+
+/* ☑ Mejor, porque no rompe las optimizaciones del motor SQL */
+SELECT LOWER(nombre) FROM usuarios;
+```
+
+### Usa funciones agregadas aproximadas
+
+Las funciones de agregación aproximada devuelven resultados muy cercanos al valor real, pero consumiendo muchos menos recursos. BigQuery usa estructuras probabilísticas como HyperLogLog++ para estimar cardinalidades (por ejemplo, usuarios únicos).
+
+```sql
+/* ☒ Devuelve resultados exactos pero con mayor coste computacional */
+SELECT COUNT(DISTINCT user_id) FROM eventos;
+
+/* ☑ Devuelve resultados casi exactos con bastante menos coste */
+SELECT APPROX_COUNT_DISTINCT(user_id) FROM eventos;
+```
+
+### Ordena al final de las consultas
+
+Los **ORDER BY** son una de las operaciones más caras, porque obligan a:
+
+* procesar todos los resultados,
+* mover datos entre nodos,
+* ordenar globalmente.
+
+Si ordenas antes de tiempo (por ejemplo, dentro de subconsultas grandes), haces trabajar al motor más de lo necesario.
+
+```sql
+/* ☒ El orden de la subconsulta hace trabajar más al motor, sin aportar ningún beneficio */
+WITH datos AS (
+  SELECT * FROM ventas ORDER BY fecha
+)
+SELECT cliente_id, SUM(total)
+FROM datos
+GROUP BY cliente_id;
+
+/* ☑ Solo se ordena una vez, al final */
+SELECT cliente_id, SUM(total)
+FROM ventas
+GROUP BY cliente_id
+ORDER BY cliente_id;
+```
+
+### Ordena las tablas de mayor a menor
+
+Poner primero la tabla más grande ayuda a:
+
+* distribuir mejor el trabajo,
+* minimizar movimientos innecesarios de datos,
+* mejorar la estrategia de ejecución del optimizador.
+
+```sql
+/* ☒ Mejorable, si `ventas` es mucho más grande que `clientes` */
+SELECT v.fecha, v.cantidad, c.nombre, p.descripcion
+FROM clientes c
+JOIN ventas v ON c.id = v.cliente_id
+JOIN productos p ON v.producto_id = p.id
+
+/* ☑ Más legible y considerada con el motor SQL */
+SELECT v.fecha, v.cantidad, c.nombre, p.descripcion
+FROM ventas v
+JOIN clientes c ON v.cliente_id = c.id
+JOIN productos p ON v.producto_id = p.id
+```
