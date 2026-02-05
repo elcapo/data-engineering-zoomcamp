@@ -5,6 +5,7 @@
 * [Almacenes de datos y BigQuery](01-almacenes-de-datos-y-bigquery.md)
 * [Particionado y clustering](02-particionado-y-clustering.md)
 * [Buenas prácticas en BigQuery](03-buenas-practicas-en-bigquery.md)
+* [BigQuery por dentro](04-bigquery-por-dentro.md)
 
 ## Aprendizaje en público
 
