@@ -12,6 +12,7 @@
 * [Almacenes de datos y BigQuery](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-datawarehouse-bigquery-share-7424492070221811713-tnda)
 * [Particionado y clustering](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-datawarehouse-share-7424576619568328704-3Jld)
 * [Buenas prácticas en BigQuery](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-datawarehouse-share-7424903201709281280-aWDS)
+* [BigQuery por dentro](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-datawarehouse-share-7425243494253772801-QNUr)
 
 ## Contribución FAQ
 
