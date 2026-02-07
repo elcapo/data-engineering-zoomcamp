@@ -1,0 +1,22 @@
+---
+config:
+  layout: elk
+---
+flowchart LR
+    A["¿Qué quieres hacer?"] --> B1["Predecir valores"] & B2["Predecir entre categorías"] & B3["Generar recomendaciones"] & B4["Reducir la dimensionalidad de los datos"] & B5["Detectar anomalías"] & B6["Agrupar datos en clústeres"] & B7["Predicción de series temporales"]
+    B1 --> M1["Regresión lineal"] & M2["Regresión con árboles potenciados"] & M3["AutoML Tables - Regresión"] & M4["Regresor DNN"] & M5["Regresión Wide & Deep"]
+    B2 --> M6["Regresión logística"] & M7["Clasificador con árboles potenciados"] & M8["AutoML Tables - Clasificación"] & M9["Clasificador DNN"] & M10["Clasificador Wide & Deep"]
+    B3 --> M11["Factorización de matrices"]
+    B4 --> M12["PCA"] & M13["Autoencoder"]
+    B5 --> M13
+    B6 --> M14["K-Means"]
+    B7 --> M15["ARIMA-PLUS"]
+
+    style A fill:#000000,color:#FFFFFF
+    style B1 fill:#2962FF,color:#FFFFFF
+    style B2 fill:#2962FF,color:#FFFFFF
+    style B3 fill:#2962FF,color:#FFFFFF
+    style B4 fill:#2962FF,color:#FFFFFF
+    style B5 fill:#2962FF,color:#FFFFFF
+    style B6 fill:#2962FF,color:#FFFFFF
+    style B7 fill:#2962FF,color:#FFFFFF
