@@ -7,6 +7,7 @@
 * [Buenas prácticas en BigQuery](03-buenas-practicas-en-bigquery.md)
 * [BigQuery por dentro](04-bigquery-por-dentro.md)
 * [Aprendizaje automático en BigQuery](05-aprendizaje-automatico-en-bigquery.md)
+* [Desplegar modelos de aprendizaje automático](06-desplegar-modelos-de-aprendizaje-automatico.md)
 
 ## Aprendizaje en público
 
