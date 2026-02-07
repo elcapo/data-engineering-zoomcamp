@@ -8,6 +8,7 @@
 * [BigQuery por dentro](04-bigquery-por-dentro.md)
 * [Aprendizaje automático en BigQuery](05-aprendizaje-automatico-en-bigquery.md)
 * [Desplegar modelos de aprendizaje automático](06-desplegar-modelos-de-aprendizaje-automatico.md)
+* [Recuperar consultas de creación de objetos en BigQuery](07-recuperar-consultas-de-creacion-de-objetos-en-bigquery.md)
 
 ## Aprendizaje en público
 
