@@ -14,6 +14,7 @@
 * [Particionado y clustering](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-datawarehouse-share-7424576619568328704-3Jld)
 * [Buenas prácticas en BigQuery](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-datawarehouse-share-7424903201709281280-aWDS)
 * [BigQuery por dentro](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-datawarehouse-share-7425243494253772801-QNUr)
+* [Aprendizaje automático en BigQuery](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-machinelearning-share-7425890651315019776-VLOe)
 
 ## Contribución FAQ
 
