@@ -18,6 +18,7 @@
 * [BigQuery por dentro](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-datawarehouse-share-7425243494253772801-QNUr)
 * [Aprendizaje automático en BigQuery](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-machinelearning-share-7425890651315019776-VLOe)
 * [Desplegar modelos de aprendizaje automático](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-machinelearning-share-7425906776182710272-mH_B)
+* [Recuperar consultas de creación de objetos en BigQuery](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-bigquery-datawarehouse-share-7425928584311050240-l4yc)
 
 ## Contribución FAQ
 
