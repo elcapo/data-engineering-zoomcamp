@@ -91,7 +91,9 @@ La mejor fuente para entender las similitudes y diferencias entre **dbt Core** y
 * Notas originales (en inglés): [Cloud dbt Setup](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/04-analytics-engineering/setup/cloud_setup.md)
 
 > [!NOTE]
-> Para seguir esta guía debes primero haber completado las prácticas del [módulo 3, sobre almacenes de datos](../03-almacenes-de-datos/README.md). En particular, necesitas:
+> Para seguir esta guía debes primero haber completado las prácticas del [módulo 3, sobre almacenes de datos](../03-almacenes-de-datos/README.md).
+>
+> En particular, necesitas:
 >
 > - un proyecto de Google Cloud con la API de BigQuery activa,
 > - una cuenta de servicio con permisos de BigQuery y
@@ -120,3 +122,105 @@ En cuanto al conjunto de datos, en este módulo trabajaremos a partir de los [da
 ### Opción 2: **PostgreSQL** y **dbt Core**
 
 * Vídeo original (en inglés): [Local dbt Setup](https://www.youtube.com/watch?v=GoFAbJYfvlw)
+* Notas originales (en inglés): [Local dbt Setup](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/04-analytics-engineering/setup/local_setup.md)
+
+#### Instalación de dependencias
+
+Para iniciar el proyecto en local, el primer paso es instalar **duckDB**:
+
+```bash
+uv init
+uv add duckdb
+uv add dbt-duckdb
+uv add dbt-bigquery
+```
+
+Puedes comprobar que la instalación ha ido bien con el comando `uv run dbt --version`:
+
+```
+Core:
+  - installed: 1.11.4
+  - latest:    1.11.4 - Up to date!
+
+Plugins:
+  - duckdb: 1.10.0 - Up to date!
+```
+
+#### Inicialización
+
+Ahora podemos inicializar nuestro proyecto lanzando:
+
+```bash
+uv run dbt init nytaxi
+```
+
+Este comando creará la estructura básica de nuestro proyecto:
+
+```
+.
+├── logs
+│   └── dbt.log
+├── nytaxi
+│   ├── analyses
+│   ├── dbt_project.yml
+│   ├── macros
+│   ├── models
+│   │   └── example
+│   │       ├── my_first_dbt_model.sql
+│   │       ├── my_second_dbt_model.sql
+│   │       └── schema.yml
+│   ├── README.md
+│   ├── seeds
+│   ├── snapshots
+│   └── tests
+├── pyproject.toml
+├── README.md
+└── uv.lock
+```
+
+#### Proyecto local
+
+Hay una versión lista para funcionar del proyecto en la carpeta [pipeline/](pipeline/):
+
+```bash
+git clone https://github.com/elcapo/data-engineering-zoomcamp
+cd data-engineering-zoomcamp/04-analisis-de-datos/pipeline
+uv sync
+```
+
+#### Configuración
+
+Algo que también debe haber ocurrido cuando inicializamos nuestro proyecto es que se debería de haber creado una entrada en nuestro `~/.dbt/profiles.yml`. En lugar de mantener la configuración por defecto, usaremos una alternativa:
+
+```yaml
+# Fuente: https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/04-analytics-engineering/setup/local_setup.md#create-or-update-dbtprofilesyml
+
+nytaxi:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: nytaxi.duckdb
+      schema: dev
+      threads: 1
+      extensions:
+        - parquet
+      settings:
+        memory_limit: '2GB'
+        preserve_insertion_order: false
+    prod:
+      type: duckdb
+      path: nytaxi.duckdb
+      schema: prod
+      threads: 1
+      extensions:
+        - parquet
+      settings:
+        memory_limit: '2GB'
+        preserve_insertion_order: false
+
+# Resolución de problemas:
+# - Si tienes menos de 4GB RAM, intenta establecer memory_limit a '1GB'
+# - Si tienes 16GB+ RAM, puedes incrementarlo a '4GB' para mejorar el rendimiento
+# - El tiempo esperado de compilación es de entre: 5-10 minutos en la mayoría de sistemas
+```
