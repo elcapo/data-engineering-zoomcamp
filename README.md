@@ -73,7 +73,7 @@ El curso organiza sus contenidos en 6 módulos y un proyecto final.
   * Aprender técnicas de optimización como particionado y *clustering*
   * Aplicar buenas prácticas para almacenamiento y consulta de datos
 
-### 4. **Ingeniería analítica**
+### 4. **[Análisis de datos](04-analisis-de-datos/README.md)**
 
   * Transformar datos crudos en modelos preparados para análisis con **dbt**
   * Desarrollar estrategias de pruebas y documentación
