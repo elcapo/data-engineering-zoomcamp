@@ -1,2 +1,9 @@
+# Python environment
 .venv
+
+# Google cloud credentials
 service-account.json
+
+# Data files
+data/
+nytaxi.duckdb
