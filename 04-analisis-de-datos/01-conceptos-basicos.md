@@ -224,3 +224,73 @@ nytaxi:
 # - Si tienes 16GB+ RAM, puedes incrementarlo a '4GB' para mejorar el rendimiento
 # - El tiempo esperado de compilación es de entre: 5-10 minutos en la mayoría de sistemas
 ```
+
+#### Ingestión de datos
+
+Para descargar los datos, el repositorio local cuenta con el script [ingest.py](./pipeline/nytaxi/ingest.py).
+
+```bash
+cd nytaxi
+uv run ingest.py
+```
+
+Después de unos minutos, deberíamos de tener los datos disponibles en nuestra base de datos local. Para comprobarlo, podemos abrir la interfaz gráfica de DuckDB:
+
+```bash
+duckdb -ui
+```
+
+Ya en la interfaz:
+
+1. Creamos una conexión a nuestro recién creado **nytaxi.duckdb**.
+2. Creamos un cuaderno y lanzamos una consulta para ver todos los registros de la tabla `yellow_tripdata`.
+
+![Local DuckDB](resources/screenshots/local-duckdb.png)
+
+
+#### Comprobación final
+
+Para acabar, podemos hacer una comprobación final, también desde nuestro directorio `nytaxi`:
+
+```bash
+uv run dbt debug
+```
+
+Si todo ha ido bien, debería de devolvernos un mensaje sin errores.
+
+```
+20:45:24  Running with dbt=1.11.4
+20:45:24  dbt version: 1.11.4
+20:45:24  python version: 3.13.7
+20:45:24  python path: /home/carlos/Programming/Courses/data-engineering-zoomcamp/04-analisis-de-datos/pipeline/.venv/bin/python3
+20:45:24  os info: Linux-6.17.0-12-generic-x86_64-with-glibc2.42
+20:45:25  Using profiles dir at /home/carlos/.dbt
+20:45:25  Using profiles.yml file at /home/carlos/.dbt/profiles.yml
+20:45:25  Using dbt_project.yml file at /home/carlos/Programming/Courses/data-engineering-zoomcamp/04-analisis-de-datos/pipeline/nytaxi/dbt_project.yml
+20:45:25  adapter type: duckdb
+20:45:25  adapter version: 1.10.0
+20:45:25  Configuration:
+20:45:25    profiles.yml file [OK found and valid]
+20:45:25    dbt_project.yml file [OK found and valid]
+20:45:25  Required dependencies:
+20:45:25   - git [OK found]
+
+20:45:25  Connection:
+20:45:25    database: nytaxi
+20:45:25    schema: dev
+20:45:25    path: nytaxi.duckdb
+20:45:25    config_options: None
+20:45:25    extensions: ['parquet']
+20:45:25    settings: {'memory_limit': '4GB', 'preserve_insertion_order': False}
+20:45:25    external_root: .
+20:45:25    use_credential_provider: None
+20:45:25    attach: None
+20:45:25    filesystems: None
+20:45:25    remote: None
+20:45:25    plugins: None
+20:45:25    disable_transactions: False
+20:45:25  Registered adapter: duckdb=1.10.0
+20:45:25    Connection test: [OK connection ok]
+
+20:45:25  All checks passed!
+```
