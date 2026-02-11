@@ -137,3 +137,5 @@ sources:
 ```
 
 En cuanto a las consultas que usaríamos para nuestros modelos de `staging` serían idénticas a las que usamos en el caso local.
+
+![Fuentes dbt en dbt Cloud](resources/screenshots/fuentes-dbt-cloud.png)
