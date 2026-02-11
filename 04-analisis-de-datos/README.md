@@ -3,6 +3,7 @@
 ## Contenidos
 
 * [Conceptos básicos](01-conceptos-basicos.md)
+* [Estructura del proyecto](02-estructura-del-proyecto.md)
 
 ## Aprendizaje en público
 
