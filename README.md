@@ -149,9 +149,9 @@ Si optas por seguir el curso con una cohorte, recuerda que debes inscribirte. Es
 
 | **Entregable** | **Fecha límite** |
 | --- | --- |
-| Módulo 1: **[Docker, SQL y Terraform](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/cohorts/2026/01-docker-terraform/homework.md)** | 26 de enero de 2026 |
-| Módulo 2: **Orquestación de flujos de datos** | 2 de febrero de 2026 |
-| Módulo 3: **Almacenes de datos** | 9 de febrero de 2026 |
+| Módulo 1: **[Docker, SQL y Terraform](01-infraestructura-y-prerrequisitos/homework/README.md)** | 26 de enero de 2026 |
+| Módulo 2: **[Orquestación de flujos de datos](02-orquestacion-de-flujos-de-datos/homework/README.md)** | 2 de febrero de 2026 |
+| Módulo 3: **[Almacenes de datos](03-almacenes-de-datos/homework/README.md)** | 9 de febrero de 2026 |
 | Módulo 4: **Ingeniería para el analísis de datos** | 16 de febrero de 2026
 | Módulo 5: **Plataformas de datos** | 28 de febrero de 2026 |
 | Taller 1: **Ingesta de datos** | 2 de marzo de 2026 |
