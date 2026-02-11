@@ -64,11 +64,11 @@ Esta capa suele seguir principios de modelado dimensional (por ejemplo, esquema 
 
 Contiene archivos CSV que **dbt** carga como tablas dentro del almacén de datos. Se utilizan para pequeños conjuntos de datos estáticos o de referencia como tablas de mapeos. No están pensados para cargar datos operativos desde sistemas fuente.
 
-### La carpeta `snapshots`
+### La carpeta [`snapshots`](pipeline/nytaxi/snapshots/)
 
 Se utilizan para capturar cambios históricos en los datos. Permiten mantener versiones históricas de registros que se actualizan de forma destructiva en el sistema fuente.
 
-### La carpeta `tests`
+### La carpeta [`tests`](pipeline/nytaxi/tests/)
 
 Aquí se definen tests personalizados. Aunque muchos tests se configuran directamente en archivos YAML junto a los modelos, esta carpeta también permite crear pruebas SQL más complejas, por ejemplo para validar relaciones entre múltiples tablas.
 

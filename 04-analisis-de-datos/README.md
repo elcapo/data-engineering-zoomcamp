@@ -8,6 +8,7 @@
 ## Aprendizaje en público
 
 * [Conceptos básicos](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-anaerlisisdedatos-elt-share-7427094903836389377-6fLT)
+* [Estructura del proyecto](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7427461632559329282-_nw3)
 
 ---
 
