@@ -115,9 +115,15 @@ Si has llegado a este punto, haz click en el botón que te permite inicializar t
 
 ![Proyecto dby inicializado](resources/screenshots/proyecto-dbt-inicializado.png)
 
-#### Flujo de datos
+#### Ingestión de datos
 
-En cuanto al conjunto de datos, en este módulo trabajaremos a partir de los [datos originales en formato Parquet](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page). Si te pasa como a mí y llegas a este punto habiendo borrado el _bucket_ y tu conjunto de datos en BigQuery, puede que te resulte útil la transformación que he preparado para importar los ficheros Parquet en Google Cloud y crear las tablas (externas y materializadas) a partir de ellos en BigQuery: [10-gcp-taxi-parquet.yml](pipeline/10-gcp-taxi-parquet.yml).
+Dispones de dos flujos de Kestra para importar los datos:
+
+- [10-gcp-taxi-parquet.yml](resources/flows/10-gcp-taxi-parquet.yml): importa los ficheros Parquet oficiales,
+- [08-gcp-taxi.yaml](../02-orquestacion-de-flujos-de-datos/resources/flows/08-gcp-taxi.yaml): importa los CSV de DataTalks.
+
+> [!NOTE]
+> Si quieres que tus datos cuadren con las respuestas sugeridas de las tareas, debes optar por el dataset específico de DataTalks.
 
 ### Opción 2: **PostgreSQL** y **dbt Core**
 
@@ -227,12 +233,23 @@ nytaxi:
 
 #### Ingestión de datos
 
-Para descargar los datos, el repositorio local cuenta con el script [ingest.py](./pipeline/nytaxi/ingest.py).
+Para descargar los datos, el repositorio local cuenta con dos scripts:
+
+- [official_ingest.py](./pipeline/nytaxi/official_ingest.py): importa los ficheros Parquet oficiales,
+- [datatalks_ingest.py](./pipeline/nytaxi/datatalks_ingest.py): importa los CSV de DataTalks.
 
 ```bash
 cd nytaxi
-uv run ingest.py
+
+# Elige entre los datos oficiales
+uv run official_ingest.py
+
+# o los específicos para el curso
+uv run datatalks_ingest.py
 ```
+
+> [!NOTE]
+> Si quieres que tus datos cuadren con las respuestas sugeridas de las tareas, debes optar por el dataset específico de DataTalks.
 
 Después de unos minutos, deberíamos de tener los datos disponibles en nuestra base de datos local. Para comprobarlo, podemos abrir la interfaz gráfica de DuckDB:
 
@@ -247,6 +264,10 @@ Ya en la interfaz:
 
 ![Local DuckDB](resources/screenshots/local-duckdb.png)
 
+> [!NOTE]
+>
+> - Si optaste por usar los datos oficiales deberías de obtener un recuento de 109.247.536 registros.
+> - Si optaste por usar los datos del Zoomcamp deberías de tener un recuento de 109.047.518 registros.
 
 #### Comprobación final
 
