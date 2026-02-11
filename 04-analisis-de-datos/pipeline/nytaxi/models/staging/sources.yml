@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: raw_data
+    description: "Registros sin procesar de los taxis de Nueva York"
+    database: nytaxi # Nombre de la base de datos DuckDB
+    schema: prod
+    tables:
+      - name: yellow_tripdata
+      - name: green_tripdata

@@ -73,3 +73,67 @@ Se utilizan para capturar cambios históricos en los datos. Permiten mantener ve
 Aquí se definen tests personalizados. Aunque muchos tests se configuran directamente en archivos YAML junto a los modelos, esta carpeta también permite crear pruebas SQL más complejas, por ejemplo para validar relaciones entre múltiples tablas.
 
 El criterio que sigue **dbt** con estos tests es que no deben devolver ningún registro. Si alguna de las consultas en esta carpeta devuelve algún registro, el proceso de compilación de **dbt** fallará.
+
+## Fuentes
+
+* Vídeo original (en inglés): [dbt Sources](https://www.youtube.com/watch?v=7CrrXazV_8k)
+
+Para permitir a **dbt** que conozca nuestros orígenes de datos, debemos darle información sobre estas. Típicamente, esto lo haremos creando ficheros YAML. Y como vimos en la sección anterior, la primera fase de nuestros flujos es la de `staging`.
+
+### **dbt Core**
+
+Para permitir que **dbt** se conecte con nuestra base de datos DuckDB local, crearemos un fichero [models/staging/sources.yml](pipeline/nytaxi/models/staging/sources.yml):
+
+```yaml
+version: 2
+
+sources:
+  - name: raw_data
+    description: "Registros sin procesar de los taxis de Nueva York"
+    database: nytaxi # Nombre de la base de datos DuckDB
+    schema: prod
+    tables:
+      - name: yellow_tripdata
+      - name: green_tripdata
+```
+
+Por fin, podemos empezar a crear consultas que lean datos de nuestras fuentes. Por ejemplo, para leer datos de nuestra tabla local `green_tripdata` podríamos escribir:
+
+```sql
+SELECT * FROM nytaxi.prod.green_tripdata
+```
+
+Aquí estaríamos usando la sintaxis `[base_de_datos].[esquema].[tabla]`. Sin embargo, **dbt** tiene una función que nos permite referirnos a la tabla usando únicamente su nombre y el nombre de su fuente:
+
+```sql
+SELECT * FROM {{ source('raw_data', 'green_tripdata') }}
+```
+
+Nuestra primera consulta es [staging_green_tripdata.sql](pipeline/nytaxi/models/staging/staging_green_tripdata.sql), donde hemos:
+
+1. añadido explícitamente las columnas que querremos incluir en nuestro modelo,
+2. ordenado las columnas de forma que sigan un patrón lógico,
+3. creado aliases para estandarizar los nombres de las columnas,
+4. convertido los tipos de datos allá donde era conveniente,
+5. excluido algunas filas.
+
+Siguiendo el mismo criterio también hemos creado [staging_yellow_tripdata.sql](pipeline/nytaxi/models/staging/staging_yellow_tripdata.sql).
+
+### **dbt Cloud**
+
+En el caso de que hubiésemos decidido trabajar con **dbt Cloud**, para permitir que **dbt** se conecte con nuestra base de datos BigQuery remota, crearíamos un fichero **sources.yml** ligeramente diferente:
+
+```yaml
+version: 2
+
+sources:
+  - name: raw_data
+    description: "Registros sin procesar de los taxis de Nueva York"
+    database: zoomcamp-ingenieria-datos-2026 # Nombre del proyecto en BigQuery
+    schema: zoomcamp_datatalks # Nombre del conjunto de datos en BigQuery
+    tables:
+      - name: yellow_tripdata
+      - name: green_tripdata
+```
+
+En cuanto a las consultas que usaríamos para nuestros modelos de `staging` serían idénticas a las que usamos en el caso local.
