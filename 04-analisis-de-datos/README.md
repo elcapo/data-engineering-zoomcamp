@@ -4,6 +4,7 @@
 
 * [Conceptos básicos](01-conceptos-basicos.md)
 * [Estructura del proyecto](02-estructura-del-proyecto.md)
+* [Modelos](03-modelos-dbt.md)
 
 ## Aprendizaje en público
 
