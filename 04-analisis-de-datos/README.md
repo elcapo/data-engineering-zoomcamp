@@ -5,6 +5,7 @@
 * [Conceptos básicos](01-conceptos-basicos.md)
 * [Estructura del proyecto](02-estructura-del-proyecto.md)
 * [Modelos, seeds y macros](03-modelos-seeds-y-macros.md)
+* [Tests en **dbt**](04-tests-en-dbt.md)
 
 ## Aprendizaje en público
 
