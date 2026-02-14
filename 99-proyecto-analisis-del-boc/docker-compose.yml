@@ -56,6 +56,7 @@ services:
       - kestra-data:/app/storage
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/kestra-wd:/tmp/kestra-wd
+      - ./data:/app/data
     environment:
       KESTRA_CONFIGURATION: |
         datasources:
@@ -77,11 +78,27 @@ services:
               base-path: "/app/storage"
           queue:
             type: postgres
+          tutorial-flows:
+            enabled: false
           tasks:
             tmp-dir:
               path: /tmp/kestra-wd/tmp
           url: http://localhost:${KESTRA_PORT:-8080}/
-      SECRET_GCP_SERVICE_ACCOUNT: ${SECRET_GCP_SERVICE_ACCOUNT}
+          ai:
+            type: "gemini"
+            gemini:
+              api-key: ${KESTRA_GEMINI_APIKEY:-foo}
+              model-name: gemini-2.5-flash
+          plugins:
+            configurations:
+              - type: io.kestra.plugin.fs.local.Upload
+                values:
+                  allowed-paths:
+                    - /app/data
+              - type: io.kestra.plugin.fs.local.List
+                values:
+                  allowed-paths:
+                    - /app/data
     ports:
       - "${KESTRA_PORT:-8080}:8080"
       - "8081:8081"

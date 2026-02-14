@@ -1,0 +1,25 @@
+id: download_index_of_years
+namespace: boc
+description: Descarga el índice de años del archivo del BOC de Canarias
+
+tasks:
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      type: archive
+
+  - id: fetch
+    type: io.kestra.plugin.core.http.Request
+    uri: https://www.gobiernodecanarias.org/boc/archivo/
+    method: GET
+
+  - id: store
+    type: io.kestra.plugin.core.storage.Write
+    content: "{{ outputs.fetch.body }}"
+    extension: .html
+
+  - id: publish
+    type: io.kestra.plugin.fs.local.Upload
+    from: "{{ outputs.store.uri }}"
+    to: "/app/data/raw/boc/archive.html"
+    overwrite: true

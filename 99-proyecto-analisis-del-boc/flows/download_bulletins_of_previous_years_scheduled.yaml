@@ -1,0 +1,44 @@
+id: download_bulletins_of_previous_years_scheduled
+namespace: boc
+description: Descarga histórica de índices de boletines de años anteriores
+
+variables:
+  folder: "/app/data/raw/boc/year"
+  file: "{{ trigger.date | date('yyyy') }}.html"
+
+tasks:
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      type: bulletins_of_year
+      year: "{{ trigger.date | date('yyyy') }}"
+
+  - id: lookup_file
+    type: io.kestra.plugin.fs.local.List
+    from: "{{ vars.folder }}"
+    regExp: ".*{{ trigger.date | date('yyyy') }}\\.html"
+    recursive: false
+    maxFiles: 1
+
+  - id: if_file_exists
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ outputs.lookup_file.count > 0 }}"
+    then:
+      - id: exit
+        type: io.kestra.plugin.core.execution.Exit
+        state: CANCELED
+        description: "File {{ render(vars.file) }} already exists"
+
+  - id: download
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: boc
+    flowId: download_bulletins_of_year
+    inputs:
+      year: "{{ trigger.date | date('yyyy') }}"
+      overwrite: true
+
+triggers:
+  - id: yearly_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    description: Una vez al año se descargan históricos de índices de boletines de años anteriores
+    cron: "0 0 1 1 *"

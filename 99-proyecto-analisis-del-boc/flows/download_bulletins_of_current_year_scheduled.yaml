@@ -1,0 +1,37 @@
+id: download_bulletins_of_current_year_scheduled
+namespace: boc
+description: Descarga el índice de boletines del año actual
+
+variables:
+  is_not_current_year: "{{ trigger.date | date('yyyy') != now() | date('yyyy')) }}"
+  published_file: "/app/data/raw/boc/year/{{ trigger.date | date('yyyy') }}.html"
+
+tasks:
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      type: bulletins_of_year
+      year: "{{ trigger.date | date('yyyy') }}"
+
+  - id: if_not_current_year
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ render(vars.is_not_current_year) }}"
+    then:
+      - id: exit
+        type: io.kestra.plugin.core.execution.Exit
+        state: CANCELED
+        description: "Backfills are not supported for this job"
+
+  - id: download
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: boc
+    flowId: download_bulletins_of_year
+    inputs:
+      year: "{{ trigger.date | date('yyyy') }}"
+      overwrite: true
+
+triggers:
+  - id: daily_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    description: Una vez al día se descarga el índice de boletines del año actual
+    cron: "0 0 * * *"
