@@ -162,8 +162,8 @@ export PGPASSWORD=$(grep POSTGRES_DATA_PASSWORD .env | cut -d'=' -f2)
 ├── docker-compose.yml    # Definición de servicios
 ├── env.template          # Template de variables de entorno
 ├── .env                  # Variables de entorno (no en git)
-├── .gitignore           # Archivos ignorados por git
-└── README.md            # Este archivo
+├── .gitignore            # Archivos ignorados por git
+└── README.md             # Este archivo
 ```
 
 ## Desarrollo
