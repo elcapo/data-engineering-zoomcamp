@@ -58,13 +58,13 @@ Una vez configurado el archivo `.env`, inicia todos los servicios con Docker Com
 
 ```bash
 # Iniciar todos los servicios en segundo plano
-docker-compose up -d
+docker compose up -d
 
 # Ver los logs de todos los servicios
-docker-compose logs -f
+docker compose logs -f
 
 # Ver el estado de los servicios
-docker-compose ps
+docker compose ps
 ```
 
 ### 3. Verificar que los Servicios están Activos
@@ -99,7 +99,7 @@ Para conectar pgAdmin a PostgreSQL:
 - Usuario: valor de `POSTGRES_DATA_USER`
 - Contraseña: valor de `POSTGRES_DATA_PASSWORD`
 
-## Arquitectura del Proyecto
+## Arquitectura
 
 ```
 ┌─────────────┐
@@ -123,58 +123,39 @@ Para conectar pgAdmin a PostgreSQL:
        └──────────────┘
 ```
 
+Consulta [docs/kestra/01-fuentes-de-datos.md](docs/kestra/01-fuentes-de-datos.md) para tener información concreta sobre los datos que descargamos del BOC.
+
 ## Uso
 
 ### Detener los Servicios
 
 ```bash
 # Detener todos los servicios
-docker-compose down
+docker compose down
 
 # Detener y eliminar volúmenes (¡CUIDADO: elimina todos los datos!)
-docker-compose down -v
+docker compose down -v
 ```
 
 ### Reiniciar un Servicio Específico
 
 ```bash
 # Reiniciar Kestra
-docker-compose restart kestra
+docker compose restart kestra
 
 # Ver logs de un servicio específico
-docker-compose logs -f kestra
+docker compose logs -f kestra
 ```
 
 ### Acceder a la Base de Datos
 
 ```bash
 # Conectar a PostgreSQL desde la línea de comandos
-docker-compose exec postgres psql -U root -d boc
+docker compose exec postgres psql -U root -d boc
 
 # Exportar la contraseña para facilitar la conexión
 export PGPASSWORD=$(grep POSTGRES_DATA_PASSWORD .env | cut -d'=' -f2)
 ```
-
-## Estructura del Proyecto
-
-```
-.
-├── docker-compose.yml    # Definición de servicios
-├── env.template          # Template de variables de entorno
-├── .env                  # Variables de entorno (no en git)
-├── .gitignore            # Archivos ignorados por git
-└── README.md             # Este archivo
-```
-
-## Desarrollo
-
-### Próximos Pasos
-
-1. Configurar flows de Kestra para extracción de datos del BOC
-2. Implementar proyecto dbt para transformaciones
-3. Crear modelos de datos y análisis
-4. Configurar tests y validaciones
-5. Implementar visualizaciones
 
 ## Solución de Problemas
 
@@ -182,7 +163,7 @@ export PGPASSWORD=$(grep POSTGRES_DATA_PASSWORD .env | cut -d'=' -f2)
 
 ```bash
 # Verificar logs
-docker-compose logs
+docker compose logs
 
 # Verificar que no hay conflictos de puertos
 netstat -tlnp | grep -E '8080|8085|5432'
@@ -201,13 +182,13 @@ sudo usermod -aG docker $USER
 
 ```bash
 # Detener todos los servicios y eliminar volúmenes
-docker-compose down -v
+docker compose down -v
 
 # Eliminar imágenes (opcional)
-docker-compose down --rmi all
+docker compose down --rmi all
 
 # Volver a iniciar
-docker-compose up -d
+docker compose up -d
 ```
 
 ## Contribuir
