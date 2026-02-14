@@ -46,7 +46,6 @@ sources:
 
       - name: customers # Para este modelo se usaría la frescura por defecto
 
-
       - name: product_skus
         config:
           freshness: null # Para este modelo no se comprobaría su frescura
