@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:18
     environment:
-      POSTGRES_DB: taxi
+      POSTGRES_DB: boc
       POSTGRES_USER: ${POSTGRES_DATA_USER:-root}
       POSTGRES_PASSWORD: ${POSTGRES_DATA_PASSWORD:-root}
     healthcheck:
@@ -11,9 +11,9 @@ services:
       timeout: 10s
       retries: 10
     volumes:
-      - taxi-postgres-data:/var/lib/postgresql
+      - boc-postgres-data:/var/lib/postgresql
     networks:
-      - taxi-postgres-network
+      - boc-postgres-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -25,7 +25,7 @@ services:
     ports:
       - ${PGADMIN_HOST_PORT:-8085}:80
     networks:
-      - taxi-postgres-network
+      - boc-postgres-network
 
   kestra_postgres:
     image: postgres:18
@@ -41,7 +41,7 @@ services:
       timeout: 10s
       retries: 10
     networks:
-      - taxi-postgres-network
+      - boc-postgres-network
 
   kestra:
     image: kestra/kestra:v1.1
@@ -89,13 +89,13 @@ services:
       kestra_postgres:
         condition: service_started
     networks:
-      - taxi-postgres-network
+      - boc-postgres-network
 
 volumes:
-  taxi-postgres-data:
+  boc-postgres-data:
   pgadmin-data:
   kestra-postgres-data:
   kestra-data:
 
 networks:
-  taxi-postgres-network:
+  boc-postgres-network:

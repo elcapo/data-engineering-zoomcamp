@@ -95,7 +95,7 @@ El proyecto incluye los siguientes servicios:
 Para conectar pgAdmin a PostgreSQL:
 - Host: `postgres`
 - Puerto: `5432`
-- Database: `taxi`
+- Database: `boc`
 - Usuario: valor de `POSTGRES_DATA_USER`
 - Contraseña: valor de `POSTGRES_DATA_PASSWORD`
 
@@ -149,7 +149,7 @@ docker-compose logs -f kestra
 
 ```bash
 # Conectar a PostgreSQL desde la línea de comandos
-docker-compose exec postgres psql -U root -d taxi
+docker-compose exec postgres psql -U root -d boc
 
 # Exportar la contraseña para facilitar la conexión
 export PGPASSWORD=$(grep POSTGRES_DATA_PASSWORD .env | cut -d'=' -f2)
