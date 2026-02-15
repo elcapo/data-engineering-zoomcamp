@@ -14,6 +14,7 @@
 * [Estructura del proyecto](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7427461632559329282-_nw3)
 * [Modelos, seeds y macros](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7427815580336041985-UQJM)
 * [Tests en **dbt**](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7428577837260890113-yzTA)
+* [Documentación en **dbt**](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7428750407272935424-qGgv)
 
 ## Contribución FAQ
 
