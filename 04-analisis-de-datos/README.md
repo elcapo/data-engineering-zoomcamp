@@ -18,6 +18,7 @@
 * [Tests en **dbt**](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7428577837260890113-yzTA)
 * [Documentación en **dbt**](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7428750407272935424-qGgv)
 * [Paquetes **dbt**](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7428776163470319616-0qDo)
+* [Comandos **dbt**](https://www.linkedin.com/posts/carlos-capote-perez-andreu_data-engineering-zoomcamp04-analisis-de-datos-activity-7428804940942376960-d4Vl)
 
 ## Contribución FAQ
 
