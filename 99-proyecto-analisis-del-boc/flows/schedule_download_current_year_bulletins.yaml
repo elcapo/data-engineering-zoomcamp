@@ -1,4 +1,4 @@
-id: download_bulletins_of_current_year_scheduled
+id: schedule_download_current_year_bulletins
 namespace: boc
 description: Descarga el índice de boletines del año actual
 
@@ -10,7 +10,7 @@ tasks:
   - id: label
     type: io.kestra.plugin.core.execution.Labels
     labels:
-      type: bulletins_of_year
+      type: year_bulletins
       year: "{{ trigger.date | date('yyyy') }}"
 
   - id: if_not_current_year
@@ -25,7 +25,7 @@ tasks:
   - id: download
     type: io.kestra.plugin.core.flow.Subflow
     namespace: boc
-    flowId: download_bulletins_of_year
+    flowId: download_year_bulletins
     inputs:
       year: "{{ trigger.date | date('yyyy') }}"
       overwrite: true

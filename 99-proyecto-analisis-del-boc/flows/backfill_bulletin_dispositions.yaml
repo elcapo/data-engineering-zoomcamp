@@ -1,0 +1,40 @@
+id: backfill_bulletin_dispositions
+namespace: boc
+
+inputs:
+  - id: year
+    type: INT
+    required: true
+    displayName: Year
+
+  - id: from_bulletin
+    type: INT
+    required: true
+    displayName: From bulletin
+
+  - id: to_bulletin
+    type: INT
+    required: true
+    displayName: To bulletin
+
+tasks:
+  - id: check_bulletin_range
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ inputs.from_bulletin > inputs.to_bulletin }}"
+    then:
+      - id: exit
+        type: io.kestra.plugin.core.execution.Exit
+        state: CANCELED
+        description: "Nothing to be done as {{ inputs.from_bulletin }} is greater than {{ inputs.to_bulletin }}"
+
+  - id: iterate_bulletins
+    type: io.kestra.plugin.core.flow.ForEach
+    values: "{{ range(inputs.from_bulletin, inputs.to_bulletin) }}"
+    tasks:
+      - id: call_download_bulletin_dispositions
+        type: io.kestra.plugin.core.flow.Subflow
+        namespace: boc
+        flowId: download_bulletin_dispositions
+        inputs:
+          year: "{{ inputs.year }}"
+          bulletin: "{{ taskrun.value }}"

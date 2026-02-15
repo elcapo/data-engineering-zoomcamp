@@ -1,10 +1,10 @@
-id: download_bulletins_of_year
+id: download_year_bulletins
 namespace: boc
-description: Descarga el índice de boletines de un año en concreto
+description: Descarga el índice de boletines de un año
 
 inputs:
   - id: year
-    type: STRING
+    type: INT
     displayName: Year
 
   - id: overwrite
@@ -21,13 +21,13 @@ tasks:
   - id: label
     type: io.kestra.plugin.core.execution.Labels
     labels:
-      type: bulletins_of_year
+      type: year_bulletins
       year: "{{ inputs.year }}"
 
   - id: lookup_file
     type: io.kestra.plugin.fs.local.List
     from: "{{ vars.folder }}"
-    regExp: ".*{{ inputs.year | trim }}\\.html"
+    regExp: ".*{{ inputs.year }}\\.html"
     recursive: false
     maxFiles: 1
 

@@ -1,4 +1,4 @@
-id: download_bulletins_of_previous_years_scheduled
+id: schedule_download_previous_year_bulletins
 namespace: boc
 description: Descarga histórica de índices de boletines de años anteriores
 
@@ -10,7 +10,7 @@ tasks:
   - id: label
     type: io.kestra.plugin.core.execution.Labels
     labels:
-      type: bulletins_of_year
+      type: year_bulletins
       year: "{{ trigger.date | date('yyyy') }}"
 
   - id: lookup_file
@@ -32,7 +32,7 @@ tasks:
   - id: download
     type: io.kestra.plugin.core.flow.Subflow
     namespace: boc
-    flowId: download_bulletins_of_year
+    flowId: download_year_bulletins
     inputs:
       year: "{{ trigger.date | date('yyyy') }}"
       overwrite: true

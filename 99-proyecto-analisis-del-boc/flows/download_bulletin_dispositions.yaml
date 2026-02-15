@@ -1,0 +1,77 @@
+id: download_bulletin_dispositions
+namespace: boc
+description: Descarga el índice de disposiciones de un boletín
+
+inputs:
+  - id: year
+    type: INT
+    displayName: Year
+
+  - id: bulletin
+    type: INT
+    displayName: Year
+
+  - id: overwrite
+    type: BOOL
+    displayName: Overwrite
+    defaults: false
+
+variables:
+  bulletin: "{{ inputs.bulletin < 10 ? '00' ~ inputs.bulletin : inputs.bulletin < 100 ? '0' ~ inputs.bulletin : inputs.bulletin }}"
+  source_url: "https://www.gobiernodecanarias.org/boc/{{ inputs.year }}/{{ render(vars.bulletin) }}/index.html"
+  folder: "/app/data/raw/boc/year/{{ inputs.year }}/bulletin"
+  file: "{{ vars.bulletin }}.html"
+  full_path: "{{ render(vars.folder) }}/{{ render(vars.file) }}"
+
+tasks:
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      type: bulletin_dispositions
+      year: "{{ inputs.year }}"
+      bulletin: "{{ render(vars.bulletin) }}"
+
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: |
+      "Bulletin URL: {{ render(vars.source_url) }}"
+      "Target file: {{ render(vars.full_path) }}"
+
+  - id: create_folder
+    type: io.kestra.plugin.scripts.shell.Commands
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - mkdir -p {{ render(vars.folder) }}
+
+  - id: lookup_file
+    type: io.kestra.plugin.fs.local.List
+    from: "{{ render(vars.folder) }}"
+    regExp: ".*{{ render(vars.bulletin) | trim }}\\.html"
+    recursive: false
+    maxFiles: 1
+
+  - id: if_file_exists
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ outputs.lookup_file.count > 0 and not inputs.overwrite }}"
+    then:
+      - id: exit
+        type: io.kestra.plugin.core.execution.Exit
+        state: CANCELED
+        description: "File {{ render(vars.full_path) }} already exists and overwrite is set to false"
+
+  - id: fetch
+    type: io.kestra.plugin.core.http.Request
+    uri: "{{ render(vars.source_url) }}"
+    method: GET
+
+  - id: store
+    type: io.kestra.plugin.core.storage.Write
+    content: "{{ outputs.fetch.body }}"
+    extension: .html
+
+  - id: publish
+    type: io.kestra.plugin.fs.local.Upload
+    from: "{{ outputs.store.uri }}"
+    to: "{{ render(vars.full_path) }}"
+    overwrite: "{{ inputs.overwrite }}"
