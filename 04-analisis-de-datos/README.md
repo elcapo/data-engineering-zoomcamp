@@ -7,7 +7,7 @@
 * [Modelos, seeds y macros](03-modelos-seeds-y-macros.md)
 * [Tests en **dbt**](04-tests-en-dbt.md)
 * [Documentación en **dbt**](05-documentacion-en-dbt.md)
-* [Paquetes **dbt*](06-paquetes-dbt.md)
+* [Paquetes **dbt**](06-paquetes-dbt.md)
 
 ## Aprendizaje en público
 
