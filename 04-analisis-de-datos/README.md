@@ -16,6 +16,7 @@
 * [Modelos, seeds y macros](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7427815580336041985-UQJM)
 * [Tests en **dbt**](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7428577837260890113-yzTA)
 * [Documentación en **dbt**](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7428750407272935424-qGgv)
+* [Paquetes **dbt**](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-anaerlisisdedatos-dbt-share-7428776163470319616-0qDo)
 
 ## Contribución FAQ
 
