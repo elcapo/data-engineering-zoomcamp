@@ -8,6 +8,7 @@
 * [Tests en **dbt**](04-tests-en-dbt.md)
 * [Documentación en **dbt**](05-documentacion-en-dbt.md)
 * [Paquetes **dbt**](06-paquetes-dbt.md)
+* [Comandos **dbt**](07-comandos-dbt.md)
 
 ## Aprendizaje en público
 

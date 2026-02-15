@@ -5,9 +5,13 @@ sources:
     description: "Registros sin procesar de los taxis de Nueva York"
     database: nytaxi # Nombre de la base de datos DuckDB
     schema: prod
+    freshness:
+      warn_after: {count: 24, period: hour}
+      error_after: {count: 48, period: hour}
     tables:
       - name: yellow_tripdata
         description: Registros brutos de viajes en taxi amarillo
+        loaded_at_field: tpep_pickup_datetime
         columns:
           - name: vendorid
             description: "Proveedor de tecnología de taxi (1: Creative Mobile Technologies, 2: VeriFone Inc.) - Nota: Los datos brutos pueden contener nulls, filtrados en staging"
@@ -45,6 +49,7 @@ sources:
             description: Importe total cobrado
       - name: green_tripdata
         description: Registros brutos de viajes en taxi verde
+        loaded_at_field: lpep_pickup_datetime
         columns:
           - name: vendorid
             description: "Proveedor de tecnología de taxi (1: Creative Mobile Technologies, 2: VeriFone Inc.) - Nota: Los datos brutos pueden contener valores nulos que serán filtrados en `staging`"

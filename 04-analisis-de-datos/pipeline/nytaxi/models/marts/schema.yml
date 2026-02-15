@@ -31,12 +31,6 @@ models:
       contract:
         enforced: true
     columns:
-      - name: trip_id
-        description: Identificador único del viaje
-        data_type: string
-        data_tests:
-          - unique
-          - not_null
       - name: vendor_id
         description: Proveedor de tecnología de taxi
         data_type: integer
@@ -97,37 +91,37 @@ models:
         data_type: integer
       - name: trip_distance
         description: Distancia del viaje en millas
-        data_type: numeric
+        data_type: numeric(18, 3)
       - name: trip_type
-        description: Tipo de viaje (1=Street-hail, 2=Dispatch)
+        description: "Tipo de viaje (1: Street-hail, 2: Dispatch)"
         data_type: integer
       - name: trip_duration_minutes
         description: Duración del viaje en minutos (calculada usando una macro cross-database)
         data_type: bigint
       - name: fare_amount
         description: Tarifa por tiempo y distancia
-        data_type: numeric
+        data_type: numeric(18, 3)
       - name: extra
         description: Extras y recargos misceláneos
-        data_type: numeric
+        data_type: numeric(18, 3)
       - name: mta_tax
         description: Impuesto MTA
-        data_type: numeric
+        data_type: numeric(18, 3)
       - name: tip_amount
         description: Importe de la propina (solo tarjeta de crédito)
-        data_type: numeric
+        data_type: numeric(18, 3)
       - name: tolls_amount
         description: Total de peajes pagados
-        data_type: numeric
+        data_type: numeric(18, 3)
       - name: ehail_fee
         description: Tarifa del servicio E-hail
-        data_type: numeric
+        data_type: numeric(18, 3)
       - name: improvement_surcharge
         description: Recargo de mejora
-        data_type: numeric
+        data_type: numeric(18, 3)
       - name: total_amount
         description: Importe total cobrado
-        data_type: numeric
+        data_type: numeric(18, 3)
         data_tests:
           - not_null
       - name: payment_type
