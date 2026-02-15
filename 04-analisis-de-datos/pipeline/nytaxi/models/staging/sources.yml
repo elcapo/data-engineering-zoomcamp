@@ -89,3 +89,24 @@ sources:
             description: "Tipo de viaje (1: Street-hail, 2: Dispatch)"
           - name: ehail_fee
             description: Tarifa de E-hail
+      - name: fhv_tripdata
+        description: Raw FHV taxi trip records
+        columns:
+          - name: dispatching_base_num
+            description: The TLC Base License Number of the base that dispatched the trip
+          - name: affiliated_base_number
+            description: |
+              Base number of the base with which the vehicle is affiliated.
+              This must be provided even if the affiliated base is the same as the dispatching base.
+          - name: pulocationid
+            description: TLC Taxi Zone in which the trip began
+          - name: dolocationid
+            description: TLC Taxi Zone in which the trip ended
+          - name: pickup_datetime
+            description: The date and time of the trip pick-up
+          - name: dropoff_datetime
+            description: The date and time of the trip dropoff
+          - name: sr_flag
+            description: |
+              Indicates if the trip was a part of a shared ride chain offered by a High Volume FHV company (e.g. Uber Pool, Lyft Line).
+              For shared trips, the value is 1. For non-shared rides, this field is null.
