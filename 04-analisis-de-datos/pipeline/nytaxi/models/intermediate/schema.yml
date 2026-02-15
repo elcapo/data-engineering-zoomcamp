@@ -1,0 +1,44 @@
+models:
+  - name: intermediate_trips_unioned
+    description: Unión de los datos de viajes en taxi verde y amarillo con esquema normalizado
+    columns:
+      - name: vendor_id
+        description: "Proveedor de tecnología de taxi (1: Creative Mobile Technologies, 2: VeriFone Inc.)"
+      - name: rate_code_id
+        description: "Código de tarifa (1: Standard, 2: JFK, 3: Newark, 4: Nassau/Westchester, 5: Negotiated, 6=Group)"
+      - name: pickup_location_id
+        description: Zona TLC Taxi donde el taxímetro fue activado
+      - name: dropoff_location_id
+        description: Zona TLC Taxi donde el taxímetro fue desactivado
+      - name: pickup_datetime
+        description: Fecha y hora en que el taxímetro fue activado
+      - name: dropoff_datetime
+        description: Fecha y hora en que el taxímetro fue desactivado
+      - name: store_and_fwd_flag
+        description: Indicador de si el registro del viaje fue almacenado en la memoria del vehículo (Y/N)
+      - name: passenger_count
+        description: Número de pasajeros en el vehículo (valor introducido por el conductor)
+      - name: trip_distance
+        description: Distancia del viaje en millas reportada por el taxímetro
+      - name: trip_type
+        description: "Código del tipo de viaje (1: Street-hail, 2: Dispatch)"
+      - name: fare_amount
+        description: Tarifa por tiempo y distancia calculada por el taxímetro
+      - name: extra
+        description: Extras y recargos misceláneos (hora punta, nocturno)
+      - name: mta_tax
+        description: Impuesto MTA de $0.50 activado automáticamente según la tarifa del taxímetro
+      - name: tip_amount
+        description: Importe de la propina (solo propinas con tarjeta de crédito, no incluye propinas en efectivo)
+      - name: tolls_amount
+        description: Importe total de todos los peajes pagados durante el viaje
+      - name: ehail_fee
+        description: Tarifa del servicio E-hail
+      - name: improvement_surcharge
+        description: Recargo de mejora aplicado a los viajes tomados en la calle
+      - name: total_amount
+        description: Importe total cobrado a los pasajeros (no incluye propinas en efectivo)
+      - name: payment_type
+        description: "Código del método de pago (1: Credit card, 2: Cash, 3: No charge, 4: Dispute, 5: Unknown, 6: Voided)"
+      - name: service_type
+        description: Tipo de servicio de taxi (Green o Yellow)

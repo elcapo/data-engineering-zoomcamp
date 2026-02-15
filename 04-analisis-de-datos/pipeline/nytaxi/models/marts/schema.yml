@@ -1,0 +1,138 @@
+models:
+  - name: dimension_zones
+    description: Tabla de dimensión de zonas de taxi con detalles de ubicación
+    columns:
+      - name: location_id
+        description: Identificador único para cada zona de taxi
+        data_tests:
+          - unique
+          - not_null
+      - name: borough
+        description: Nombre del borough de NYC
+      - name: zone
+        description: Nombre específico de la zona dentro del borough
+      - name: service_zone
+        description: Clasificación de la zona de servicio
+
+  - name: dimension_vendors
+    description: Tabla de dimensión de proveedores de tecnología de taxi
+    columns:
+      - name: vendor_id
+        description: Identificador único del proveedor
+        data_tests:
+          - unique
+          - not_null
+      - name: vendor_name
+        description: Nombre de la empresa del proveedor
+
+  - name: fact_trips
+    description: Tabla de hechos con todos los viajes en taxi incluyendo detalles del viaje y del pago
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: trip_id
+        description: Identificador único del viaje
+        data_type: string
+        data_tests:
+          - unique
+          - not_null
+      - name: vendor_id
+        description: Proveedor de tecnología de taxi
+        data_type: integer
+        data_tests:
+          - not_null
+      - name: service_type
+        description: Tipo de servicio de taxi (Green o Yellow)
+        data_type: string
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Green', 'Yellow']
+          - not_null
+      - name: rate_code_id
+        description: Código de tarifa final
+        data_type: integer
+      - name: pickup_location_id
+        description: Zona TLC Taxi donde comenzó el viaje
+        data_type: integer
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dimension_zones')
+                field: location_id
+      - name: pickup_borough
+        description: Borough de NYC donde comenzó el viaje
+        data_type: string
+      - name: pickup_zone
+        description: Zona específica donde comenzó el viaje
+        data_type: string
+      - name: dropoff_location_id
+        description: Zona TLC Taxi donde finalizó el viaje
+        data_type: integer
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dimension_zones')
+                field: location_id
+      - name: dropoff_borough
+        description: Borough de NYC donde finalizó el viaje
+        data_type: string
+      - name: dropoff_zone
+        description: Zona específica donde finalizó el viaje
+        data_type: string
+      - name: pickup_datetime
+        description: Marca temporal en que el taxímetro fue activado
+        data_type: timestamp
+        data_tests:
+          - not_null
+      - name: dropoff_datetime
+        description: Marca temporal en que el taxímetro fue desactivado
+        data_type: timestamp
+      - name: store_and_fwd_flag
+        description: Registro del viaje almacenado en la memoria del vehículo (Y/N)
+        data_type: string
+      - name: passenger_count
+        description: Número de pasajeros
+        data_type: integer
+      - name: trip_distance
+        description: Distancia del viaje en millas
+        data_type: numeric
+      - name: trip_type
+        description: Tipo de viaje (1=Street-hail, 2=Dispatch)
+        data_type: integer
+      - name: trip_duration_minutes
+        description: Duración del viaje en minutos (calculada usando una macro cross-database)
+        data_type: bigint
+      - name: fare_amount
+        description: Tarifa por tiempo y distancia
+        data_type: numeric
+      - name: extra
+        description: Extras y recargos misceláneos
+        data_type: numeric
+      - name: mta_tax
+        description: Impuesto MTA
+        data_type: numeric
+      - name: tip_amount
+        description: Importe de la propina (solo tarjeta de crédito)
+        data_type: numeric
+      - name: tolls_amount
+        description: Total de peajes pagados
+        data_type: numeric
+      - name: ehail_fee
+        description: Tarifa del servicio E-hail
+        data_type: numeric
+      - name: improvement_surcharge
+        description: Recargo de mejora
+        data_type: numeric
+      - name: total_amount
+        description: Importe total cobrado
+        data_type: numeric
+        data_tests:
+          - not_null
+      - name: payment_type
+        description: Código del método de pago
+        data_type: integer
+      - name: payment_type_description
+        description: Descripción del método de pago legible por humanos
+        data_type: string

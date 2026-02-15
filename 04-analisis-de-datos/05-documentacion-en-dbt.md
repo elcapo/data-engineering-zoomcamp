@@ -1,3 +1,31 @@
+# Análisis de datos
+
+## Documentación en **dbt**
+
+* Vídeo original (en inglés): [Documentation](https://www.youtube.com/watch?v=UqoWyMjcqrA)
+
+Hasta ahora, al crear nuestros modelos, nos hemos limitado a hacerlos funcionales. Sin embargo, en un proyecto real es más que recomendable documentar cada modelo en detalle.
+
+### Documentación en archivos YAML
+
+La primera manera de enriquecer nuestros modelos con documentación es hacer uso de la propiedad `description`, que ya usamos al crear nuestras fuentes aunque solo lo hicimos para darle una descripción general al conjunto de datos. Si usamos esta técnica, nuestro fichero [models/staging/sources.yml](pipeline/nytaxi/models/staging/sources.yml) pasará de nuestra versión mínima pero funcional:
+
+```yaml
+version: 2
+
+sources:
+  - name: raw_data
+    description: "Registros sin procesar de los taxis de Nueva York"
+    database: nytaxi # Nombre de la base de datos DuckDB
+    schema: prod
+    tables:
+      - name: yellow_tripdata
+      - name: green_tripdata
+```
+
+... a una versión más robusta y mucho mejor documentada.
+
+```yaml
 version: 2
 
 sources:
@@ -84,3 +112,42 @@ sources:
             description: "Tipo de viaje (1: Street-hail, 2: Dispatch)"
           - name: ehail_fee
             description: Tarifa de E-hail
+```
+
+De forma similar, podemos documentar el resto de modelos:
+
+- [models/staging/schema.yml](pipeline/nytaxi/models/staging/schema.yml)
+- [models/intermediate/schema.yml](pipeline/nytaxi/models/intermediate/schema.yml)
+- [models/marts/schema.yml](pipeline/nytaxi/models/marts/schema.yml)
+
+### Generación de la documentación
+
+**dbt** ofrece un comando que compila la documentación en un único fichero JSON que, en un paso posterior, puede ser utilizado para servir nuestra documentación en un formato web amigable con el usuario.
+
+```bash
+uv run dbt docs generate
+```
+
+```
+10:24:31  Running with dbt=1.11.4
+10:24:32  Registered adapter: duckdb=1.10.0
+10:24:36  Found 7 models, 1 seed, 17 data tests, 2 sources, 473 macros
+10:24:36  
+10:24:36  Concurrency: 1 threads (target='dev')
+10:24:36  
+10:24:37  Building catalog
+10:24:37  Catalog written to /home/carlos/Programming/Courses/data-engineering-zoomcamp/04-analisis-de-datos/pipeline/nytaxi/target/catalog.json
+```
+
+### Publicación en formato web
+
+Una vez generado el JSON con la documentación, podemos servirla en formato web con:
+
+```bash
+uv run dbt docs serve
+
+# También podemos especificar un puerto alternativo, si 8080 está en uso
+uv run dbt docs serve --port 8081
+```
+
+![Documentación](resources/screenshots/documentacion-dbt.png)
