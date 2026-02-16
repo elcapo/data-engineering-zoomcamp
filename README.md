@@ -79,18 +79,24 @@ El curso organiza sus contenidos en 6 módulos y un proyecto final.
   * Desarrollar estrategias de pruebas y documentación
   * Crear visualizaciones significativas con herramientas modernas de BI
 
-### 5. **Procesamiento por lotes (Batch)**
+### 5. **[Plataformas de datos](05-plataformas-de-datos/README.md)**
+
+  * Construir flujos de datos de principio a fin con **Bruin**
+  * Implementar la ingestión, transformaciones y comprobaciones de calidad de datos
+  * Desplegar en la nube con **BigQuery**
+
+### 6. **Procesamiento por lotes (Batch)**
 
   * Procesar grandes volúmenes de datos con **Apache Spark**
   * Dominar Spark SQL y operaciones con *DataFrames*
   * Optimizar workflows de procesamiento por lotes
 
-### 6. **Procesamiento en tiempo real (Streaming)**
+### 7. **Procesamiento en tiempo real (Streaming)**
   * Construir pipelines de datos en tiempo real con **Kafka**
   * Desarrollar aplicaciones de streaming con **KSQL**
   * Manejar esquemas de datos con **Avro**
 
-### 7. **Proyecto final (Capstone)**
+### 8. **Proyecto final (Capstone)**
 
   * Construir una canalización *end-to-end* desde la ingesta hasta la visualización
   * Aplicar todos los conceptos aprendidos en un proyecto real
@@ -152,7 +158,7 @@ Si optas por seguir el curso con una cohorte, recuerda que debes inscribirte. Es
 | Módulo 1: **[Docker, SQL y Terraform](01-infraestructura-y-prerrequisitos/homework/README.md)** | 26 de enero de 2026 |
 | Módulo 2: **[Orquestación de flujos de datos](02-orquestacion-de-flujos-de-datos/homework/README.md)** | 2 de febrero de 2026 |
 | Módulo 3: **[Almacenes de datos](03-almacenes-de-datos/homework/README.md)** | 9 de febrero de 2026 |
-| Módulo 4: **Ingeniería para el analísis de datos** | 16 de febrero de 2026
+| Módulo 4: **[Analísis de datos](04-analisis-de-datos/homework/README.md)** | 16 de febrero de 2026
 | Módulo 5: **Plataformas de datos** | 28 de febrero de 2026 |
 | Taller 1: **Ingesta de datos** | 2 de marzo de 2026 |
 | Módulo 6: **Procesos por lotes** | 9 de marzo de 2026 |
