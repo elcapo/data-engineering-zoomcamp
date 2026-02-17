@@ -102,6 +102,54 @@ La respuesta es un objeto JSON con metadatos de la búsqueda y una lista de docu
 
 Los identificadores de autor `author_key` pueden usarse para recuperar información detallada del autor mediante la API de autores.
 
+### Instalación de **dlt**
+
+Para iniciar nuestro proyecto con **dlt** vamos primero a asegurarnos de que tenemos todo lo que necesitamos.
+
+#### Instalación de **uv**
+
+Como con todo proyecto Python, hay varias formas de instalar y gestionar las dependencias. En este artículo, vamos a usar **uv** por lo que es necesario que, si no lo tenemos ya, lo instalemos:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+#### Creación de un entorno con **Python** 3.11
+
+Creamos un directorio [openlibrary-pipeline](pipelines/openlibrary-pipeline/) para nuestro proyecto.
+
+```bash
+mkdir -p pipelines/openlibrary-pipeline
+cd pipelines/openlibrary-pipeline
+```
+
+Y nos aseguramos de configurarlo con Python 3.11.
+
+```bash
+uv init --python 3.11 --directory .
+```
+
+#### Inicialización del proyecto **dlt**
+
+Ahora instalamos **dlt** con el conjunto de dependencias que se recomienda para desarrollo local (que incluye `duckdb`, `marimo`, `pyarrow` y `fastmcp`).
+
+```bash
+uv pip install "dlt[workspace]"
+```
+
+E inicializamos nuestro espacio de trabajo especificando nuestro:
+
+* origen de datos: para lo que podemos elegir entre los [más de 10 mil orígenes predefinidos](https://dlthub.com/context),
+* destino de datos: para lo que podemos elegir entre los [destinos soportados](https://dlthub.com/docs/dlt-ecosystem/destinations).
+
+En nuestro caso, como origen trabajaremos con [open-library](https://dlthub.com/context/source/open-library) y como destino con [DuckDB](https://dlthub.com/docs/dlt-ecosystem/destinations/duckdb).
+
+```bash
+uv run dlt init dlthub:open_library duckdb
+```
+
+Durante el proceso, se nos preguntará qué asistente IA usamos con nuestro IDE, siendo la lista de opciones: amp, codex, claude, cody, cline, cursor, continue, windsurf, copilot. En nuestro caso, hemos seleccionado claude.
+
 > [!WARNING]
 >
 > No completado aún. Continúa aquí: https://www.youtube.com/live/5eMytPBgmVs?si=_L1CN9HeN6N7Bas4&t=850
