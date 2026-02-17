@@ -1,25 +1,43 @@
-"""Template for building a `dlt` pipeline to ingest data from a REST API."""
+"""Pipeline to ingest data from Open Library API using dlt."""
 
 import dlt
 from dlt.sources.rest_api import rest_api_resources
 from dlt.sources.rest_api.typing import RESTAPIConfig
 
 
-# if no argument is provided, `access_token` is read from `.dlt/secrets.toml`
 @dlt.source
-def open_library_rest_api_source(access_token: str = dlt.secrets.value):
-    """Define dlt resources from REST API endpoints."""
+def open_library_rest_api_source(query: str = "emmy nöether", page_size: int = 100):
+    """Define dlt resources from Open Library REST API endpoints."""
     config: RESTAPIConfig = {
         "client": {
-            # TODO set base URL for the REST API
-            "base_url": "https://example.com/v1/",
-            # TODO configure the right authentication method or remove
-            "auth": {"type": "bearer", "token": access_token},
+            "base_url": "https://openlibrary.org/",
+            # No authentication required for basic read access
+        },
+        "resource_defaults": {
+            "primary_key": "key",
+            "write_disposition": "replace",
         },
         "resources": [
-            # TODO define resources per endpoint
+            {
+                "name": "books",
+                "endpoint": {
+                    "path": "search.json",
+                    "params": {
+                        "q": query,
+                        "format": "json",
+                        "limit": page_size,
+                    },
+                    "data_selector": "docs",
+                    "paginator": {
+                        "type": "offset",
+                        "limit": page_size,
+                        "offset_param": "offset",
+                        "limit_param": "limit",
+                        "total_path": "numFound",
+                    },
+                },
+            },
         ],
-        # set `resource_defaults` to apply configuration to all endpoints
     }
 
     yield from rest_api_resources(config)
@@ -28,6 +46,7 @@ def open_library_rest_api_source(access_token: str = dlt.secrets.value):
 pipeline = dlt.pipeline(
     pipeline_name='open_library_pipeline',
     destination='duckdb',
+    dataset_name='open_library_data',
     # `refresh="drop_sources"` ensures the data and the state is cleaned
     # on each `pipeline.run()`; remove the argument once you have a
     # working pipeline.

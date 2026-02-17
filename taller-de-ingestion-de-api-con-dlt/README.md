@@ -150,6 +150,30 @@ uv run dlt init dlthub:open_library duckdb
 
 Durante el proceso, se nos preguntará qué asistente IA usamos con nuestro IDE, siendo la lista de opciones: amp, codex, claude, cody, cline, cursor, continue, windsurf, copilot. En nuestro caso, hemos seleccionado claude.
 
+### Creación de flujo de datos con **Claude**
+
+A estas alturas, además de la inicialización de nuestro proyecto **dlt**, también disponemos de un archivo [CLAUDE.md](pipelines/openlibrary-pipeline/CLAUDE.md) que le dice a Claude cómo trabajar en el proyecto. Así que, para iniciarnos rápido, podemos abrir **claude** (Claude Code) y pasaré el
+
+> Por favor, genera una fuente de API REST para la API de Open Library, tal como se especifica en @open_library-docs.yaml.
+> Comienza con el/los endpoint(s) **books** y omite por ahora la carga incremental.
+> Coloca el código en **open_library_pipeline.py** y nombra la pipeline **open_library_pipeline**.
+> Si el archivo ya existe, úsalo como punto de partida.
+> No añadas ni modifiques ningún otro archivo.
+> Usa **@dlt rest api** como tutorial.
+> Después de añadir los endpoints, permite que el usuario ejecute la pipeline con `uv run python open_library_pipeline.py` y queda a la espera de más instrucciones.
+
+Con esto, Claude generó para nosotros un [open_library_pipeline.py](pipelines/openlibrary-pipeline/open_library_pipeline.py) casi funcional la que solo tendremos que hacer los ajustes mínimos que consideremos convenientes.
+
+### Ejecución del flujo de datos
+
+```bash
+uv run python open_library_pipeline.py
+```
+
+![Libros de Emmy Nöether](resources/screenshots/libros-de-emmy-noether.png)
+
+## Continúa...
+
 > [!WARNING]
 >
 > No completado aún. Continúa aquí: https://www.youtube.com/live/5eMytPBgmVs?si=_L1CN9HeN6N7Bas4&t=850
