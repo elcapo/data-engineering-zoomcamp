@@ -160,7 +160,7 @@ Si optas por seguir el curso con una cohorte, recuerda que debes inscribirte. Es
 | Módulo 3: **[Almacenes de datos](03-almacenes-de-datos/homework/README.md)** | 9 de febrero de 2026 |
 | Módulo 4: **[Analísis de datos](04-analisis-de-datos/homework/README.md)** | 16 de febrero de 2026
 | Módulo 5: **Plataformas de datos** | 28 de febrero de 2026 |
-| Taller 1: **Ingesta de datos** | 2 de marzo de 2026 |
+| Taller 1: **[Ingesta de datos](taller-de-ingestion-de-api-con-dlt/homework/README.md)** | 2 de marzo de 2026 |
 | Módulo 6: **Procesos por lotes** | 9 de marzo de 2026 |
 | Módulo 7: **Procesos en streaming** | 16 de marzo de 2026 |
 

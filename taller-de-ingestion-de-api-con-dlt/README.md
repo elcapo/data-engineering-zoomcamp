@@ -1,0 +1,107 @@
+# Taller: **Ingestión de datos de una API con DLT**
+
+* Vídeo original (en inglés): [AI Assisted Data Ingestion with dlt](https://www.youtube.com/watch?v=5eMytPBgmVs)
+* Presentación del taller (en inglés): [From APIs to Warehouses](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/cohorts/2026/workshops/dlt.md)
+
+## Objetivos de la sesión
+
+Durante esta sesión veremos cómo importar datos partiendo de una API que sirve datos no estructurados como la de la [OpenLibrary](https://openlibrary.org/developers/api), en un almacén estructurado usando dlt.
+
+### ¿Qué es **dlt**?
+
+> "dlt (data load tool) es una biblioteca de Python de código abierto que carga datos desde fuentes de datos a menudo desordenadas en conjuntos de datos bien estructurados y actualizados en tiempo real. Automatiza todas tus tareas tediosas de ingeniería de datos, con funciones como la inferencia de esquemas, la normalización de datos y la carga incremental."
+>
+> Fuente: [Página web de dltHub](https://dlthub.com/product/dlt)
+
+### ¿Qué ofrece la API de la **OpenLibrary**?
+
+De la API de la OpenLibrary vamos a usar el [servicio de búsqueda de libros](https://openlibrary.org/dev/docs/api/search). Esta API permite buscar libros, autores y otros recursos dentro del catálogo de Open Library y obtener los resultados en formato JSON.
+
+Es una de las formas más completas y cómodas de recuperar datos bibliográficos, ya que:
+
+* Devuelve múltiples resultados en una sola petición.
+* Incluye información sobre:
+  * el trabajo: información del autor, fecha de la primera publicación, etc.
+  * y la edición: título, identificadores, portadas, etc.
+* Proporciona identificadores de autor reutilizables.
+* Puede incluir información de disponibilidad de los libros.
+
+#### URL's básicas del proyecto
+
+Base URL: https://openlibrary.org
+Endpoint principal: https://openlibrary.org/search.json
+
+#### Formato de las peticiones
+
+Las peticiones se realizan mediante HTTP GET. Basta con añadir `.json` a la URL de búsqueda.
+
+##### Parámetros de consulta
+
+| Parámetro | Descripción |
+|-----------|-------------|
+| `q` | Búsqueda de texto libre. |
+| `title` | Filtrar por título. |
+| `author` | Filtrar por autor. |
+| `subject` | Filtrar por materia o temática. |
+| `isbn` | Filtrar por ISBN. |
+| `publisher` | Filtrar por editorial. |
+| `language` | Filtrar por idioma. |
+| `page` | Número de página de resultados. |
+| `limit` | Número de resultados por página. |
+| `sort` | Ordenación de resultados. |
+
+Algunos de los valores habituales para el parámetro de ordenación `sort` son:
+
+- `new`
+- `old`
+- `rating`
+- `editions`
+
+La paginación se controla con:
+
+- `page` → número de página
+- `limit` → resultados por página
+
+##### Ejemplos
+
+* Buscar por texto libre:
+  * https://openlibrary.org/search.json?q=the+lord+of+the+rings
+* Buscar por título:
+  * https://openlibrary.org/search.json?title=the+lord+of+the+rings
+* Buscar por autor:
+  * https://openlibrary.org/search.json?author=tolkien
+* Buscar con paginación:
+  * https://openlibrary.org/search.json?q=the+lord+of+the+rings&page=2
+
+#### Formato de las respuestas
+
+La respuesta es un objeto JSON con metadatos de la búsqueda y una lista de documentos.
+
+#### Campos principales
+
+| Campo | Descripción |
+|-------|-------------|
+| `numFound` | Número total de resultados. |
+| `start` | Índice del primer resultado devuelto. |
+| `docs` | Lista de resultados. |
+
+##### Campos habituales dentro de `docs`
+
+| Campo | Descripción |
+|-------|-------------|
+| `key` | Identificador de la obra. |
+| `title` | Título. |
+| `author_name` | Lista de autores. |
+| `author_key` | Identificadores de autor. |
+| `first_publish_year` | Año de primera publicación. |
+| `edition_count` | Número de ediciones. |
+| `isbn` | Lista de ISBN asociados. |
+| `cover_i` | Identificador de portada. |
+| `subject` | Materias o temas. |
+| `language` | Idiomas disponibles. |
+
+Los identificadores de autor `author_key` pueden usarse para recuperar información detallada del autor mediante la API de autores.
+
+> [!WARNING]
+>
+> No completado aún. Continúa aquí: https://www.youtube.com/live/5eMytPBgmVs?si=_L1CN9HeN6N7Bas4&t=850
