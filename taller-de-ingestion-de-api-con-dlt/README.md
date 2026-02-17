@@ -176,4 +176,4 @@ uv run python open_library_pipeline.py
 
 > [!WARNING]
 >
-> No completado aún. Continúa aquí: https://www.youtube.com/live/5eMytPBgmVs?si=_L1CN9HeN6N7Bas4&t=850
+> No completado aún. Continúa aquí: https://www.youtube.com/live/5eMytPBgmVs?si=5RrCF1w4X1Jc6FJH&t=1367

@@ -58,4 +58,4 @@ pipeline = dlt.pipeline(
 
 if __name__ == "__main__":
     load_info = pipeline.run(open_library_rest_api_source())
-    print(load_info)  # noqa: T201
+    print(load_info)
