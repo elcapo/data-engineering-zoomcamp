@@ -1,0 +1,34 @@
+# Zoomcamp de ingeniería de datos
+#
+# Documentación clave:
+# - Archivos de pipeline: https://getbruin.com/docs/bruin/getting-started/pipeline
+# - Variables (JSON Schema): https://getbruin.com/docs/bruin/getting-started/pipeline-variables
+# - Comando de ejecución: https://getbruin.com/docs/bruin/commands/run
+
+# Define un nombre para el pipeline (string). Aparece en los logs + `BRUIN_PIPELINE` para los assets de Python.
+name: nyc_taxi
+
+# Elige una programación ("daily", "hourly", "weekly", "monthly") o una cadena cron.
+schedule: daily
+
+# Define la fecha más temprana que este pipeline debe considerar para backfills con refresh completo.
+# Formato: YYYY-MM-DD
+start_date: "2022-01-01"
+
+# Configura las conexiones por defecto para que los assets puedan omitir `connection: ...`.
+# Patrón común: `duckdb: duckdb-default` para desarrollo local.
+# Documentación (conexiones): https://getbruin.com/docs/bruin/commands/connections
+default_connections:
+  duckdb: duckdb-default
+
+# Define variables del pipeline usando JSON Schema y valores por defecto.
+# - Las variables deben tener un `default` para que los assets se rendericen sin `--var`.
+# - En assets SQL/YAML: referenciar como `{{ var.mi_variable }}`.
+# - En assets de Python: leer el JSON desde la variable de entorno `BRUIN_VARS`.
+variables:
+  # Define `taxi_types` como un array de strings con un valor por defecto razonable.
+  taxi_types:
+    type: array
+    items:
+      type: string
+    default: ["yellow"]

@@ -3,6 +3,7 @@
 ## Contenidos
 
 * [Introducción a Bruin](01-introduccion-a-bruin.md)
+* Caso práctico: [Flujo de datos completo con Bruin](02-flujo-de-datos-completo-con-bruin.md)
 
 ## Aprendizaje en público
 
