@@ -90,7 +90,7 @@ def materialize():
     base_url = "https://d37ci6vzurychx.cloudfront.net/trip-data"
     extracted_at = datetime.now(timezone.utc)
 
-    # Obtener los ficheros parquet desde:                                                                                                                                               
+    # Obtener los ficheros parquet desde:
     # https://d37ci6vzurychx.cloudfront.net/trip-data/{taxi_type}_tripdata_{year}-{month}.parquet
     dataframes = []
     for taxi_type in taxi_types:
@@ -99,8 +99,21 @@ def materialize():
             response = requests.get(url)
             response.raise_for_status()
             df = pd.read_parquet(io.BytesIO(response.content))
+
             df["taxi_type"] = taxi_type
             df["extracted_at"] = extracted_at
+
+            if "tpep_pickup_datetime" in df.columns:
+              df = df.rename(columns={"tpep_pickup_datetime": "pickup_datetime"})
+
+            if "tpep_dropoff_datetime" in df.columns:
+              df = df.rename(columns={"tpep_dropoff_datetime": "dropoff_datetime"})
+
+            df = df.rename(columns={
+              "PULocationID": "pickup_location_id",
+              "DOLocationID": "dropoff_location_id",
+            })
+
             dataframes.append(df)
 
     return pd.concat(dataframes, ignore_index=True)

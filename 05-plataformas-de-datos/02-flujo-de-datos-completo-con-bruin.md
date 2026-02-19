@@ -195,7 +195,7 @@ def materialize():
     base_url = "https://d37ci6vzurychx.cloudfront.net/trip-data"
     extracted_at = datetime.now(timezone.utc)
 
-    # Obtener los ficheros parquet desde:                                                                                                                                               
+    # Obtener los ficheros parquet desde:
     # https://d37ci6vzurychx.cloudfront.net/trip-data/{taxi_type}_tripdata_{year}-{month}.parquet
     dataframes = []
     for taxi_type in taxi_types:
@@ -204,8 +204,21 @@ def materialize():
             response = requests.get(url)
             response.raise_for_status()
             df = pd.read_parquet(io.BytesIO(response.content))
+
             df["taxi_type"] = taxi_type
             df["extracted_at"] = extracted_at
+
+            if "tpep_pickup_datetime" in df.columns:
+              df = df.rename(columns={"tpep_pickup_datetime": "pickup_datetime"})
+
+            if "tpep_dropoff_datetime" in df.columns:
+              df = df.rename(columns={"tpep_dropoff_datetime": "dropoff_datetime"})
+
+            df = df.rename(columns={
+              "PULocationID": "pickup_location_id",
+              "DOLocationID": "dropoff_location_id",
+            })
+
             dataframes.append(df)
 
     return pd.concat(dataframes, ignore_index=True)
@@ -384,13 +397,99 @@ QUALIFY ROW_NUMBER() OVER (
 ) = 1
 ```
 
-Por fin, podemos lanzar la preparación con `bruin run`:
+Por fin, podemos lanzar la preparación con `bruin run`.
 
 ```bash
 bruin run \
     --config-file .bruin.yml \
+    --full-refresh \
     --start-date 2025-01-01 \
     --end-date 2025-01-31 \
     --environment default \
     ./pipeline/assets/staging/trips.sql
 ```
+
+> [!NOTE]
+> El parámetro `--full-refresh` solo es necesario la primera vez que ejecutemos el comando.
+
+![Trayectos preprocesados](resources/screeenshots/trayectos-preprocesados.png)
+
+### Capa de **informes**
+
+Como artefacto para la generación de la tabla de informes también usaremos un artefacto SQL. Como antes, empezamos con la sección de metadatos en formato YAML.
+
+```yaml
+# Documentación:
+# - Assets SQL: https://getbruin.com/docs/bruin/assets/sql
+# - Materialización: https://getbruin.com/docs/bruin/assets/materialization
+# - Checks de calidad: https://getbruin.com/docs/bruin/quality/available_checks
+
+# Define el nombre del asset.
+name: reports.trips_report
+
+# Define el tipo de plataforma.
+# Documentación: https://getbruin.com/docs/bruin/assets/sql
+type: duckdb.sql
+
+# Declara la dependencia del/los asset(s) de staging de los que lee este informe.
+depends:
+  - staging.trips
+
+# Elige la estrategia de materialización.
+# Para informes, `time_interval` es una buena opción para reconstruir solo la ventana temporal relevante.
+# Importante: usa la misma `incremental_key` que en staging (por ejemplo, pickup_datetime) para mantener la consistencia.
+materialization:
+  type: table
+  strategy: time_interval
+  incremental_key: trip_date
+  time_granularity: date
+
+# Define las columnas del informe + la(s) clave(s) primaria(s) en el nivel de agregación elegido.
+columns:
+  - name: trip_date
+    type: date
+    primary_key: true
+  - name: taxi_type
+    type: string
+    primary_key: true
+  - name: payment_type
+    type: string
+    primary_key: true
+  - name: trip_count
+    type: bigint
+    checks:
+      - name: non_negative
+```
+
+Y seguimos con la consulta que calcula los agregados.
+
+```sql
+SELECT
+    CAST(pickup_datetime AS DATE) AS trip_date,
+    taxi_type,
+    payment_type_name AS payment_type,
+    COUNT(*) AS trip_count,
+    SUM(fare_amount) AS total_fare,
+    AVG(fare_amount) AS avg_fare
+FROM staging.trips
+WHERE pickup_datetime >= '{{ start_datetime }}'
+  AND pickup_datetime < '{{ end_datetime }}'
+GROUP BY 1, 2, 3
+```
+
+Finalizamos nuestro flujo de datos lanzando `bruin run`.
+
+```bash
+bruin run \
+    --config-file .bruin.yml \
+    --full-refresh \
+    --start-date 2025-01-01 \
+    --end-date 2025-01-31 \
+    --environment default \
+    ./pipeline/assets/reports/trips_report.sql
+```
+
+> [!NOTE]
+> El parámetro `--full-refresh` solo es necesario la primera vez que ejecutemos el comando.
+
+![Informe de trayectos](resources/screeenshots/informe-de-trayectos.png)
