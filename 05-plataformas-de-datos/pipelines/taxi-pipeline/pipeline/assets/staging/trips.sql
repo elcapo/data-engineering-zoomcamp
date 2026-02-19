@@ -1,101 +1,104 @@
 /* @bruin
 
 # Docs:
-# - Materialization: https://getbruin.com/docs/bruin/assets/materialization
-# - Quality checks (built-ins): https://getbruin.com/docs/bruin/quality/available_checks
-# - Custom checks: https://getbruin.com/docs/bruin/quality/custom
+# - Materialización: https://getbruin.com/docs/bruin/assets/materialization
+# - Comprobaciones de calidad de datos predefinidas: https://getbruin.com/docs/bruin/quality/available_checks
+# - Comprobaciones de calidad de datos personalizadas: https://getbruin.com/docs/bruin/quality/custom
 
-# TODO: Set the asset name (recommended: staging.trips).
-name: TODO_SET_ASSET_NAME
-# TODO: Set platform type.
+# Establece el nombre del artefacto.
+name: staging.trips
+
+# Establece el tipo de plataforma.
 # Docs: https://getbruin.com/docs/bruin/assets/sql
-# suggested type: duckdb.sql
-type: TODO
+type: duckdb.sql
 
-# TODO: Declare dependencies so `bruin run ... --downstream` and lineage work.
-# Examples:
-# depends:
-#   - ingestion.trips
-#   - ingestion.payment_lookup
+# Declara dependencias para facilitar el funcionamiento de `bruin run ... --downstream` y del lineaje.
 depends:
-  - TODO_DEP_1
-  - TODO_DEP_2
+  - ingestion.trips
+  - ingestion.payment_lookup
 
-# TODO: Choose time-based incremental processing if the dataset is naturally time-windowed.
-# - This module expects you to use `time_interval` to reprocess only the requested window.
+# Escoge una estrategia incremental basada en procesamiento temporal si el conjunto de datos está
+# naturalmente organizado por ventanas temporales.
 materialization:
-  # What is materialization?
-  # Materialization tells Bruin how to turn your SELECT query into a persisted dataset.
+  # La materialización le dice a Bruin cómo transformar tu consulta en un conjunto de datos persistido.
   # Docs: https://getbruin.com/docs/bruin/assets/materialization
   #
-  # Materialization "type":
+  # Tipo de materialización:
   # - table: persisted table
   # - view: persisted view (if the platform supports it)
   type: table
-  # TODO: set a materialization strategy.
-  # Docs: https://getbruin.com/docs/bruin/assets/materialization
-  # suggested strategy: time_interval
-  #
-  # Incremental strategies (what does "incremental" mean?):
-  # Incremental means you update only part of the destination instead of rebuilding everything every run.
-  # In Bruin, this is controlled by `strategy` plus keys like `incremental_key` and `time_granularity`.
-  #
-  # Common strategies you can choose from (see docs for full list):
-  # - create+replace (full rebuild)
-  # - truncate+insert (full refresh without drop/create)
-  # - append (insert new rows only)
-  # - delete+insert (refresh partitions based on incremental_key values)
-  # - merge (upsert based on primary key)
-  # - time_interval (refresh rows within a time window)
-  strategy: TODO
-  # TODO: set incremental_key to your event time column (DATE or TIMESTAMP).
-  incremental_key: TODO_SET_INCREMENTAL_KEY
-  # TODO: choose `date` vs `timestamp` based on the incremental_key type.
-  time_granularity: TODO_SET_GRANULARITY
 
-# TODO: Define output columns, mark primary keys, and add a few checks.
+  # Estrategia de materialización.
+  # Docs: https://getbruin.com/docs/bruin/assets/materialization
+
+  # Estrategias incrementales:
+  # Las estrategias incrementales implican que solo actualizas una parte del destino en lugar de
+  # reconstruirlo entero con cada ejecución.
+
+  # En Bruin, esto se controla con las claves `strategy`, `incremental_key` y `time_granularity`.
+
+  # Algunas estrategias comunes son:
+  # - create+replace (reconstrucción completa)
+  # - truncate+insert (reconstrucción completa sin eliminar y recrear las tablas)
+  # - append (solo añadir nuevos registros)
+  # - delete+insert (actualizar las particiones basándose en las claves primarias)
+  # - merge (actualización de registros usando la clave primaria)
+  # - time_interval (actualización de datos considerando solo una ventana de tiempo)
+  strategy: time_interval
+
+  # Establece la columna que define la ventana temporal.
+  incremental_key: pickup_datetime
+
+  # Tipo de la columna anterior: `date` ó `timestamp`
+  time_granularity: timestamp
+
+# Defina las columnas de salida, marca claves primarias y añade comprobaciones básicas por columna.
 columns:
-  - name: TODO_pk1
-    type: TODO
-    description: TODO
+  - name: pickup_datetime
+    type: timestamp
     primary_key: true
-    nullable: false
     checks:
       - name: not_null
-  - name: TODO_metric
-    type: TODO
-    description: TODO
-    checks:
-      - name: non_negative
 
-# TODO: Add one custom check that validates a staging invariant (uniqueness, ranges, etc.)
+# Comprobación personalizada a aplicar al conjunto de datos.
 # Docs: https://getbruin.com/docs/bruin/quality/custom
 custom_checks:
-  - name: TODO_custom_check_name
-    description: TODO
+  - name: row_count_greater_than_zero
     query: |
-      -- TODO: return a single scalar (COUNT(*), etc.) that should match `value`
-      SELECT 0
-    value: 0
+      SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+      FROM staging.trips
+    value: 1
 
 @bruin */
 
--- TODO: Write the staging SELECT query.
+-- Propósito de staging:
+-- - Limpiar y normalizar el esquema proveniente de ingesta
+-- - Eliminar duplicados (importante si la ingesta usa la estrategia append)
+-- - Enriquecer con tablas de referencia (JOINs)
+-- - Filtrar filas inválidas (PKs nulas, valores negativos, etc.)
 --
--- Purpose of staging:
--- - Clean and normalize schema from ingestion
--- - Deduplicate records (important if ingestion uses append strategy)
--- - Enrich with lookup tables (JOINs)
--- - Filter invalid rows (null PKs, negative values, etc.)
---
--- Why filter by {{ start_datetime }} / {{ end_datetime }}?
--- When using `time_interval` strategy, Bruin:
---   1. DELETES rows where `incremental_key` falls within the run's time window
---   2. INSERTS the result of your query
--- Therefore, your query MUST filter to the same time window so only that subset is inserted.
--- If you don't filter, you'll insert ALL data but only delete the window's data = duplicates.
+-- ¿Por qué filtrar por {{ start_datetime }} / {{ end_datetime }}?
+-- Al usar la estrategia `time_interval`, Bruin:
+--   1. ELIMINA las filas donde la `incremental_key` cae dentro de la ventana temporal de la ejecución
+--   2. INSERTA el resultado de tu consulta
+-- Por lo tanto, tu consulta DEBE filtrar a la misma ventana temporal para que solo se inserte ese subconjunto.
+-- Si no filtras, insertarás TODOS los datos pero solo se eliminarán los de la ventana = duplicados.
 
-SELECT *
-FROM ingestion.trips
-WHERE pickup_datetime >= '{{ start_datetime }}'
-  AND pickup_datetime < '{{ end_datetime }}'
+SELECT
+    t.pickup_datetime,
+    t.dropoff_datetime,
+    t.pickup_location_id,
+    t.dropoff_location_id,
+    t.fare_amount,
+    t.taxi_type,
+    p.payment_type_name
+FROM ingestion.trips t
+LEFT JOIN ingestion.payment_lookup p
+    ON t.payment_type = p.payment_type_id
+WHERE t.pickup_datetime >= '{{ start_datetime }}'
+  AND t.pickup_datetime < '{{ end_datetime }}'
+QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY t.pickup_datetime, t.dropoff_datetime,
+                 t.pickup_location_id, t.dropoff_location_id, t.fare_amount
+    ORDER BY t.pickup_datetime
+) = 1

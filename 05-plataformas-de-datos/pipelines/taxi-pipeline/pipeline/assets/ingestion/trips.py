@@ -12,6 +12,9 @@ type: python
 # Ejemplo: python:3.11
 image: python:3.11
 
+# Conexión a utilizar
+connection: duckdb-default
+
 # Elige la materialización (opcional, pero recomendado).
 # Funcionalidad de Bruin: la materialización en Python te permite devolver un DataFrame (o list[dict]) y Bruin lo carga en tu destino.
 # Esta suele ser la forma más sencilla de construir artefactos de ingestión en Bruin.
@@ -43,9 +46,12 @@ columns:
 # Añade los imports necesarios para tu ingesta (por ejemplo, pandas, requests).
 # - Coloca las dependencias en el `requirements.txt` más cercano
 # Documentación: https://getbruin.com/docs/bruin/assets/python
+import io
 import os
 import json
+from datetime import datetime, timezone
 import pandas as pd
+import requests
 
 # Implementa `materialize()` solo si estás usando la materialización en Python de Bruin.
 # Si eliges el enfoque de escritura manual (sin bloque `materialization:`), elimina esta función e implementa la ingesta
@@ -77,7 +83,24 @@ def materialize():
     taxi_types = json.loads(os.environ["BRUIN_VARS"]).get("taxi_types", ["yellow"])
 
     # Generar la lista de meses entre las fechas de inicio y fin
-    # Obtener los ficheros parquet desde:
-    # https://d37ci6vzurychx.cloudfront.net/trip-data/{taxi_type}_tripdata_{year}-{month}.parquet
+    start_month = pd.to_datetime(start_date).to_period("M").to_timestamp()
+    end_month = pd.to_datetime(end_date).to_period("M").to_timestamp()
+    months = pd.date_range(start=start_month, end=end_month, freq="MS")
 
-    return final_dataframe
+    base_url = "https://d37ci6vzurychx.cloudfront.net/trip-data"
+    extracted_at = datetime.now(timezone.utc)
+
+    # Obtener los ficheros parquet desde:                                                                                                                                               
+    # https://d37ci6vzurychx.cloudfront.net/trip-data/{taxi_type}_tripdata_{year}-{month}.parquet
+    dataframes = []
+    for taxi_type in taxi_types:
+        for month in months:
+            url = f"{base_url}/{taxi_type}_tripdata_{month.year}-{month.month:02d}.parquet"
+            response = requests.get(url)
+            response.raise_for_status()
+            df = pd.read_parquet(io.BytesIO(response.content))
+            df["taxi_type"] = taxi_type
+            df["extracted_at"] = extracted_at
+            dataframes.append(df)
+
+    return pd.concat(dataframes, ignore_index=True)
