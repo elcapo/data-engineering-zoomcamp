@@ -8,6 +8,7 @@
 ## Aprendizaje en público
 
 * [Introducción a Bruin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-plataformasdedatos-bruin-share-7429264244493201409-VLVe)
+* Caso práctico: [Flujo de datos completo con Bruin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-plataformasdedatos-bruin-share-7430367697902710785-Ra7m)
 
 ## Contribución FAQ
 
