@@ -206,7 +206,7 @@ Al ejecutar un flujo de datos, **dlt** crea algunas tablas internas adicionales.
 
 Estructuras de datos anidadas como esta permiten, por ejemplo, tener cuatro autores para un único libro. Para hacer estas estructuras compatibles con bases de datos relacionales como DuckDB, **dlt** hace por nosotros una normalización que implica la creación de múltiples tablas sin intervención por nuestra parte.
 
-> [!NOTES]
+> [!NOTE]
 > Para más información, consulta la documentación sobre [tablas destino](https://dlthub.com/docs/general-usage/destination-tables) de **dlt** (en inglés).
 
 ### Campos adicionales
