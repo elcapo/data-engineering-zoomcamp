@@ -45,8 +45,8 @@ El archivo de conexiones `.bruin.yml` se generará dentro de esa carpeta.
 > [!WARNING]
 > Bruin busca por defecto el archivo `.bruin.yml` en la raíz del repositorio Git, por lo que todos los comandos deben ejecutarse desde `claude-pipeline` especificando su ruta mediante el argumento `--config-file`.
 
-```
-# Ejemplo de uso de `--config-file`
+`
+# Ejemplo de uso de --config-file
 bruin run ./pipeline/assets/ingestion/trips.py \
     --environment default \
     --config-file .bruin.yml \
@@ -54,7 +54,7 @@ bruin run ./pipeline/assets/ingestion/trips.py \
     --end-date 2021-01-31 \
     --var taxi_types='["yellow"]' \
     --downstream
-```
+`
 
 ## Contexto
 
