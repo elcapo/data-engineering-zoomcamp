@@ -10,6 +10,7 @@
 
 * [Introducción a Bruin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-plataformasdedatos-bruin-share-7429264244493201409-VLVe)
 * Caso práctico: [Flujo de datos completo con Bruin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-plataformasdedatos-bruin-share-7430367697902710785-Ra7m)
+* Caso práctico: [Creación del flujo de datos con IA](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-plataformasdedatos-bruin-share-7431013679262998528-RuMo)
 
 ## Contribución FAQ
 
