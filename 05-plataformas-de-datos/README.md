@@ -5,6 +5,7 @@
 * [Introducción a Bruin](01-introduccion-a-bruin.md)
 * Caso práctico: [Flujo de datos completo con Bruin](02-flujo-de-datos-completo-con-bruin.md)
 * Caso práctico: [Creación del flujo de datos con IA](03-creacion-del-flujo-de-datos-con-ia.md)
+* [Buenas prácticas programando con IA](04-buenas-practicas-programando-con-ia.md)
 
 ## Aprendizaje en público
 
