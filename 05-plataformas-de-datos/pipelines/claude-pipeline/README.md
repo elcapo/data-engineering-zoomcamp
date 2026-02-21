@@ -1,257 +1,307 @@
-# Overview - End-to-End Data Platform
+# Visión general -- Plataforma de Datos End-to-End
 
-This hands-on tutorial guides you through building a **complete NYC Taxi data pipeline** from scratch using Bruin—a unified CLI tool for data ingestion, transformation, and quality.
+Este tutorial práctico te guía en la construcción de un **pipeline completo de datos de NYC Taxi** desde cero usando Bruin, una herramienta CLI unificada para ingestión, transformación y calidad de datos.
 
-You'll learn to build a production-ready ELT pipeline that:
-- **Ingests** real NYC taxi trip data from public APIs using Python
-- **Transforms** and cleans raw data with SQL, applying incremental strategies and deduplication
-- **Reports** aggregated analytics with built-in quality checks
-- **Deploys** to cloud infrastructure (BigQuery)
+Aprenderás a construir un pipeline ELT listo para producción que:
 
-This is a learn-by-doing experience with AI assistance available through Bruin MCP. Follow the comprehensive step-by-step tutorial section below.
+* **Ingesta** datos reales de viajes de NYC Taxi desde APIs públicas usando Python
+* **Transforma** y limpia datos crudos con SQL, aplicando estrategias incrementales y deduplicación
+* **Reporta** analítica agregada con controles de calidad integrados
+* **Despliega** en infraestructura cloud (BigQuery)
 
-## Learning Goals
+Esta es una experiencia de aprendizaje práctica con asistencia de IA disponible mediante Bruin MCP. Sigue la sección del tutorial paso a paso a continuación.
 
-- Understand how Bruin projects are structured (`pipeline/pipeline.yml` + `pipeline/assets/`)
-- Use **materialization strategies** intentionally (append, time_interval, etc.)
-- Declare **dependencies** and explore lineage (`bruin lineage`)
-- Apply **metadata** (columns, primary keys, descriptions) and **quality checks**
-- Parameterize runs with **pipeline variables**
+## 🎯 Objetivos
 
-## Tutorial Outline
+* Entender cómo se estructuran los proyectos de Bruin (`pipeline/pipeline.yml` + `pipeline/assets/`)
+* Usar **estrategias de materialización** de forma intencional (`append`, `time_interval`, etc.)
+* Declarar **dependencias** y explorar el linaje (`bruin lineage`)
+* Aplicar **metadatos** y **controles de calidad**
+* Parametrizar ejecuciones con **variables del pipeline**
 
-- **Part 1**: What is a Data Platform? - Learn about modern data stack components and where Bruin fits in
-- **Part 2**: Setting Up Your First Bruin Project - Install Bruin, initialize a project, and configure environments
-- **Part 3**: End-to-End NYC Taxi ELT Pipeline - Build ingestion, staging, and reporting layers with real data
-- **Part 4**: Data Engineering with AI Agent - Use Bruin MCP to build pipelines with AI assistance
-- **Part 5**: Deploy to BigQuery - Deploy your local pipeline to Google BigQuery
+# Visión General - Plataforma de Datos de Extremo a Extremo
 
-## Pipeline Skeleton
+Este tutorial práctico te guía en la construcción de un **pipeline de datos completo con los taxis de Nueva York** desde cero usando Bruin—una herramienta CLI unificada para ingestión, transformación y calidad de datos.
 
-The suggested structure separates ingestion, staging, and reporting, but you may structure your pipeline however you like.
+Aprenderás a construir un pipeline ELT listo para producción que:
+- **Ingiere** datos reales de viajes en taxi de Nueva York desde APIs públicas usando Python
+- **Transforma** y limpia datos en bruto con SQL, aplicando estrategias incrementales y deduplicación
+- **Reporta** analíticas agregadas con comprobaciones de calidad integradas
+- **Despliega** en infraestructura en la nube (BigQuery)
 
-The required parts of a Bruin project are:
-- `.bruin.yml` in the root directory
-- `pipeline.yml` in the `pipeline/` directory (or in the root directory if you keep everything flat)
-- `assets/` folder next to `pipeline.yml` containing your Python, SQL, and YAML asset files
+Esta es una experiencia de aprendizaje práctico con asistencia de IA disponible a través de Bruin MCP. Sigue el tutorial detallado paso a paso que encontrarás más abajo.
+
+## Objetivos de Aprendizaje
+
+- Entender cómo se estructuran los proyectos Bruin (`pipeline/pipeline.yml` + `pipeline/assets/`)
+- Usar **estrategias de materialización** de forma intencionada (append, time_interval, etc.)
+- Declarar **dependencias** y explorar el linaje (`bruin lineage`)
+- Aplicar **metadatos** (columnas, claves primarias, descripciones) y **comprobaciones de calidad**
+- Parametrizar ejecuciones con **variables de pipeline**
+
+## Esquema del Tutorial
+
+- **Parte 1**: ¿Qué es una Plataforma de Datos? - Aprende sobre los componentes del stack de datos moderno y dónde encaja Bruin
+- **Parte 2**: Configuración de tu Primer Proyecto Bruin - Instala Bruin, inicializa un proyecto y configura entornos
+- **Parte 3**: Pipeline ELT de Extremo a Extremo con Taxis de Nueva York - Construye las capas de ingestión, staging y reporting con datos reales
+- **Parte 4**: Ingeniería de Datos con Agente de IA - Usa Bruin MCP para construir pipelines con asistencia de IA
+- **Parte 5**: Despliegue en BigQuery - Despliega tu pipeline local en Google BigQuery
+
+## Estructura del Pipeline
+
+La estructura sugerida separa la ingestión, el staging y el reporting, pero puedes organizar tu pipeline como prefieras.
+
+Las partes obligatorias de un proyecto Bruin son:
+- `.bruin.yml` en el directorio raíz
+- `pipeline.yml` en el directorio `pipeline/` (o en el directorio raíz si mantienes todo en un único nivel)
+- La carpeta `assets/` junto a `pipeline.yml`, que contiene tus archivos de activos Python, SQL y YAML
 
 ```text
-zoomcamp/
-├── .bruin.yml                              # Environments + connections (local DuckDB, BigQuery, etc.)
-├── README.md                               # Learning goals, workflow, best practices
+claude-pipeline/
+├── .bruin.yml                              # Entornos + conexiones (DuckDB local, BigQuery, etc.)
+├── README.md                               # Objetivos de aprendizaje, flujo de trabajo, buenas prácticas
 └── pipeline/
-    ├── pipeline.yml                        # Pipeline name, schedule, variables
+    ├── pipeline.yml                        # Nombre del pipeline, programación, variables
     └── assets/
         ├── ingestion/
-        │   ├── trips.py                    # Python ingestion
-        │   ├── requirements.txt            # Python dependencies for ingestion
-        │   ├── payment_lookup.asset.yml    # Seed asset definition
-        │   └── payment_lookup.csv          # Seed data
+        │   ├── trips.py                    # Ingestión en Python
+        │   ├── requirements.txt            # Dependencias Python para la ingestión
+        │   ├── payment_lookup.asset.yml    # Definición del activo seed
+        │   └── payment_lookup.csv          # Datos seed
         ├── staging/
-        │   └── trips.sql                   # Clean and transform
+        │   └── trips.sql                   # Limpieza y transformación
         └── reports/
-            └── trips_report.sql            # Aggregation for analytics
+            └── trips_report.sql            # Agregación para analíticas
 ```
 
-# Step-by-Step Tutorial
+## 📦 Ubicación del proyecto
 
-This module introduces Bruin as a unified data platform that combines **data ingestion**, **transformation**, and **quality** into a single CLI tool. You will build an end-to-end NYC Taxi data pipeline from scratch.
+El proyecto comparte repositorio con más proyectos y notas sobre el Zoomcamp de ingeniería de datos de DataTalksClub. Su ubicación respecto a la raíz del proyecto Git es:
 
-> **Prerequisites**: Familiarity with SQL, basic Python, and command-line tools. Prior exposure to orchestration and transformation concepts is helpful but not required.
+* `data-engineering-zoomcamp/05-plataformas-de-datos/pipelines/claude-pipeline`
 
----
+El archivo de conexiones `.bruin.yml` se generará dentro de esa carpeta.
 
-## Part 1: What is a Data Platform?
+> [!WARNING]
+> Bruin busca por defecto el archivo `.bruin.yml` en la raíz del repositorio Git, por lo que todos los comandos deben ejecutarse desde `claude-pipeline` especificando su ruta.
 
-### Learning Goals
-- Understand what a data platform is and why you need one
-- Learn how Bruin fits into the modern data stack
-- Grasp Bruin's core abstractions: assets, pipelines, environments, connections
+``` bash
+--config-file .bruin.yml
+```
 
-### 1.1 The Modern Data Stack Components
-- **Data extraction/ingestion**: Moving data from sources to your warehouse
-- **Data transformation**: Cleaning, modeling, and aggregating data (the "T" in ELT)
-- **Data orchestration**: Scheduling and managing pipeline runs
-- **Data quality/governance**: Ensuring data accuracy and consistency
-- **Metadata management**: Tracking lineage, ownership, and documentation
+# Tutorial Paso a Paso
 
-### 1.2 Where Bruin Fits In
-- Bruin = ingestion + transformation + quality + orchestration in one tool
-- Handles pipeline orchestration similar to Airflow (dependency resolution, scheduling, retries)
-- "What if Airbyte, Airflow, dbt, and Great Expectations had a lovechild"
-- Runs locally, on VMs, or in CI/CD—no vendor lock-in
-- Apache-licensed open source
+Este módulo presenta Bruin como una plataforma de datos unificada que combina **ingestión de datos**, **transformación** y **calidad** en una única herramienta CLI. Construirás un pipeline de datos de extremo a extremo con los taxis de Nueva York desde cero.
 
-### 1.3 Bruin Design Principles (Key Takeaways)
-- Everything is version-controllable text (no UI/database configs)
-- Real pipelines use multiple technologies (SQL + Python + R)
-- Mix-and-match sources and destinations in a single pipeline
-- Data quality is a first-class citizen, not an afterthought
-- Quick feedback cycle: fast CLI, local development
-
-### 1.4 Core Concepts
-- **Asset**: Any data artifact that carries value (table, view, file, ML model, etc.)
-- **Pipeline**: A group of assets executed together in dependency order
-- **Environment**: A named set of connection configs (e.g., `default`, `production`) so the same pipeline can run locally and in production
-- **Connection**: Credentials to authenticate with external data sources & destinations
-- **Pipeline run**: A single execution instance with specific dates and configuration
+> **Requisitos previos**: Familiaridad con SQL, Python básico y herramientas de línea de comandos. Haber trabajado previamente con conceptos de orquestación y transformación es útil, pero no imprescindible.
 
 ---
 
-## Part 2: Setting Up Your First Bruin Project
+## Parte 1: ¿Qué es una Plataforma de Datos?
 
-### Learning Goals
-- Install Bruin CLI
-- Initialize a project from a template
-- Understand the project file structure
-- Configure environments and connections
+### Objetivos de Aprendizaje
+- Entender qué es una plataforma de datos y por qué la necesitas
+- Aprender cómo encaja Bruin en el stack de datos moderno
+- Comprender las abstracciones principales de Bruin: activos, pipelines, entornos, conexiones
 
-### 2.1 Installation
-- Install Bruin CLI: `curl -LsSf https://getbruin.com/install/cli | sh`
-  - Verify installation: `bruin version`
+### 1.1 Componentes del Stack de Datos Moderno
+- **Extracción/ingestión de datos**: Mover datos desde las fuentes a tu almacén de datos
+- **Transformación de datos**: Limpiar, modelar y agregar datos (la "T" en ELT)
+- **Orquestación de datos**: Programar y gestionar las ejecuciones del pipeline
+- **Calidad/gobernanza de datos**: Garantizar la precisión y consistencia de los datos
+- **Gestión de metadatos**: Rastrear linaje, propiedad y documentación
 
-If your terminal prints `To use the installed binaries, please restart the shell`, do one of the following:
-- **Restart your terminal** (close + reopen) — simplest and most reliable
-- **Reload your shell**:
-  - `exec $SHELL -l` (works for most shells)
+### 1.2 Dónde Encaja Bruin
+- Bruin = ingestión + transformación + calidad + orquestación en una sola herramienta
+- Gestiona la orquestación del pipeline de forma similar a Airflow (resolución de dependencias, programación, reintentos)
+- "Qué pasaría si Airbyte, Airflow, dbt y Great Expectations tuvieran un hijo"
+- Se ejecuta localmente, en máquinas virtuales o en CI/CD—sin dependencia de un proveedor concreto
+- Código abierto con licencia Apache
+
+### 1.3 Principios de Diseño de Bruin (Conclusiones Clave)
+- Todo es texto versionable (sin configuraciones en UI ni bases de datos)
+- Los pipelines reales usan múltiples tecnologías (SQL + Python + R)
+- Combina fuentes y destinos en un único pipeline
+- La calidad de los datos es un elemento de primera clase, no algo que se añade al final
+- Ciclo de retroalimentación rápido: CLI ágil, desarrollo local
+
+### 1.4 Conceptos Principales
+- **Activo (Asset)**: Cualquier artefacto de datos que aporte valor (tabla, vista, archivo, modelo de ML, etc.)
+- **Pipeline**: Un grupo de activos que se ejecutan juntos en orden de dependencia
+- **Entorno (Environment)**: Un conjunto de configuraciones de conexión con nombre (p. ej., `default`, `production`) para que el mismo pipeline pueda ejecutarse localmente y en producción
+- **Conexión (Connection)**: Credenciales para autenticarse con fuentes y destinos de datos externos
+- **Ejecución de pipeline (Pipeline run)**: Una instancia de ejecución concreta con fechas y configuración específicas
+
+---
+
+## Parte 2: Configuración de tu Primer Proyecto Bruin
+
+### Objetivos de Aprendizaje
+- Instalar el CLI de Bruin
+- Inicializar un proyecto a partir de una plantilla
+- Entender la estructura de archivos del proyecto
+- Configurar entornos y conexiones
+
+### 2.1 Instalación
+- Instala el CLI de Bruin: `curl -LsSf https://getbruin.com/install/cli | sh`
+  - Verifica la instalación: `bruin version`
+
+Si tu terminal muestra `To use the installed binaries, please restart the shell`, haz una de las siguientes cosas:
+- **Reinicia tu terminal** (cierra y vuelve a abrirla) — la opción más sencilla y fiable
+- **Recarga tu shell**:
+  - `exec $SHELL -l` (funciona para la mayoría de shells)
   - zsh: `source ~/.zshrc`
-  - bash: `source ~/.bashrc` (or `source ~/.bash_profile` on some macOS setups)
+  - bash: `source ~/.bashrc` (o `source ~/.bash_profile` en algunas configuraciones de macOS)
   - fish: `exec fish`
 
-#### IDE Extension (VS Code, Cursor, etc.)
+#### Extensión para el IDE (VS Code, Cursor, etc.)
 
-Please refer to the doc page for more details:
+Consulta la página de documentación para más detalles:
   - https://getbruin.com/docs/bruin/vscode-extension/overview
   - https://getbruin.com/docs/bruin/getting-started/features#vs-code-extension
 
-1. Install the **Bruin VS Code extension**:
-   - Open VS Code → Extensions
-   - Search: "Bruin" (publisher: bruin)
-   - Install, then reload VS Code
+1. Instala la **extensión Bruin para VS Code**:
+   - Abre VS Code → Extensiones
+   - Busca: "Bruin" (editor: bruin)
+   - Instálala y recarga VS Code
 
-2. Open this template folder and run from the Bruin panel:
-   - Open `pipeline/pipeline.yml` or any asset file under `pipeline/assets/`
-   - Use the Bruin panel to run `validate`, `run`, and see rendered code
-   - To open the panel, click the Bruin logo in the top-right corner of the file
+2. Abre esta carpeta de plantilla y ejecútala desde el panel de Bruin:
+   - Abre `pipeline/pipeline.yml` o cualquier archivo de activo en `pipeline/assets/`
+   - Usa el panel de Bruin para ejecutar `validate`, `run` y ver el código renderizado
+   - Para abrir el panel, haz clic en el logo de Bruin en la esquina superior derecha del archivo
 
-3. Set run parameters when creating a run:
-   - **Start / end dates** for incremental windows
-   - **Custom variables** like `taxi_types=["yellow"]`
+3. Define los parámetros de ejecución al crear una ejecución:
+   - **Fechas de inicio y fin** para ventanas incrementales
+   - **Variables personalizadas** como `taxi_types=["yellow"]`
 
-### 2.2 Project Initialization
-- Initialize the zoomcamp template: `bruin init zoomcamp my-pipeline`
-- Explore the generated structure:
-  - `.bruin.yml` — environment and connection configuration
-  - `pipeline/pipeline.yml` — pipeline name, schedule, variables
-  - `pipeline/assets/` — where your SQL/Python assets live
-  - `pipeline/assets/**/requirements.txt` — Python dependencies (scoped to the nearest folder)
+### 2.2 Inicialización del Proyecto
+- Inicializa la plantilla zoomcamp: `bruin init zoomcamp my-pipeline`
+- Explora la estructura generada:
+  - `.bruin.yml` — configuración de entornos y conexiones
+  - `pipeline/pipeline.yml` — nombre del pipeline, programación, variables
+  - `pipeline/assets/` — donde viven tus activos SQL/Python
+  - `pipeline/assets/**/requirements.txt` — dependencias Python (con alcance a la carpeta más cercana)
 
-**Important**: Bruin CLI requires a git-initialized folder (uses git to detect project root); `bruin init` auto-initializes git if needed
+**Importante**: El CLI de Bruin requiere una carpeta inicializada con git (la usa para detectar la raíz del proyecto); `bruin init` inicializa git automáticamente si es necesario
 
-### 2.3 Configuration Files Deep Dive
+### 2.3 Análisis en Profundidad de los Archivos de Configuración
 
 #### `.bruin.yml`
-- Defines environments (e.g., `default`, `production`)
-- Contains connection credentials (DuckDB, BigQuery, Snowflake, etc.)
-- Lives at the project root and **must be gitignored** because it contains credentials/secrets
-  - `bruin init` auto-adds it to `.gitignore`, but double-check before committing anything
+- Define los entornos (p. ej., `default`, `production`)
+- Contiene las credenciales de conexión (DuckDB, BigQuery, Snowflake, etc.)
+- Se encuentra en la raíz del proyecto y **debe añadirse al .gitignore** porque contiene credenciales y secretos
+  - `bruin init` lo añade automáticamente al `.gitignore`, pero compruébalo antes de hacer cualquier commit
 
 #### `pipeline.yml`
-- `name`: Pipeline identifier (appears in logs, `BRUIN_PIPELINE` env var)
-- `schedule`: When to run (`daily`, `hourly`, `weekly`, or cron expression)
-- `start_date`: Earliest date for backfills
-- `default_connections`: Platform-to-connection mappings
-- `variables`: User-defined variables with JSON Schema validation
+- `name`: Identificador del pipeline (aparece en los logs y en la variable de entorno `BRUIN_PIPELINE`)
+- `schedule`: Cuándo ejecutarlo (`daily`, `hourly`, `weekly` o una expresión cron)
+- `start_date`: Fecha más antigua para los backfills
+- `default_connections`: Mapeos de plataforma a conexión
+- `variables`: Variables definidas por el usuario con validación JSON Schema
 
-### 2.4 Connections
-- List connections: `bruin connections list`
-- Add a connection: `bruin connections add`
-- Test connectivity: `bruin connections ping <connection-name>`
-- Default connections reduce repetition across assets
+### 2.4 Conexiones
+- Lista las conexiones: `bruin connections list`
+- Añade una conexión: `bruin connections add`
+- Comprueba la conectividad: `bruin connections ping <connection-name>`
+- Las conexiones predeterminadas reducen la repetición entre activos
 
 ---
 
-## Part 3: End-to-End NYC Taxi ELT Pipeline
+## Parte 3: Pipeline ELT de Extremo a Extremo con Taxis de Nueva York
 
-### Learning Goals
-- Build a complete ELT pipeline: ingestion → staging → reports
-- Understand the three asset types: Python, SQL, and Seed
-- Apply materialization strategies for incremental processing
-- Add quality checks and declare dependencies
+### Objetivos de Aprendizaje
+- Construir un pipeline ELT completo: ingestión → staging → reports
+- Entender los tres tipos de activos: Python, SQL y Seed
+- Aplicar estrategias de materialización para el procesamiento incremental
+- Añadir comprobaciones de calidad y declarar dependencias
 
-### 3.1 Pipeline Architecture
-- **Ingestion**: Extract raw data from external sources (Python assets, seed CSVs)
-- **Staging**: Clean, normalize, deduplicate, enrich (SQL assets)
-- **Reports**: Aggregate for dashboards and analytics (SQL assets)
-- Assets form a DAG—Bruin executes them in dependency order
+### 3.1 Arquitectura del Pipeline
+- **Ingestión**: Extrae datos en bruto de fuentes externas (activos Python, CSVs seed)
+- **Staging**: Limpia, normaliza, deduplica y enriquece (activos SQL)
+- **Reports**: Agrega para dashboards y analíticas (activos SQL)
+- Los activos forman un DAG—Bruin los ejecuta en orden de dependencia
 
-### 3.2 Ingestion Layer
-- Python asset to fetch NYC Taxi data from the TLC public endpoint
-- Seed asset to load a static payment type lookup table from CSV
-- Use `append` strategy for raw ingestion (handle duplicates downstream)
-- Follow the TODO instructions in `pipeline/assets/ingestion/trips.py` and `pipeline/assets/ingestion/payment_lookup.asset.yml`
+### 3.2 Capa de Ingestión
+- Activo Python para obtener datos de taxis de Nueva York desde el endpoint público de TLC
+- Activo seed para cargar una tabla de búsqueda estática de tipos de pago desde CSV
+- Usa la estrategia `append` para la ingestión en bruto (gestiona los duplicados en capas posteriores)
+- Sigue las instrucciones TODO en `pipeline/assets/ingestion/trips.py` y `pipeline/assets/ingestion/payment_lookup.asset.yml`
 
-### 3.3 Staging Layer
-- SQL asset to clean, deduplicate, and join with lookup to enrich raw trip data
-- Use `time_interval` strategy for incremental processing
-- Follow the TODO instructions in `pipeline/assets/staging/trips.sql`
+### 3.3 Capa de Staging
+- Activo SQL para limpiar, deduplicar y unir con la tabla de búsqueda para enriquecer los datos de viajes en bruto
+- Usa la estrategia `time_interval` para el procesamiento incremental
+- Sigue las instrucciones TODO en `pipeline/assets/staging/trips.sql`
 
-### 3.4 Reports Layer
-- SQL asset to aggregate staging data into analytics-ready metrics
-- Use `time_interval` strategy and same `incremental_key` as staging for consistency
-- Follow the TODO instructions in `pipeline/assets/reports/trips_report.sql`
+### 3.4 Capa de Reports
+- Activo SQL para agregar los datos de staging en métricas listas para analíticas
+- Usa la estrategia `time_interval` y el mismo `incremental_key` que en staging para mantener la consistencia
+- Sigue las instrucciones TODO en `pipeline/assets/reports/trips_report.sql`
 
-### 3.5 Running and Validating
+### 3.5 Ejecución y Validación
 
-CLI Commands: https://getbruin.com/docs/bruin/commands/run
+Documentación de comandos CLI: https://getbruin.com/docs/bruin/commands/run
 
 ```bash
-# Validate structure & definitions
-bruin validate ./pipeline/pipeline.yml --environment default
+# Abre una sesión shell en el directorio
+cd claude-pipeline
 
-# First-time run tip:
-# Use --full-refresh to create/replace tables from scratch (helpful on a new DuckDB file).
-bruin run ./pipeline/pipeline.yml --environment default --full-refresh
+# Valida la estructura y las definiciones
+bruin validate \
+    --environment default \
+    --config-file .bruin.yml \
+    ./pipeline/pipeline.yml
 
-# Run an ingestion asset, then downstream (to test incrementally)
+# Consejo para la primera ejecución:
+# Usa --full-refresh para crear/reemplazar tablas desde cero (útil con un archivo DuckDB nuevo).
+bruin run \
+    --environment default \
+    --config-file .bruin.yml \
+    --full-refresh \
+    ./pipeline/pipeline.yml
+
+# Ejecuta un activo de ingestión y luego los activos descendentes (para pruebas incrementales)
 bruin run ./pipeline/assets/ingestion/trips.py \
-  --environment default \
-  --start-date 2021-01-01 \
-  --end-date 2021-01-31 \
-  --var taxi_types='["yellow"]' \
-  --downstream
+    --environment default \
+    --config-file .bruin.yml \
+    --start-date 2021-01-01 \
+    --end-date 2021-01-31 \
+    --var taxi_types='["yellow"]' \
+    --downstream
 
-# Query your tables using `bruin query`
+# Consulta tus tablas usando `bruin query`
 # Docs: https://getbruin.com/docs/bruin/commands/query
-bruin query --connection duckdb-default --query "SELECT COUNT(*) FROM ingestion.trips"
+bruin query \
+    --connection duckdb-default \
+    --config-file .bruin.yml \
+    --query "SELECT COUNT(*) FROM ingestion.trips"
 
-# Open DuckDB UI (useful for exploring tables interactively)
-# Requires DuckDB CLI installed locally.
+# Abre la interfaz de DuckDB (útil para explorar tablas de forma interactiva)
+# Requiere el CLI de DuckDB instalado localmente.
 duckdb duckdb.db -ui
 
-# Check lineage to understand asset dependencies
+# Comprueba el linaje para entender las dependencias entre activos
 bruin lineage ./pipeline/pipeline.yml
 ```
 
 ---
 
-## Part 4: Data Engineering with AI Agent
+## Parte 4: Ingeniería de Datos con Agente de IA
 
-### Learning Goals
-- Set up Bruin MCP to extend AI assistants with Bruin context
-- Use an AI agent to build the entire end-to-end pipeline
-- Leverage AI for documentation lookup, code generation, and pipeline execution
+### Objetivos de Aprendizaje
+- Configurar Bruin MCP para extender los asistentes de IA con el contexto de Bruin
+- Usar un agente de IA para construir el pipeline completo de extremo a extremo
+- Aprovechar la IA para buscar documentación, generar código y ejecutar pipelines
 
-### 4.1 What is Bruin MCP?
-- MCP (Model Context Protocol) connects AI assistants to Bruin's capabilities
-- The AI gains access to Bruin documentation, commands, and your pipeline context
-- Supported in Cursor, Claude Code, and other MCP-compatible tools
+### 4.1 ¿Qué es Bruin MCP?
+- MCP (Model Context Protocol) conecta los asistentes de IA con las capacidades de Bruin
+- La IA accede a la documentación de Bruin, sus comandos y el contexto de tu pipeline
+- Compatible con Cursor, Claude Code y otras herramientas compatibles con MCP
 
-### 4.2 Setting Up Bruin MCP
+### 4.2 Configuración de Bruin MCP
 
 **Cursor IDE:**
-- Go to Cursor Settings → MCP & Integrations → Add Custom MCP
-- Add the Bruin MCP server configuration:
+- Ve a Configuración de Cursor → MCP & Integrations → Add Custom MCP
+- Añade la configuración del servidor Bruin MCP:
   ```json
   {
     "mcpServers": {
@@ -268,45 +318,46 @@ bruin lineage ./pipeline/pipeline.yml
 claude mcp add bruin -- bruin mcp
 ```
 
-Bruin MCP Docs: https://getbruin.com/docs/bruin/getting-started/bruin-mcp
+Documentación de Bruin MCP: https://getbruin.com/docs/bruin/getting-started/bruin-mcp
 
-### 4.3 Building the Pipeline with AI
-- Ask the AI to help configure `.bruin.yml` and `pipeline.yml`
-- Request asset scaffolding: "Create a Python ingestion asset for NYC taxi data"
-- Get help with materialization: "What strategy should I use for incremental loads?"
-- Debug issues: "Why is my quality check failing?"
-- Execute commands: "Run the staging.trips asset with --full-refresh"
+### 4.3 Construyendo el Pipeline con IA
+- Pide a la IA que ayude a configurar `.bruin.yml` y `pipeline.yml`
+- Solicita el scaffolding de activos: "Crea un activo de ingestión Python para los datos de taxis de Nueva York"
+- Obtén ayuda con la materialización: "¿Qué estrategia debería usar para cargas incrementales?"
+- Depura problemas: "¿Por qué falla mi comprobación de calidad?"
+- Ejecuta comandos: "Ejecuta el activo staging.trips con --full-refresh"
 
-### 4.4 Example Prompts
+### 4.4 Ejemplos de Prompts
 
-**Questions about Bruin documentation:**
-- "How do I create a DuckDB connection in Bruin?"
-- "What does the time_interval materialization strategy do?"
-- "What materialization strategies does Bruin support?"
+**Preguntas sobre la documentación de Bruin:**
+- "¿Cómo creo una conexión DuckDB en Bruin?"
+- "¿Qué hace la estrategia de materialización time_interval?"
+- "¿Qué estrategias de materialización admite Bruin?"
 
-**Commands to build or make changes to pipeline:**
-- "Write a Python asset that fetches data from this API endpoint"
-- "Generate the SQL for deduplicating trips using a composite key"
-- "Add a not_null quality check to the pickup_datetime column"
+**Comandos para construir o modificar el pipeline:**
+- "Escribe un activo Python que obtenga datos de este endpoint de la API"
+- "Genera el SQL para deduplicar viajes usando una clave compuesta"
+- "Añade una comprobación de calidad not_null a la columna pickup_datetime"
 
-**Commands to test and validate pipeline:**
-- "Validate the entire pipeline"
-- "Run the staging.trips asset with --full-refresh"
-- "Check the lineage for my reports.trips_report asset"
+**Comandos para probar y validar el pipeline:**
+- "Valida el pipeline completo"
+- "Ejecuta el activo staging.trips con --full-refresh"
+- "Comprueba el linaje de mi activo reports.trips_report"
 
-**Commands to query and analyze the data:**
-- "Run a query to show row counts for all my tables"
-- "Query the reports table to show top 10 payment types by trip count"
-- "Show me the data schema for staging.trips"
+**Comandos para consultar y analizar los datos:**
+- "Ejecuta una consulta para mostrar el recuento de filas de todas mis tablas"
+- "Consulta la tabla de reports para mostrar los 10 principales tipos de pago por número de viajes"
+- "Muéstrame el esquema de datos de staging.trips"
 
-### 4.5 AI-Assisted Workflow
-- Start with configuration: Let AI help set up `.bruin.yml` and `pipeline.yml`
-- Build incrementally: Create one asset at a time, validate, run, iterate
-- Use AI for documentation: Ask about Bruin features instead of searching docs
-- Debug together: Share error messages and let AI suggest fixes
-- Learn by doing: Ask "why" questions to understand Bruin concepts
+### 4.5 Flujo de Trabajo Asistido por IA
+- Empieza por la configuración: deja que la IA ayude a configurar `.bruin.yml` y `pipeline.yml`
+- Construye de forma incremental: crea un activo a la vez, valida, ejecuta e itera
+- Usa la IA para la documentación: pregunta sobre las funcionalidades de Bruin en lugar de buscar en los docs
+- Depura en conjunto: comparte los mensajes de error y deja que la IA sugiera soluciones
+- Aprende haciendo: haz preguntas del tipo "¿por qué?" para entender los conceptos de Bruin
 
-Example prompt to create the entire pipeline end-to-end and test it:
+Ejemplo de prompt para crear el pipeline completo de extremo a extremo y probarlo:
+
 ```text
 Build an end-to-end NYC Taxi data pipeline using Bruin.
 
@@ -359,26 +410,26 @@ d) **pipeline/assets/reports/trips_report.sql** - SQL asset to aggregate by date
 
 ---
 
-## Part 5: Deploy to BigQuery
+## Parte 5: Despliegue en BigQuery
 
-This part takes what you built locally and runs it on **Google BigQuery**.
+Esta parte toma lo que construiste localmente y lo ejecuta en **Google BigQuery**.
 
-> **Note on SQL dialects**: BigQuery SQL is not identical to DuckDB SQL. Your pipeline structure stays the same, but you may need to update SQL syntax and types when switching engines.
+> **Nota sobre dialectos SQL**: El SQL de BigQuery no es idéntico al de DuckDB. La estructura de tu pipeline se mantiene igual, pero puede que necesites actualizar la sintaxis SQL y los tipos de datos al cambiar de motor.
 
-### 5.1 Create a GCP Project + BigQuery Datasets
-1. Create (or pick) a GCP project and enable the BigQuery API
-2. Create datasets that match your asset schemas (recommended for this module):
+### 5.1 Crear un Proyecto GCP + Conjuntos de Datos en BigQuery
+1. Crea (o selecciona) un proyecto GCP y activa la API de BigQuery
+2. Crea conjuntos de datos que coincidan con los schemas de tus activos (recomendado para este módulo):
    - `ingestion`
    - `staging`
    - `reports`
 
-### 5.2 Create Credentials (Choose One)
-- **Option A (recommended for local dev)**: Application Default Credentials (ADC)
-  - Install gcloud and authenticate: `gcloud auth application-default login`
-- **Option B**: Service account JSON (for CI/CD)
-  - Create a service account with BigQuery permissions and download the JSON key
+### 5.2 Crear Credenciales (Elige una Opción)
+- **Opción A (recomendada para desarrollo local)**: Credenciales Predeterminadas de Aplicación (ADC)
+  - Instala gcloud y autentícate: `gcloud auth application-default login`
+- **Opción B**: JSON de cuenta de servicio (para CI/CD)
+  - Crea una cuenta de servicio con permisos de BigQuery y descarga la clave JSON
 
-### 5.3 Add Connection to `.bruin.yml`
+### 5.3 Añadir la Conexión a `.bruin.yml`
 ```yaml
 environments:
   default:
@@ -386,88 +437,88 @@ environments:
       google_cloud_platform:
         - name: "gcp-default"
           project_id: "your-gcp-project-id"
-          location: "US" # or "EU", or your region
-          # Authentication options (choose one):
+          location: "US" # o "EU", o tu región
+          # Opciones de autenticación (elige una):
           use_application_default_credentials: true
           # service_account_file: "/path/to/service-account.json"
           # service_account_json: |
           #   { "type": "service_account", ... }
 ```
 
-### 5.4 Update Pipeline & Assets
-- In `pipeline/pipeline.yml`: change `default_connections.duckdb` → `default_connections.bigquery`
-  - Example: `duckdb: duckdb-default` → `bigquery: gcp-default`
-- In SQL assets: change the `type` to BigQuery:
+### 5.4 Actualizar el Pipeline y los Activos
+- En `pipeline/pipeline.yml`: cambia `default_connections.duckdb` → `default_connections.bigquery`
+  - Ejemplo: `duckdb: duckdb-default` → `bigquery: gcp-default`
+- En los activos SQL: cambia el `type` a BigQuery:
   - `duckdb.sql` → `bq.sql`
-- In seed assets: change the `type` to BigQuery:
+- En los activos seed: cambia el `type` a BigQuery:
   - `duckdb.seed` → `bq.seed`
-- In Python assets that use materialization: set/update `connection:` to `gcp-default`
-- Fix any SQL dialect issues:
-  - Data types can differ (e.g., `INTEGER` vs `INT64`, timestamp handling, quoting)
-  - Some functions/operators may need a BigQuery equivalent
+- En los activos Python que usan materialización: establece/actualiza `connection:` a `gcp-default`
+- Corrige cualquier problema de dialecto SQL:
+  - Los tipos de datos pueden diferir (p. ej., `INTEGER` vs `INT64`, manejo de timestamps, comillas)
+  - Algunas funciones/operadores pueden requerir un equivalente en BigQuery
 
-Docs:
-- BigQuery platform: https://getbruin.com/docs/bruin/platforms/bigquery
-- `.bruin.yml` secrets backend: https://getbruin.com/docs/bruin/secrets/bruinyml
-
----
-
-## Key Commands Reference
-
-| Command | Purpose |
-|---------|---------|
-| `bruin init <template> <folder>` | Initialize a new project |
-| `bruin validate <path>` | Validate pipeline/asset structure |
-| `bruin run <path>` | Execute pipeline or asset |
-| `bruin run --downstream` | Run asset and all downstream assets |
-| `bruin run --full-refresh` | Truncate and rebuild from scratch |
-| `bruin run --only checks` | Run quality checks without asset execution |
-| `bruin query --connection <conn> --query "..."` | Execute ad-hoc queries |
-| `bruin lineage <path>` | View asset dependencies |
-| `bruin render <path>` | Show rendered template output |
-| `bruin format <path>` | Format code |
-| `bruin connections list` | List configured connections |
-| `bruin connections ping <name>` | Test connection connectivity |
+Documentación:
+- Plataforma BigQuery: https://getbruin.com/docs/bruin/platforms/bigquery
+- Backend de secretos `.bruin.yml`: https://getbruin.com/docs/bruin/secrets/bruinyml
 
 ---
 
-## Best Practices & Tips
+## Referencia de Comandos Principales
 
-### Choosing the Right `incremental_key`
+| Comando | Propósito |
+|---------|-----------|
+| `bruin init <template> <folder>` | Inicializa un nuevo proyecto |
+| `bruin validate <path>` | Valida la estructura del pipeline/activo |
+| `bruin run <path>` | Ejecuta el pipeline o el activo |
+| `bruin run --downstream` | Ejecuta el activo y todos los activos descendentes |
+| `bruin run --full-refresh` | Trunca y reconstruye desde cero |
+| `bruin run --only checks` | Ejecuta las comprobaciones de calidad sin ejecutar el activo |
+| `bruin query --connection <conn> --query "..."` | Ejecuta consultas ad-hoc |
+| `bruin lineage <path>` | Visualiza las dependencias entre activos |
+| `bruin render <path>` | Muestra la salida de la plantilla renderizada |
+| `bruin format <path>` | Formatea el código |
+| `bruin connections list` | Lista las conexiones configuradas |
+| `bruin connections ping <n>` | Comprueba la conectividad de una conexión |
 
-When using `time_interval` strategy, the `incremental_key` determines which rows to delete and re-insert during each run.
+---
 
-**Key principles:**
-1. **Use the same key across all assets** - If staging uses `pickup_datetime` as the incremental key, reports should too. This ensures data flows consistently through your pipeline.
+## Buenas Prácticas y Consejos
 
-2. **Match the key to your data extraction logic** - In this example, NYC taxi data files are organized by month based on when rides started. Since each file contains rides where `pickup_datetime` falls in that month, `pickup_datetime` is the natural incremental key.
+### Elegir el `incremental_key` Correcto
 
-3. **The key should be immutable** - Once a row is extracted, its incremental key value shouldn't change. Event timestamps (like `pickup_datetime`) are better than processing timestamps for this reason.
+Al usar la estrategia `time_interval`, el `incremental_key` determina qué filas se eliminan y se reinsertan en cada ejecución.
 
-### Deduplication Strategy
+**Principios clave:**
+1. **Usa la misma clave en todos los activos** — Si staging usa `pickup_datetime` como clave incremental, reports también debería hacerlo. Esto asegura que los datos fluyan de forma consistente a través del pipeline.
 
-Since there's no unique ID per row in taxi data, you'll need a **composite key** for deduplication:
+2. **Adapta la clave a tu lógica de extracción de datos** — En este ejemplo, los archivos de datos de taxis de Nueva York están organizados por mes según el inicio del viaje. Como cada archivo contiene viajes cuyo `pickup_datetime` cae en ese mes, `pickup_datetime` es la clave incremental natural.
 
-- Combine columns that together identify a unique trip
-- Example: `(pickup_datetime, dropoff_datetime, pickup_location_id, dropoff_location_id, fare_amount)`
-- Use these columns as `primary_key: true` in your column definitions
-- In SQL, deduplicate using `ROW_NUMBER()` or `QUALIFY` to keep one record per composite key
+3. **La clave debe ser inmutable** — Una vez que se extrae una fila, el valor de su clave incremental no debería cambiar. Los timestamps de eventos (como `pickup_datetime`) son mejores que los timestamps de procesamiento por esta razón.
 
-### Quality-First Development
+### Estrategia de Deduplicación
 
-- Add checks early, not as an afterthought
-- Use built-in checks: `not_null`, `unique`, `positive`, `non_negative`, `accepted_values`
-- Add custom checks for business-specific invariants
+Como los datos de taxis no tienen un ID único por fila, necesitarás una **clave compuesta** para la deduplicación:
 
-### Project Organization
+- Combina columnas que juntas identifiquen un viaje único
+- Ejemplo: `(pickup_datetime, dropoff_datetime, pickup_location_id, dropoff_location_id, fare_amount)`
+- Usa estas columnas con `primary_key: true` en las definiciones de tus columnas
+- En SQL, deduplica usando `ROW_NUMBER()` o `QUALIFY` para conservar un registro por clave compuesta
 
-- Keep assets in `pipeline/assets/`
-- Use schemas to organize layers: `ingestion.`, `staging.`, `reports.`
-- Put non-asset SQL in separate folders (`/analyses`, `/queries`)
+### Desarrollo con Calidad desde el Principio
 
-### Local Development
+- Añade comprobaciones desde el inicio, no como algo que se añade al final
+- Usa las comprobaciones integradas: `not_null`, `unique`, `positive`, `non_negative`, `accepted_values`
+- Añade comprobaciones personalizadas para invariantes específicos del negocio
 
-- Always validate before running: `bruin validate ./pipeline/pipeline.yml`
-- Use `--full-refresh` for initial runs on new databases
-- Query tables directly to verify results: `bruin query --connection duckdb-default --query "..."`
-- Check lineage to understand impact of changes: `bruin lineage <asset>`
+### Organización del Proyecto
+
+- Mantén los activos en `pipeline/assets/`
+- Usa schemas para organizar las capas: `ingestion.`, `staging.`, `reports.`
+- Coloca el SQL que no sea de activos en carpetas separadas (`/analyses`, `/queries`)
+
+### Desarrollo Local
+
+- Valida siempre antes de ejecutar: `bruin validate ./pipeline/pipeline.yml`
+- Usa `--full-refresh` para las primeras ejecuciones en bases de datos nuevas
+- Consulta las tablas directamente para verificar los resultados: `bruin query --connection duckdb-default --query "..."`
+- Comprueba el linaje para entender el impacto de los cambios: `bruin lineage <asset>`
