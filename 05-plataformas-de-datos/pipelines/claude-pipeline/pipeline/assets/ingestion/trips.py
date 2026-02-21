@@ -1,69 +1,157 @@
 """@bruin
 
-# TODO: Set the asset name (recommended pattern: schema.asset_name).
-# - Convention in this module: use an `ingestion.` schema for raw ingestion tables.
-name: TODO_SET_ASSET_NAME
-
-# TODO: Set the asset type.
-# Docs: https://getbruin.com/docs/bruin/assets/python
+name: ingestion.trips
 type: python
+image: python:3.11
+connection: duckdb-default
 
-# TODO: Pick a Python image version (Bruin runs Python in isolated environments).
-# Example: python:3.11
-image: TODO_SET_PYTHON_IMAGE
-
-# TODO: Choose materialization (optional, but recommended).
-# Bruin feature: Python materialization lets you return a DataFrame (or list[dict]) and Bruin loads it into your destination.
-# This is usually the easiest way to build ingestion assets in Bruin.
-# Alternative (advanced): you can skip Bruin Python materialization and write a "plain" Python asset that manually writes
-# into DuckDB (or another destination) using your own client library and SQL. In that case:
-# - you typically omit the `materialization:` block
-# - you do NOT need a `materialize()` function; you just run Python code
-# Docs: https://getbruin.com/docs/bruin/assets/python#materialization
 materialization:
-  # TODO: choose `table` or `view` (ingestion generally should be a table)
   type: table
-  # TODO: pick a strategy.
-  # suggested strategy: append
-  strategy: TODO
+  strategy: append
 
-# TODO: Define output columns (names + types) for metadata, lineage, and quality checks.
-# Tip: mark stable identifiers as `primary_key: true` if you plan to use `merge` later.
-# Docs: https://getbruin.com/docs/bruin/assets/columns
 columns:
-  - name: TODO_col1
-    type: TODO_type
-    description: TODO
+  - name: taxi_type
+    type: string
+    description: "Type of taxi: yellow or green"
+    checks:
+      - name: not_null
+      - name: accepted_values
+        value: ["yellow", "green"]
+  - name: pickup_datetime
+    type: timestamp
+    description: "Trip pickup datetime"
+    checks:
+      - name: not_null
+  - name: dropoff_datetime
+    type: timestamp
+    description: "Trip dropoff datetime"
+    checks:
+      - name: not_null
+  - name: passenger_count
+    type: integer
+    description: "Number of passengers"
+  - name: trip_distance
+    type: float
+    description: "Trip distance in miles"
+    checks:
+      - name: non_negative
+  - name: pickup_location_id
+    type: integer
+    description: "TLC Taxi Zone pickup location ID"
+  - name: dropoff_location_id
+    type: integer
+    description: "TLC Taxi Zone dropoff location ID"
+  - name: payment_type
+    type: integer
+    description: "Payment type code"
+  - name: fare_amount
+    type: float
+    description: "Fare amount in USD (raw; may include negative corrections)"
+  - name: extra
+    type: float
+    description: "Extra charges"
+  - name: mta_tax
+    type: float
+    description: "MTA tax amount"
+  - name: tip_amount
+    type: float
+    description: "Tip amount"
+  - name: tolls_amount
+    type: float
+    description: "Tolls amount"
+  - name: improvement_surcharge
+    type: float
+    description: "Improvement surcharge"
+  - name: total_amount
+    type: float
+    description: "Total amount charged (raw; may include negative corrections)"
+  - name: congestion_surcharge
+    type: float
+    description: "Congestion surcharge"
+  - name: extracted_at
+    type: timestamp
+    description: "Timestamp when the data was extracted"
+    checks:
+      - name: not_null
 
 @bruin"""
 
-# TODO: Add imports needed for your ingestion (e.g., pandas, requests).
-# - Put dependencies in the nearest `requirements.txt` (this template has one at the pipeline root).
-# Docs: https://getbruin.com/docs/bruin/assets/python
+import io
+import json
+import os
+from datetime import datetime, date, timedelta
+
+import pandas as pd
+import requests
+from dateutil.relativedelta import relativedelta
 
 
-# TODO: Only implement `materialize()` if you are using Bruin Python materialization.
-# If you choose the manual-write approach (no `materialization:` block), remove this function and implement ingestion
-# as a standard Python script instead.
 def materialize():
-    """
-    TODO: Implement ingestion using Bruin runtime context.
+    start_date = datetime.strptime(os.environ["BRUIN_START_DATE"], "%Y-%m-%d").date()
+    end_date = datetime.strptime(os.environ["BRUIN_END_DATE"], "%Y-%m-%d").date()
 
-    Required Bruin concepts to use here:
-    - Built-in date window variables:
-      - BRUIN_START_DATE / BRUIN_END_DATE (YYYY-MM-DD)
-      - BRUIN_START_DATETIME / BRUIN_END_DATETIME (ISO datetime)
-      Docs: https://getbruin.com/docs/bruin/assets/python#environment-variables
-    - Pipeline variables:
-      - Read JSON from BRUIN_VARS, e.g. `taxi_types`
-      Docs: https://getbruin.com/docs/bruin/getting-started/pipeline-variables
+    bruin_vars = json.loads(os.environ.get("BRUIN_VARS", "{}"))
+    taxi_types = bruin_vars.get("taxi_types", ["yellow"])
 
-    Design TODOs (keep logic minimal, focus on architecture):
-    - Use start/end dates + `taxi_types` to generate a list of source endpoints for the run window.
-    - Fetch data for each endpoint, parse into DataFrames, and concatenate.
-    - Add a column like `extracted_at` for lineage/debugging (timestamp of extraction).
-    - Prefer append-only in ingestion; handle duplicates in staging.
-    """
-    # return final_dataframe
+    base_url = "https://d37ci6vzurychx.cloudfront.net/trip-data"
+    extracted_at = datetime.utcnow()
 
+    all_dfs = []
 
+    # Determine inclusive month range: from start_date's month to the month containing (end_date - 1 day)
+    start_month = date(start_date.year, start_date.month, 1)
+    last_day = end_date - timedelta(days=1)
+    end_month = date(last_day.year, last_day.month, 1)
+
+    current = start_month
+    while current <= end_month:
+        year_month = current.strftime("%Y-%m")
+
+        for taxi_type in taxi_types:
+            url = f"{base_url}/{taxi_type}_tripdata_{year_month}.parquet"
+            print(f"Fetching {url}...")
+
+            try:
+                response = requests.get(url, timeout=120)
+                response.raise_for_status()
+
+                df = pd.read_parquet(io.BytesIO(response.content))
+
+                # Normalize pickup/dropoff column names (differ between yellow and green)
+                rename_map = {
+                    "PULocationID": "pickup_location_id",
+                    "DOLocationID": "dropoff_location_id",
+                }
+                if taxi_type == "yellow":
+                    rename_map["tpep_pickup_datetime"] = "pickup_datetime"
+                    rename_map["tpep_dropoff_datetime"] = "dropoff_datetime"
+                elif taxi_type == "green":
+                    rename_map["lpep_pickup_datetime"] = "pickup_datetime"
+                    rename_map["lpep_dropoff_datetime"] = "dropoff_datetime"
+                df = df.rename(columns=rename_map)
+
+                df["taxi_type"] = taxi_type
+                df["extracted_at"] = extracted_at
+
+                desired_cols = [
+                    "taxi_type", "pickup_datetime", "dropoff_datetime",
+                    "passenger_count", "trip_distance", "pickup_location_id",
+                    "dropoff_location_id", "payment_type", "fare_amount",
+                    "extra", "mta_tax", "tip_amount", "tolls_amount",
+                    "improvement_surcharge", "total_amount", "congestion_surcharge",
+                    "extracted_at",
+                ]
+                df = df[[c for c in desired_cols if c in df.columns]]
+
+                all_dfs.append(df)
+                print(f"Loaded {len(df):,} rows for {taxi_type} {year_month}")
+
+            except requests.HTTPError as e:
+                print(f"Warning: Could not fetch {url}: {e}")
+
+        current += relativedelta(months=1)
+
+    if not all_dfs:
+        return pd.DataFrame()
+
+    return pd.concat(all_dfs, ignore_index=True)
