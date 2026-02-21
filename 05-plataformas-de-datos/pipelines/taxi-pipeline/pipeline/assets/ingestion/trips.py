@@ -95,6 +95,8 @@ def materialize():
     dataframes = []
     for taxi_type in taxi_types:
         for month in months:
+            print(f"Ejecutando la ingestión de datos para taxis de tipo `{taxi_type}`. Año/Mes: {month.year}/{month.month:02d}")
+
             url = f"{base_url}/{taxi_type}_tripdata_{month.year}-{month.month:02d}.parquet"
             response = requests.get(url)
             response.raise_for_status()
@@ -108,6 +110,12 @@ def materialize():
 
             if "tpep_dropoff_datetime" in df.columns:
               df = df.rename(columns={"tpep_dropoff_datetime": "dropoff_datetime"})
+
+            if "lpep_pickup_datetime" in df.columns:
+              df = df.rename(columns={"lpep_pickup_datetime": "pickup_datetime"})
+
+            if "lpep_dropoff_datetime" in df.columns:
+              df = df.rename(columns={"lpep_dropoff_datetime": "dropoff_datetime"})
 
             df = df.rename(columns={
               "PULocationID": "pickup_location_id",
