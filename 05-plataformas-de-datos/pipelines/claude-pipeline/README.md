@@ -54,7 +54,7 @@ La estructura sugerida separa la ingestión, el staging y el reporting, pero pue
 Las partes obligatorias de un proyecto Bruin son:
 - `.bruin.yml` en el directorio raíz
 - `pipeline.yml` en el directorio `pipeline/` (o en el directorio raíz si mantienes todo en un único nivel)
-- La carpeta `assets/` junto a `pipeline.yml`, que contiene tus archivos de activos Python, SQL y YAML
+- La carpeta `assets/` junto a `pipeline.yml`, que contiene tus archivos de artefactos Python, SQL y YAML
 
 ```text
 claude-pipeline/
@@ -66,7 +66,7 @@ claude-pipeline/
         ├── ingestion/
         │   ├── trips.py                    # Ingestión en Python
         │   ├── requirements.txt            # Dependencias Python para la ingestión
-        │   ├── payment_lookup.asset.yml    # Definición del activo seed
+        │   ├── payment_lookup.asset.yml    # Definición del artefacto seed
         │   └── payment_lookup.csv          # Datos seed
         ├── staging/
         │   └── trips.sql                   # Limpieza y transformación
@@ -103,7 +103,7 @@ Este módulo presenta Bruin como una plataforma de datos unificada que combina *
 
 - Entender qué es una plataforma de datos y por qué la necesitas
 - Aprender cómo encaja Bruin en el stack de datos moderno
-- Comprender las abstracciones principales de Bruin: activos, flujo de datos, entornos, conexiones
+- Comprender las abstracciones principales de Bruin: artefactos, flujo de datos, entornos, conexiones
 
 ### 1.1 Componentes del Stack de Datos Moderno
 
@@ -131,8 +131,8 @@ Este módulo presenta Bruin como una plataforma de datos unificada que combina *
 
 ### 1.4 Conceptos Principales
 
-- **Activo (Asset)**: Cualquier artefacto de datos que aporte valor (tabla, vista, archivo, modelo de ML, etc.)
-- **Flujo de datos**: Un grupo de activos que se ejecutan juntos en orden de dependencia
+- **Artefacto (Asset)**: Cualquier artefacto de datos que aporte valor (tabla, vista, archivo, modelo de ML, etc.)
+- **Flujo de datos**: Un grupo de artefactos que se ejecutan juntos en orden de dependencia
 - **Entorno (Environment)**: Un conjunto de configuraciones de conexión con nombre (p. ej., `default`, `production`) para que el mismo flujo de datos pueda ejecutarse localmente y en producción
 - **Conexión (Connection)**: Credenciales para autenticarse con fuentes y destinos de datos externos
 - **Ejecución de flujo de datos (Pipeline run)**: Una instancia de ejecución concreta con fechas y configuración específicas
@@ -173,7 +173,7 @@ Consulta la página de documentación para más detalles:
    - Instálala y recarga VS Code
 
 2. Abre esta carpeta de plantilla y ejecútala desde el panel de Bruin:
-   - Abre `pipeline/pipeline.yml` o cualquier archivo de activo en `pipeline/assets/`
+   - Abre `pipeline/pipeline.yml` o cualquier archivo de artefacto en `pipeline/assets/`
    - Usa el panel de Bruin para ejecutar `validate`, `run` y ver el código renderizado
    - Para abrir el panel, haz clic en el logo de Bruin en la esquina superior derecha del archivo
 
@@ -187,7 +187,7 @@ Consulta la página de documentación para más detalles:
 - Explora la estructura generada:
   - `.bruin.yml` — configuración de entornos y conexiones
   - `pipeline/pipeline.yml` — nombre del flujo de datos, programación, variables
-  - `pipeline/assets/` — donde viven tus activos SQL/Python
+  - `pipeline/assets/` — donde viven tus artefactos SQL/Python
   - `pipeline/assets/**/requirements.txt` — dependencias Python (con alcance a la carpeta más cercana)
 
 **Importante**: El CLI de Bruin requiere una carpeta inicializada con git (la usa para detectar la raíz del proyecto); `bruin init` inicializa git automáticamente si es necesario
@@ -212,7 +212,7 @@ Consulta la página de documentación para más detalles:
 - Lista las conexiones: `bruin connections list`
 - Añade una conexión: `bruin connections add`
 - Comprueba la conectividad: `bruin connections ping <connection-name>`
-- Las conexiones predeterminadas reducen la repetición entre activos
+- Las conexiones predeterminadas reducen la repetición entre artefactos
 
 ---
 
@@ -221,33 +221,33 @@ Consulta la página de documentación para más detalles:
 ### Objetivos de Aprendizaje
 
 - Construir un flujo de datos ELT completo: ingestión → staging → reports
-- Entender los tres tipos de activos: Python, SQL y Seed
+- Entender los tres tipos de artefactos: Python, SQL y Seed
 - Aplicar estrategias de materialización para el procesamiento incremental
 - Añadir comprobaciones de calidad y declarar dependencias
 
 ### 3.1 Arquitectura del flujo de datos
 
-- **Ingestión**: Extrae datos en bruto de fuentes externas (activos Python, CSVs seed)
-- **Staging**: Limpia, normaliza, deduplica y enriquece (activos SQL)
-- **Reports**: Agrega para dashboards y analíticas (activos SQL)
-- Los activos forman un DAG—Bruin los ejecuta en orden de dependencia
+- **Ingestión**: Extrae datos en bruto de fuentes externas (artefactos Python, CSVs seed)
+- **Staging**: Limpia, normaliza, deduplica y enriquece (artefactos SQL)
+- **Reports**: Agrega para dashboards y analíticas (artefactos SQL)
+- Los artefactos forman un DAG—Bruin los ejecuta en orden de dependencia
 
 ### 3.2 Capa de Ingestión
 
-- Activo Python para obtener datos de taxis de Nueva York desde el endpoint público de TLC
-- Activo seed para cargar una tabla de búsqueda estática de tipos de pago desde CSV
+- Artefacto Python para obtener datos de taxis de Nueva York desde el endpoint público de TLC
+- Artefacto seed para cargar una tabla de búsqueda estática de tipos de pago desde CSV
 - Usa la estrategia `append` para la ingestión en bruto (gestiona los duplicados en capas posteriores)
 - Sigue las instrucciones TODO en `pipeline/assets/ingestion/trips.py` y `pipeline/assets/ingestion/payment_lookup.asset.yml`
 
 ### 3.3 Capa de Staging
 
-- Activo SQL para limpiar, deduplicar y unir con la tabla de búsqueda para enriquecer los datos de viajes en bruto
+- Artefacto SQL para limpiar, deduplicar y unir con la tabla de búsqueda para enriquecer los datos de viajes en bruto
 - Usa la estrategia `time_interval` para el procesamiento incremental
 - Sigue las instrucciones TODO en `pipeline/assets/staging/trips.sql`
 
 ### 3.4 Capa de Reports
 
-- Activo SQL para agregar los datos de staging en métricas listas para analíticas
+- Artefacto SQL para agregar los datos de staging en métricas listas para analíticas
 - Usa la estrategia `time_interval` y el mismo `incremental_key` que en staging para mantener la consistencia
 - Sigue las instrucciones TODO en `pipeline/assets/reports/trips_report.sql`
 
@@ -273,7 +273,7 @@ bruin run \
     --full-refresh \
     ./pipeline/pipeline.yml
 
-# Ejecuta un activo de ingestión y luego los activos descendentes (para pruebas incrementales)
+# Ejecuta un artefacto de ingestión y luego los artefactos descendentes (para pruebas incrementales)
 bruin run ./pipeline/assets/ingestion/trips.py \
     --environment default \
     --config-file .bruin.yml \
@@ -293,7 +293,7 @@ bruin query \
 # Requiere el CLI de DuckDB instalado localmente.
 duckdb duckdb.db -ui
 
-# Comprueba el linaje para entender las dependencias entre activos
+# Comprueba el linaje para entender las dependencias entre artefactos
 bruin lineage ./pipeline/pipeline.yml
 ```
 
@@ -339,10 +339,10 @@ Documentación de Bruin MCP: https://getbruin.com/docs/bruin/getting-started/bru
 ### 4.3 Construyendo el flujo de datos con IA
 
 - Pide a la IA que ayude a configurar `.bruin.yml` y `pipeline.yml`
-- Solicita el scaffolding de activos: "Crea un activo de ingestión Python para los datos de taxis de Nueva York"
+- Solicita el scaffolding de artefactos: "Crea un artefacto de ingestión Python para los datos de taxis de Nueva York"
 - Obtén ayuda con la materialización: "¿Qué estrategia debería usar para cargas incrementales?"
 - Depura problemas: "¿Por qué falla mi comprobación de calidad?"
-- Ejecuta comandos: "Ejecuta el activo staging.trips con --full-refresh"
+- Ejecuta comandos: "Ejecuta el artefacto staging.trips con --full-refresh"
 
 ### 4.4 Ejemplos de Prompts
 
@@ -352,14 +352,14 @@ Documentación de Bruin MCP: https://getbruin.com/docs/bruin/getting-started/bru
 - "¿Qué estrategias de materialización admite Bruin?"
 
 **Comandos para construir o modificar el flujo de datos:**
-- "Escribe un activo Python que obtenga datos de este endpoint de la API"
+- "Escribe un artefacto Python que obtenga datos de este endpoint de la API"
 - "Genera el SQL para deduplicar viajes usando una clave compuesta"
 - "Añade una comprobación de calidad not_null a la columna pickup_datetime"
 
 **Comandos para probar y validar el flujo de datos:**
 - "Valida el flujo de datos completo"
-- "Ejecuta el activo staging.trips con --full-refresh"
-- "Comprueba el linaje de mi activo reports.trips_report"
+- "Ejecuta el artefacto staging.trips con --full-refresh"
+- "Comprueba el linaje de mi artefacto reports.trips_report"
 
 **Comandos para consultar y analizar los datos:**
 - "Ejecuta una consulta para mostrar el recuento de filas de todas mis tablas"
@@ -369,7 +369,7 @@ Documentación de Bruin MCP: https://getbruin.com/docs/bruin/getting-started/bru
 ### 4.5 Flujo de Trabajo Asistido por IA
 
 - Empieza por la configuración: deja que la IA ayude a configurar `.bruin.yml` y `pipeline.yml`
-- Construye de forma incremental: crea un activo a la vez, valida, ejecuta e itera
+- Construye de forma incremental: crea un artefacto a la vez, valida, ejecuta e itera
 - Usa la IA para la documentación: pregunta sobre las funcionalidades de Bruin en lugar de buscar en los docs
 - Depura en conjunto: comparte los mensajes de error y deja que la IA sugiera soluciones
 - Aprende haciendo: haz preguntas del tipo "¿por qué?" para entender los conceptos de Bruin
@@ -426,16 +426,16 @@ Detalles de la fuente de datos de viajes en bruto de los taxis de Nueva York:
   - `green_tripdata_2025-01.parquet`
 - **Tipos de taxi**: `yellow` (por defecto), `green`
 
-Construye en este orden, validando cada activo con `bruin validate` antes de continuar:
+Construye en este orden, validando cada artefacto con `bruin validate` antes de continuar:
 
-a) **pipeline/assets/ingestion/payment_lookup.asset.yml** - Activo seed para cargar la tabla de búsqueda desde CSV
-b) **pipeline/assets/ingestion/trips.py** - Activo Python para obtener datos Parquet de los taxis de Nueva York desde el endpoint de TLC
+a) **pipeline/assets/ingestion/payment_lookup.asset.yml** - Artefacto seed para cargar la tabla de búsqueda desde CSV
+b) **pipeline/assets/ingestion/trips.py** - Artefacto Python para obtener datos Parquet de los taxis de Nueva York desde el endpoint de TLC
    - Usa la variable `taxi_types` y el rango de fechas de BRUIN_START_DATE/BRUIN_END_DATE
    - Añade requirements.txt con: pandas, requests, pyarrow, python-dateutil
    - Conserva los datos en su formato más bruto, sin ninguna limpieza ni transformación
-c) **pipeline/assets/staging/trips.sql** - Activo SQL para limpiar, deduplicar (ROW_NUMBER) y enriquecer con la tabla de búsqueda de pagos
+c) **pipeline/assets/staging/trips.sql** - Artefacto SQL para limpiar, deduplicar (ROW_NUMBER) y enriquecer con la tabla de búsqueda de pagos
    - Usa la estrategia `time_interval` con `pickup_datetime` como incremental_key
-d) **pipeline/assets/reports/trips_report.sql** - Activo SQL para agregar por fecha, taxi_type y payment_type
+d) **pipeline/assets/reports/trips_report.sql** - Artefacto SQL para agregar por fecha, taxi_type y payment_type
    - Usa la estrategia `time_interval` para mantener la consistencia
 
 ### 3. Validar y Ejecutar
@@ -462,7 +462,7 @@ Esta parte toma lo que construiste localmente y lo ejecuta en **Google BigQuery*
 ### 5.1 Crear un Proyecto GCP + Conjuntos de Datos en BigQuery
 
 1. Crea (o selecciona) un proyecto GCP y activa la API de BigQuery
-2. Crea conjuntos de datos que coincidan con los schemas de tus activos (recomendado para este módulo):
+2. Crea conjuntos de datos que coincidan con los schemas de tus artefactos (recomendado para este módulo):
    - `ingestion`
    - `staging`
    - `reports`
@@ -491,15 +491,15 @@ environments:
           #   { "type": "service_account", ... }
 ```
 
-### 5.4 Actualizar el flujo de datos y los Activos
+### 5.4 Actualizar el flujo de datos y los artefactos
 
 - En `pipeline/pipeline.yml`: cambia `default_connections.duckdb` → `default_connections.bigquery`
   - Ejemplo: `duckdb: duckdb-default` → `bigquery: gcp-default`
-- En los activos SQL: cambia el `type` a BigQuery:
+- En los artefactos SQL: cambia el `type` a BigQuery:
   - `duckdb.sql` → `bq.sql`
-- En los activos seed: cambia el `type` a BigQuery:
+- En los artefactos seed: cambia el `type` a BigQuery:
   - `duckdb.seed` → `bq.seed`
-- En los activos Python que usan materialización: establece/actualiza `connection:` a `gcp-default`
+- En los artefactos Python que usan materialización: establece/actualiza `connection:` a `gcp-default`
 - Corrige cualquier problema de dialecto SQL:
   - Los tipos de datos pueden diferir (p. ej., `INTEGER` vs `INT64`, manejo de timestamps, comillas)
   - Algunas funciones/operadores pueden requerir un equivalente en BigQuery
@@ -515,13 +515,13 @@ Documentación:
 | Comando | Propósito |
 |---------|-----------|
 | `bruin init <template> <folder>` | Inicializa un nuevo proyecto |
-| `bruin validate <path>` | Valida la estructura del flujo de datos/activo |
-| `bruin run <path>` | Ejecuta el flujo de datos o el activo |
-| `bruin run --downstream` | Ejecuta el activo y todos los activos descendentes |
+| `bruin validate <path>` | Valida la estructura del flujo de datos/artefacto |
+| `bruin run <path>` | Ejecuta el flujo de datos o el artefacto |
+| `bruin run --downstream` | Ejecuta el artefacto y todos los artefactos descendentes |
 | `bruin run --full-refresh` | Trunca y reconstruye desde cero |
-| `bruin run --only checks` | Ejecuta las comprobaciones de calidad sin ejecutar el activo |
+| `bruin run --only checks` | Ejecuta las comprobaciones de calidad sin ejecutar el artefacto |
 | `bruin query --connection <conn> --query "..."` | Ejecuta consultas ad-hoc |
-| `bruin lineage <path>` | Visualiza las dependencias entre activos |
+| `bruin lineage <path>` | Visualiza las dependencias entre artefactos |
 | `bruin render <path>` | Muestra la salida de la plantilla renderizada |
 | `bruin format <path>` | Formatea el código |
 | `bruin connections list` | Lista las conexiones configuradas |
@@ -536,7 +536,7 @@ Documentación:
 Al usar la estrategia `time_interval`, el `incremental_key` determina qué filas se eliminan y se reinsertan en cada ejecución.
 
 **Principios clave:**
-1. **Usa la misma clave en todos los activos** — Si staging usa `pickup_datetime` como clave incremental, reports también debería hacerlo. Esto asegura que los datos fluyan de forma consistente a través del flujo de datos.
+1. **Usa la misma clave en todos los artefactos** — Si staging usa `pickup_datetime` como clave incremental, reports también debería hacerlo. Esto asegura que los datos fluyan de forma consistente a través del flujo de datos.
 
 2. **Adapta la clave a tu lógica de extracción de datos** — En este ejemplo, los archivos de datos de taxis de Nueva York están organizados por mes según el inicio del viaje. Como cada archivo contiene viajes cuyo `pickup_datetime` cae en ese mes, `pickup_datetime` es la clave incremental natural.
 
@@ -559,9 +559,9 @@ Como los datos de taxis no tienen un ID único por fila, necesitarás una **clav
 
 ### Organización del Proyecto
 
-- Mantén los activos en `pipeline/assets/`
+- Mantén los artefactos en `pipeline/assets/`
 - Usa schemas para organizar las capas: `ingestion.`, `staging.`, `reports.`
-- Coloca el SQL que no sea de activos en carpetas separadas (`/analyses`, `/queries`)
+- Coloca el SQL que no sea de artefactos en carpetas separadas (`/analyses`, `/queries`)
 
 ### Desarrollo Local
 
