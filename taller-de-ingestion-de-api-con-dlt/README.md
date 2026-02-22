@@ -134,7 +134,7 @@ uv init --python 3.11 --directory .
 Ahora instalamos **dlt** con el conjunto de dependencias que se recomienda para desarrollo local (que incluye `duckdb`, `marimo`, `pyarrow` y `fastmcp`).
 
 ```bash
-uv pip install "dlt[workspace]"
+uv add "dlt[workspace]"
 ```
 
 E inicializamos nuestro espacio de trabajo especificando nuestro:
@@ -163,6 +163,14 @@ A estas alturas, además de la inicialización de nuestro proyecto **dlt**, tamb
 > Después de añadir los endpoints, permite que el usuario ejecute la pipeline con `uv run python open_library_pipeline.py` y queda a la espera de más instrucciones.
 
 Con esto, Claude generó para nosotros un [open_library_pipeline.py](pipelines/openlibrary-pipeline/open_library_pipeline.py) casi funcional la que solo tendremos que hacer los ajustes mínimos que consideremos convenientes.
+
+> [!NOTE]
+> En una primera instancia, siguiendo los pasos descritos hasta aquí, conseguimos que Claude Code generase un flujo de datos funcional.
+> Sin embargo, podemos darle una pequeña ayuda adicional instalando el servidor MCP de **dlt**.
+
+```bash
+claude mcp add dlt -- uv run --with "dlt[duckdb]" --with "dlt-mcp[search]" python -m dlt_mcp
+```
 
 ## Ejecución del flujo de datos
 
@@ -328,8 +336,65 @@ Y obtenemos:
 ]
 ```
 
-## Continúa
+## Espacio de trabajo de **dltHub**
 
-> [!WARNING]
-> Este documento no ha sido completado aún.
-> Voy por aquí: https://www.youtube.com/live/5eMytPBgmVs?si=XJUNB9U2mkopoTJu&t=2323
+### Paso 1: Carga de datos con andamios LLM
+
+En el artículo [Guía práctica para la construcción de tuberías de datos nativas de LLM con el Espacio de trabajo de dltHub](https://dlthub.com/blog/practitioners-guide-dlthub-workspace) se presenta una metodología de trabajo en la que se parte de "andamios" prefabricados que facilitan el trabajo de los LLMs al darles cierta parte de los flujos de datos ya construida. A esta estrategia la llaman el "momento IKEA de la ingeniería de datos".
+
+### Paso 2: Asegurar la calidad
+
+El espacio de trabajo de **dltHub** ofrece herramientas de inspección que facilitan la realización de comprobaciones sobre todos los aspectos de nuestros flujos de datos: desde nuestros esquemas, hasta nuestros datos y sus destinos finales. Entre esas herramientas están:
+
+* **dlt Dashboard**
+* **dlt MCP Server**
+* **dlt CLI**
+
+#### **dlt Dashboard**
+
+El [panel de control](https://dlthub.com/docs/general-usage/dashboard) de **dlt** es la herramienta que nos permite, entre otras cosas, comprobar el estado de nuestro flujo de datos, inspeccionar nuestros esquemas así como los estados de las cargas incrementales, o realizar consulta.
+
+##### Instalación
+
+Antes de instalar el panel de control, tendremos que asegurarnos de que tenemos **marimo** funcionando.
+
+```bash
+uv add marimo
+```
+
+Luego, podremos abrir el panel de control ejecutando:
+
+```bash
+uv run dlt dashboard
+```
+
+![dlt Dashboard](resources/screenshots/dlt-dashboard.png)
+
+Al abrirse el panel de control, lo primero que tendremos que hacer es seleccionar el flujo de datos que queremos analizar.
+
+Alternativamente, podemos abrir el panel de control cargando directamente nuestro flujo de datos:
+
+```bash
+dlt pipeline open_library_pipeline show
+```
+
+### Paso 3: Generar transformaciones e informes
+
+Para la generación de informes, **dlt** propone la combinación entre cuadernos **marimo** y la librería **ibis**.
+
+Un buen resumen de en qué consisten los cuadernos **marimo** lo tenemos en su propia página web:
+
+> "Transforma datos, entrena modelos y ejecuta consultas SQL con marimo: funciona como un notebook reactivo nativo de IA, almacenado como Python reproducible y compatible con Git. Ejecútalo sin problemas como scripts y aplicaciones. Todo de código abierto."
+>
+> Fuente: [marimo.io](https://marimo.io)
+
+Igualmente, sobre la librería **ibis** no hay mejor introducción que la de sus propios creadores:
+
+> "Una biblioteca de dataframes de código abierto compatible con cualquier sistema de datos.
+>
+> - Utiliza la misma API para más de 20 backends.
+> - Dataframes locales rápidos con DuckDB (predeterminado), Polars o DataFusion integrados.
+> - Itera localmente e implementa remotamente modificando una sola línea de código.
+> - Compón código de dataframes en SQL y Python, conectando la ingeniería de datos con la ciencia de datos."
+>
+> Fuente: [ibis-project.org](https://ibis-project.org)
