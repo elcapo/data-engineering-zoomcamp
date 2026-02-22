@@ -398,3 +398,139 @@ Igualmente, sobre la librería **ibis** no hay mejor introducción que la de sus
 > - Compón código de dataframes en SQL y Python, conectando la ingeniería de datos con la ciencia de datos."
 >
 > Fuente: [ibis-project.org](https://ibis-project.org)
+
+La propuesta sobre cómo combinar estas dos utilidades está explicada en el artículo (en inglés) [explore your data with Marimo](https://dlthub.com/docs/general-usage/dataset-access/marimo) y comienza con la instalación de dependencias:
+
+```bash
+uv add marimo "ibis-framework[duckdb]" altair
+```
+
+Con esto, pudimos componer una petición para Claude Code:
+
+> Usando la documentación disponible en:
+> - https://dlthub.com/docs/general-usage/dataset-access/marimo
+> Crea un panel de control con:
+> 1. una gráfica de barras que muestre el número de autores por autor
+> 2. una gráfica linear mostrando libros por año de publicación
+
+Que respondió creando un panel básico pero funcional.
+
+```
+● El archivo dashboard.py fue creado. Para ejecutarlo:
+
+  marimo edit dashboard.py
+
+  O en modo solo lectura (app desplegada):
+
+  marimo run dashboard.py
+
+  ---
+  Estructura del dashboard:
+
+  Celda 1 — Imports: marimo, ibis, altair
+
+  Celda 2 — Conexión a DuckDB:
+  con = ibis.connect("duckdb://open_library_pipeline.duckdb")
+
+  Celda 3 — Gráfica de barras (libros por autor):
+  - SQL que une books con books__author_name via _dlt_parent_id = _dlt_id
+  - Cuenta libros únicos (key) por autor
+  - Barras horizontales ordenadas de mayor a menor
+
+  Celda 4 — Gráfica lineal (libros por año):
+  - SQL sobre books.first_publish_year
+  - Cuenta libros por año, filtrando nulos
+  - Línea con puntos, eje X formateado como entero (sin decimales)
+
+  Ambas gráficas son interactivas gracias a mo.ui.altair_chart — puedes hacer hover para ver tooltips y seleccionar puntos/barras.
+
+✻ Worked for 3m 52s
+```
+
+Únicamente añadiendo el prefijo `uv run` a los comandos que nos sugirió Claude Code, pudimos abrir y consultar el panel.
+
+#### Revisión del código del panel
+
+El cuaderno generado por Claude Code empieza con la importación de dependencias, seguida de la instanciación de la conexión a la base de datos:
+
+```python
+import marimo as mo
+import ibis
+import altair as alt
+
+con = ibis.connect("duckdb://open_library_pipeline.duckdb")
+```
+
+Y a continuación dedica dos celdas, una a cada informe.
+
+En primer lugar, para generar la gráfica de "libros por autor" preparó una consulta SQL contra las tablas de libros y autores, y presentó los resultados usando `altair_chart`:
+
+```python
+df_authors = con.sql("""
+    SELECT
+        an.value AS author_name,
+        COUNT(DISTINCT b.key) AS book_count
+    FROM open_library_data.books b
+    JOIN open_library_data.books__author_name an
+        ON an._dlt_parent_id = b._dlt_id
+    GROUP BY an.value
+    ORDER BY book_count DESC
+""").to_pandas()
+
+mo.ui.altair_chart(
+    alt.Chart(df_authors)
+    .mark_bar(color="#4C78A8")
+    .encode(
+        y=alt.Y("author_name:N", sort="-x", title="Autor"),
+        x=alt.X("book_count:Q", title="Número de Libros"),
+        tooltip=[
+            alt.Tooltip("author_name:N", title="Autor"),
+            alt.Tooltip("book_count:Q", title="Libros"),
+        ],
+    )
+    .properties(
+        title="Libros por Autor",
+        height=alt.Step(22),
+    )
+)
+```
+
+![Libros por autor](resources/screenshots/libros-por-autor.png)
+
+En segundo lugar, para generar la gráfica de "libros por año de publicación" siguió la misma estrategia, esta vez consultando únicamente la tabla de libros:
+
+```python
+df_years = con.sql("""
+    SELECT
+        first_publish_year,
+        COUNT(DISTINCT key) AS book_count
+    FROM open_library_data.books
+    WHERE first_publish_year IS NOT NULL
+    GROUP BY first_publish_year
+    ORDER BY first_publish_year
+""").to_pandas()
+
+mo.ui.altair_chart(
+    alt.Chart(df_years)
+    .mark_line(point=True, color="#E45756")
+    .encode(
+        x=alt.X(
+            "first_publish_year:Q",
+            title="Año de Publicación",
+            axis=alt.Axis(format="d", labelAngle=-45),
+        ),
+        y=alt.Y("book_count:Q", title="Número de Libros"),
+        tooltip=[
+            alt.Tooltip("first_publish_year:Q", title="Año", format="d"),
+            alt.Tooltip("book_count:Q", title="Libros"),
+        ],
+    )
+    .properties(
+        title="Libros por Año de Publicación",
+        width=600,
+        height=300,
+    )
+)
+```
+
+![Libros por año de publicación](resources/screenshots/libros-por-ano-de-publicacion.png)
