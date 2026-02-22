@@ -120,6 +120,12 @@ El **Data Engineering Zoomcamp** es un curso práctico de 9 semanas que te ense�
 * [dbt](https://www.getdbt.com/)  
   Framework para transformar y modelar datos dentro del *almacén de datos*, aplicando buenas prácticas de ingeniería de software como tests y versionado.
 
+* [dlt](https://dlthub.com/)  
+  Librería de carga de datos que permite extraer datos de múltiples fuentes y cargarlos en almacenes analíticos de forma incremental, tipada y con gestión automática de esquemas.
+
+* [Bruin](https://getbruin.com/)  
+  Plataforma para construir, ejecutar y orquestar pipelines de datos declarativos usando SQL y Python, con enfoque en simplicidad, versionado y ejecución reproducible.
+
 * [Spark](https://spark.apache.org/)  
   Motor de procesamiento distribuido diseñado para trabajar con grandes conjuntos de datos de forma eficiente, tanto en batch como en streaming.
 
