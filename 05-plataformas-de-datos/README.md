@@ -13,6 +13,7 @@
 * Caso práctico: [Flujo de datos completo con Bruin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-plataformasdedatos-bruin-share-7430367697902710785-Ra7m)
 * Caso práctico: [Creación del flujo de datos con IA](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-plataformasdedatos-bruin-share-7431013679262998528-RuMo)
 * [Buenas prácticas programando con IA](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-ia-integraciaejncontaednua-share-7431063240530354176-eJhv)
+* [Taller de ingestión de datos con DLT](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-dataengineering-dlt-share-7431290312347652096-CvO3)
 
 ## Contribución FAQ
 
