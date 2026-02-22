@@ -1,9 +1,5 @@
 # Homework: Build Your Own dlt Pipeline
 
-You've seen how to build a pipeline with a scaffolded source. Now it's your turn to do it from scratch with a **custom API**.
-
-## The Challenge
-
 For this homework, build a dlt pipeline that loads NYC taxi trip data from a custom API into DuckDB and then answer some questions using the loaded data.
 
 ## Data Source
@@ -120,45 +116,3 @@ FROM taxi_pipeline.taxi_data_20260222123420.rides
 - The API returns paginated data. Make sure your pipeline handles pagination correctly.
 - If the agent gets stuck, paste the error into the chat and let it debug.
 - Use the dlt MCP server to ask questions about your pipeline metadata.
-
-## Learning in Public
-
-We encourage everyone to share what they learned. This is called "learning in public".
-
-Read more about the benefits [here](https://alexeyondata.substack.com/p/benefits-of-learning-in-public-and).
-
-### Example post for LinkedIn
-
-```
-🚀 dlt Workshop of Data Engineering Zoomcamp by @DataTalksClub complete!
-
-Just finished the Data Ingestion workshop with @dltHub. Learned how to:
-
-✅ Build REST API data pipelines with dlt
-✅ Use AI-assisted development with dlt MCP Server
-✅ Load paginated API data into DuckDB
-✅ Inspect pipeline data with dlt Dashboard and marimo notebooks
-
-Built a full NYC taxi data pipeline from a custom API - AI-assisted data engineering is the future!
-
-Here's my homework solution: <LINK>
-
-Following along with this amazing free course - who else is learning data engineering?
-
-You can sign up here: https://github.com/DataTalksClub/data-engineering-zoomcamp/
-```
-
-### Example post for Twitter/X
-
-```
-🔄 dlt Workshop of Data Engineering Zoomcamp done!
-
-- REST API pipelines with @dltHub
-- AI-assisted pipeline building
-- DuckDB as local data warehouse
-- dlt Dashboard & marimo notebooks
-
-My solution: <LINK>
-
-Free course by @DataTalksClub: https://github.com/DataTalksClub/data-engineering-zoomcamp/
-```
