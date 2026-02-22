@@ -1,6 +1,6 @@
-id: download_bulletin_dispositions
+id: download_disposition
 namespace: boc
-description: Download the index of dispositions of a bulletin
+description: Download a single disposition
 
 inputs:
   - id: year
@@ -14,6 +14,11 @@ inputs:
     displayName: Bulletin
     defaults: "1"
 
+  - id: disposition
+    type: INT
+    displayName: Disposition
+    defaults: "1"
+
   - id: overwrite
     type: BOOL
     displayName: Overwrite
@@ -21,18 +26,19 @@ inputs:
 
 variables:
   bulletin: "{{ inputs.bulletin < 10 ? '00' ~ inputs.bulletin : inputs.bulletin < 100 ? '0' ~ inputs.bulletin : inputs.bulletin }}"
-  source_url: "https://www.gobiernodecanarias.org/boc/{{ inputs.year }}/{{ render(vars.bulletin) }}/index.html"
-  folder: "/app/data/raw/boc/year/{{ inputs.year }}/bulletin"
-  file: "{{ vars.bulletin }}.html"
-  full_path: "{{ render(vars.folder) }}/{{ render(vars.file) }}"
+  disposition: "{{ inputs.disposition < 10 ? '00' ~ inputs.disposition : inputs.disposition < 100 ? '0' ~ inputs.disposition : inputs.disposition }}"
+  source_url: "https://www.gobiernodecanarias.org/boc/{{ inputs.year }}/{{ render(vars.bulletin) }}/{{ render(vars.disposition) }}.html"
+  folder: "/app/data/raw/boc/year/{{ inputs.year }}/bulletin/{{ render(vars.bulletin) }}/entries"
+  full_path: "{{ render(vars.folder) }}/{{ render(vars.disposition) }}.html"
 
 tasks:
   - id: label
     type: io.kestra.plugin.core.execution.Labels
     labels:
-      type: bulletin_dispositions
+      type: disposition
       year: "{{ inputs.year }}"
       bulletin: "{{ render(vars.bulletin) }}"
+      disposition: "{{ render(vars.disposition) }}"
 
   - id: log
     type: io.kestra.plugin.core.log.Log
@@ -50,7 +56,7 @@ tasks:
   - id: lookup_file
     type: io.kestra.plugin.fs.local.List
     from: "{{ render(vars.folder) }}"
-    regExp: ".*{{ render(vars.bulletin) | trim }}\\.html"
+    regExp: ".*{{ render(vars.disposition) | trim }}\\.html"
     recursive: false
     maxFiles: 1
 

@@ -1,6 +1,6 @@
 id: download_year_index
 namespace: boc
-description: Descarga el índice de años del archivo del BOC de Canarias
+description: Download the index of years
 
 tasks:
   - id: label

@@ -1,6 +1,6 @@
-id: schedule_download_current_year_bulletins
+id: schedule_update_current_year_bulletins
 namespace: boc
-description: Descarga el índice de boletines del año actual
+description: Updates the index of bulletins of the current year on a schedule
 
 variables:
   is_not_current_year: "{{ trigger.date | date('yyyy') != now() | date('yyyy')) }}"
@@ -33,5 +33,5 @@ tasks:
 triggers:
   - id: daily_schedule
     type: io.kestra.plugin.core.trigger.Schedule
-    description: Una vez al día se descarga el índice de boletines del año actual
+    description: Once a day
     cron: "0 0 * * *"

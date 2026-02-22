@@ -1,11 +1,13 @@
 id: download_year_bulletins
 namespace: boc
-description: Descarga el índice de boletines de un año
+description: Download the index of bulletins of a year
 
 inputs:
   - id: year
     type: INT
+    required: true
     displayName: Year
+    defaults: "{{ now() | date('yyyy') }}"
 
   - id: overwrite
     type: BOOL
