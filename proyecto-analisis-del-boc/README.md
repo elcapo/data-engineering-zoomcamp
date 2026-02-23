@@ -27,6 +27,14 @@ Este proyecto descarga, procesa y analiza los artículos publicados en el Bolet�
 
 ## Configuración
 
+### 0. Crear las Imágenes Base
+
+Para que los flujos que usan ciertas dependencias Python se ejecuten a velocidades razonables, se ha preparado una imagen específica que debe ser "compilada" con la etiqueta `python-dlt`.
+
+```bash
+docker build -t python-dlt:latest -f ./docker/python-dlt.Dockerfile .
+```
+
 ### 1. Configurar Variables de Entorno
 
 El proyecto incluye un archivo `env.template` con las variables de entorno necesarias. Para configurar tu entorno:
