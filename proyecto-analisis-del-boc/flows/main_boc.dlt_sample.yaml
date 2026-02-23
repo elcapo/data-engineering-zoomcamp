@@ -1,0 +1,49 @@
+id: dlt_sample
+namespace: boc
+description: >
+  Minimal example that uses dlt to load a few hardcoded rows into the
+  project postgres database (service "postgres", database "boc").
+
+tasks:
+  - id: run_dlt_pipeline
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: python:3.11-slim
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      # Join the same Docker network so the container can reach the
+      # "postgres" service by its hostname.
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    beforeCommands:
+      - pip install "dlt[postgres]" --quiet
+    script: |
+      import os
+      import dlt
+
+      host = os.environ["POSTGRES_HOST"]
+      db   = os.environ["POSTGRES_DB"]
+      user = os.environ["POSTGRES_USER"]
+      pwd  = os.environ["POSTGRES_PASSWORD"]
+
+      @dlt.resource(name="sample_records")
+      def sample_data():
+          yield from [
+              {"id": 1, "name": "Alice", "city": "Las Palmas"},
+              {"id": 2, "name": "Bob",   "city": "Santa Cruz"},
+              {"id": 3, "name": "Carlos","city": "Arrecife"},
+          ]
+
+      pipeline = dlt.pipeline(
+          pipeline_name="sample",
+          destination=dlt.destinations.postgres(
+              f"postgresql://{user}:{pwd}@{host}:5432/{db}"
+          ),
+          dataset_name="sample_dataset",
+      )
+
+      load_info = pipeline.run(sample_data())
+      print(load_info)
