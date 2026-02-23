@@ -4,6 +4,10 @@
 
 * [Taller: **Ingestión de datos de una API con DLT**](taller-de-ingestion-de-api-con-dlt.md)
 
+## Aprendizaje en público
+
+* Contribución FAQ: [¿Cómo gestiona dlt los cambios de esquema?](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-dataengineering-dlt-share-7431719369090506752-Z_m5)
+
 ## Contribución FAQ
 
 * [¿Cómo gestiona dlt los cambios de esquema?](como-gestiona-dlt-los-cambios-de-esquema.md)
