@@ -1,0 +1,15 @@
+flowchart LR
+    subgraph Z["Spark"]
+        B["Lectura distribuida"]
+        C["Transformaciones<br>joins, filtros, agregaciones"]
+        D["Escritura distribuida"]
+    end
+
+    A["Lago de datos fuente"] --> B
+    B --> C
+    C --> D
+    D --> E["Lago de datos destino"]
+
+    style A fill:#000000,color:#FFFFFF
+    style E color:#FFFFFF,fill:#000000
+    style Z fill:#FFCDD2

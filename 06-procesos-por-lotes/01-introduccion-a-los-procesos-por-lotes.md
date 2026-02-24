@@ -45,3 +45,19 @@ En lugar de lanzar scripts de forma aislada, el orquestador define el flujo comp
 Esto permite construir pipelines reproducibles, tolerantes a fallos y fáciles de mantener, además de facilitar prácticas clave en ingeniería de datos como el versionado, el relleno de datos históricos y la ejecución en distintos entornos (desarrollo, staging, producción).
 
 ![Esquema genérico de un proceso por lotes](resources/charts/esquema-generico-de-un-proceso-por-lotes.png)
+
+## Introducción a Spark
+
+* Vídeo original (en inglés): [Introduction to Spark](https://www.youtube.com/watch?v=FhaqbEOuQ8U&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=52)
+
+[Apache Spark](https://spark.apache.org) es una herramienta muy utilizada en ingeniería de datos para procesar grandes cantidades de información de forma rápida y distribuida. En lugar de ejecutar un programa en un solo ordenador, Spark reparte el trabajo entre varias máquinas de un clúster, lo que permite transformar y analizar datos mucho más rápido que con enfoques tradicionales.
+
+Se usa habitualmente en procesos por lotes para limpiar datos, unir diferentes fuentes, calcular métricas o preparar la información que luego se cargará en un data warehouse o se utilizará en analítica y aprendizaje automático. Una de sus grandes ventajas es que ofrece APIs sencillas en lenguajes conocidos como Python (PySpark) y SQL, por lo que resulta accesible para quienes están empezando, mientras que por debajo gestiona automáticamente aspectos complejos como la paralelización, la tolerancia a fallos y la optimización de las ejecuciones.
+
+### ¿Cuándo se usa Spark?
+
+En el contexto de procesos por lotes, Apache Spark se utiliza típicamente cuando el volumen de datos es lo suficientemente grande como para que una sola máquina no pueda procesarlo de forma eficiente, cuando las transformaciones requieren mucha computación (por ejemplo, _joins_ entre conjuntos de datos masivos, agregaciones complejas o enriquecimiento con múltiples fuentes) o cuando se necesita reducir significativamente los tiempos de ejecución.
+
+También es habitual emplearlo al trabajar con data lakes en formatos como **Parquet** o **Delta Lake**, donde Spark puede leer y escribir datos de forma distribuida y optimizada, aplicar transformaciones y generar nuevas capas de datos listas para consumo analítico. En estos escenarios, Spark actúa como el motor que toma datos crudos desde el almacenamiento, los procesa en paralelo y escribe el resultado en una zona más refinada, manteniendo la escalabilidad y la eficiencia del proceso por lotes.
+
+![Esquema genérico de un proceso Spark](resources/charts/esquema-generico-de-un-proceso-spark.png)

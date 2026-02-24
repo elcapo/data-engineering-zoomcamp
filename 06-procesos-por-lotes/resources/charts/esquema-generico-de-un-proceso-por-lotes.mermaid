@@ -1,14 +1,17 @@
 flowchart LR
- subgraph Z1["Zona sin procesar"]
+    subgraph Z1["Zona sin procesar"]
         B["Extracción de datos fuente"]
-  end
- subgraph Z2["Zona de staging"]
+    end
+
+    subgraph Z2["Zona de staging"]
         C["Transformaciones de datos"]
-  end
- subgraph Z3["Almacén de datos"]
+    end
+
+    subgraph Z3["Almacén de datos"]
         E["Analítica de datos"]
         D["Validaciones de calidad"]
-  end
+    end
+
     A["Programación temporal"] --> B
     B --> C
     C --> D
