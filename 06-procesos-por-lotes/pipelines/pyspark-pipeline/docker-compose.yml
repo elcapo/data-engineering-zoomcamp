@@ -1,0 +1,41 @@
+services:
+
+  spark-master:
+    build: .
+    container_name: spark-master
+    hostname: spark-master
+    ports:
+      - "${SPARK_MASTER_UI_PORT:-8080}:8080"
+      - "${SPARK_MASTER_PORT:-7077}:7077"
+    command: >
+      bash -c "start-master.sh && tail -f /dev/null"
+    volumes:
+      - ./notebooks:/workspace
+
+  spark-worker:
+    build: .
+    container_name: spark-worker
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+    command: >
+      bash -c "start-worker.sh spark://spark-master:7077 && tail -f /dev/null"
+    volumes:
+      - ./notebooks:/workspace
+
+  jupyter:
+    build: .
+    container_name: spark-jupyter
+    depends_on:
+      - spark-master
+    ports:
+      - "${JUPYTER_PORT:-8888}:8888"
+    command: >
+      bash -c "jupyter notebook
+      --ip=0.0.0.0
+      --allow-root
+      --no-browser
+      --NotebookApp.token=''"
+    volumes:
+      - ./notebooks:/workspace
