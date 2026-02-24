@@ -1,0 +1,20 @@
+flowchart LR
+ subgraph Z1["Zona sin procesar"]
+        B["Extracción de datos fuente"]
+  end
+ subgraph Z2["Zona de staging"]
+        C["Transformaciones de datos"]
+  end
+ subgraph Z3["Almacén de datos"]
+        E["Analítica de datos"]
+        D["Validaciones de calidad"]
+  end
+    A["Programación temporal"] --> B
+    B --> C
+    C --> D
+    D --> E
+    D -- Si falla --> F["Reintentos y alertas"]
+
+    style Z1 fill:#FFCDD2
+    style Z2 fill:#FFCDD2
+    style Z3 fill:#FFCDD2

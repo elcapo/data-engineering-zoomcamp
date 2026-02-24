@@ -85,24 +85,24 @@ El curso organiza sus contenidos en 6 módulos y un proyecto final.
   * Implementar la ingestión, transformaciones y comprobaciones de calidad de datos
   * Desplegar en la nube con **BigQuery**
 
-### 6. **[Taller de ingestión de datos](./taller-de-ingestion-de-api-con-dlt/README.md)**
+### Taller. **[Ingestión de datos](taller-de-ingestion-de-api-con-dlt/README.md)**
 
   * Implementar una ingestión de datos de una API REST con **DLT**
   * Entender el proceso de normalización de datos de **DLT**
   * Integrar IA en el desarrollo de la ingestión
 
-### 7. **Procesamiento por lotes (Batch)**
+### 6. **[Procesos por lotes](06-procesos-por-lotes/README.md)**
 
   * Procesar grandes volúmenes de datos con **Apache Spark**
   * Dominar Spark SQL y operaciones con *DataFrames*
   * Optimizar workflows de procesamiento por lotes
 
-### 8. **Procesamiento en tiempo real (Streaming)**
+### 7. **Procesos en tiempo real**
   * Construir pipelines de datos en tiempo real con **Kafka**
   * Desarrollar aplicaciones de streaming con **KSQL**
   * Manejar esquemas de datos con **Avro**
 
-### 9. **Proyecto final (Capstone)**
+### Proyecto. **Proyecto final**
 
   * Construir una canalización *end-to-end* desde la ingesta hasta la visualización
   * Aplicar todos los conceptos aprendidos en un proyecto real
