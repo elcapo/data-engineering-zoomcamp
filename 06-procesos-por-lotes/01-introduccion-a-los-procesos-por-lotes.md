@@ -83,6 +83,8 @@ ARG HADOOP_VERSION=3
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PYSPARK_PYTHON=python3
+ENV PYSPARK_DRIVER_PYTHON=python3
 
 # Instalar Java 17 + utilidades
 RUN apt-get update && \
@@ -99,7 +101,6 @@ RUN set -eux; \
 
 # Librerías Python típicas en batch
 RUN pip install --no-cache-dir \
-    pyspark \
     pandas \
     pyarrow \
     jupyter
@@ -165,6 +166,8 @@ jupyter:
   container_name: spark-jupyter
   depends_on:
     - spark-master
+  environment:
+    - SPARK_MASTER=spark://spark-master:7077
   ports:
     - "${JUPYTER_PORT:-8888}:8888"
   command: >
@@ -177,7 +180,7 @@ jupyter:
     - ./notebooks:/workspace
 ```
 
-#### Inicio del servicio
+#### Inicio y prueba del servicio
 
 Para iniciar los servicios, podemos ir a la carpeta en la que hemos preparado la instalación dockerizada, [pipelines/pyspark-pipeline/](pipelines/pyspark-pipeline/) e iniciar los servicios con Docker Compose:
 
@@ -212,3 +215,7 @@ distData.filter(_ < 10).collect()
 ```
 
 ![Sesión shell de Spark](resources/screenshots/sesion-shell-de-spark.png)
+
+#### Prueba de Jupyter y PySpark
+
+El servidor de Jupyter debería de estar funcionando en: http://localhost:8888, salvo que hayas configurado explícitamente un puerto diferente.
