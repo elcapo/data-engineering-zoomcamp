@@ -1,2 +1,5 @@
 .env
 .ipynb_checkpoints
+
+/notebooks/taxi_zone_lookup.csv*
+/notebooks/zones*

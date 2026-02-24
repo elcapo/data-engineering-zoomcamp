@@ -218,4 +218,12 @@ distData.filter(_ < 10).collect()
 
 #### Prueba de Jupyter y PySpark
 
-El servidor de Jupyter debería de estar funcionando en: http://localhost:8888, salvo que hayas configurado explícitamente un puerto diferente.
+El servidor de Jupyter debería de estar funcionando en: http://localhost:8888 salvo que hayas configurado explícitamente un puerto diferente. Para probar que la conectividad con Spark funciona, puedes usar [notebooks/pyspark-test.ipynb](./pipelines/pyspark-pipeline/notebooks/pyspark-test.ipynb).
+
+![PySpark test desde Jupyter](resources/screenshots/pyspark-test-desde-jupyter.png)
+
+#### Prueba de la interfaz de Spark
+
+Por último, vamos a comprobar que la interfaz gráfica de Spark está accesible en http://localhost:8088 o el puerto que hayas configurado.
+
+![Interfaz gráfica de PySpark](resources/screenshots/interfaz-grafica-de-spark.png)
