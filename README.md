@@ -102,7 +102,7 @@ El curso organiza sus contenidos en 6 módulos y un proyecto final.
   * Desarrollar aplicaciones de streaming con **KSQL**
   * Manejar esquemas de datos con **Avro**
 
-### Proyecto. **Proyecto final**
+### Proyecto. **[Proyecto final](./proyecto-analisis-del-boc/README.md)**
 
   * Construir una canalización *end-to-end* desde la ingesta hasta la visualización
   * Aplicar todos los conceptos aprendidos en un proyecto real
