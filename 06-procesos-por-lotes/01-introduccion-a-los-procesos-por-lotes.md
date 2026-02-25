@@ -70,51 +70,9 @@ Apache Spark está desarrollado principalmente en Scala, un lenguaje que se ejec
 
 Para evitar problemas de compatibilidad entre versiones de Java, Python, librerías del sistema y el propio Spark (algo especialmente habitual en instalaciones locales) he optado por una instalación dockerizada. Esto nos permite trabajar con un entorno aislado, reproducible y fácil de levantar en cualquier máquina, garantizando que todos usemos exactamente las mismas versiones y reduciendo el tiempo dedicado a tareas de configuración que no aportan valor al aprendizaje del procesamiento de datos.
 
-### Imagen base
-
-Como imagen base hemos escogido una imagen basada en Python sobre la que hemos instalado Java, Spark y algunas otras herramientas que nos serán útiles para luego usarlas desde PySpark.
-
-```Dockerfile
-FROM python:3.11-bookworm
-
-ARG SPARK_VERSION=3.5.1
-ARG HADOOP_VERSION=3
-
-ENV SPARK_HOME=/opt/spark
-ENV PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-ENV PYSPARK_PYTHON=python3
-ENV PYSPARK_DRIVER_PYTHON=python3
-
-# Instalar Java 17 + utilidades
-RUN apt-get update && \
-    apt-get install -y openjdk-17-jdk curl procps tini && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Descargar Spark
-RUN set -eux; \
-    curl -fL https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz -o spark.tgz; \
-    tar -xzf spark.tgz -C /opt/; \
-    mv /opt/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} $SPARK_HOME; \
-    rm spark.tgz
-
-# Librerías Python típicas en batch
-RUN pip install --no-cache-dir \
-    pandas \
-    pyarrow \
-    jupyter
-
-WORKDIR /workspace
-
-ENTRYPOINT ["/usr/bin/tini", "--"]
-```
-
-Puedes ver el fichero en contexto en [pipelines/pyspark-pipeline/Dockerfile](pipelines/pyspark-pipeline/Dockerfile).
-
 ### Servicios Dockerizados
 
-Usando la misma imagen base, instanciamos tres servicios:
+Los servicios `spark-master` y `spark-worker` usan la imagen oficial directamente. Solo el servicio `jupyter` construye una imagen propia (a partir de la oficial) para añadir Jupyter y las librerías Python. En total instanciamos tres servicios:
 
 * un servidor principal de Spark,
 * un trabajador de Spark y
@@ -124,16 +82,19 @@ Usando la misma imagen base, instanciamos tres servicios:
 
 El servidor principal de Spark es el que levantará, entre otras cosas, la interfaz gráfica. Por defecto, la levantará en el puerto 8080 del equipo anfitrión aunque este puerto puede ser sobreescrito mediante la variable de entorno `SPARK_MASTER_UI_PORT`. Este servicio abrirá también el puerto 7077 para comunicarse con trabajadores Spark, siendo este puerto sobreescribirble mediante la variable de entorno `SPARK_MASTER_PORT`.
 
+La variable `SPARK_NO_DAEMONIZE=true` hace que el script de inicio mantenga el proceso en primer plano (comportamiento necesario en Docker).
+
 ```yml
 spark-master:
-  build: .
+  image: apache/spark:3.5.8-scala2.12-java17-python3-ubuntu
   container_name: spark-master
   hostname: spark-master
+  environment:
+    - SPARK_NO_DAEMONIZE=true
   ports:
     - "${SPARK_MASTER_UI_PORT:-8080}:8080"
     - "${SPARK_MASTER_PORT:-7077}:7077"
-  command: >
-    bash -c "start-master.sh && tail -f /dev/null"
+  command: /opt/spark/sbin/start-master.sh
   volumes:
     - ./notebooks:/workspace
 ```
@@ -144,21 +105,22 @@ El trabajador de Socker no requiere ninguna configuración y está preconfigurad
 
 ```yml
 spark-worker:
-  build: .
+  image: apache/spark:3.5.8-scala2.12-java17-python3-ubuntu
   container_name: spark-worker
   depends_on:
     - spark-master
   environment:
-    - SPARK_MASTER=spark://spark-master:7077
-  command: >
-    bash -c "start-worker.sh spark://spark-master:7077 && tail -f /dev/null"
+    - SPARK_NO_DAEMONIZE=true
+  command: /opt/spark/sbin/start-worker.sh spark://spark-master:7077
   volumes:
     - ./notebooks:/workspace
 ```
 
 #### Servidor de cuadernos de Jupyter
 
-El servidor de cuadernos Jupyter está disponible por defecto en el puerto 8888 del equipo anfitrión, siendo el puerto modificable mediante la variable de entorno `JUPYTER_PORT`. Gracias a que usa nuestra imagen base, tiene disponibles `pyspark`, `pandas` y `pyarrow` entre otras utilidades.
+El servidor de cuadernos Jupyter está disponible por defecto en el puerto 8888 del equipo anfitrión, siendo el puerto modificable mediante la variable de entorno `JUPYTER_PORT`. Gracias a que usa nuestra imagen personalizada (basada en la oficial de Spark), tiene disponibles `pyspark`, `pandas` y `pyarrow` entre otras utilidades.
+
+La variable de entorno `SPARK_MASTER` es leída explícitamente en el cuaderno para conectarse al cluster: `os.environ.get('SPARK_MASTER', 'local[*]')`.
 
 ```yml
 jupyter:
@@ -171,11 +133,11 @@ jupyter:
   ports:
     - "${JUPYTER_PORT:-8888}:8888"
   command: >
-    bash -c "jupyter notebook
+    jupyter notebook
     --ip=0.0.0.0
     --allow-root
     --no-browser
-    --NotebookApp.token=''"
+    --NotebookApp.token=''
   volumes:
     - ./notebooks:/workspace
 ```
@@ -198,7 +160,7 @@ docker compose exec spark-master bash
 Y una vez en el contenedor podemos abrir una sesión shell de Spark:
 
 ```bash
-spark-shell
+/opt/spark/bin/spark-shell
 ```
 
 Por fin, podemos hacer una prueba escribiendo código Scala.
