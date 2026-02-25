@@ -11,6 +11,20 @@
 
 * Taller: [Ingestión de datos de una API con DLT](../taller-de-ingestion-de-api-con-dlt/README.md)
 
+## Ejercicios entregables
+
+* [Ejercicios resueltos (en español)](homework/traduccion.md)
+* [Ejercicios resueltos (en inglés)](homework/README.md)
+
+## Flujo de datos
+
+* [Flujo de datos de partidas de ajedrez con Bruin (en español)](pipelines/chess-pipeline/traduccion.md)
+* [Flujo de datos de partidas de ajedrez con Bruin (en inglés)](pipelines/chess-pipeline/README.md)
+* [Flujo de datos de taxis de Nueva York codeado a mano (en español)](pipelines/taxi-pipeline/traduccion.md)
+* [Flujo de datos de taxis de Nueva York codeado a mano (en inglés)](pipelines/taxi-pipeline/README.md)
+* [Flujo de datos de taxis de Nueva York vibe-codeado con Claude (en español)](pipelines/taxi-pipeline/traduccion.md)
+* [Flujo de datos de taxis de Nueva York vibe-codeado con Claude (en inglés)](pipelines/taxi-pipeline/README.md)
+
 ## Aprendizaje en público
 
 * [Introducción a Bruin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-plataformasdedatos-bruin-share-7429264244493201409-VLVe)

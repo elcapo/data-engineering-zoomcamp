@@ -10,6 +10,11 @@
 * [Desplegar modelos de aprendizaje automático](06-desplegar-modelos-de-aprendizaje-automatico.md)
 * [Recuperar consultas de creación de objetos en BigQuery](07-recuperar-consultas-de-creacion-de-objetos-en-bigquery.md)
 
+## Ejercicios entregables
+
+* [Ejercicios resueltos (en español)](homework/traduccion.md)
+* [Ejercicios resueltos (en inglés)](homework/README.md)
+
 ## Aprendizaje en público
 
 * [Almacenes de datos y BigQuery](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-datawarehouse-bigquery-share-7424492070221811713-tnda)

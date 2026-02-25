@@ -57,4 +57,4 @@ Executed 1 tasks in 103ms
 
 You can optionally pass a `--downstream` flag to run the task with all of its downstreams.
 
-That's it, good luc
+That's it, good luck!

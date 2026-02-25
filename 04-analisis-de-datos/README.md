@@ -10,6 +10,15 @@
 * [Paquetes **dbt**](06-paquetes-dbt.md)
 * [Comandos **dbt**](07-comandos-dbt.md)
 
+## Ejercicios entregables
+
+* [Ejercicios resueltos (en español)](homework/traduccion.md)
+* [Ejercicios resueltos (en inglés)](homework/README.md)
+
+## Flujo de datos
+
+* [Flujo de datos de Taxis de Nueva Tork con DBT](pipeline/README.md)
+
 ## Aprendizaje en público
 
 * [Conceptos básicos](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-anaerlisisdedatos-elt-share-7427094903836389377-6fLT)

@@ -11,6 +11,15 @@
 * Caso práctico: [Programaciones y relleno de históricos](07-programaciones-y-relleno-de-historicos.md)
 * Caso práctico: [De ETL a ELT con Google Cloud](08-de-etl-a-elt-con-google-cloud.md)
 
+## Ejercicios entregables
+
+* [Ejercicios resueltos (en español)](homework/traduccion.md)
+* [Ejercicios resueltos (en inglés)](homework/README.md)
+
+## Flujo de datos
+
+* [Flujo de datos de Taxis de Nueva Tork en Kestra](pipeline/README.md)
+
 ## Aprendizaje en público
 
 * [Introducción a Kestra y priperos pasos](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-zoomcamp-share-7421641226505981952-5A6p)
