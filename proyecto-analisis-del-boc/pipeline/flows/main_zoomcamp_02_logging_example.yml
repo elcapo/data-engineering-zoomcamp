@@ -1,0 +1,20 @@
+id: 02_logging_example
+namespace: zoomcamp
+
+tasks:
+  - id: python_logger
+    type: io.kestra.plugin.scripts.python.Script
+    allowFailure: true
+    dependencies:
+      - kestra
+    script: |
+      from random import randint
+      from kestra import Kestra
+
+      logger = Kestra.logger()
+
+      logger.debug("Con `debug` podemos loguear información sobre cómo va la ejecución")
+      logger.info("Con `info` podemos loguear datos relevantes")
+      logger.warning("Con `warning` podemos loguear advertencias o mensajes que requieran revisión")
+      logger.error("Con `error` podemos loguear cosas que han ido mal")
+      logger.critical("Con `critical` podemos loguear errores graves")

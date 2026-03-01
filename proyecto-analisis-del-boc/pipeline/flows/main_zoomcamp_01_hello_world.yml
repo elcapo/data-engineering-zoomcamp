@@ -1,0 +1,19 @@
+id: 01_hello_world
+namespace: zoomcamp
+
+inputs:
+  - id: salutation
+    type: STRING
+    defaults: "¡Hola mundo!"
+    displayName: "Salutation"
+    required: true
+
+tasks:
+  - id: hello
+    type: io.kestra.plugin.core.log.Log
+    message: "{{ inputs.salutation }}"
+
+triggers:
+  - id: webhook
+    type: io.kestra.plugin.core.trigger.Webhook
+    key: 7G7ia9aQofNT1GQjt5aFoM

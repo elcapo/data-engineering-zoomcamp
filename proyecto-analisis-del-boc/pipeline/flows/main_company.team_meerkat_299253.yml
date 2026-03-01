@@ -1,0 +1,15 @@
+id: meerkat_299253
+namespace: company.team
+
+inputs:
+  - id: file
+    type: FILE
+
+tasks:
+- id: upload
+  type: io.kestra.plugin.googleworkspace.drive.Upload
+  from: "{{ inputs.file }}"
+  name: "My awesome CSV"
+  contentType: "text/csv"
+  mimeType: "application/vnd.google-apps.spreadsheet"
+  serviceAccount: "{{ secret('GCP_SERVICE_ACCOUNT') }}"

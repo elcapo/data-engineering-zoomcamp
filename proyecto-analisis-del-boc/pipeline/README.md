@@ -1,23 +1,6 @@
 # Análisis del Boletín Oficial de Canarias (BOC)
 
-Proyecto de análisis de datos del Boletín Oficial de Canarias utilizando Kestra para la orquestación de flujos de trabajo y dbt para el modelado y transformación de datos.
-
-## Contexto
-
-Este proyecto ha sido presentado como proyecto final de curso del Zoomcamp de ingeniería de datos de DataTalks en 2026.
-
-* [DataTalksClub Zoomcamp Project Guidelines](https://www.loom.com/share/8f99d25893de4fb8aaa95c0395c740b6)
-* [Data Engineering Zoomcamp Project Statement](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/projects)
-
-## Descripción
-
-Este proyecto descarga, procesa y analiza los artículos publicados en el Boletín Oficial de Canarias (BOC), proporcionando herramientas para:
-
-- Extracción automatizada de artículos del BOC
-- Almacenamiento estructurado en PostgreSQL
-- Transformación y modelado de datos con dbt
-- Orquestación de pipelines con Kestra
-- Visualización y consulta de datos
+Esta carpeta contiene la implementación del proyecto de análisis de datos del Boletín Oficial de Canarias utilizando Kestra para la orquestación de flujos de trabajo y dbt para el modelado y transformación de datos.
 
 ## Requisitos Previos
 
