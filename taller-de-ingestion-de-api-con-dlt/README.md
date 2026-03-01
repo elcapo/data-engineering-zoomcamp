@@ -3,6 +3,8 @@
 ## Contenidos
 
 * [Taller: **Ingestión de datos de una API con DLT**](01-taller-de-ingestion-de-api-con-dlt.md)
+* [FAQ: **¿Cómo gestiona dlt los cambios de esquema?**](02-como-gestiona-dlt-los-cambios-de-esquema.md)
+* [¿Cómo optimizar flujos con DLT en Kestra?](03-como-optimizar-flujos-con-dlt-en-kestra.md)
 
 ## Aprendizaje en público
 
@@ -10,7 +12,7 @@
 
 ## Contribución FAQ
 
-* [¿Cómo gestiona dlt los cambios de esquema?](02-como-gestiona-dlt-los-cambios-de-esquema.md)
+* [How does dlt handle schema evolution?](https://github.com/DataTalksClub/faq/issues/202)
 
 ---
 

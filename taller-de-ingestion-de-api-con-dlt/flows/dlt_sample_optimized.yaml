@@ -1,25 +1,24 @@
-id: dlt_sample
-namespace: boc
+id: dlt_sample_optimized
+namespace: ejemplo
 description: >
-  Minimal example that uses dlt to load a few hardcoded rows into the
-  project postgres database (service "postgres", database "boc").
+  Misma pipeline de ejemplo que dlt_sample, pero usando la imagen personalizada
+  python-dlt:latest que ya incluye las dependencias. No necesita pip install en
+  cada ejecución.
 
 tasks:
   - id: run_dlt_pipeline
     type: io.kestra.plugin.scripts.python.Script
-    containerImage: python:3.11-slim
+    containerImage: python-dlt:latest
     taskRunner:
       type: io.kestra.plugin.scripts.runner.docker.Docker
-      # Join the same Docker network so the container can reach the
-      # "postgres" service by its hostname.
+      # Unirse a la misma red Docker para que el contenedor pueda llegar
+      # al servicio "postgres" por su nombre de host.
       networkMode: boc-postgres-network
     env:
       POSTGRES_HOST: "{{ envs.postgres_data_host }}"
       POSTGRES_DB: "{{ envs.postgres_data_db }}"
       POSTGRES_USER: "{{ envs.postgres_data_user }}"
       POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
-    beforeCommands:
-      - pip install "dlt[postgres]" --quiet
     script: |
       import os
       import dlt
