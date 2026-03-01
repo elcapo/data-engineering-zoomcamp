@@ -1,8 +1,8 @@
 # Taller: **Ingestión de datos de una API con DLT**
 
-## ¿Cómo se trabaja con fuentes en DLT?
+## ¿Cómo se trabaja con **fuentes** en DLT?
 
-En los artículos anteriores hemos visto cómo **dlt** extrae, normaliza y carga datos desde una API REST, cómo gestiona la evolución del esquema y cómo optimizar la ejecución de flujos en Kestra. En este artículo profundizamos en uno de los conceptos centrales de **dlt**: las **fuentes** (`sources`).
+En los artículos anteriores hemos visto cómo **dlt** extrae, normaliza y carga datos desde una API REST, cómo gestiona la evolución del esquema y cómo optimizar la ejecución de flujos en Kestra. En este artículo profundizamos en uno de los conceptos centrales de **dlt**: las **fuentes**.
 
 ## ¿Qué es una **fuente** en DLT?
 
