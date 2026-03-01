@@ -8,6 +8,7 @@
 * [¿Cómo trabajar con **fuentes** en DLT?](04-como-trabajar-con-fuentes-en-dlt.md)
 * [¿Cómo trabajar con **recursos** en DLT?](05-como-trabajar-con-recursos-en-dlt.md)
 * [¿Cómo implementar **pipelines** en DLT?](06-como-implementar-pipelines-en-dlt.md)
+* [¿Cómo definir **destinos** en DLT?](07-como-definir-destinos-en-dlt.md)
 
 ## Aprendizaje en público
 
