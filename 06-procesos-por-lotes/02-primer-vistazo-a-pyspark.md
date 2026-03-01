@@ -152,3 +152,142 @@ df.write.mode("overwrite").parquet('fhv/2026/01')
 Si durante el guardado, navegásemos a nuestro monitor de PySpark, en http://localhost:4040, veríamos un resumen de las particiones completadas y de las que faltan para terminar el trabajo.
 
 ![Monitorización de una ejecución paralelizada](resources/screenshots/monitorizacion-de-una-ejecucion-paralelizada.png)
+
+## _Dataframes_ de Spark
+
+* Vídeo original (en inglés): [Spark Dataframes](https://www.youtube.com/watch?v=ti3aC1m3rE8&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=55)
+
+### Examinar el esquema
+
+Aunque ya vimos una manera de examinar el esquema de un _dataframe_, Spark ofrece más alternativas. Un ejemplo es la función `printSchema`.
+
+```python
+df.printSchema()
+```
+
+```
+root
+ |-- hvfhs_license_num: string (nullable = true)
+ |-- dispatching_base_num: string (nullable = true)
+ |-- originating_base_num: string (nullable = true)
+ |-- request_datetime: timestamp_ntz (nullable = true)
+ |-- on_scene_datetime: timestamp_ntz (nullable = true)
+ |-- pickup_datetime: timestamp_ntz (nullable = true)
+ |-- dropoff_datetime: timestamp_ntz (nullable = true)
+ |-- PULocationID: integer (nullable = true)
+ |-- DOLocationID: integer (nullable = true)
+ |-- trip_miles: double (nullable = true)
+ |-- trip_time: long (nullable = true)
+ |-- base_passenger_fare: double (nullable = true)
+ |-- tolls: double (nullable = true)
+ |-- bcf: double (nullable = true)
+ |-- sales_tax: double (nullable = true)
+ |-- congestion_surcharge: double (nullable = true)
+ |-- airport_fee: double (nullable = true)
+ |-- tips: double (nullable = true)
+ |-- driver_pay: double (nullable = true)
+ |-- shared_request_flag: string (nullable = true)
+ |-- shared_match_flag: string (nullable = true)
+ |-- access_a_ride_flag: string (nullable = true)
+ |-- wav_request_flag: string (nullable = true)
+ |-- wav_match_flag: string (nullable = true)
+ |-- cbd_congestion_fee: double (nullable = true)
+```
+
+#### Seleccionar columnas y filtrar registros
+
+Las dos principales utilidades que permiten reducir un _dataframe_ para ver solo algunas de sus columnas y filas son:
+
+* `select`: que recibe los nombres de las columnas a mantener y devuelve un nuevo _dataframe_ con únicamente esas columnas,
+* `filter`: que recibe una condición que se aplicará a todas las filas, devolviendo únicamente las que la satisfagan.
+
+#### Transformaciones vs. acciones
+
+La selección de columnas y el filtrado de filas, en Spark, son conocidas como **transformaciones** y su característica principal es que no son ejecutadas inmediatamente cuando son invocadas. En su lugar, ocurren más tarde, de forma "vaga".
+
+```python
+# Aquí hemos definido un filtro, pero nada ha ocurrido aún con el _dataframe_
+df_filtered = df \
+    .select('pickup_datetime', 'dropoff_datetime', 'PULocationID', 'DOLocationID') \
+    .filter(df.hvfhs_license_num == 'HV0005')
+```
+
+Las **acciones**, a diferencia de las transformaciones, implican una carga inmediata de trabajo del lado de Spark. Un ejemplo son las funciones `head` y `show` que ya usamos antes. Usarlas implica la ejecución inmediata de una tarea, así como de las transformaciones que sean necesarias para completarla.
+
+```python
+# Al lanzar show, la consulta de nuestro _dataframe_ disparará inmediatamente un trabajo en Spark
+df_filtered.show()
+```
+
+### Funciones
+
+Hasta ahora hemos visto únicamente la parte más superficial de PySpark. De hecho, lo que hemos visto podría ser reemplazado por una consulta SQL bastante sencilla:
+
+```sql
+SELECT
+    pickup_datetime,
+    dropoff_datetime,
+    PULocationID,
+    DOLocationID
+FROM [fhvhv_tripdata_2026-01]
+WHERE
+    hvfhs_license_num = 'HV0005'
+```
+
+Sin embargo, el punto fuerte de Spark está en la posibilidad de usar código para nuestras transformaciones, sea en forma de funciones predefinidas, o funciones definidas por el usuario.
+
+#### Funciones predefinidas
+
+Las funciones predefinidas de PySpark están disponibles a través del objeto `functions` que de `pyspark.sql`:
+
+```python
+from pyspark.sql import functions as F
+```
+
+Por convenio, suele importarse como `F` y la manera de usarlo es llamando a la función en el contexto de un `withColumn`. En este ejemplo, usamos `to_date` para ignorar la fecha y hora y quedarnos únicamente con el día de inicio y día de fin de cada trayecto.
+
+```python
+df \
+    .withColumn('pickup_date', F.to_date(df.pickup_datetime)) \
+    .withColumn('dropoff_date', F.to_date(df.dropoff_datetime)) \
+    .select('pickup_datetime', 'dropoff_datetime', 'PULocationID', 'DOLocationID') \
+    .show()
+```
+
+#### Funciones de usuario
+
+Gracias a PySpark, podemos usar Python para definir nuestras propias funciones y usarlas para transformar grandes conjuntos de datos.
+
+```python
+def duration(inicio: datetime, fin: datetime) -> str:
+    # Diferencia en minutos (valor absoluto por si vienen invertidos)
+    minutos = abs((fin - inicio).total_seconds()) / 60
+
+    if minutos < 5:
+        return "duracion < 5 minutos"
+    elif minutos < 10:
+        return "5 minutos <= duracion < 10 minutos"
+    elif minutos < 15:
+        return "10 minutos <= duracion < 15 minutos"
+    else:
+        return ">= 15 minutos"
+```
+
+Una vez definida la función estándar de Python que queremos usar en PySpark, la "convertimos" en una función de usuario de PySpark usando `F.udf`:
+
+```python
+from pyspark.sql import types
+
+duration_udf = F.udf(duration, returnType=types.StringType())
+```
+
+Por fin, podemos usar nuestra función para realizar las transformaciones correspondientes.
+
+```python
+df \
+    .withColumn('pickup_date', F.to_date(df.pickup_datetime)) \
+    .withColumn('dropoff_date', F.to_date(df.dropoff_datetime)) \
+    .withColumn('duration_class', duration_udf(df.pickup_datetime, df.dropoff_datetime)) \
+    .select('pickup_datetime', 'dropoff_datetime', 'PULocationID', 'DOLocationID', 'duration_class') \
+    .show()
+```
