@@ -2,7 +2,7 @@
 
 ## Contenidos
 
-* [Taller: **Ingestión de datos de una API con DLT**](taller-de-ingestion-de-api-con-dlt.md)
+* [Taller: **Ingestión de datos de una API con DLT**](01-taller-de-ingestion-de-api-con-dlt.md)
 
 ## Aprendizaje en público
 
@@ -10,7 +10,7 @@
 
 ## Contribución FAQ
 
-* [¿Cómo gestiona dlt los cambios de esquema?](como-gestiona-dlt-los-cambios-de-esquema.md)
+* [¿Cómo gestiona dlt los cambios de esquema?](02-como-gestiona-dlt-los-cambios-de-esquema.md)
 
 ---
 
