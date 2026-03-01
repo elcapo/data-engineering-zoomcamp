@@ -64,7 +64,7 @@ También es habitual emplearlo al trabajar con data lakes en formatos como **Par
 
 ## Instalar Spark en Linux
 
-Vídeo original (en inglés): [Installing Spark on Linux](https://www.youtube.com/watch?v=hqUbB9c8sKg&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=53)
+* Vídeo original (en inglés): [Installing Spark on Linux](https://www.youtube.com/watch?v=hqUbB9c8sKg&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=53)
 
 Apache Spark está desarrollado principalmente en Scala, un lenguaje que se ejecuta sobre la Máquina Virtual de Java (JVM) y que permite combinar programación funcional y orientada a objetos, lo que encaja muy bien con su modelo de procesamiento distribuido y su API interna. Aunque como usuarios solemos interactuar con Spark a través de PySpark o Spark SQL, por debajo el motor sigue siendo Scala, lo que explica su dependencia de Java y la necesidad de tener una JVM correctamente configurada.
 
