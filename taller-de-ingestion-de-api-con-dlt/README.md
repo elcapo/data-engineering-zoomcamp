@@ -5,6 +5,7 @@
 * [Taller: **Ingestión de datos de una API con DLT**](01-taller-de-ingestion-de-api-con-dlt.md)
 * [FAQ: **¿Cómo gestiona dlt los cambios de esquema?**](02-como-gestiona-dlt-los-cambios-de-esquema.md)
 * [¿Cómo optimizar flujos con DLT en Kestra?](03-como-optimizar-flujos-con-dlt-en-kestra.md)
+* [¿Cómo trabajar con fuentes en DLT?](04-como-trabajar-con-fuentes-en-dlt.md)
 
 ## Aprendizaje en público
 
