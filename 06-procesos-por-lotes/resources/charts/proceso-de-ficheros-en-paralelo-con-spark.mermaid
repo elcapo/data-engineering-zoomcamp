@@ -1,0 +1,22 @@
+flowchart LR
+    subgraph GC[Google Cloud]
+        direction TB
+        F1[File 1]
+        F2[File 2]
+        F3[File 3]
+        F4[File 4]
+        F5[File 5]
+        F6[File 6]
+    end
+
+    subgraph SC[Spark Cluster]
+        direction TB
+        W1[Worker 1]
+        W2[Worker 2]
+        W3[Worker 3]
+    end
+
+    %% Primera tanda (alineada)
+    F1 --> W1
+    F2 --> W2
+    F3 --> W3
