@@ -17,6 +17,9 @@
 * [¿Cómo optimizar flujos con DLT en Kestra?](https://www.linkedin.com/posts/carlos-capote-perez-andreu_zoomcamp-ingenieraedadedatos-aprendeenpaeqblico-share-7433839583429259264-53ET)
 * [¿Cómo trabajar con **fuentes** en DLT?](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-dlt-pipelinesdedatos-share-7433961406607032320-QZIH)
 * [¿Cómo trabajar con **recursos** en DLT?](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-dataengineering-dlt-share-7433965173171720192-Ub6c)
+* [¿Cómo implementar **pipelines** en DLT?](https://www.linkedin.com/posts/carlos-capote-perez-andreu_data-engineering-zoomcamptaller-de-ingestion-de-api-con-dlt-activity-7433986930855374848-TVEr)
+* [¿Cómo se defininen **destinos** en DLT?](https://www.linkedin.com/posts/carlos-capote-perez-andreu_data-engineering-zoomcamptaller-de-ingestion-de-api-con-dlt-activity-7434251198427267072-j4x5)
+* [¿Cómo se definen **esquemas** en DLT?](https://www.linkedin.com/posts/carlos-capote-perez-andreu_data-engineering-zoomcamptaller-de-ingestion-de-api-con-dlt-activity-7434251234498424832-dDxs)
 
 ## Contribución FAQ
 
