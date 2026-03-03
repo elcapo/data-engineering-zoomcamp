@@ -4,6 +4,7 @@
 
 * [Introducción a los procesos por lotes](01-introduccion-a-los-procesos-por-lotes.md)
 * [Primer vistazo a PySpark](02-primer-vistazo-a-pyspark.md)
+* [Preparación de los datos de taxis de Nueva York](03-preparacion-de-los-datos-de-taxis-de-nueva-york.md)
 
 ## Aprendizaje en público
 
