@@ -25,7 +25,8 @@ El script:
 * Construye dinámicamente el nombre del fichero.
 * Genera la URL de descarga.
 * Crea la carpeta local si no existe.
-* Descarga el fichero usando wget.
+* Comprueba si el fichero ya existe y lo omite si es el caso.
+* Descarga el fichero a un fichero temporal y lo mueve al destino final si la descarga tiene éxito.
 * Muestra mensajes de progreso con colores para facilitar la lectura.
 
 El resultado queda organizado así:
@@ -34,8 +35,8 @@ El resultado queda organizado así:
 data/
 └── raw/
     └── yellow/
-        ├── yellow_tripdata_2020_01.csv.gz
-        ├── yellow_tripdata_2020_02.csv.gz
+        ├── yellow_tripdata_2020-01.csv.gz
+        ├── yellow_tripdata_2020-02.csv.gz
         └── ...
 ```
 
@@ -43,7 +44,6 @@ data/
 
 El script es una versión modificada del [script provisto por el curso](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/06-batch/code/download_data.sh), que ha sido reescrita siguiendo varios principios:
 
-* Fallo rápido: detenerse ante el primer error.
 * Validación temprana de argumentos.
 * Construcción declarativa de variables.
 * Legibilidad antes que micro-optimizaciones.
@@ -132,14 +132,15 @@ FORMATTED_MONTH=$(printf "%02d" ${MONTH})
 ##### Construcción declarativa de nombres
 
 ```bash
-FILENAME="${TAXI_TYPE}_tripdata_${YEAR}_${FORMATTED_MONTH}.csv.gz"
+FILENAME="${TAXI_TYPE}_tripdata_${YEAR}-${FORMATTED_MONTH}.csv.gz"
 ```
 
-Se construye el nombre del archivo usando interpolación clara.
+Se construye el nombre del archivo usando interpolación clara. Nótese el guión (`-`) como separador entre año y mes, que es el formato usado por el repositorio de DataTalksClub.
 
-Luego:
+Luego se define la URL base por separado y se compone la URL completa:
 
 ```bash
+DOWNLOAD_BASEURL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download"
 DOWNLOAD_URL="${DOWNLOAD_BASEURL}/${TAXI_TYPE}/${FILENAME}"
 ```
 
@@ -160,14 +161,34 @@ mkdir -p "${LOCAL_PATH}"
 
 Se organiza por tipo de taxi para mantener ordenados los datos.
 
-##### Descarga
+##### Comprobación de fichero existente
+
+Antes de descargar, el script verifica si el fichero ya existe:
 
 ```bash
-wget -nc "${DOWNLOAD_URL}" -O "${TARGET_FILENAME}"
+if [ -f "${TARGET_FILENAME}" ]; then
+  printf "${YELLOW}↷ Ya existe:${NO_COLOR} %s\n" "${TARGET_FILENAME}"
+  continue
+fi
 ```
 
-* `-nc` evita descargar ficheros que ya existen localmente.
-* `-O` permite controlar exactamente dónde se guarda el fichero.
+Esto hace el script idempotente: puede ejecutarse varias veces sin repetir descargas ya completadas.
+
+##### Descarga con fichero temporal
+
+```bash
+TEMP_FILE="${TARGET_FILENAME}.tmp"
+
+if wget -q --show-progress "${DOWNLOAD_URL}" -O "${TEMP_FILE}"; then
+  mv "${TEMP_FILE}" "${TARGET_FILENAME}"
+  printf "${GREEN}✔ Guardado en:${NO_COLOR} %s\n" "${TARGET_FILENAME}"
+else
+  rm -f "${TEMP_FILE}"
+  printf "${YELLOW}⚠ No existe:${NO_COLOR} %s\n" "$FILENAME"
+fi
+```
+
+Se descarga primero a un fichero temporal (`.tmp`) y, solo si la descarga tiene éxito, se mueve al destino final. Si falla (por ejemplo, porque el fichero no existe en el repositorio para ese mes), se elimina el temporal y se muestra un aviso. Esto evita dejar ficheros corruptos o incompletos en disco.
 
 ##### Salida coloreada
 
@@ -185,3 +206,88 @@ Código de colores:
 * Uso: amarillo
 
 Mejora la experiencia cuando se ejecuta en terminal.
+
+#### Descarga de los datos
+
+Gracias a que el script es rápido cuando los ficheros ya han sido descargados, podemos lanzar este sencillo script tanto para descargar los ficheros desde cero, como para descargar ficheros faltantes en cualquier momento.
+
+```bash
+# Yellow taxis
+./scripts/download.sh yellow 2019
+./scripts/download.sh yellow 2020
+./scripts/download.sh yellow 2021
+
+# Green taxis
+./scripts/download.sh green 2019
+./scripts/download.sh green 2020
+./scripts/download.sh green 2021
+```
+
+### Exploración de datos
+
+Ahora que tenemos una estructura de carpetas con los datos de taxis amarillos y verdes comprimidos, es un buen momento para hacer una primera exploración de datos usando herramientas de línea de comandos.
+
+#### Uso de `zcat`
+
+Una primera herramienta que es muy útil para examinar el contenido de archivos comprimidos sin necesidad de descomprimirlos previamente es `zcat`, que no solo devuelve el contenido de un archivo sino que podemos usarla en cadenas de "pipes" para combinarla con otras herramientas.
+
+```bash
+zcat data/raw/yellow/yellow_tripdata_2019-01.csv.gz | wc -l
+```
+
+```
+7667793
+```
+
+#### Uso de `zless`
+
+Para examinar el contenido de un fichero comprimido por páginas, podemos usar `zless`:
+
+```bash
+zless data/raw/yellow/yellow_tripdata_2019-01.csv.gz
+```
+
+#### Uso de `zgrep`
+
+Para buscar una cadena dentro de uno o más ficheros comprimidos, podemos usar `zgrep`:
+
+```bash
+zgrep 2019-01-01 data/raw/yellow/yellow_tripdata_2019-*.csv.gz
+```
+
+#### Conteo de líneas
+
+Con todo esto, podemos preparar un script que cuente las líneas de cada uno de los ficheros sin descomprimirlos (incluyendo sus cabeceras):
+
+```bash
+count_lines() {
+  for FILE in `ls`; do
+      echo $FILE": "`zcat $FILE | wc -l`;
+  done;
+}
+
+clear
+
+cd data/raw/yellow;
+count_lines
+
+cd ../green;
+count_lines
+```
+
+```
+yellow_tripdata_2019-01.csv.gz: 7667793
+yellow_tripdata_2019-02.csv.gz: 7019376
+yellow_tripdata_2019-03.csv.gz: 7832546
+yellow_tripdata_2019-04.csv.gz: 7433140
+yellow_tripdata_2019-05.csv.gz: 7565262
+yellow_tripdata_2019-06.csv.gz: 6941025
+...
+green_tripdata_2019-01.csv.gz: 630919
+green_tripdata_2019-02.csv.gz: 575686
+green_tripdata_2019-03.csv.gz: 601103
+green_tripdata_2019-04.csv.gz: 514393
+green_tripdata_2019-05.csv.gz: 504888
+green_tripdata_2019-06.csv.gz: 471053
+...
+```

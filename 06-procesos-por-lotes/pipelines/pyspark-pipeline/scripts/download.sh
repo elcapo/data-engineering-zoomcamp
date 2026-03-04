@@ -7,8 +7,8 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NO_COLOR='\033[0m'
 
-TAXI_TYPE=$1 # "yellow"
-YEAR=$2 # 2020
+TAXI_TYPE=$1
+YEAR=$2
 
 # Validación de los argumentos
 if [ -z "$TAXI_TYPE" ] || [ -z "$YEAR" ]; then
@@ -18,7 +18,6 @@ if [ -z "$TAXI_TYPE" ] || [ -z "$YEAR" ]; then
   exit 1
 fi
 
-# Inicio del proceso
 printf "${GREEN}✔ Iniciando descarga para taxi '%s' del año %s${NO_COLOR}\n\n" "$TAXI_TYPE" "$YEAR"
 
 for MONTH in {1..12}; do
@@ -30,13 +29,24 @@ for MONTH in {1..12}; do
 
   LOCAL_PATH="data/raw/${TAXI_TYPE}"
   TARGET_FILENAME="${LOCAL_PATH}/${FILENAME}"
+  TEMP_FILE="${TARGET_FILENAME}.tmp"
+
+  mkdir -p "${LOCAL_PATH}"
+
+  if [ -f "${TARGET_FILENAME}" ]; then
+    printf "${YELLOW}↷ Ya existe:${NO_COLOR} %s\n" "${TARGET_FILENAME}"
+    continue
+  fi
 
   printf "${BLUE}→ Descargando:${NO_COLOR} %s\n" "$FILENAME"
 
-  mkdir -p "${LOCAL_PATH}"
-  wget -nc "${DOWNLOAD_URL}" -O "${TARGET_FILENAME}"
-
-  printf "${GREEN}✔ Guardado en:${NO_COLOR} %s\n\n" "${TARGET_FILENAME}"
+  if wget -q --show-progress "${DOWNLOAD_URL}" -O "${TEMP_FILE}"; then
+    mv "${TEMP_FILE}" "${TARGET_FILENAME}"
+    printf "${GREEN}✔ Guardado en:${NO_COLOR} %s\n" "${TARGET_FILENAME}"
+  else
+    rm -f "${TEMP_FILE}"
+    printf "${YELLOW}⚠ No existe:${NO_COLOR} %s\n" "$FILENAME"
+  fi
 done
 
-printf "${GREEN}✔ Descarga completada correctamente.${NO_COLOR}\n"
+printf "\n${GREEN}✔ Proceso finalizado.${NO_COLOR}\n"
