@@ -291,3 +291,137 @@ green_tripdata_2019-05.csv.gz: 504888
 green_tripdata_2019-06.csv.gz: 471053
 ...
 ```
+
+### Conversión de CSV a Parquet
+
+Con los datos descargados, el siguiente paso es convertirlos del formato CSV comprimido (`.csv.gz`) a **Parquet**, un formato columnar binario mucho más eficiente para su procesamiento con Spark. Esta conversión se realiza en el cuaderno [`conversion-de-csv-a-parquet.ipynb`](pipelines/pyspark-pipeline/notebooks/conversion-de-csv-a-parquet.ipynb).
+
+#### Creación de la sesión Spark
+
+```python
+import pyspark
+import os
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+    .master(os.environ.get('SPARK_MASTER')) \
+    .appName("pyspark-test") \
+    .getOrCreate()
+```
+
+El primer paso es importar PySpark y crear una sesión Spark. La dirección del nodo maestro se lee de la variable de entorno `SPARK_MASTER`, lo que permite que el cuaderno funcione tanto en local como apuntando a un clúster real sin modificar el código. `appName` es simplemente un nombre identificativo que aparecerá en la interfaz web de Spark.
+
+#### Importación del módulo de tipos
+
+```python
+from pyspark.sql import types
+```
+
+Se importa el módulo `types` de PySpark, que proporciona todas las clases necesarias para definir esquemas de datos explícitos: `StructType`, `StructField`, `IntegerType`, `DoubleType`, `StringType`, `TimestampType`, etc.
+
+#### Esquema de los taxis verdes
+
+```python
+green_schema = types.StructType([
+    types.StructField("VendorID", types.IntegerType(), True),
+    types.StructField("lpep_pickup_datetime", types.TimestampType(), True),
+    types.StructField("lpep_dropoff_datetime", types.TimestampType(), True),
+    ...
+])
+```
+
+Se define el esquema explícito para los ficheros de taxis verdes. Cada `StructField` recibe tres argumentos:
+
+* El nombre de la columna, que debe coincidir exactamente con la cabecera del CSV.
+* El tipo de dato (`IntegerType`, `DoubleType`, `StringType`, `TimestampType`...).
+* Un booleano que indica si el campo puede ser nulo (`True` en todos los casos aquí).
+
+Definir el esquema manualmente en lugar de dejar que Spark lo infiera automáticamente tiene varias ventajas:
+
+* Spark no necesita leer el fichero dos veces (una para inferir tipos y otra para cargar datos).
+* Se evitan inferencias incorrectas, especialmente en columnas de fechas y horas que Spark suele cargar como texto.
+* El código documenta explícitamente la estructura esperada de los datos.
+
+#### Esquema de los taxis amarillos
+
+```python
+yellow_schema = types.StructType([
+    types.StructField("VendorID", types.IntegerType(), True),
+    types.StructField("tpep_pickup_datetime", types.TimestampType(), True),
+    types.StructField("tpep_dropoff_datetime", types.TimestampType(), True),
+    ...
+])
+```
+
+Esquema análogo al anterior pero para los ficheros de taxis amarillos.
+
+> [!NOTE]
+> Los nombres de las columnas de fecha difieren: los taxis verdes usan el prefijo `lpep_` (_Lincoln Park Express_) mientras que los amarillos usan `tpep_` (_Taxi Passenger Enhancement Program_).
+> El orden de los campos también varía entre los dos tipos de taxi, lo que refuerza la necesidad de definir los esquemas por separado en lugar de reutilizar uno solo.
+
+#### Función de conversión
+
+```python
+def convert_to_parquet(taxi_type, year, schema):
+    for month in range(1, 13):
+        print(f"Procesando: {taxi_type} - {year}/{month}")
+
+        input_path = f"/data/raw/{taxi_type}/{taxi_type}_tripdata_{year}-{month:02d}.csv.gz"
+        output_path = f"/data/parquet/{taxi_type}/{year}/{month:02d}"
+
+        if not os.path.exists(input_path):
+            print(f"> El fichero {year}/{month} no existe y será ignorado")
+            continue
+
+        df = spark.read \
+            .option("header", "true") \
+            .schema(schema) \
+            .csv(input_path)
+
+        df \
+            .repartition(4) \
+            .write.parquet(output_path)
+```
+
+Esta función centraliza toda la lógica de conversión y acepta el tipo de taxi, el año y el esquema como parámetros. Su funcionamiento paso a paso es:
+
+* **Bucle de meses**: itera del 1 al 12, formateando el mes con dos dígitos (`{month:02d}`) para construir el nombre de fichero correcto.
+* **Comprobación de existencia**: si el fichero de entrada no existe (por ejemplo, porque ese mes no está disponible), lo avisa y continúa. Esto hace la función tolerante a huecos en los datos.
+* **Lectura del CSV**: carga el fichero comprimido con `spark.read.csv`. Se activa `header=true` para que Spark use la primera fila como nombres de columnas, y se aplica el esquema definido previamente.
+* **Repartición**: antes de escribir, se redistribuye el DataFrame en 4 particiones con `.repartition(4)`. Esto controla cuántos ficheros Parquet de salida se generan por mes, evitando tanto el problema de tener un único fichero enorme como el de tener cientos de ficheros diminutos.
+* **Escritura en Parquet**: escribe el resultado en el directorio de salida organizado como `/data/parquet/{tipo}/{año}/{mes}/`.
+
+El resultado queda organizado así:
+
+```
+data/
+└── parquet/
+    ├── green/
+    │   ├── 2019/
+    │   │   ├── 01/
+    │   │   │   ├── part-00000-....parquet
+    │   │   │   ├── part-00001-....parquet
+    │   │   │   ├── part-00002-....parquet
+    │   │   │   └── part-00003-....parquet
+    │   │   ├── 02/
+    │   │   └── ...
+    │   └── ...
+    └── yellow/
+        └── ...
+```
+
+#### Ejecución de la conversión
+
+```python
+# Procesamos los ficheros de taxis verdes
+convert_to_parquet('green', 2019, green_schema)
+convert_to_parquet('green', 2020, green_schema)
+convert_to_parquet('green', 2021, green_schema)
+
+# Procesamos los ficheros de taxis amarillos
+convert_to_parquet('yellow', 2019, yellow_schema)
+convert_to_parquet('yellow', 2020, yellow_schema)
+convert_to_parquet('yellow', 2021, yellow_schema)
+```
+
+Se invoca la función para los tres años disponibles y para cada tipo de taxi. Gracias a que la lógica está encapsulada en una función parametrizada, añadir más años o tipos de taxi es trivial. El proceso es computacionalmente intensivo ya que Spark está leyendo, descomprimiendo y reescribiendo varios GB de datos, pero solo necesita ejecutarse una vez: una vez que los Parquet están en disco, todas las operaciones posteriores usarán esos ficheros directamente.

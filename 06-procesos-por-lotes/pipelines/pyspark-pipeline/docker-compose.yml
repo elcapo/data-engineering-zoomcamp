@@ -13,6 +13,7 @@ services:
     command: /opt/spark/sbin/start-master.sh
     volumes:
       - ./notebooks:/workspace
+      - ./data:/data
 
   spark-worker-01:
     image: apache/spark:3.5.8-scala2.12-java17-python3-ubuntu
@@ -25,6 +26,7 @@ services:
     command: /opt/spark/sbin/start-worker.sh spark://spark-master:7077
     volumes:
       - ./notebooks:/workspace
+      - ./data:/data
 
   spark-worker-02:
     image: apache/spark:3.5.8-scala2.12-java17-python3-ubuntu
@@ -37,6 +39,7 @@ services:
     command: /opt/spark/sbin/start-worker.sh spark://spark-master:7077
     volumes:
       - ./notebooks:/workspace
+      - ./data:/data
 
   jupyter:
     build: .
@@ -56,3 +59,4 @@ services:
       --NotebookApp.token=''
     volumes:
       - ./notebooks:/workspace
+      - ./data:/data
