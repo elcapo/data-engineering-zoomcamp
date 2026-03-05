@@ -12,6 +12,7 @@
 * [Introducción a los procesos por lotes](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-zoomcamp-datatalksclub-share-7432151272373465089-_TML)
 * [Primer vistazo a PySpark](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineeringzoomcamp-ingenieraedadedatos-share-7433905129969401856-R2q_)
 * [Preparación de los datos de taxis de Nueva York](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-pyspark-zoomcamp-share-7435059218337918976--41E)
+* [Conceptos básicos de Spark](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-spark-pyspark-share-7435373808280158208-UeeV)
 
 ## Contribución FAQ
 

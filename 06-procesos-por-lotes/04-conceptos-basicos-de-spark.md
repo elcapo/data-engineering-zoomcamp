@@ -123,3 +123,7 @@ La ejecución podría verse así:
   * Lectura y filtrado.
   * _Shuffle_ y agregación.
 * **Tareas**: una por cada partición.
+
+> [!NOTE]
+> Use este artículo como base para esta contribución a la FAQ:
+> * [What is the difference between a Spark application, job, stage, and task?](https://github.com/DataTalksClub/faq/issues/228)
