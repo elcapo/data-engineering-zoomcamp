@@ -109,6 +109,10 @@ services:
                 values:
                   allowed-paths:
                     - /app/data
+              - type: io.kestra.plugin.fs.local.Download
+                values:
+                  allowed-paths:
+                    - /app/data
               - type: io.kestra.plugin.fs.local.List
                 values:
                   allowed-paths:
