@@ -6,7 +6,7 @@
 
 Una de las grandes ventajas de Spark es que no necesitamos aprender una API nueva para hacer consultas complejas. Spark nos permite ejecutar **SQL** estándar directamente sobre nuestros _DataFrames_, lo que facilita mucho la vida a quienes ya están familiarizados con bases de datos relacionales.
 
-En este artículo vamos a ver cómo combinar los datos de los taxis verdes y amarillos de Nueva York, registrarlos como una vista temporal y consultarlos con SQL para calcular métricas de ingresos mensuales por zona.
+En este artículo vamos a ver cómo combinar los datos de los taxis verdes y amarillos de Nueva York, registrarlos como una vista temporal y consultarlos con SQL para calcular métricas de ingresos mensuales por zona. Puedes consultar una versión interactiva de este artículo en formato cuaderno Jupyter en [sql-con.spark.ipynb](./pipelines/pyspark-pipeline/notebooks/sql-con.spark.ipynb).
 
 ### Crear la sesión de Spark
 
@@ -125,6 +125,8 @@ La salida nos confirma los datos combinados:
 |      yellow| 124.048.218|
 +------------+------------+
 ```
+
+![Unión de datasets](./resources/screenshots/union-de-datasets.png)
 
 ### Registrar el DataFrame como vista temporal
 
