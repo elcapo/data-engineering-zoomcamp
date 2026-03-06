@@ -6,6 +6,7 @@
 * [Primer vistazo a PySpark](02-primer-vistazo-a-pyspark.md)
 * [Preparación de los datos de taxis de Nueva York](03-preparacion-de-los-datos-de-taxis-de-nueva-york.md)
 * [Conceptos básicos de Spark](04-conceptos-basicos-de-spark.md)
+* [SQL con Spark](05-sql-con-spark.md)
 
 ## Aprendizaje en público
 
