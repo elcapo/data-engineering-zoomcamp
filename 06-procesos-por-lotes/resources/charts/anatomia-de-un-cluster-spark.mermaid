@@ -1,0 +1,36 @@
+flowchart LR
+    subgraph DR["Driver"]
+        direction TB
+        D1["spark-submit"]
+    end
+
+    subgraph CL["Clúster Spark"]
+        direction TB
+        M["Maestro<br>:4040"]
+        subgraph EX["Ejecutores"]
+            direction LR
+            E1["Ejecutor 1"]
+            E2["Ejecutor 2"]
+            E3["Ejecutor 3"]
+        end
+        M -->|"asigna tareas"| EX
+        M -.->|"monitoriza"| EX
+    end
+
+    subgraph ST["Almacenamiento"]
+        direction TB
+        P1["Partición 1"]
+        P2["Partición 2"]
+        P3["Partición 3"]
+    end
+
+    DR -->|"envía trabajo"| M
+    E1 <-->|"lee / escribe"| P1
+    E2 <-->|"lee / escribe"| P2
+    E3 <-->|"lee / escribe"| P3
+
+    style DR fill:#E3F2FD
+    style CL fill:#FFCDD2
+    style EX fill:#FFEBEE
+    style ST fill:#E8F5E9
+    style M fill:#EF9A9A
