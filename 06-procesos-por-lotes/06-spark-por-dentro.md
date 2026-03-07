@@ -80,7 +80,7 @@ Los datos se leen desde el almacenamiento en la nube al inicio del trabajo y los
 
 * Vídeo original (en inglés): [GroupBy in Spark](https://youtu.be/9qrDsY_2COo&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=59)
 
-En este artículo calculamos los ingresos por hora y zona de recogida para los taxis de Nueva York. Aprovecharemos para entender cómo ejecuta Spark un `GroupBy` internamente, porque el mecanismo que usa tiene consecuencias directas sobre el rendimiento de nuestros trabajos. Puedes consultar una versión interactiva en formato cuaderno Jupyter en [07_groupby_join.ipynb](./pipelines/pyspark-pipeline/notebooks/groupby_en_spark.ipynb).
+Ahora vamos a calcular los ingresos por hora y zona de recogida para los taxis de Nueva York. Aprovecharemos para entender cómo ejecuta Spark un `GroupBy` internamente, porque el mecanismo que usa tiene consecuencias directas sobre el rendimiento de nuestros trabajos. Puedes consultar una versión interactiva en formato cuaderno Jupyter en [groupby_en_spark.ipynb](./pipelines/pyspark-pipeline/notebooks/groupby_en_spark.ipynb).
 
 #### Calcular los ingresos de los taxis verdes
 
@@ -203,3 +203,79 @@ En resumen: la etapa 1 reduce el volumen de datos dentro de cada partición; el 
 ### `Join` en Spark
 
 * Vídeo original (en inglés): [Joins in Spark](https://youtu.be/lu7TrqAWuH4&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=60)
+
+Ahora queremos combinar los dos _DataFrames_ en una única tabla y enriquecerla con el nombre de cada zona. Puedes consultar una versión interactiva en formato cuaderno Jupyter en [join_en_spark.ipynb](./pipelines/pyspark-pipeline/notebooks/join_en_spark.ipynb).
+
+#### Unir los ingresos de taxis verdes y amarillos
+
+Antes de unir los dos _DataFrames_, renombramos sus columnas para distinguir el origen de cada métrica:
+
+```python
+df_green_revenue = spark.read.parquet('/data/report/revenue/green')
+df_yellow_revenue = spark.read.parquet('/data/report/revenue/yellow')
+
+df_green_revenue_tmp = df_green_revenue \
+    .withColumnRenamed('amount', 'green_amount') \
+    .withColumnRenamed('number_records', 'green_number_records')
+
+df_yellow_revenue_tmp = df_yellow_revenue \
+    .withColumnRenamed('amount', 'yellow_amount') \
+    .withColumnRenamed('number_records', 'yellow_number_records')
+```
+
+Leemos los resultados que materializamos en el artículo anterior y renombramos las columnas `amount` y `number_records` de cada _DataFrame_. Sin este paso, al unirlos tendríamos dos columnas llamadas `amount` y no sabríamos cuál es de cada tipo de taxi.
+
+```python
+df_join = df_green_revenue_tmp.join(
+    df_yellow_revenue_tmp,
+    on=['hour', 'zone'],
+    how='outer'
+)
+
+df_join.write.parquet('/data/report/revenue/total', mode='overwrite')
+```
+
+Usamos `how='outer'` porque queremos conservar todas las combinaciones de hora y zona, independientemente de si aparecen en los datos de taxis verdes, en los de amarillos o en ambos. Si una combinación solo existe en un lado, el otro tendrá `null`. Con `how='inner'` perderíamos todas las filas que no tienen pareja en el otro _DataFrame_.
+
+#### Cómo funciona `Join` por dentro
+
+Cuando los dos _DataFrames_ son grandes, Spark utiliza el algoritmo _sort merge join_. El mecanismo es muy similar al del `GroupBy` que vimos antes.
+
+**Etapa 1: asignar clave a cada registro**
+
+Cada ejecutor recorre sus particiones y añade a cada registro la clave compuesta sobre la que se va a hacer el `Join`. En nuestro caso, `(hour, zone)`. El resultado es una lista de pares `(clave, registro)` para cada _DataFrame_.
+
+**_Shuffle_: reunir claves iguales**
+
+A continuación se produce el **_shuffle_**: Spark redistribuye los registros de ambos _DataFrames_ de modo que todos los que comparten la misma clave acaben en la misma partición. El algoritmo subyacente es el mismo _external merge sort_ que vimos en el `GroupBy`, lo que garantiza que los registros dentro de cada partición quedan ordenados por clave.
+
+**Etapa 2: combinar los pares**
+
+Con todos los registros de la misma clave reunidos en la misma partición, Spark los combina en uno solo. Si la clave existe en ambos _DataFrames_, se produce una fila completa. Si solo existe en uno de los dos, el comportamiento depende del tipo de _join_: en un `outer` se rellena con `null`; en un `inner` se descarta.
+
+En la interfaz de Spark este tipo de _join_ aparece etiquetado explícitamente como _SortMergeJoin_. El coste principal está en el _shuffle_: cuantos más datos haya que redistribuir, más lento es el trabajo.
+
+#### Enriquecer con datos de zonas
+
+El segundo tipo de _join_ se produce cuando uno de los dos _DataFrames_ es muy pequeño. Queremos añadir el nombre de cada zona a nuestra tabla de ingresos:
+
+```python
+df_join = spark.read.parquet('/data/report/revenue/total')
+df_zones = spark.read.csv('/data/homework/raw/taxi_zone_lookup.csv', header=True)
+
+df_result = df_join.join(df_zones, df_join.zone == df_zones.LocationID)
+df_result.drop('LocationID', 'zone').write.parquet('/data/revenue-zones')
+```
+
+Al ejecutar este trabajo, la interfaz de Spark muestra algo llamativo: **solo hay una etapa**, no dos. Esto se debe a que Spark detecta automáticamente que `df_zones` es una tabla muy pequeña y aplica una estrategia diferente: el _broadcast join_.
+
+En lugar de redistribuir los datos de ambos _DataFrames_ mediante un _shuffle_, Spark envía una copia completa de la tabla pequeña a cada ejecutor. Así, cada ejecutor tiene localmente toda la información de zonas y puede resolver el `Join` para cada registro de `df_join` con una simple búsqueda en memoria, sin necesidad de mover datos por la red.
+
+Al no haber _shuffle_, el _broadcast join_ es considerablemente más rápido que el _sort merge join_. La operación que aparece en la interfaz es _BroadcastHashJoin_.
+
+> [!NOTE]
+> Spark decide automáticamente cuándo usar _broadcast join_ basándose en el tamaño estimado de los _DataFrames_. Si queremos forzarlo manualmente, podemos usar `broadcast()` de `pyspark.sql.functions`:
+> ```python
+> from pyspark.sql.functions import broadcast
+> df_result = df_join.join(broadcast(df_zones), df_join.zone == df_zones.LocationID)
+> ```
