@@ -1,13 +1,13 @@
-# Module 6 Homework
+# Módulo 6 Tarea
 
-## Question 1: Install Spark and PySpark
+## Pregunta 1: Instalar Spark y PySpark
 
-> Install PySpark follow this [guide](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/06-batch/setup/)
-> - Install Spark
-> - Run PySpark
-> - Create a local spark session
-> - Execute spark.version.
-> What's the output?
+> Instala PySpark siguiendo esta [guía](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/06-batch/setup/)
+> - Instala Spark
+> - Ejecuta PySpark
+> - Crea una sesión local de Spark
+> - Ejecuta spark.version.
+> ¿Cuál es la salida?
 
 ```python
 import pyspark
@@ -25,15 +25,15 @@ print(f"Spark version: {spark.version}")
 Spark version: 3.5.8
 ```
 
-The output is **3.5.8**.
+La salida es **3.5.8**.
 
-## Question 2: Yellow November 2025
+## Pregunta 2: Yellow de noviembre de 2025
 
-> Read the November 2025 Yellow into a Spark Dataframe.
+> Lee el archivo Yellow de noviembre de 2025 en un Spark Dataframe.
 >
-> Repartition the Dataframe to 4 partitions and save it to parquet.
+> Reparticiona el Dataframe en 4 particiones y guárdalo en parquet.
 >
-> What is the average size of the Parquet (ending with .parquet extension) Files that were created (in MB)?
+> ¿Cuál es el tamaño promedio de los archivos Parquet (con extensión .parquet) que se crearon (en MB)?
 
 ```python
 !mkdir -p /data/homework/raw
@@ -44,15 +44,15 @@ The output is **3.5.8**.
 ```
 
 ```python
-# Read the November 2025 Yellow into a Spark Dataframe.
+# Leer el archivo Yellow de noviembre de 2025 en un Spark Dataframe.
 df_trips = spark.read.parquet('/data/homework/raw/*.parquet')
 
-# Repartition the Dataframe to 4 partitions and save it to parquet.
+# Reparticionar el Dataframe en 4 particiones y guardarlo en parquet.
 df_trips.repartition(4).write.parquet('/data/homework/parquet', mode='overwrite')
 ```
 
 ```python
-# What is the average size of the Parquet (ending with .parquet extension) Files that were created (in MB)?
+# ¿Cuál es el tamaño promedio de los archivos Parquet creados (en MB)?
 !ls -lh /data/homework/parquet/*.parquet
 ```
 
@@ -63,20 +63,20 @@ df_trips.repartition(4).write.parquet('/data/homework/parquet', mode='overwrite'
 -rw-r--r-- 1 root root 25M Mar  7 11:24 /data/homework/parquet/part-00003-7ef2f8c4-626d-4401-8cc4-97eb59ad5841-c000.snappy.parquet
 ```
 
-> Select the answer which most closely matches.
+> Selecciona la respuesta que más se aproxime.
 >
 > - 6MB
 > - 25MB
 > - 75MB
 > - 100MB
 
-The average size is **25MB**.
+El tamaño promedio es **25MB**.
 
-## Question 3: Count records
+## Pregunta 3: Conteo de registros
 
-> How many taxi trips were there on the 15th of November?
+> ¿Cuántos viajes en taxi hubo el 15 de noviembre?
 >
-> Consider only trips that started on the 15th of November.
+> Considera únicamente los viajes que comenzaron el 15 de noviembre.
 
 ```python
 from pyspark.sql import functions as F
@@ -89,13 +89,13 @@ df_trips.filter(df_trips.pickup_date == '2025-11-15').count()
 162604
 ```
 
-The number of trips started on the 15th of November is:
+El número de viajes iniciados el 15 de noviembre es:
 
-- **162,604**
+- **162.604**
 
-## Question 4: Longest trip
+## Pregunta 4: Viaje más largo
 
-> What is the length of the longest trip in the dataset in hours?
+> ¿Cuánto dura el viaje más largo del conjunto de datos, en horas?
 
 - 22.7
 - 58.2
@@ -107,10 +107,10 @@ from pyspark.sql import types
 from datetime import datetime
 
 def duration(start: datetime, end: datetime) -> int:
-    # Difference in minutes (absolute value to support inverted values)
+    # Diferencia en minutos (valor absoluto para soportar valores invertidos)
     minutes = abs((end - start).total_seconds()) / 60
 
-    # Conversion to hours
+    # Conversión a horas
     hours = minutes / 60
 
     return hours
@@ -132,17 +132,17 @@ df_trips \
 +-------------------+
 ```
 
-The answer is **90.6**.
+La respuesta es **90.6**.
 
-## Question 5: User Interface
+## Pregunta 5: Interfaz de usuario
 
-> Spark's User Interface which shows the application's dashboard runs on which local port?
+> ¿En qué puerto local se ejecuta la Interfaz de Usuario de Spark, que muestra el panel de control de la aplicación?
 
-It runs on port **4040**.
+Se ejecuta en el puerto **4040**.
 
-## Question 6: Least frequent pickup location zone
+## Pregunta 6: Zona de recogida menos frecuente
 
-> Load the zone lookup data into a temp view in Spark.
+> Carga los datos de zonas en una vista temporal en Spark.
 
 ```python
 !wget -nc https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv \
@@ -198,23 +198,23 @@ ORDER BY trip_count
 only showing top 20 rows
 ```
 
-> Using the zone lookup data and the Yellow November 2025 data, what is the name of the LEAST frequent pickup location Zone?
+> Usando los datos de zonas y los datos Yellow de noviembre de 2025, ¿cuál es el nombre de la zona de recogida MENOS frecuente?
 
-The 3 zones with the least number of trips are these zones, which had no trip recorded during that period:
+Las 3 zonas con menos viajes son aquellas que no registraron ningún viaje durante ese período:
 
 * **Charleston/Tottenville**
 * **Freshkills Park**
 * **Great Kills Park**
 
-Then, these 3 zones had only one trip recorded:
+Luego, estas 3 zonas registraron únicamente un viaje:
 
 * **Governor's Island/Ellis Island/Liberty Island**
 * **Eltingville/Annadale/Prince's Bay**
 * **Arden Heights**
 
-For **Rikers Island** 4 trips were recorded and for **Jamaica Bay** there were 5.
+**Rikers Island** registró 4 viajes y **Jamaica Bay** registró 5.
 
-## Submitting the solutions
+## Envío de soluciones
 
-- Form for submitting: https://courses.datatalks.club/de-zoomcamp-2026/homework/hw6
-- Deadline: See the website
+- Formulario de envío: https://courses.datatalks.club/de-zoomcamp-2026/homework/hw6
+- Fecha límite: Ver el sitio web

@@ -8,6 +8,11 @@
 * [Conceptos básicos de Spark](04-conceptos-basicos-de-spark.md)
 * [SQL con Spark](05-sql-con-spark.md)
 
+## Ejercicios entregables
+
+* [Ejercicios resueltos (en español)](homework/traduccion.md)
+* [Ejercicios resueltos (en inglés)](homework/README.md)
+
 ## Aprendizaje en público
 
 * [Introducción a los procesos por lotes](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-zoomcamp-datatalksclub-share-7432151272373465089-_TML)
