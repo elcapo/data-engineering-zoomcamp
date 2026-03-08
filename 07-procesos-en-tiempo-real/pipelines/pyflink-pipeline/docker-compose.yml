@@ -1,0 +1,20 @@
+services:
+  redpanda:
+    image: redpandadata/redpanda:v25.3.9
+    ports:
+      - ${REDPANDA_PORT:-9092}:9092
+    command:
+      - redpanda start
+      - --smp 1
+      - --memory 1G
+      - --overprovisioned
+      - --node-id 0
+      - --kafka-addr PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - ${POSTGRES_PORT:-5432}:5432

@@ -1,0 +1,21 @@
+flowchart LR
+    subgraph Productor["Productor"]
+        A["Script en Python"]
+    end
+
+    subgraph subGraph1["Tiempo real"]
+        B["Redpanda Topic: rides"]
+        C["Flink Processing"]
+    end
+
+    subgraph Almacenamiento["Almacenamiento"]
+        D[("PostgreSQL")]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+
+    style Productor fill:#E1BEE7
+    style subGraph1 fill:#BBDEFB
+    style Almacenamiento fill:#C8E6C9

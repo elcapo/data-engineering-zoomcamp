@@ -97,8 +97,8 @@ El curso organiza sus contenidos en 6 módulos y un proyecto final.
   * Dominar Spark SQL y operaciones con *DataFrames*
   * Optimizar workflows de procesamiento por lotes
 
-### 7. **Procesos en tiempo real**
-  * Construir pipelines de datos en tiempo real con **Kafka**
+### 7. **[Procesos en tiempo real](07-procesos-en-tiempo-real/README.md)**
+  * Construir pipelines de datos en tiempo real con **Kafka** y **PyFlink**
   * Desarrollar aplicaciones de streaming con **KSQL**
   * Manejar esquemas de datos con **Avro**
 
@@ -135,8 +135,17 @@ El **Data Engineering Zoomcamp** es un curso práctico de 9 semanas que te ense�
 * [Spark](https://spark.apache.org/)  
   Motor de procesamiento distribuido diseñado para trabajar con grandes conjuntos de datos de forma eficiente, tanto en batch como en streaming.
 
-* [Kafka](https://kafka.apache.org/)  
+* [PySpark](https://spark.apache.org/docs/latest/api/python/)
+  Interfaz de Python para Apache Spark que permite escribir aplicaciones de procesamiento distribuido de datos usando la sintaxis y el ecosistema de Python.
+
+* [Kafka](https://kafka.apache.org/)
   Plataforma de mensajería distribuida orientada a eventos, utilizada para construir pipelines de datos en tiempo real y arquitecturas desacopladas.
+
+* [Redpanda](https://redpanda.com/)
+  Plataforma de streaming compatible con la API de Kafka, diseñada para ser más simple y eficiente al eliminar la dependencia de ZooKeeper y reducir la latencia.
+
+* [PyFlink](https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/python/overview/)
+  Interfaz de Python para Apache Flink, motor de procesamiento de flujos de datos diseñado para el procesamiento en tiempo real con baja latencia y alta tolerancia a fallos.
 
 ## Formas de seguir el curso
 
@@ -173,7 +182,7 @@ Si optas por seguir el curso con una cohorte, recuerda que debes inscribirte. Es
 | Módulo 4: **[Analísis de datos](04-analisis-de-datos/homework/README.md)** | 16 de febrero de 2026
 | Módulo 5: **[Plataformas de datos](05-plataformas-de-datos/homework/README.md)** | 28 de febrero de 2026 |
 | Taller 1: **[Ingesta de datos](taller-de-ingestion-de-api-con-dlt/homework/README.md)** | 2 de marzo de 2026 |
-| Módulo 6: **Procesos por lotes** | 9 de marzo de 2026 |
+| Módulo 6: **[Procesos por lotes](06-procesos-por-lotes/homework/README.md)** | 9 de marzo de 2026 |
 | Módulo 7: **Procesos en streaming** | 16 de marzo de 2026 |
 
 ## Proyecto final
