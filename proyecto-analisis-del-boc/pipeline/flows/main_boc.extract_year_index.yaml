@@ -66,8 +66,8 @@ tasks:
                   continue
 
               year_index[year] = {
-                  "text": year,
-                  "link": absolute_link,
+                  "year": year,
+                  "absolute_link": absolute_link,
               }
 
           return year_index
@@ -81,7 +81,11 @@ tasks:
           for year, link in year_links.items():
               yield link
 
-      @dlt.resource(name="year_index", write_disposition="replace")
+      @dlt.resource(
+          name="year_index",
+          write_disposition="merge",
+          merge_key="year",
+      )
       def year_index_data():
           yield from get_year_links_from_file("archive.html")
 

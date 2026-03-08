@@ -2,6 +2,12 @@ id: download_year_index
 namespace: boc
 description: Download the index of years
 
+inputs:
+  - id: extract
+    type: BOOL
+    displayName: Extract after download
+    defaults: true
+
 tasks:
   - id: label
     type: io.kestra.plugin.core.execution.Labels
@@ -23,3 +29,17 @@ tasks:
     from: "{{ outputs.store.uri }}"
     to: "/app/data/raw/boc/archive.html"
     overwrite: true
+
+  - id: if_extract
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ not inputs.extract }}"
+    then:
+      - id: exit
+        type: io.kestra.plugin.core.execution.Exit
+        state: SUCCESS
+        description: "Finishing after download because extraction wasn't solicited"
+
+  - id: call_extract
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: boc
+    flowId: extract_year_index
