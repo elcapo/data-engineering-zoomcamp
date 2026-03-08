@@ -23,7 +23,7 @@
 * [Conceptos básicos de Spark](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-spark-pyspark-share-7435373808280158208-UeeV)
 * [SQL con Spark](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-zoomcamp-spark-share-7435786432998346754-zMik)
 * [Spark por dentro](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-spark-pyspark-share-7436082165727248384-GQKT)
-* [Conjuntos de datos distribuidos resilientes](#)
+* [Conjuntos de datos distribuidos resilientes](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-spark-zoomcamp-share-7436356195948544000-Ky37)
 
 ## Contribución FAQ
 
