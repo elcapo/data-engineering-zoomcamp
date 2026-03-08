@@ -8,6 +8,7 @@
 * [Conceptos básicos de Spark](04-conceptos-basicos-de-spark.md)
 * [SQL con Spark](05-sql-con-spark.md)
 * [Spark por dentro](06-spark-por-dentro.md)
+* [Conjuntos de datos distribuidos resilientes](07-conjuntos-de-datos-distribuidos-resilientes.md)
 
 ## Ejercicios entregables
 
@@ -22,6 +23,7 @@
 * [Conceptos básicos de Spark](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-spark-pyspark-share-7435373808280158208-UeeV)
 * [SQL con Spark](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-zoomcamp-spark-share-7435786432998346754-zMik)
 * [Spark por dentro](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-spark-pyspark-share-7436082165727248384-GQKT)
+* [Conjuntos de datos distribuidos resilientes](#)
 
 ## Contribución FAQ
 
