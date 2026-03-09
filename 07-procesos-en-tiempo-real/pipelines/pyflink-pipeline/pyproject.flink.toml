@@ -1,0 +1,4 @@
+[project]
+name = "pyflink-workshop"
+requires-python = ">=3.12"
+dependencies = ["apache-flink==2.2.0"]
