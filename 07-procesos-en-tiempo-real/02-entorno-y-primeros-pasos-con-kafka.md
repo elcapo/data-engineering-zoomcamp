@@ -1,6 +1,6 @@
 # Procesos en tiempo real
 
-## El entorno y los primeros pasos con Kafka
+## Entorno y primeros pasos con Kafka
 
 * Vídeo original (en inglés): [Stream Processing with PyFlink](https://www.youtube.com/live/YDUgFeHQzJU)
 
