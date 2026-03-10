@@ -218,7 +218,7 @@ Para simplificar la ejecución, también hemos definido un atajo con **make**:
 make run-pass
 ```
 
-Tras enviar el trabajo, la interfaz web en http://localhost:8081 mostrará el job en estado *RUNNING*. En ese momento podemos arrancar el productor Python desde el host y veremos los datos aparecer en PostgreSQL casi en tiempo real.
+Tras enviar el trabajo, la interfaz web mostrará el job en estado *RUNNING*. En ese momento podemos arrancar el productor Python desde el host y veremos los datos aparecer en PostgreSQL casi en tiempo real.
 
 ### Agregación por ventanas temporales
 
