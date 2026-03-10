@@ -1,9 +1,12 @@
 import os
+import sys
 import time
 import pandas as pd
 from pathlib import Path
 from dotenv import load_dotenv
 from kafka import KafkaProducer
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from models import ride_from_row, ride_serializer
 
 load_dotenv()
@@ -46,6 +49,6 @@ if __name__ == "__main__":
         main(producer, dataframe)
         print('¡Todos los datos fueron enviados con éxito!')
     except KeyboardInterrupt:
-        print('¡El productor fue detenido!')
+        print("\n¡El productor fue detenido!")
 
     producer.flush()

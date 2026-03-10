@@ -2,7 +2,7 @@
 
 ## Procesamiento con PyFlink
 
-* Vídeo original (en inglés): [Stream Processing with PyFlink](https://www.youtube.com/live/YDUgFeHQzJU)
+* Vídeo original (en inglés): [Stream Processing with PyFlink](https://www.youtube.com/live/YDUgFeHQzJU?si=dHTe1WrEPBRQ5Wkq&t=3170)
 
 [Apache Flink](https://flink.apache.org) es una plataforma de procesamiento de flujos diseñada para entornos de producción exigentes. A diferencia de un consumidor Kafka escrito directamente en Python, Flink gestiona de forma automática la tolerancia a fallos, el escalado, las reintentos ante errores y el procesamiento correcto de eventos desordenados. Se estructura como un **clúster** de procesos que ejecutan trabajos de forma continua, similar en espíritu a como Spark gestiona el procesamiento por lotes.
 
@@ -23,7 +23,9 @@ Flink lo añadimos mediante el fichero [`docker-compose.flink.yml`](./pipelines/
 services:
   jobmanager:
     build:
+      context: .
       dockerfile: flink.Dockerfile
+    command: jobmanager
     ports:
       - ${FLINK_JOBMANAGER_PORT:-8081}:8081
     volumes:
@@ -36,9 +38,13 @@ services:
 
   taskmanager:
     build:
+      context: .
       dockerfile: flink.Dockerfile
+    command: taskmanager
     volumes:
       - ./src/:/opt/src
+    depends_on:
+      - jobmanager
     environment:
       - |
         FLINK_PROPERTIES=
@@ -58,23 +64,30 @@ El [`flink.Dockerfile`](./pipelines/pyflink-pipeline/flink.Dockerfile) hace exac
 ```dockerfile
 FROM flink:2.2.0-scala_2.12-java17
 
+USER root
+
 # Instalar uv para gestionar Python y dependencias
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 
+# Copiamos los ficheros de configuración
+COPY pyproject.flink.toml /opt/pyflink/pyproject.toml
+COPY flink-config.yaml /opt/flink/conf/config.yaml
+RUN chown flink:flink /opt/flink/conf/config.yaml
+
 WORKDIR /opt/pyflink
-COPY pyproject.flink.toml pyproject.toml
 RUN uv python install 3.12 && uv sync
 ENV PATH="/opt/pyflink/.venv/bin:$PATH"
 
 # Descargar los conectores JAR necesarios
 WORKDIR /opt/flink/lib
 RUN wget https://repo.maven.apache.org/maven2/org/apache/flink/flink-json/2.2.0/flink-json-2.2.0.jar; \
-    wget .../flink-sql-connector-kafka-4.0.1-2.0.jar; \
-    wget .../flink-connector-jdbc-core-4.0.0-2.0.jar; \
-    wget .../flink-connector-jdbc-postgres-4.0.0-2.0.jar; \
-    wget .../postgresql-42.7.10.jar
+    wget https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-kafka/4.0.1-2.0/flink-sql-connector-kafka-4.0.1-2.0.jar; \
+    wget https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-jdbc-core/4.0.0-2.0/flink-connector-jdbc-core-4.0.0-2.0.jar; \
+    wget https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-jdbc-postgres/4.0.0-2.0/flink-connector-jdbc-postgres-4.0.0-2.0.jar; \
+    wget https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.10/postgresql-42.7.10.jar
 
-COPY flink-config.yaml /opt/flink/conf/config.yaml
+WORKDIR /opt/flink
+USER flink
 ```
 
 Los **conectores JAR** son librerías Java que Flink necesita para hablar con sistemas externos. Sin ellos, Flink no sabría cómo leer de Kafka ni cómo escribir en PostgreSQL. Cada sistema destino (S3, BigQuery, MySQL…) requeriría sus propios conectores.
@@ -104,9 +117,9 @@ PyFlink ofrece varias APIs. La que usaremos es la **Table API**, que permite des
 
 En PyFlink, tanto la fuente (Kafka) como el destino (PostgreSQL) se definen como tablas virtuales. Flink las mapea internamente a los sistemas reales usando los conectores JAR que instalamos.
 
-### Trabajo de paso directo: Kafka → PostgreSQL
+### Trabajo de paso directo de Kafka a PostgreSQL
 
-El primer trabajo que crearemos es un **paso directo** (*pass-through*): lee eventos del tópico Kafka y los inserta en PostgreSQL sin modificarlos. Es el equivalente exacto del consumidor Python con escritura a base de datos que vimos anteriormente, pero ahora con la robustez de Flink.
+El primer trabajo que crearemos, [`pass_through_job.py`](./pipelines/pyflink-pipeline/src/jobs/pass_through_job.py), es un **paso directo** (_pass-through_): lee eventos del tópico Kafka y los inserta en PostgreSQL sin modificarlos. Es el equivalente exacto del consumidor Python con escritura a base de datos que vimos anteriormente, pero ahora con la robustez de Flink.
 
 ```python
 from pyflink.datastream import StreamExecutionEnvironment
@@ -184,9 +197,12 @@ La conversión `TO_TIMESTAMP_LTZ(tpep_pickup_datetime, 3)` transforma el timesta
 Los trabajos PyFlink se envían al clúster mediante el comando `flink run`, ejecutado dentro del contenedor del JobManager:
 
 ```bash
-docker compose exec jobmanager \
+docker compose \
+    -f docker-compose.yml \
+    -f docker-compose.flink.yml \
+    exec jobmanager \
     ./bin/flink run \
-    -py /opt/src/job/pass_through_job.py \
+    -py /opt/src/jobs/pass_through_job.py \
     --pyFiles /opt/src \
     -d
 ```
@@ -196,12 +212,6 @@ docker compose exec jobmanager \
 * `-d`: modo desacoplado (*detached*), el comando retorna inmediatamente sin esperar a que el trabajo termine.
 
 Tras enviar el trabajo, la interfaz web en http://localhost:8081 mostrará el job en estado *RUNNING*. En ese momento podemos arrancar el productor Python desde el host y veremos los datos aparecer en PostgreSQL casi en tiempo real.
-
-El Makefile del proyecto incluye un atajo para este comando:
-
-```bash
-make job
-```
 
 ### Agregación por ventanas temporales
 
@@ -275,19 +285,34 @@ t_env.execute_sql(f"""
 """).wait()
 ```
 
-`TUMBLE(TABLE events, DESCRIPTOR(event_timestamp), INTERVAL '1' HOUR)` le dice a Flink que agrupe los eventos en ventanas de una hora basadas en `event_timestamp`. Flink emitirá el resultado de cada ventana cuando esté seguro de que ya no llegarán más eventos para esa ventana, es decir, cuando el watermark supere el final de la ventana.
-
-Para enviar este trabajo al clúster:
+`TUMBLE(TABLE events, DESCRIPTOR(event_timestamp), INTERVAL '1' HOUR)` le dice a Flink que agrupe los eventos en ventanas de una hora basadas en `event_timestamp`. Flink emitirá el resultado de cada ventana cuando esté seguro de que ya no llegarán más eventos para esa ventana, es decir, cuando el watermark supere el final de la ventana. Con todo esto, ya tenemos nuestro nuevo trabajo de datos agregados en tiempo real, [`aggregate_job.py`](./pipelines/pyflink-pipeline/src/jobs/aggregate_job.py).
 
 ```bash
-make aggregation_job
+docker compose exec postgres psql -U postgres -c """
+CREATE TABLE processed_events_aggregated (
+    window_start TIMESTAMP(3),
+    PULocationID INT,
+    num_trips BIGINT,
+    total_revenue DOUBLE PRECISION,
+    PRIMARY KEY (window_start, PULocationID)
+);
+"""
+```
+
+```bash
+docker compose \
+    -f docker-compose.yml \
+    -f docker-compose.flink.yml \
+    exec jobmanager \
+    ./bin/flink run \
+    -py /opt/src/jobs/aggregate_job.py \
+    --pyFiles /opt/src \
+    -d
 ```
 
 ### Watermarks y eventos tardíos
 
-El concepto de **watermark** es uno de los más importantes (y al principio más confusos) del procesamiento en streaming. Merece una explicación detallada.
-
-En un sistema de streaming ideal, los eventos llegarían en el mismo orden en que ocurrieron. En la realidad, esto no ocurre: problemas de red, colas saturadas o simplemente retrasos hacen que los eventos lleguen desordenados. Un evento que ocurrió a las 12:00 puede llegar al sistema a las 12:05.
+El concepto de **watermark** es uno de los más importantes (y al principio más confusos) del procesos en tiempo real. En un sistema de proceso en tiempo real ideal, los eventos llegarían en el mismo orden en que ocurrieron. En la realidad, esto no ocurre: problemas de red, colas saturadas o simplemente retrasos hacen que los eventos lleguen desordenados. Un evento que ocurrió a las 12:00 puede llegar al sistema a las 12:05.
 
 El **tiempo de procesamiento** es el momento en que el evento llega al sistema. El **tiempo de evento** es el momento en que el evento ocurrió en el mundo real. Flink puede trabajar con ambos, pero el tiempo de evento es el que tiene semántica correcta para análisis.
 
@@ -295,43 +320,64 @@ Un **watermark** es una marca que avanza progresivamente por el flujo de datos y
 
 La declaración `WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND` significa que el watermark viaja 5 segundos por detrás del evento más reciente visto. Esto da un margen de tolerancia: un evento que llegue hasta 5 segundos tarde todavía será incluido en la ventana correcta.
 
-¿Qué pasa con los eventos que llegan más tarde del margen de tolerancia? Flink los clasifica como **eventos tardíos** (*late data*). Por defecto los descarta, aunque es posible configurarlo para procesarlos de forma especial: actualizar el resultado de la ventana ya cerrada, enviarlos a un lado (*side output*) o ignorarlos.
+¿Qué pasa con los eventos que llegan más tarde del margen de tolerancia? Flink los clasifica como **eventos tardíos** (*late data*). Por defecto los descarta, aunque es posible configurarlo para procesarlos de forma especial:
+
+* actualizar el resultado de la ventana ya cerrada,
+* enviarlos a un lado (*side output*),
+* o ignorarlos.
 
 ### Productor en tiempo real con eventos tardíos
 
-Para observar el comportamiento del watermark en acción existe un productor alternativo que genera datos aleatoriamente y simula deliberadamente eventos tardíos:
+Para observar el comportamiento del watermark en acción, creamos un productor alternativo, [`delayed_producer.py`](./pipelines/pyflink-pipeline/src/producers/delayed_producer.py), que genera datos aleatoriamente y simula deliberadamente eventos tardíos:
 
 ```python
-import random, time
+import dataclasses
+import json
+import random
+import sys
+import time
+from datetime import datetime, timezone
+from pathlib import Path
 from kafka import KafkaProducer
-from models import Ride
 
-PICKUP_LOCATIONS = [79, 107, 48, 132, 234, 148, 249, 68, 90, 263]
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from models import Ride, random_ride, ride_serializer
 
-def make_ride(delay_seconds=0):
-    now_ms = int(time.time() * 1000) - delay_seconds * 1000
-    return Ride(
-        PULocationID=random.choice(PICKUP_LOCATIONS),
-        DOLocationID=random.choice(PICKUP_LOCATIONS),
-        trip_distance=round(random.uniform(0.5, 20.0), 2),
-        total_amount=round(random.uniform(5.0, 100.0), 2),
-        tpep_pickup_datetime=now_ms,
+def generate_random_ride(delay_probability=0.2):
+    if random.random() < delay_probability:
+        delay = random.randint(3, 10)
+        ride = random_ride(delay)
+        timestamp = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000, tz=timezone.utc)
+        print(f"RETRASADO ({delay}s): pickup location={ride.PULocationID} timestamp={timestamp:%H:%M:%S}")
+    else:
+        ride = random_ride()
+        timestamp = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000, tz=timezone.utc)
+        print(f"A TIEMPO: pickup location={ride.PULocationID} timestamp={timestamp:%H:%M:%S}")
+
+    return ride
+
+if __name__ == "__main__":
+    producer = KafkaProducer(
+        bootstrap_servers=['localhost:9092'],
+        value_serializer=ride_serializer,
     )
 
-producer = KafkaProducer(bootstrap_servers=['localhost:9092'],
-                         value_serializer=ride_serializer)
+    count = 0
 
-while True:
-    if random.random() < 0.2:   # 20% de probabilidad de evento tardío
-        delay = random.randint(3, 10)
-        ride = make_ride(delay_seconds=delay)
-        print(f"  TARDÍO ({delay}s) -> PU={ride.PULocationID}")
-    else:
-        ride = make_ride()
-        print(f"  a tiempo -> PU={ride.PULocationID}")
+    print("Enviando eventos...")
+    print("> Pulsa Ctrl+C para parar\n")
 
-    producer.send('rides', value=ride)
-    time.sleep(0.5)
+    try:
+        while True:
+            ride = generate_random_ride()
+            producer.send('rides', value=ride)
+            count += 1
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        print("\n¡El productor fue detenido!")
+        print(f"Se enviaron {count} eventos")
+
+    producer.flush()
 ```
 
 Con este productor activo y el trabajo de agregación corriendo, podemos observar en la base de datos cómo Flink actualiza las ventanas al recibir eventos tardíos que todavía caen dentro del margen de tolerancia (≤5 segundos), y cómo descarta los que llegan demasiado tarde.

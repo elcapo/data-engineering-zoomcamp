@@ -30,11 +30,20 @@ class Ride:
     tpep_pickup_datetime: int  # época en milisegundos
 ```
 
-Separamos esta definición en un fichero `src/models.py`, junto con las funciones auxiliares que la acompañan: una para convertir una fila de pandas en un `Ride`, y otra para serializar y deserializar instancias de `Ride` a JSON:
+Separamos esta definición en un fichero [`src/models.py`](./pipelines/pyflink-pipeline/src/models.py), junto con las funciones auxiliares que la acompañan: una para convertir una fila de pandas en un `Ride`, y otra para serializar y deserializar instancias de `Ride` a JSON:
 
 ```python
 import json
 import dataclasses
+from dataclasses import dataclass
+
+@dataclass
+class Ride:
+    PULocationID: int
+    DOLocationID: int
+    trip_distance: float
+    total_amount: float
+    tpep_pickup_datetime: int  # época en milisegundos
 
 def ride_from_row(row):
     return Ride(
@@ -112,15 +121,18 @@ uv sync
 
 ### El productor
 
-El productor, [producer.py](./pipelines/pyflink-pipeline/producer.py), lee los primeros 1.000 viajes del fichero de datos y los envía al tópico `rides` uno a uno, con una pequeña pausa entre cada envío para simular el flujo en tiempo real:
+El productor, [`file_producer.py`](./pipelines/pyflink-pipeline/src/producers/file_producer.py), lee los primeros 1.000 viajes del fichero de datos y los envía al tópico `rides` uno a uno, con una pequeña pausa entre cada envío para simular el flujo en tiempo real:
 
 ```python
 import os
+import sys
 import time
 import pandas as pd
 from pathlib import Path
 from dotenv import load_dotenv
 from kafka import KafkaProducer
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from models import ride_from_row, ride_serializer
 
 load_dotenv()
@@ -163,7 +175,7 @@ if __name__ == "__main__":
         main(producer, dataframe)
         print('¡Todos los datos fueron enviados con éxito!')
     except KeyboardInterrupt:
-        print('¡El productor fue detenido!')
+        print("\n¡El productor fue detenido!")
 
     producer.flush()
 ```
@@ -174,12 +186,16 @@ El bucle `for` recorre el dataframe de pandas fila a fila, convierte cada fila e
 
 ### El consumidor básico
 
-El consumidor, [dummy-consumer.py](./pipelines/pyflink-pipeline/dummy-consumer.py), es el proceso que está al otro extremo del tópico, leyendo mensajes a medida que llegan:
+El consumidor, [`dummy_consumer.py`](./pipelines/pyflink-pipeline/src/consumers/dummy_consumer.py), es el proceso que está al otro extremo del tópico, leyendo mensajes a medida que llegan:
 
 ```python
 import os
+import sys
+from pathlib import Path
 from dotenv import load_dotenv
 from kafka import KafkaConsumer
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from models import ride_deserializer
 
 load_dotenv()
@@ -202,7 +218,7 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print('¡El consumidor fue detenido!')
+        print("\n¡El consumidor fue detenido!")
 ```
 
 Hay dos parámetros importantes en la configuración del consumidor:
@@ -232,14 +248,18 @@ CREATE TABLE processed_events (
 """
 ```
 
-Y el consumidor, [postgres-consumer.py](./pipelines/pyflink-pipeline/postgres-consumer.py), que escribe en ella:
+Y el consumidor, [`postgres_consumer.py`](./pipelines/pyflink-pipeline/src/consumers/postgres_consumer.py), que escribe en ella:
 
 ```python
 import os
+import sys
 import psycopg2
+from pathlib import Path
 from datetime import datetime
 from dotenv import load_dotenv
 from kafka import KafkaConsumer
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from models import ride_deserializer
 
 load_dotenv()
@@ -254,7 +274,7 @@ def main():
     )
 
     connection.autocommit = True
-    cur = connection.cursor()
+    cursor = connection.cursor()
 
     redpanda_port = os.getenv('REDPANDA_PORT', '9092')
     consumer = KafkaConsumer(
@@ -269,20 +289,19 @@ def main():
         ride = message.value
         print(ride)
 
-        pickup_dt = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000)
-        cur.execute(
+        pickup_datetime = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000)
+        cursor.execute(
             """INSERT INTO processed_events
             (PULocationID, DOLocationID, trip_distance, total_amount, pickup_datetime)
             VALUES (%s, %s, %s, %s, %s)""",
-            (ride.PULocationID, ride.DOLocationID,
-            ride.trip_distance, ride.total_amount, pickup_dt)
+            (ride.PULocationID, ride.DOLocationID, ride.trip_distance, ride.total_amount, pickup_datetime)
         )
 
 if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print('¡El consumidor fue detenido!')
+        print("\n¡El consumidor fue detenido!")
 ```
 
 Nótese que este consumidor tiene un `group_id` diferente al anterior (`'rides-to-postgres'` en lugar de `'rides-console'`). Esto significa que **ambos consumidores pueden correr simultáneamente** y los dos recibirán todos los mensajes del tópico, de forma independiente. Si quisiéramos que dos consumidores se repartieran el trabajo (procesando cada uno la mitad de los mensajes), necesitarían compartir el mismo `group_id`.

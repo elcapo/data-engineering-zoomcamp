@@ -1,8 +1,12 @@
 import os
+import sys
 import psycopg2
+from pathlib import Path
 from datetime import datetime
 from dotenv import load_dotenv
 from kafka import KafkaConsumer
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from models import ride_deserializer
 
 load_dotenv()
@@ -17,7 +21,7 @@ def main():
     )
 
     connection.autocommit = True
-    cur = connection.cursor()
+    cursor = connection.cursor()
 
     redpanda_port = os.getenv('REDPANDA_PORT', '9092')
     consumer = KafkaConsumer(
@@ -32,17 +36,16 @@ def main():
         ride = message.value
         print(ride)
 
-        pickup_dt = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000)
-        cur.execute(
+        pickup_datetime = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000)
+        cursor.execute(
             """INSERT INTO processed_events
             (PULocationID, DOLocationID, trip_distance, total_amount, pickup_datetime)
             VALUES (%s, %s, %s, %s, %s)""",
-            (ride.PULocationID, ride.DOLocationID,
-            ride.trip_distance, ride.total_amount, pickup_dt)
+            (ride.PULocationID, ride.DOLocationID, ride.trip_distance, ride.total_amount, pickup_datetime)
         )
 
 if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print('¡El consumidor fue detenido!')
+        print("\n¡El consumidor fue detenido!")

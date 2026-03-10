@@ -1,7 +1,9 @@
 services:
   jobmanager:
     build:
+      context: .
       dockerfile: flink.Dockerfile
+    command: jobmanager
     ports:
       - ${FLINK_JOBMANAGER_PORT:-8081}:8081
     volumes:
@@ -14,9 +16,13 @@ services:
 
   taskmanager:
     build:
+      context: .
       dockerfile: flink.Dockerfile
+    command: taskmanager
     volumes:
       - ./src/:/opt/src
+    depends_on:
+      - jobmanager
     environment:
       - |
         FLINK_PROPERTIES=

@@ -1,6 +1,10 @@
 import os
+import sys
+from pathlib import Path
 from dotenv import load_dotenv
 from kafka import KafkaConsumer
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from models import ride_deserializer
 
 load_dotenv()
@@ -23,4 +27,4 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print('¡El consumidor fue detenido!')
+        print("\n¡El consumidor fue detenido!")
