@@ -9,6 +9,7 @@
 ## Aprendizaje en público
 
 * [Entorno y primeros pasos con Kafka](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kafka-streamingdedatos-share-7436844445079187456-hgCi)
+* [Procesamiento con PyFlink](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-flink-tiemporeal-share-7437251558112907264-S7WG)
 
 ---
 
