@@ -97,7 +97,7 @@ Redpanda expone **dos puertos con propósitos distintos**: el `9092` es el que u
 Para arrancar los servicios:
 
 ```bash
-docker compose up -d
+make up
 ```
 
 ### Dependencias Python
@@ -188,6 +188,12 @@ if __name__ == "__main__":
 El `KafkaProducer` recibe la dirección del broker (`localhost:9092`, que es el puerto externo de Redpanda) y la función de serialización que convierte cada `Ride` en bytes. La llamada a `producer.flush()` al final garantiza que todos los mensajes pendientes se envíen antes de que el proceso termine.
 
 El bucle `for` recorre el dataframe de pandas fila a fila, convierte cada fila en un `Ride` con `ride_from_row` y lo publica en el tópico. Es deliberadamente simple: en producción, este código podría estar dentro de una app móvil, un servidor web o cualquier sistema que genere eventos.
+
+Para lanzar el productor de eventos hemos creado un atajo **make**:
+
+```bash
+make file-events
+```
 
 ### El consumidor básico
 

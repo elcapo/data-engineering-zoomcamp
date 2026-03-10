@@ -67,7 +67,7 @@ def log_aggregation():
         COUNT(*) AS num_trips,
         SUM(total_amount) AS total_revenue
     FROM TABLE(
-        TUMBLE(TABLE {source_table}, DESCRIPTOR(event_timestamp), INTERVAL '1' MINUTE)
+        TUMBLE(TABLE {source_table}, DESCRIPTOR(event_timestamp), INTERVAL '5' MINUTE)
     )
     GROUP BY window_start, PULocationID;
     """).wait()

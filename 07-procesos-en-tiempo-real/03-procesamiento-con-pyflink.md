@@ -66,19 +66,20 @@ FROM flink:2.2.0-scala_2.12-java17
 
 USER root
 
-# Instalar uv para gestionar Python y dependencias
+RUN mkdir -p /opt/flink && \
+    mkdir -p /opt/pyflink && \
+    chown flink:flink /opt/flink && \
+    chown flink:flink /opt/pyflink
+
+USER flink
+
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 
-# Copiamos los ficheros de configuración
-COPY pyproject.flink.toml /opt/pyflink/pyproject.toml
-COPY flink-config.yaml /opt/flink/conf/config.yaml
-RUN chown flink:flink /opt/flink/conf/config.yaml
-
 WORKDIR /opt/pyflink
+COPY pyproject.flink.toml pyproject.toml
 RUN uv python install 3.12 && uv sync
 ENV PATH="/opt/pyflink/.venv/bin:$PATH"
 
-# Descargar los conectores JAR necesarios
 WORKDIR /opt/flink/lib
 RUN wget https://repo.maven.apache.org/maven2/org/apache/flink/flink-json/2.2.0/flink-json-2.2.0.jar; \
     wget https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-kafka/4.0.1-2.0/flink-sql-connector-kafka-4.0.1-2.0.jar; \
@@ -87,7 +88,7 @@ RUN wget https://repo.maven.apache.org/maven2/org/apache/flink/flink-json/2.2.0/
     wget https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.10/postgresql-42.7.10.jar
 
 WORKDIR /opt/flink
-USER flink
+COPY flink-config.yaml conf/config.yaml
 ```
 
 Los **conectores JAR** son librerías Java que Flink necesita para hablar con sistemas externos. Sin ellos, Flink no sabría cómo leer de Kafka ni cómo escribir en PostgreSQL. Cada sistema destino (S3, BigQuery, MySQL…) requeriría sus propios conectores.
@@ -103,10 +104,10 @@ dependencies = ["apache-flink==2.2.0"]
 
 Finalmente, el fichero [`flink-config.yaml`](./pipelines/pyflink-pipeline/flink-config.yaml) establece la configuración de Flink.
 
-Para construir la imagen y levantar todos los servicios:
+Para construir la imagen y levantar todos los servicios hemos añadido un comando **make**:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.flink.yml up --build -d
+make build
 ```
 
 La interfaz web de Flink queda accesible en http://localhost:8081, donde podemos ver los slots disponibles y los trabajos en ejecución.
@@ -164,7 +165,7 @@ def create_processed_events_sink_postgres(t_env):
 
 def log_processing():
     env = StreamExecutionEnvironment.get_execution_environment()
-    env.enable_checkpointing(10_000)  # checkpoint cada 10 segundos
+    env.enable_checkpointing(10 * 1000)
 
     t_env = StreamTableEnvironment.create(
         env, EnvironmentSettings.new_instance().in_streaming_mode().build()
@@ -211,6 +212,12 @@ docker compose \
 * `--pyFiles`: directorio adicional que se pone en el `PYTHONPATH` del trabajo, necesario para que pueda importar `models.py` y otras dependencias locales.
 * `-d`: modo desacoplado (*detached*), el comando retorna inmediatamente sin esperar a que el trabajo termine.
 
+Para simplificar la ejecución, también hemos definido un atajo con **make**:
+
+```bash
+make run-pass
+```
+
 Tras enviar el trabajo, la interfaz web en http://localhost:8081 mostrará el job en estado *RUNNING*. En ese momento podemos arrancar el productor Python desde el host y veremos los datos aparecer en PostgreSQL casi en tiempo real.
 
 ### Agregación por ventanas temporales
@@ -219,38 +226,39 @@ Hasta ahora hemos replicado lo que podríamos hacer con Python puro. La diferenc
 
 Flink llama a esto **ventanas temporales** (*windows*). Una **ventana de tumbling** (*tumbling window*) divide el tiempo en intervalos fijos y no solapados: todos los eventos que lleguen entre las 12:00 y las 13:00 pertenecen a la ventana de las 12:00, los de las 13:00 a las 14:00 a la siguiente, y así sucesivamente.
 
-Para poder agrupar eventos por ventanas temporales necesitamos dos cosas: una **columna de tiempo de evento** (el momento en que el evento ocurrió, no cuando llegó al sistema) y un **watermark** que le diga a Flink cuánta tolerancia tiene para eventos tardíos.
+Para poder agrupar eventos por ventanas temporales necesitamos dos cosas: una **columna de tiempo de evento** (el momento en que el evento ocurrió, no cuando llegó al sistema) y un **watermark** que le diga a Flink cuánta tolerancia tiene para eventos tardíos. El trabajo [`aggregate_job.py`](./pipelines/pyflink-pipeline/src/jobs/aggregate_job.py) es un ejemplo de esto.
 
 ```python
+from pyflink.datastream import StreamExecutionEnvironment
+from pyflink.table import EnvironmentSettings, StreamTableEnvironment
+
 def create_events_source_kafka(t_env):
-    t_env.execute_sql("""
-        CREATE TABLE events (
+    table_name = "events"
+    source_ddl = f"""
+        CREATE TABLE {table_name} (
             PULocationID INTEGER,
             DOLocationID INTEGER,
             trip_distance DOUBLE,
             total_amount DOUBLE,
             tpep_pickup_datetime BIGINT,
             event_timestamp AS TO_TIMESTAMP_LTZ(tpep_pickup_datetime, 3),
-            WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND
+            WATERMARK for event_timestamp as event_timestamp - INTERVAL '5' SECOND
         ) WITH (
             'connector' = 'kafka',
             'properties.bootstrap.servers' = 'redpanda:29092',
             'topic' = 'rides',
             'scan.startup.mode' = 'earliest-offset',
+            'properties.auto.offset.reset' = 'earliest',
             'format' = 'json'
-        )
-    """)
-    return 'events'
-```
+        );
+        """
+    t_env.execute_sql(source_ddl)
+    return table_name
 
-La columna `event_timestamp` es una **columna calculada** que se obtiene convirtiendo el timestamp en milisegundos. La cláusula `WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND` declara que Flink tolerará eventos con hasta 5 segundos de retraso.
-
-La tabla destino almacena los resultados agregados:
-
-```python
 def create_events_aggregated_sink(t_env):
-    t_env.execute_sql("""
-        CREATE TABLE processed_events_aggregated (
+    table_name = 'processed_events_aggregated'
+    sink_ddl = f"""
+        CREATE TABLE {table_name} (
             window_start TIMESTAMP(3),
             PULocationID INT,
             num_trips BIGINT,
@@ -259,19 +267,30 @@ def create_events_aggregated_sink(t_env):
         ) WITH (
             'connector' = 'jdbc',
             'url' = 'jdbc:postgresql://postgres:5432/postgres',
-            'table-name' = 'processed_events_aggregated',
+            'table-name' = '{table_name}',
             'username' = 'postgres',
             'password' = 'postgres',
             'driver' = 'org.postgresql.Driver'
-        )
-    """)
-    return 'processed_events_aggregated'
-```
+        );
+        """
+    t_env.execute_sql(sink_ddl)
+    return table_name
 
-Y la consulta de agregación usa la función `TUMBLE` de Flink:
+def log_aggregation():
+    # Configurar el entorno
+    env = StreamExecutionEnvironment.get_execution_environment()
+    env.enable_checkpointing(10 * 1000)
+    env.set_parallelism(3)
 
-```python
-t_env.execute_sql(f"""
+    # Crear la tabla de entorno
+    settings = EnvironmentSettings.new_instance().in_streaming_mode().build()
+    t_env = StreamTableEnvironment.create(env, environment_settings=settings)
+
+    # Crear las tablas de Kafka
+    source_table = create_events_source_kafka(t_env)
+    aggregated_table = create_events_aggregated_sink(t_env)
+
+    t_env.execute_sql(f"""
     INSERT INTO {aggregated_table}
     SELECT
         window_start,
@@ -279,25 +298,20 @@ t_env.execute_sql(f"""
         COUNT(*) AS num_trips,
         SUM(total_amount) AS total_revenue
     FROM TABLE(
-        TUMBLE(TABLE {source_table}, DESCRIPTOR(event_timestamp), INTERVAL '1' HOUR)
+        TUMBLE(TABLE {source_table}, DESCRIPTOR(event_timestamp), INTERVAL '5' MINUTE)
     )
-    GROUP BY window_start, PULocationID
-""").wait()
+    GROUP BY window_start, PULocationID;
+    """).wait()
+
+if __name__ == '__main__':
+    log_aggregation()
 ```
 
-`TUMBLE(TABLE events, DESCRIPTOR(event_timestamp), INTERVAL '1' HOUR)` le dice a Flink que agrupe los eventos en ventanas de una hora basadas en `event_timestamp`. Flink emitirá el resultado de cada ventana cuando esté seguro de que ya no llegarán más eventos para esa ventana, es decir, cuando el watermark supere el final de la ventana. Con todo esto, ya tenemos nuestro nuevo trabajo de datos agregados en tiempo real, [`aggregate_job.py`](./pipelines/pyflink-pipeline/src/jobs/aggregate_job.py).
+* La columna `event_timestamp` es una **columna calculada** que se obtiene convirtiendo el timestamp en milisegundos. La cláusula `WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND` declara que Flink tolerará eventos con hasta 5 segundos de retraso.
 
-```bash
-docker compose exec postgres psql -U postgres -c """
-CREATE TABLE processed_events_aggregated (
-    window_start TIMESTAMP(3),
-    PULocationID INT,
-    num_trips BIGINT,
-    total_revenue DOUBLE PRECISION,
-    PRIMARY KEY (window_start, PULocationID)
-);
-"""
-```
+* `TUMBLE(TABLE events, DESCRIPTOR(event_timestamp), INTERVAL '5' MINUTE)` le dice a Flink que agrupe los eventos en ventanas de una hora basadas en `event_timestamp`. Flink emitirá el resultado de cada ventana cuando esté seguro de que ya no llegarán más eventos para esa ventana, es decir, cuando el watermark supere el final de la ventana.
+
+Para registrar el trabajo en Flink podemos, o bien lanzar:
 
 ```bash
 docker compose \
@@ -308,6 +322,12 @@ docker compose \
     -py /opt/src/jobs/aggregate_job.py \
     --pyFiles /opt/src \
     -d
+```
+
+O usar el atajo **make**:
+
+```bash
+make run-aggregate
 ```
 
 ### Watermarks y eventos tardíos
@@ -343,16 +363,20 @@ from kafka import KafkaProducer
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from models import Ride, random_ride, ride_serializer
 
+RED = "\033[91m"
+GREEN = "\033[92m"
+RESET = "\033[0m"
+
 def generate_random_ride(delay_probability=0.2):
     if random.random() < delay_probability:
         delay = random.randint(3, 10)
         ride = random_ride(delay)
         timestamp = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000, tz=timezone.utc)
-        print(f"RETRASADO ({delay}s): pickup location={ride.PULocationID} timestamp={timestamp:%H:%M:%S}")
+        print(f"{RED}RETRASADO{RESET} ({delay}s): pickup location={ride.PULocationID} timestamp={timestamp:%H:%M:%S}")
     else:
         ride = random_ride()
         timestamp = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000, tz=timezone.utc)
-        print(f"A TIEMPO: pickup location={ride.PULocationID} timestamp={timestamp:%H:%M:%S}")
+        print(f"{GREEN}A TIEMPO{RESET}: pickup location={ride.PULocationID} timestamp={timestamp:%H:%M:%S}")
 
     return ride
 
@@ -382,11 +406,17 @@ if __name__ == "__main__":
 
 Con este productor activo y el trabajo de agregación corriendo, podemos observar en la base de datos cómo Flink actualiza las ventanas al recibir eventos tardíos que todavía caen dentro del margen de tolerancia (≤5 segundos), y cómo descarta los que llegan demasiado tarde.
 
-Para ver el efecto con ventanas más cortas (y no tener que esperar una hora), existe una variante del trabajo de agregación con ventanas de 10 segundos (`aggregation_job_demo.py`) especialmente diseñada para demostraciones.
+![Generador de eventos restrasados](./resources/screenshots/generador-de-eventos-retrasados.png)
+
+Para lanzar el productor de eventos retrasados hemos creado un atajo **make**:
+
+```bash
+make delayed-events
+```
 
 ### Checkpointing y tolerancia a fallos
 
-La llamada `env.enable_checkpointing(10_000)` en todos nuestros trabajos activa el mecanismo de **checkpointing** de Flink. Cada 10 segundos, Flink toma una instantánea consistente del estado de todos los operadores del trabajo (offsets de Kafka, acumuladores de ventanas, etc.) y la guarda en almacenamiento persistente.
+La llamada `env.enable_checkpointing(10 * 1000)` en todos nuestros trabajos activa el mecanismo de **checkpointing** de Flink. Cada 10 segundos, Flink toma una instantánea consistente del estado de todos los operadores del trabajo (offsets de Kafka, acumuladores de ventanas, etc.) y la guarda en almacenamiento persistente.
 
 Si un trabajo falla, Flink puede recuperarse desde el último checkpoint en lugar de empezar desde cero. Esto es lo que le da semántica de **procesamiento exactamente una vez** (*exactly-once*): cada evento se procesa exactamente una vez, incluso ante fallos del sistema.
 

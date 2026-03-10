@@ -42,7 +42,7 @@ def log_processing():
     env = StreamExecutionEnvironment.get_execution_environment()
 
     # Checkpoint cada 10 segundos
-    env.enable_checkpointing(10_000)
+    env.enable_checkpointing(10 * 1000)
 
     t_env = StreamTableEnvironment.create(
         env, EnvironmentSettings.new_instance().in_streaming_mode().build()

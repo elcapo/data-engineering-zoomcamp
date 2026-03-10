@@ -1,6 +1,9 @@
+COMPOSE = docker compose -f docker-compose.yml -f docker-compose.flink.yml
+
 initialize: up create-topics create-tables
 
-COMPOSE = docker compose -f docker-compose.yml -f docker-compose.flink.yml
+build:
+	$(COMPOSE) up -d --build --force-recreate
 
 up:
 	$(COMPOSE) up -d
@@ -26,3 +29,9 @@ run-pass:
 
 run-aggregate:
 	$(COMPOSE) exec -d jobmanager ./bin/flink run -py /opt/src/jobs/aggregate_job.py --pyFiles /opt/src -d
+
+file-events:
+	uv run src/producers/file_producer.py
+
+delayed-events:
+	uv run src/producers/delayed_producer.py

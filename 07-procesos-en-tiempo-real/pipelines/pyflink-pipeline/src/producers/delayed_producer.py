@@ -10,16 +10,20 @@ from kafka import KafkaProducer
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from models import Ride, random_ride, ride_serializer
 
+RED = "\033[91m"
+GREEN = "\033[92m"
+RESET = "\033[0m"
+
 def generate_random_ride(delay_probability=0.2):
     if random.random() < delay_probability:
         delay = random.randint(3, 10)
         ride = random_ride(delay)
         timestamp = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000, tz=timezone.utc)
-        print(f"RETRASADO ({delay}s): pickup location={ride.PULocationID} timestamp={timestamp:%H:%M:%S}")
+        print(f"{RED}RETRASADO{RESET} ({delay}s): pickup location={ride.PULocationID} timestamp={timestamp:%H:%M:%S}")
     else:
         ride = random_ride()
         timestamp = datetime.fromtimestamp(ride.tpep_pickup_datetime / 1000, tz=timezone.utc)
-        print(f"A TIEMPO: pickup location={ride.PULocationID} timestamp={timestamp:%H:%M:%S}")
+        print(f"{GREEN}A TIEMPO{RESET}: pickup location={ride.PULocationID} timestamp={timestamp:%H:%M:%S}")
 
     return ride
 
