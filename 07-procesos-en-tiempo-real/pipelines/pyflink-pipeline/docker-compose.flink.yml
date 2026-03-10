@@ -23,6 +23,7 @@ services:
       - ./src/:/opt/src
     depends_on:
       - jobmanager
+    restart: on-failure
     environment:
       - |
         FLINK_PROPERTIES=

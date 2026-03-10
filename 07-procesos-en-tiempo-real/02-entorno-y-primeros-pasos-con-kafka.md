@@ -235,8 +235,6 @@ Un consumidor que solo imprime mensajes por pantalla tiene poco valor práctico.
 Primero necesitamos la tabla en PostgreSQL:
 
 ```bash
-cd pipelines/pyflink-pipeline
-
 docker compose exec postgres psql -U postgres -c """
 CREATE TABLE processed_events (
     PULocationID INTEGER,
@@ -248,7 +246,18 @@ CREATE TABLE processed_events (
 """
 ```
 
-Y el consumidor, [`postgres_consumer.py`](./pipelines/pyflink-pipeline/src/consumers/postgres_consumer.py), que escribe en ella:
+Luego el tópico en RedPanda:
+
+```bash
+docker compose \
+    -f docker-compose.yml \
+    -f docker-compose.flink.yml \
+    exec redpanda \
+    rpk topic create rides \
+    --partitions 3
+```
+
+Y finalmente el consumidor, [`postgres_consumer.py`](./pipelines/pyflink-pipeline/src/consumers/postgres_consumer.py) que escribe en Postgres:
 
 ```python
 import os
