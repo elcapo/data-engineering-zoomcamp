@@ -116,7 +116,12 @@ La carpeta [pipelines/pyflink-pipeline](./pipelines/pyflink-pipeline/) es un pro
 
 ```bash
 cd pipelines/pyflink-pipeline
+
+# Instala las dependencias de Python
 uv sync
+
+# Inicia los servicios, crea las tablas en Postgres y crea el tópico en RedPanda
+make initialize
 ```
 
 ### El productor
@@ -230,34 +235,7 @@ El bucle `for message in consumer` es bloqueante y se ejecuta indefinidamente: e
 
 ### Consumidor con escritura a PostgreSQL
 
-Un consumidor que solo imprime mensajes por pantalla tiene poco valor práctico. El siguiente paso natural es **persistir los eventos en una base de datos**. Así, en lugar de perder los datos cuando el proceso termina, los guardamos para análisis posterior.
-
-Primero necesitamos la tabla en PostgreSQL:
-
-```bash
-docker compose exec postgres psql -U postgres -c """
-CREATE TABLE processed_events (
-    PULocationID INTEGER,
-    DOLocationID INTEGER,
-    trip_distance DOUBLE PRECISION,
-    total_amount DOUBLE PRECISION,
-    pickup_datetime TIMESTAMP
-);
-"""
-```
-
-Luego el tópico en RedPanda:
-
-```bash
-docker compose \
-    -f docker-compose.yml \
-    -f docker-compose.flink.yml \
-    exec redpanda \
-    rpk topic create rides \
-    --partitions 3
-```
-
-Y finalmente el consumidor, [`postgres_consumer.py`](./pipelines/pyflink-pipeline/src/consumers/postgres_consumer.py) que escribe en Postgres:
+Un consumidor, [`postgres_consumer.py`](./pipelines/pyflink-pipeline/src/consumers/postgres_consumer.py), que solo imprime mensajes por pantalla tiene poco valor práctico. El siguiente paso natural es **persistir los eventos en una base de datos**. Así, en lugar de perder los datos cuando el proceso termina, los guardamos para análisis posterior.
 
 ```python
 import os
