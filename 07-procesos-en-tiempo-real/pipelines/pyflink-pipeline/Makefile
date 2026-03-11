@@ -1,4 +1,10 @@
 COMPOSE = docker compose -f docker-compose.yml -f docker-compose.flink.yml
+NETWORK = pyflink-pipeline_default
+TOPIC ?= rides
+CONSUMER_GROUP ?= rides-to-postgres
+PARTITION ?= 0
+OFFSET ?= 0
+COUNT ?= 0
 
 initialize: up create-topics create-tables
 
@@ -35,3 +41,12 @@ file-events:
 
 delayed-events:
 	uv run src/producers/delayed_producer.py
+
+kcat:
+	docker run --network $(NETWORK) edenhill/kcat:1.7.1 -b redpanda:29092 -C -t $(TOPIC) -p $(PARTITION) -o $(OFFSET) -c $(COUNT)
+
+kafka-console-consumer:
+	docker run --rm -it --network $(NETWORK) confluentinc/cp-kafka:7.6.0 kafka-console-consumer --bootstrap-server redpanda:29092 --topic $(TOPIC) --from-beginning
+
+kafka-consumer-groups:
+	docker run --rm -it --network $(NETWORK) confluentinc/cp-kafka:7.6.0 kafka-consumer-groups --bootstrap-server redpanda:29092 --describe --group $(CONSUMER_GROUP)
