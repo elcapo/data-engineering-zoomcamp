@@ -9,85 +9,48 @@ tasks:
     # Plugin nativo: corre en el proceso de Kestra, accede /app/data directamente.
     from: /app/data/raw/boc/archive.html
 
-  - id: extract_year_index
+  - id: parse_archive
+    type: io.kestra.plugin.scripts.python.Commands
+    containerImage: boc-python:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    inputFiles:
+      archive.html: "{{ outputs.read_archive_html.uri }}"
+    outputFiles:
+      - year_index.json
+    commands:
+      - archive-parser archive.html -o year_index.json
+
+  - id: load_year_index
     type: io.kestra.plugin.scripts.python.Script
     containerImage: boc-python:latest
     taskRunner:
       type: io.kestra.plugin.scripts.runner.docker.Docker
-      # Unirse a la misma red Docker para que el contenedor pueda llegar
-      # al servicio "postgres" por su nombre de host.
       networkMode: boc-postgres-network
     inputFiles:
-      archive.html: "{{ outputs.read_archive_html.uri }}"
+      year_index.json: "{{ outputs.parse_archive.outputFiles['year_index.json'] }}"
     env:
       POSTGRES_HOST: "{{ envs.postgres_data_host }}"
       POSTGRES_DB: "{{ envs.postgres_data_db }}"
       POSTGRES_USER: "{{ envs.postgres_data_user }}"
       POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
     script: |
+      import json
       import os
       import dlt
-      from urllib.parse import urljoin, urlparse
-      from bs4 import BeautifulSoup
-      import re
 
       host = os.environ["POSTGRES_HOST"]
       db   = os.environ["POSTGRES_DB"]
       user = os.environ["POSTGRES_USER"]
       pwd  = os.environ["POSTGRES_PASSWORD"]
 
-      base_url = "https://www.gobiernodecanarias.org/boc/archivo/"
+      with open("year_index.json") as f:
+          records = json.load(f)
 
-      def is_absolute(url: str) -> bool:
-          parsed = urlparse(url)
-          return parsed.scheme and parsed.netloc
-
-      def get_year_from_link(link):
-          pattern = re.compile(base_url + r'(\d{4}|$)')
-          occurrences = pattern.findall(link)
-          if len(occurrences) >= 0:
-              return occurrences[0]
-
-      def get_year_links_from_html(html: str):
-          soup = BeautifulSoup(html, "html.parser")
-
-          year_index = {}
-
-          for link in soup.find_all("a"):
-              if not link.has_attr("href"):
-                  continue
-
-              absolute_link = link["href"] if is_absolute(link["href"]) else str(urljoin(base_url, link["href"]))
-              if not absolute_link.startswith(base_url):
-                  continue
-
-              year = get_year_from_link(absolute_link)
-              if not year:
-                  continue
-
-              year_index[year] = {
-                  "year": year,
-                  "absolute_link": absolute_link,
-              }
-
-          return year_index
-
-      def get_year_links_from_file(file: str):
-          with open(file, "r") as f:
-              html = f.read()
-
-          year_links = get_year_links_from_html(html)
-
-          for year, link in year_links.items():
-              yield link
-
-      @dlt.resource(
-          name="year_index",
-          write_disposition="merge",
-          merge_key="year",
-      )
+      @dlt.resource(name="year_index", write_disposition="merge", merge_key="year")
       def year_index_data():
-          yield from get_year_links_from_file("archive.html")
+          yield from records
 
       pipeline = dlt.pipeline(
           pipeline_name="year_index",
