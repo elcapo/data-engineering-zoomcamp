@@ -18,6 +18,9 @@ Para que los flujos que usan ciertas dependencias Python se ejecuten a velocidad
 docker build -t boc-python:latest -f ./boc-python.Dockerfile .
 ```
 
+> [!NOTE]
+> Un ejemplo de flujo que usa esta imagen es [extract_year_index](./flows/main_boc.extract_year_index.yaml).
+
 ### 1. Configurar Variables de Entorno
 
 El proyecto incluye un archivo `env.template` con las variables de entorno necesarias. Para configurar tu entorno:
