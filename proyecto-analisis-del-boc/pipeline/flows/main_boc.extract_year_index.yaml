@@ -11,7 +11,7 @@ tasks:
 
   - id: extract_year_index
     type: io.kestra.plugin.scripts.python.Script
-    containerImage: python-dlt:latest
+    containerImage: boc-python:latest
     taskRunner:
       type: io.kestra.plugin.scripts.runner.docker.Docker
       # Unirse a la misma red Docker para que el contenedor pueda llegar

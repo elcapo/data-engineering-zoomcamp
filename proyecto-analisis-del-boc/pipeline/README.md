@@ -12,10 +12,10 @@ Esta carpeta contiene la implementación del proyecto de análisis de datos del 
 
 ### 0. Crear las Imágenes Base
 
-Para que los flujos que usan ciertas dependencias Python se ejecuten a velocidades razonables, se ha preparado una imagen específica que debe ser "compilada" con la etiqueta `python-dlt`.
+Para que los flujos que usan ciertas dependencias Python se ejecuten a velocidades razonables, así como para poder usar código personalizado Python en nuestros flujos, se ha preparado una imagen específica que debe ser "compilada" con la etiqueta `boc-python`.
 
 ```bash
-docker build -t python-dlt:latest -f ./docker/python-dlt.Dockerfile .
+docker build -t boc-python:latest -f ./boc-python.Dockerfile .
 ```
 
 ### 1. Configurar Variables de Entorno

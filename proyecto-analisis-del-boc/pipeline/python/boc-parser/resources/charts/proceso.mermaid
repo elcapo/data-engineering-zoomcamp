@@ -1,0 +1,16 @@
+---
+config:
+  theme: redux
+---
+flowchart TB
+    A["BOC en formato HTML"] --> B{"¿Qué formato?"}
+    B --> C["Parseo del formato de 1982"] & D["Parseo del formato de 2026"]
+    C L_C_E_0@--> E["Salida en formato JSON"]
+    D L_D_E_0@--> E
+
+    A@{ shape: doc}
+    E@{ shape: doc}
+    style B fill:#FFF9C4
+
+    L_C_E_0@{ curve: natural } 
+    L_D_E_0@{ curve: natural }
