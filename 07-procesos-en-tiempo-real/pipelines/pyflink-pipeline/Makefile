@@ -38,6 +38,7 @@ create-tables:
 	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_processed_events_aggregated.sql
 	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_aggregated_pickup.sql
 	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_aggregated_longest_streak.sql
+	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_aggregated_tips_per_hour.sql
 
 run-pass:
 	$(COMPOSE) exec -d jobmanager ./bin/flink run -py /opt/src/jobs/pass_through_job.py --pyFiles /opt/src -d
@@ -47,6 +48,9 @@ run-aggregate:
 
 run-homework-longest-streak:
 	$(COMPOSE) exec -d jobmanager ./bin/flink run -py /opt/src/jobs/aggregated_longest_streak_job.py --pyFiles /opt/src -d
+
+run-homework-tips-per-hour:
+	$(COMPOSE) exec -d jobmanager ./bin/flink run -py /opt/src/jobs/aggregated_tips_per_hour_job.py --pyFiles /opt/src -d
 
 file-events:
 	uv run src/producers/file_producer.py
