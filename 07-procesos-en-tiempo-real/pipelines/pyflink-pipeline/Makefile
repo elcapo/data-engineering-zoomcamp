@@ -42,6 +42,9 @@ file-events:
 delayed-events:
 	uv run src/producers/delayed_producer.py
 
+avro-events:
+	uv run src/producers/avro_producer.py
+
 kcat:
 	docker run --network $(NETWORK) edenhill/kcat:1.7.1 -b redpanda:29092 -C -t $(TOPIC) -p $(PARTITION) -o $(OFFSET) -c $(COUNT)
 

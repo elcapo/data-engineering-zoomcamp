@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "Ride",
+  "namespace": "com.example.rides",
+  "fields": [
+    {"name": "PULocationID", "type": "int"},
+    {"name": "DOLocationID", "type": "int"},
+    {"name": "trip_distance", "type": "double"},
+    {"name": "total_amount", "type": "double"},
+    {"name": "tpep_pickup_datetime", "type": "long"}
+  ]
+}

@@ -6,6 +6,7 @@
 * [Entorno y primeros pasos con Kafka](02-entorno-y-primeros-pasos-con-kafka.md)
 * [Procesamiento con PyFlink](03-procesamiento-con-pyflink.md)
 * [Cómo inspeccionar mensajes de un `topic` de Kafka usando `offset`s](04-como-inspeccionar-los-mensajes-de-un-topico.md)
+* [Esquemas: el contrato entre productor y consumidor](05-esquemas-y-registros-de-esquemas.md)
 
 ## Aprendizaje en público
 

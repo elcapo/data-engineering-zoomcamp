@@ -3,6 +3,7 @@ services:
     image: redpandadata/redpanda:v25.3.9
     ports:
       - ${REDPANDA_PORT:-9092}:9092
+      - ${SCHEMA_REGISTRY_PORT:-18081}:8081
     command:
       - redpanda start
       - --smp 1
