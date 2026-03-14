@@ -30,6 +30,7 @@ create-topics:
 create-tables:
 	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_processed_events.sql
 	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_processed_events_aggregated.sql
+	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_aggregated_pickup.sql
 
 run-pass:
 	$(COMPOSE) exec -d jobmanager ./bin/flink run -py /opt/src/jobs/pass_through_job.py --pyFiles /opt/src -d
