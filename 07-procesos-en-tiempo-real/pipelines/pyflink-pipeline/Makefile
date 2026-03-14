@@ -8,6 +8,8 @@ COUNT ?= 0
 
 initialize: up create-topics create-tables
 
+reset: down-and-clear-volumes initialize
+
 build:
 	$(COMPOSE) up -d --build --force-recreate
 
@@ -23,20 +25,28 @@ logs:
 down:
 	$(COMPOSE) down --remove-orphans
 
+down-and-clear-volumes:
+	$(COMPOSE) down -v
+
 create-topics:
 	$(COMPOSE) exec redpanda rpk topic create rides --partitions 3 --if-not-exists
 	$(COMPOSE) exec redpanda rpk topic create structured_rides --partitions 3 --if-not-exists
+	$(COMPOSE) exec redpanda rpk topic create green-trips --if-not-exists
 
 create-tables:
 	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_processed_events.sql
 	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_processed_events_aggregated.sql
 	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_aggregated_pickup.sql
+	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_aggregated_longest_streak.sql
 
 run-pass:
 	$(COMPOSE) exec -d jobmanager ./bin/flink run -py /opt/src/jobs/pass_through_job.py --pyFiles /opt/src -d
 
 run-aggregate:
 	$(COMPOSE) exec -d jobmanager ./bin/flink run -py /opt/src/jobs/aggregate_job.py --pyFiles /opt/src -d
+
+run-homework-longest-streak:
+	$(COMPOSE) exec -d jobmanager ./bin/flink run -py /opt/src/jobs/aggregated_longest_streak_job.py --pyFiles /opt/src -d
 
 file-events:
 	uv run src/producers/file_producer.py
@@ -46,6 +56,9 @@ delayed-events:
 
 avro-events:
 	uv run src/producers/avro_producer.py
+
+homework-events:
+	uv run src/producers/homework_producer.py
 
 avro-consumer:
 	uv run src/consumers/avro_consumer.py
