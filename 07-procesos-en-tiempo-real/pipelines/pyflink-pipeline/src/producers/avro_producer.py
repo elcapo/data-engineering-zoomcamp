@@ -46,7 +46,7 @@ def load_producer():
         schema_str = f.read()
 
     parsed_schema = fastavro.parse_schema(json.loads(schema_str))
-    schema_id = register_schema(schema_str, 'rides-value')
+    schema_id = register_schema(schema_str, 'structured_rides-value')
     print(f'Esquema registrado con ID: {schema_id}')
 
     redpanda_port = os.getenv('REDPANDA_PORT', '9092')
@@ -71,7 +71,7 @@ def load_producer():
 
 
 def main(producer, dataframe):
-    topic_name = 'rides'
+    topic_name = 'structured_rides'
 
     for _, row in dataframe.iterrows():
         ride = ride_from_row(row)

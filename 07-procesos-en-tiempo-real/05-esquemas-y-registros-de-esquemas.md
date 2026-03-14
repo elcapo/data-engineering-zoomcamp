@@ -188,7 +188,7 @@ def load_producer():
         schema_str = f.read()
 
     parsed_schema = fastavro.parse_schema(json.loads(schema_str))
-    schema_id = register_schema(schema_str, 'rides-value')
+    schema_id = register_schema(schema_str, 'structured_rides-value')
     print(f'Esquema registrado con ID: {schema_id}')
 
     redpanda_port = os.getenv('REDPANDA_PORT', '9092')
@@ -203,7 +203,7 @@ def load_producer():
 
 
 def main(producer, dataframe):
-    topic_name = 'rides'
+    topic_name = 'structured_rides'
 
     for _, row in dataframe.iterrows():
         ride = ride_from_row(row)
@@ -220,12 +220,87 @@ def main(producer, dataframe):
 
 La función `make_avro_serializer` construye el payload en tres pasos: el byte mágico, el ID del esquema en 4 bytes big-endian y el payload Avro generado con `fastavro.schemaless_writer`. El calificativo *schemaless* no significa que el mensaje no tenga esquema; significa que el payload binario no incluye el esquema en sí. El esquema se recupera por separado usando el ID de la cabecera.
 
-La convención de nombrar el sujeto como `rides-value` viene del ecosistema Kafka: los esquemas se registran bajo sujetos separados para la clave (`rides-key`) y el valor (`rides-value`) del mensaje.
+La convención de nombrar el sujeto como `structured_rides-value` viene del ecosistema Kafka: los esquemas se registran bajo sujetos separados para la clave (`rides-key`) y el valor (`structured_rides-value`) del mensaje.
 
 Para lanzar el productor Avro hay un atajo make:
 
 ```bash
 make avro-events
+```
+
+### Consumidor con Avro y registro de esquemas
+
+La operación inversa en el consumidor es simétrica: leer los 5 bytes de cabecera, resolver el esquema consultando el registro por su ID, y deserializar el payload binario. El consumidor [`avro_consumer.py`](./pipelines/pyflink-pipeline/src/consumers/avro_consumer.py) implementa este flujo con una caché de esquemas para evitar consultar el registro en cada mensaje:
+
+```python
+import json
+import os
+import struct
+import sys
+from io import BytesIO
+from pathlib import Path
+
+import fastavro
+import requests
+from dotenv import load_dotenv
+from kafka import KafkaConsumer
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from models import Ride
+
+load_dotenv()
+
+SCHEMA_REGISTRY_URL = os.getenv('SCHEMA_REGISTRY_URL', 'http://localhost:18081')
+
+
+def fetch_schema(schema_id: int) -> dict:
+    response = requests.get(f'{SCHEMA_REGISTRY_URL}/schemas/ids/{schema_id}')
+    response.raise_for_status()
+    return fastavro.parse_schema(json.loads(response.json()['schema']))
+
+
+def make_avro_deserializer():
+    schema_cache = {}
+
+    def deserialize(data: bytes) -> Ride:
+        buf = BytesIO(data)
+        magic = buf.read(1)
+        if magic != b'\x00':
+            raise ValueError(f'Byte mágico inesperado: {magic!r}')
+
+        schema_id = struct.unpack('>I', buf.read(4))[0]
+        if schema_id not in schema_cache:
+            schema_cache[schema_id] = fetch_schema(schema_id)
+
+        record = fastavro.schemaless_reader(buf, schema_cache[schema_id])
+        return Ride(**record)
+
+    return deserialize
+
+
+def main():
+    redpanda_port = os.getenv('REDPANDA_PORT', '9092')
+    consumer = KafkaConsumer(
+        'rides',
+        bootstrap_servers=[f'localhost:{redpanda_port}'],
+        auto_offset_reset='earliest',
+        group_id='rides-avro-console',
+        value_deserializer=make_avro_deserializer()
+    )
+
+    for message in consumer:
+        ride = message.value
+        print(ride)
+```
+
+La función `make_avro_deserializer` devuelve un closure que mantiene un diccionario `schema_cache` entre llamadas. La primera vez que llega un mensaje con un schema ID concreto, el consumidor consulta el registro y almacena el esquema parseado. Las llamadas siguientes con el mismo ID usan el esquema ya cacheado, sin ninguna petición HTTP adicional.
+
+El endpoint del registro de esquemas que se consulta es `/schemas/ids/{id}`, que devuelve el esquema como string JSON bajo la clave `schema`. Una vez parseado con `fastavro.parse_schema`, está listo para ser usado en `fastavro.schemaless_reader`, que reconstruye el diccionario Python a partir del payload binario.
+
+Para lanzar el consumidor Avro hay un atajo make:
+
+```bash
+make avro-consumer
 ```
 
 ### Cómo lee Flink los mensajes Avro
@@ -242,7 +317,7 @@ CREATE TABLE events (
 ) WITH (
     'connector' = 'kafka',
     'properties.bootstrap.servers' = 'redpanda:29092',
-    'topic' = 'rides',
+    'topic' = 'structured_rides',
     'scan.startup.mode' = 'latest-offset',
     'format' = 'avro-confluent',
     'avro-confluent.url' = 'http://redpanda:8081'
@@ -251,7 +326,7 @@ CREATE TABLE events (
 
 El conector `avro-confluent` sabe leer el formato de cable Confluent: extrae el schema ID de la cabecera del mensaje, consulta el registro de esquemas, obtiene el esquema y deserializa el payload binario. Todo esto es transparente al SQL que escribe las transformaciones: la query `INSERT INTO ... SELECT ...` no cambia en absoluto.
 
-Para usar este conector habría que añadir el JAR correspondiente al `flink.Dockerfile`:
+Para usar este conector hace falta el JAR `flink-avro-confluent-registry`, que ya está incluido en el [`flink.Dockerfile`](./pipelines/pyflink-pipeline/flink.Dockerfile) junto al resto de conectores:
 
 ```dockerfile
 RUN wget https://repo.maven.apache.org/maven2/org/apache/flink/flink-avro-confluent-registry/2.2.0/flink-avro-confluent-registry-2.2.0.jar
@@ -272,9 +347,9 @@ El registro de esquemas puede verificar esta compatibilidad automáticamente. Ex
 Para configurar el modo de compatibilidad de un sujeto basta una llamada HTTP al registro de esquemas:
 
 ```bash
-curl -X PUT http://localhost:18081/config/rides-value \
+curl -X PUT http://localhost:18081/config/structured_rides-value \
     -H 'Content-Type: application/vnd.schemaregistry.v1+json' \
     -d '{"compatibility": "BACKWARD"}'
 ```
 
-A partir de ese momento, cualquier intento de registrar un esquema incompatible para `rides-value` devolverá un error antes de que el productor llegue a enviar un solo mensaje. Es el mismo principio que un test de integración, pero aplicado al contrato de datos en lugar de al código.
+A partir de ese momento, cualquier intento de registrar un esquema incompatible para `structured_rides-value` devolverá un error antes de que el productor llegue a enviar un solo mensaje. Es el mismo principio que un test de integración, pero aplicado al contrato de datos en lugar de al código.

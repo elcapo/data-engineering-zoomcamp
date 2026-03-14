@@ -25,6 +25,7 @@ down:
 
 create-topics:
 	$(COMPOSE) exec redpanda rpk topic create rides --partitions 3 --if-not-exists
+	$(COMPOSE) exec redpanda rpk topic create structured_rides --partitions 3 --if-not-exists
 
 create-tables:
 	$(COMPOSE) exec -T postgres psql -U postgres < sql/create_processed_events.sql
@@ -44,6 +45,9 @@ delayed-events:
 
 avro-events:
 	uv run src/producers/avro_producer.py
+
+avro-consumer:
+	uv run src/consumers/avro_consumer.py
 
 kcat:
 	docker run --network $(NETWORK) edenhill/kcat:1.7.1 -b redpanda:29092 -C -t $(TOPIC) -p $(PARTITION) -o $(OFFSET) -c $(COUNT)
