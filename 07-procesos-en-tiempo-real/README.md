@@ -8,6 +8,7 @@
 * [Cómo inspeccionar mensajes de un `topic` de Kafka usando `offset`s](04-como-inspeccionar-los-mensajes-de-un-topico.md)
 * [Esquemas: el contrato entre productor y consumidor](05-esquemas-y-registros-de-esquemas.md)
 * [Modos de lectura de Kafka en PyFlink: cuándo empezar y cuándo parar](06-modos-de-lectura-de-kafka-en-pyflink.md)
+* [Particiones: el motor del paralelismo en Kafka](07-particiones-el-motor-del-paralelismo.md)
 
 ## Aprendizaje en público
 
