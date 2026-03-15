@@ -19,6 +19,7 @@
 * [Esquemas: el contrato entre productor y consumidor](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-apachekafka-procesamientoentiemporeal-share-7438548293661458433-KeZs)
 * [Modos de lectura de Kafka en PyFlink: cuándo empezar y cuándo parar](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-apachekafka-pyflink-share-7438692758283943936-s1bR)
 * [Particiones: el motor del paralelismo en Kafka](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-apachekafka-flink-share-7438875929151660032-m0dV)
+* [Joins en streaming: enriquecer eventos en tiempo real](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-dataengineering-streamingdedatos-share-7438885095442149376-PglR)
 
 ## Contribution FAQ
 
