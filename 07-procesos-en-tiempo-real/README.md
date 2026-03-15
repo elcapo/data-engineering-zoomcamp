@@ -11,6 +11,11 @@
 * [Particiones: el motor del paralelismo en Kafka](07-particiones-el-motor-del-paralelismo.md)
 * [Joins en streaming: enriquecer eventos en tiempo real](08-joins-en-streaming.md)
 
+## Ejercicios entregables
+
+* [Ejercicios resueltos (en español)](homework/traduccion.md)
+* [Ejercicios resueltos (en inglés)](homework/README.md)
+
 ## Aprendizaje en público
 
 * [Entorno y primeros pasos con Kafka](https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kafka-streamingdedatos-share-7436844445079187456-hgCi)
