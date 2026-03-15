@@ -25,13 +25,14 @@ El reto es incorporar este contexto en el trabajo de Flink sin necesidad de camb
 
 ### Preparar la tabla de referencia
 
-Importamos las zonas en PostgreSQL como tabla de referencia. La tabla ya está incluida en el script de inicialización [`init.sql`](./pipelines/pyflink-pipeline/init.sql):
+Importamos las zonas en PostgreSQL como tabla de referencia. La tabla ya está incluida en el script de inicialización [`create_zones.sql`](./pipelines/pyflink-pipeline/sql/create_zones.sql):
 
 ```sql
-CREATE TABLE zones (
+CREATE TABLE IF NOT EXISTS zones (
     location_id INTEGER PRIMARY KEY,
-    borough     VARCHAR,
-    zone        VARCHAR
+    borough VARCHAR,
+    zone VARCHAR,
+    service_zone VARCHAR
 );
 ```
 
@@ -41,9 +42,11 @@ Para cargarla podemos descargar el CSV de zonas del TLC y cargarlo con `psql` o 
 curl -O https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv
 
 docker compose exec -T postgres psql -U postgres -c \
-    "\COPY zones(location_id, borough, zone) \
+    "\COPY zones(location_id, borough, zone, service_zone) \
      FROM STDIN WITH (FORMAT csv, HEADER true)" \
     < taxi_zone_lookup.csv
+
+rm taxi_zone_lookup.csv
 ```
 
 Una vez cargada, la tabla tiene 265 filas: una por zona. Es un dato que cambia raramente (cuando el TLC actualiza los límites de sus zonas) y cabe completamente en memoria. Esto la convierte en un candidato ideal para un lookup join.
@@ -57,9 +60,9 @@ La Table API lo expresa con la sintaxis `FOR SYSTEM_TIME AS OF`, que indica que 
 ```sql
 SELECT
     r.PULocationID,
-    zpu.zone        AS pickup_zone,
+    zpu.zone AS pickup_zone,
     r.DOLocationID,
-    zdо.zone        AS dropoff_zone,
+    zdo.zone AS dropoff_zone,
     r.trip_distance,
     r.total_amount,
     r.tpep_pickup_datetime
@@ -74,12 +77,12 @@ Para que esta sintaxis funcione, la tabla fuente necesita una **columna de tiemp
 
 ```sql
 CREATE TABLE rides (
-    PULocationID            INTEGER,
-    DOLocationID            INTEGER,
-    trip_distance           DOUBLE,
-    total_amount            DOUBLE,
-    tpep_pickup_datetime    BIGINT,
-    proc_time               AS PROCTIME()
+    PULocationID INTEGER,
+    DOLocationID INTEGER,
+    trip_distance DOUBLE,
+    total_amount DOUBLE,
+    tpep_pickup_datetime BIGINT,
+    proc_time AS PROCTIME()
 ) WITH (
     'connector' = 'kafka',
     'properties.bootstrap.servers' = 'redpanda:29092',
@@ -89,111 +92,21 @@ CREATE TABLE rides (
 )
 ```
 
-El trabajo completo [`enriched_rides_job.py`](./pipelines/pyflink-pipeline/src/jobs/enriched_rides_job.py) queda así:
+La tabla destino `enriched_rides` debe existir en PostgreSQL antes de arrancar el trabajo. Su DDL está en [`create_enriched_rides.sql`](./pipelines/pyflink-pipeline/sql/create_enriched_rides.sql) y se crea automáticamente con `make initialize`:
 
-```python
-from pyflink.datastream import StreamExecutionEnvironment
-from pyflink.table import EnvironmentSettings, StreamTableEnvironment
-
-
-def create_rides_source(t_env):
-    t_env.execute_sql("""
-        CREATE TABLE rides (
-            PULocationID            INTEGER,
-            DOLocationID            INTEGER,
-            trip_distance           DOUBLE,
-            total_amount            DOUBLE,
-            tpep_pickup_datetime    BIGINT,
-            proc_time               AS PROCTIME()
-        ) WITH (
-            'connector' = 'kafka',
-            'properties.bootstrap.servers' = 'redpanda:29092',
-            'topic' = 'rides',
-            'scan.startup.mode' = 'latest-offset',
-            'format' = 'json'
-        )
-    """)
-    return 'rides'
-
-
-def create_zones_lookup(t_env):
-    t_env.execute_sql("""
-        CREATE TABLE zones (
-            location_id INTEGER,
-            borough     VARCHAR,
-            zone        VARCHAR,
-            PRIMARY KEY (location_id) NOT ENFORCED
-        ) WITH (
-            'connector'              = 'jdbc',
-            'url'                    = 'jdbc:postgresql://postgres:5432/postgres',
-            'table-name'             = 'zones',
-            'username'               = 'postgres',
-            'password'               = 'postgres',
-            'driver'                 = 'org.postgresql.Driver',
-            'lookup.cache.max-rows'  = '265',
-            'lookup.cache.ttl'       = '1 hour'
-        )
-    """)
-    return 'zones'
-
-
-def create_enriched_sink(t_env):
-    t_env.execute_sql("""
-        CREATE TABLE enriched_rides (
-            PULocationID    INTEGER,
-            pickup_zone     VARCHAR,
-            DOLocationID    INTEGER,
-            dropoff_zone    VARCHAR,
-            trip_distance   DOUBLE,
-            total_amount    DOUBLE,
-            pickup_datetime TIMESTAMP
-        ) WITH (
-            'connector'  = 'jdbc',
-            'url'        = 'jdbc:postgresql://postgres:5432/postgres',
-            'table-name' = 'enriched_rides',
-            'username'   = 'postgres',
-            'password'   = 'postgres',
-            'driver'     = 'org.postgresql.Driver'
-        )
-    """)
-    return 'enriched_rides'
-
-
-def enrich_rides():
-    env = StreamExecutionEnvironment.get_execution_environment()
-    env.enable_checkpointing(10 * 1000)
-
-    t_env = StreamTableEnvironment.create(
-        env, EnvironmentSettings.new_instance().in_streaming_mode().build()
-    )
-
-    rides  = create_rides_source(t_env)
-    zones  = create_zones_lookup(t_env)
-    sink   = create_enriched_sink(t_env)
-
-    t_env.execute_sql(f"""
-        INSERT INTO {sink}
-        SELECT
-            r.PULocationID,
-            zpu.zone                                        AS pickup_zone,
-            r.DOLocationID,
-            zdo.zone                                        AS dropoff_zone,
-            r.trip_distance,
-            r.total_amount,
-            TO_TIMESTAMP_LTZ(r.tpep_pickup_datetime, 3)    AS pickup_datetime
-        FROM {rides} AS r
-        JOIN {zones} FOR SYSTEM_TIME AS OF r.proc_time AS zpu
-            ON r.PULocationID = zpu.location_id
-        JOIN {zones} FOR SYSTEM_TIME AS OF r.proc_time AS zdo
-            ON r.DOLocationID = zdo.location_id
-    """).wait()
-
-
-if __name__ == '__main__':
-    enrich_rides()
+```sql
+CREATE TABLE IF NOT EXISTS enriched_rides (
+    PULocationID    INTEGER,
+    pickup_zone     VARCHAR,
+    DOLocationID    INTEGER,
+    dropoff_zone    VARCHAR,
+    trip_distance   DOUBLE PRECISION,
+    total_amount    DOUBLE PRECISION,
+    pickup_datetime TIMESTAMP
+);
 ```
 
-Para ejecutar el trabajo:
+El trabajo completo está en [`enriched_rides_job.py`](./pipelines/pyflink-pipeline/src/jobs/enriched_rides_job.py) y se puede ejecutar con:
 
 ```bash
 make run-enriched
@@ -209,7 +122,7 @@ Sin caché, Flink haría una consulta SQL a PostgreSQL por cada evento del strea
 
 Con `lookup.cache.max-rows = '265'` y `lookup.cache.ttl = '1 hour'`, Flink carga las zonas en memoria y las mantiene durante una hora antes de refrescarlas. Las consultas a PostgreSQL se reducen a una carga inicial y una actualización cada hora, independientemente del volumen del stream.
 
-> [!NOTE]
+> [!WARNING]
 > El lookup join es un **inner join** por defecto: si un evento llega con un `PULocationID` que no existe en la tabla `zones`, ese evento es descartado silenciosamente. Para conservar eventos con IDs sin correspondencia se puede usar un `LEFT JOIN`, en cuyo caso `pickup_zone` será `NULL` para los registros sin match.
 
 ### Join entre dos streams
@@ -231,17 +144,17 @@ Primero definimos la tabla fuente del tópico de precios:
 
 ```sql
 CREATE TABLE pricing_events (
-    location_id     INTEGER,
-    multiplier      DOUBLE,
-    event_ts_ms     BIGINT,
+    location_id INTEGER,
+    multiplier DOUBLE,
+    event_ts_ms BIGINT,
     event_timestamp AS TO_TIMESTAMP_LTZ(event_ts_ms, 3),
     WATERMARK FOR event_timestamp AS event_timestamp - INTERVAL '5' SECOND
 ) WITH (
-    'connector'                     = 'kafka',
-    'properties.bootstrap.servers'  = 'redpanda:29092',
-    'topic'                         = 'pricing_events',
-    'scan.startup.mode'             = 'earliest-offset',
-    'format'                        = 'json'
+    'connector' = 'kafka',
+    'properties.bootstrap.servers' = 'redpanda:29092',
+    'topic' = 'pricing_events',
+    'scan.startup.mode' = 'earliest-offset',
+    'format' = 'json'
 )
 ```
 
@@ -252,9 +165,9 @@ SELECT
     r.PULocationID,
     r.total_amount,
     p.multiplier,
-    r.total_amount * p.multiplier   AS adjusted_amount,
-    r.event_timestamp               AS ride_time,
-    p.event_timestamp               AS pricing_time
+    r.total_amount * p.multiplier AS adjusted_amount,
+    r.event_timestamp AS ride_time,
+    p.event_timestamp AS pricing_time
 FROM rides AS r
 JOIN pricing_events AS p
     ON  r.PULocationID = p.location_id
