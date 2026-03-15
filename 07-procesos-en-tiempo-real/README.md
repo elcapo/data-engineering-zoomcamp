@@ -9,6 +9,7 @@
 * [Esquemas: el contrato entre productor y consumidor](05-esquemas-y-registros-de-esquemas.md)
 * [Modos de lectura de Kafka en PyFlink: cuándo empezar y cuándo parar](06-modos-de-lectura-de-kafka-en-pyflink.md)
 * [Particiones: el motor del paralelismo en Kafka](07-particiones-el-motor-del-paralelismo.md)
+* [Joins en streaming: enriquecer eventos en tiempo real](08-joins-en-streaming.md)
 
 ## Aprendizaje en público
 
