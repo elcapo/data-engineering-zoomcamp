@@ -46,6 +46,13 @@ POSTGRES_DATA_PASSWORD=password
 KESTRA_PORT=8080
 KESTRA_USER=admin@domain.local
 KESTRA_PASSWORD=Admin1234!
+KESTRA_GEMINI_APIKEY=foo
+
+# MinIO - Almacenamiento de objetos
+MINIO_ROOT_USER=minio
+MINIO_ROOT_PASSWORD=miniopass
+MINIO_PORT=9000
+MINIO_CONSOLE_PORT=9001
 ```
 
 **Notas importantes:**
@@ -78,6 +85,8 @@ El proyecto incluye los siguientes servicios:
 | **pgAdmin** | 8085 | http://localhost:8085 | Interfaz web para PostgreSQL |
 | **PostgreSQL (datos)** | 5432 | localhost:5432 | Base de datos principal |
 | **PostgreSQL (Kestra)** | - | interno | Base de datos para Kestra |
+| **MinIO** | 9000 | http://localhost:9000 | Almacenamiento de objetos (API S3) |
+| **MinIO Console** | 9001 | http://localhost:9001 | Interfaz web de MinIO |
 
 #### Acceder a Kestra
 
@@ -100,6 +109,30 @@ Para conectar pgAdmin a PostgreSQL:
 - Usuario: valor de `POSTGRES_DATA_USER`
 - Contraseña: valor de `POSTGRES_DATA_PASSWORD`
 
+#### Acceder a MinIO Console
+
+1. Abre tu navegador en http://localhost:9001
+2. Inicia sesión con:
+   - Usuario: valor de `MINIO_ROOT_USER` (por defecto: `minio`)
+   - Contraseña: valor de `MINIO_ROOT_PASSWORD` (por defecto: `miniopass`)
+
+El bucket `boc-raw` se crea automáticamente al arrancar el stack. Los HTMLs descargados del BOC se almacenan con la siguiente estructura:
+
+```
+boc-raw/
+ ├── archive/
+ │    └── archive.html          ← índice de años
+ ├── years/
+ │    ├── 2024.html             ← índice de boletines por año
+ │    └── 2023.html
+ ├── issues/
+ │    ├── 2024-001.html         ← índice de disposiciones por boletín
+ │    └── 2024-002.html
+ └── documents/
+      └── 2024/001/
+               └── 001.html    ← texto completo de cada disposición
+```
+
 ## Arquitectura
 
 ```
@@ -107,15 +140,20 @@ Para conectar pgAdmin a PostgreSQL:
 │   Kestra    │  ← Orquestación de pipelines
 └──────┬──────┘
        │
-       ├─→ Descarga datos del BOC
-       │
-       ├─→ Carga en PostgreSQL
+       ├─→ Descarga HTMLs del BOC
+       │          │
+       │          ↓
+       │   ┌──────────────┐
+       │   │    MinIO     │  ← Almacenamiento raw (bucket boc-raw)
+       │   └──────────────┘
+       │          │
+       ├─→ Extrae y carga en PostgreSQL
        │
        └─→ Ejecuta transformaciones dbt
               │
               ↓
        ┌──────────────┐
-       │  PostgreSQL  │  ← Almacenamiento de datos
+       │  PostgreSQL  │  ← Almacenamiento de datos estructurados
        └──────────────┘
               │
               ↓
@@ -170,13 +208,30 @@ docker compose logs
 netstat -tlnp | grep -E '8080|8085|5432'
 ```
 
-### Error de permisos en Kestra
+### Error de permisos en Kestra (`Permission denied` al conectar con Docker)
 
-Kestra necesita acceso al socket de Docker. Asegúrate de que tu usuario tiene permisos:
+Este proyecto asume que Docker corre en **modo rootless**, que es el predeterminado en instalaciones recientes de Ubuntu. En rootless Docker el socket activo está en `$XDG_RUNTIME_DIR/docker.sock` (normalmente `/run/user/1000/docker.sock`), no en `/var/run/docker.sock`. El docker-compose ya usa `${XDG_RUNTIME_DIR}/docker.sock` como volumen para que coincida.
+
+Si arrancas el stack sin tener `XDG_RUNTIME_DIR` definido en el entorno, el compose fallará al resolver la ruta. Puedes exportarla manualmente:
 
 ```bash
-sudo usermod -aG docker $USER
-# Cerrar sesión y volver a iniciar
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+docker compose up -d
+```
+
+Si usas Docker en modo clásico (no rootless), cambia el volumen en `docker-compose.yml`:
+
+```yaml
+- /var/run/docker.sock:/var/run/docker.sock
+```
+
+### El bucket `boc-raw` no existe
+
+El servicio `minio_client` crea el bucket automáticamente al arrancar. Si por algún motivo no lo hizo:
+
+```bash
+docker compose run --rm minio_client \
+  /bin/sh -c "mc alias set local http://minio:9000 minio miniopass && mc mb local/boc-raw"
 ```
 
 ### Limpiar y reiniciar desde cero

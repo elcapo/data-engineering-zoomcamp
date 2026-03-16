@@ -4,7 +4,6 @@ description: Updates the index of bulletins of the current year on a schedule
 
 variables:
   is_not_current_year: "{{ trigger.date | date('yyyy') != now() | date('yyyy')) }}"
-  published_file: "/app/data/raw/boc/year/{{ trigger.date | date('yyyy') }}.html"
 
 tasks:
   - id: label
