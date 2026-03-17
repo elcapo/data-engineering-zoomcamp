@@ -1,4 +1,4 @@
-id: backfill_year_bulletins
+id: backfill_years
 namespace: boc
 description: Backfill for year bulletins
 
