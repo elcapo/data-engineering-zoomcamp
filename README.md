@@ -183,7 +183,7 @@ Si optas por seguir el curso con una cohorte, recuerda que debes inscribirte. Es
 | Módulo 5: **[Plataformas de datos](05-plataformas-de-datos/homework/README.md)** | 28 de febrero de 2026 |
 | Taller 1: **[Ingesta de datos](taller-de-ingestion-de-api-con-dlt/homework/README.md)** | 2 de marzo de 2026 |
 | Módulo 6: **[Procesos por lotes](06-procesos-por-lotes/homework/README.md)** | 9 de marzo de 2026 |
-| Módulo 7: **Procesos en streaming** | 16 de marzo de 2026 |
+| Módulo 7: **[Procesos en streaming](07-procesos-en-tiempo-real/homework/README.md)** | 16 de marzo de 2026 |
 
 ## Proyecto final
 
