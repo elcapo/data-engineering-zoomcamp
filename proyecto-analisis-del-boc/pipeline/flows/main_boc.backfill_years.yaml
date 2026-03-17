@@ -1,6 +1,6 @@
 id: backfill_years
 namespace: boc
-description: Backfill for year bulletins
+description: Backfill for years
 
 inputs:
   - id: from_year
@@ -37,9 +37,9 @@ tasks:
             state: SUCCESS
             description: "Key `years/{{ taskrun.value }}.html` already exists"
 
-      - id: call_download_year_bulletins
+      - id: call_download_years
         type: io.kestra.plugin.core.flow.Subflow
         namespace: boc
-        flowId: download_year_bulletins
+        flowId: download_years
         inputs:
           year: "{{ taskrun.value }}"
