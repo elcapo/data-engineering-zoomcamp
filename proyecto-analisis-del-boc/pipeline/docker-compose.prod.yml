@@ -1,0 +1,13 @@
+services:
+  kestra_postgres:
+    restart: unless-stopped
+
+  minio:
+    restart: unless-stopped
+
+  minio_client:
+    # Init container: only retry on failure, never restart after a clean exit
+    restart: on-failure
+
+  kestra:
+    restart: unless-stopped

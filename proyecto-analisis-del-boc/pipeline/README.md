@@ -76,6 +76,21 @@ docker compose logs -f
 docker compose ps
 ```
 
+#### Despliegue en producción
+
+El archivo `docker-compose.prod.yml` añade atributos específicos de producción (política de reinicio automático). Úsalo combinado con el compose base:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+| Servicio | Política de reinicio | Motivo |
+|---|---|---|
+| `kestra_postgres` | `unless-stopped` | Servicio persistente; no reiniciar si se para manualmente |
+| `minio` | `unless-stopped` | Servicio persistente; no reiniciar si se para manualmente |
+| `minio_client` | `on-failure` | Init container: reintenta si falla, pero no se reinicia tras salir con éxito |
+| `kestra` | `unless-stopped` | Servicio persistente; no reiniciar si se para manualmente |
+
 ### 3. Verificar que los Servicios están Activos
 
 El proyecto incluye los siguientes servicios:
