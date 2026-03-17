@@ -38,7 +38,8 @@ nano .env  # o usa tu editor preferido
 El archivo `env.template` contiene las siguientes variables:
 
 ```bash
-# PostgreSQL - Base de datos principal
+# PostgreSQL - Servidor de datos (frontend)
+POSTGRES_DATA_HOST=frontend-server-hostname
 POSTGRES_DATA_USER=root
 POSTGRES_DATA_PASSWORD=password
 
@@ -82,11 +83,13 @@ El proyecto incluye los siguientes servicios:
 | Servicio | Puerto | URL | Descripción |
 |----------|--------|-----|-------------|
 | **Kestra** | 8080 | http://localhost:8080 | Orquestador de flujos de trabajo |
-| **pgAdmin** | 8085 | http://localhost:8085 | Interfaz web para PostgreSQL |
-| **PostgreSQL (datos)** | 5432 | localhost:5432 | Base de datos principal |
-| **PostgreSQL (Kestra)** | - | interno | Base de datos para Kestra |
+| **PostgreSQL (Kestra)** | - | interno | Base de datos interna de Kestra |
 | **MinIO** | 9000 | http://localhost:9000 | Almacenamiento de objetos (API S3) |
 | **MinIO Console** | 9001 | http://localhost:9001 | Interfaz web de MinIO |
+| **pgAdmin** *(opcional)* | 8085 | http://localhost:8085 | Interfaz web para PostgreSQL (ver abajo) |
+
+> [!NOTE]
+> El servidor PostgreSQL de datos (base de datos `boc`) se ejecuta en el **servidor de frontend** y es referenciado desde este stack mediante la variable `POSTGRES_DATA_HOST`.
 
 #### Acceder a Kestra
 
@@ -95,15 +98,21 @@ El proyecto incluye los siguientes servicios:
    - Usuario: valor de `KESTRA_USER`
    - Contraseña: valor de `KESTRA_PASSWORD`
 
-#### Acceder a pgAdmin
+#### Acceder a pgAdmin *(opcional)*
+
+pgAdmin está disponible como stack adicional en `docker-compose.pgadmin.yml`. Para arrancarlo:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.pgadmin.yml up -d pgadmin
+```
 
 1. Abre tu navegador en http://localhost:8085
 2. Inicia sesión con:
    - Email: `admin@admin.com` (por defecto)
    - Contraseña: `root` (por defecto)
 
-Para conectar pgAdmin a PostgreSQL:
-- Host: `postgres`
+Para conectar pgAdmin al servidor de datos:
+- Host: valor de `POSTGRES_DATA_HOST`
 - Puerto: `5432`
 - Database: `boc`
 - Usuario: valor de `POSTGRES_DATA_USER`
@@ -188,12 +197,14 @@ docker compose logs -f kestra
 
 ### Acceder a la Base de Datos
 
-```bash
-# Conectar a PostgreSQL desde la línea de comandos
-docker compose exec postgres psql -U root -d boc
+El servidor PostgreSQL de datos está en el servidor de frontend (`POSTGRES_DATA_HOST`). Para conectar desde la línea de comandos:
 
+```bash
 # Exportar la contraseña para facilitar la conexión
 export PGPASSWORD=$(grep POSTGRES_DATA_PASSWORD .env | cut -d'=' -f2)
+
+# Conectar al servidor remoto
+psql -h $(grep POSTGRES_DATA_HOST .env | cut -d'=' -f2) -U root -d boc
 ```
 
 ## Solución de Problemas

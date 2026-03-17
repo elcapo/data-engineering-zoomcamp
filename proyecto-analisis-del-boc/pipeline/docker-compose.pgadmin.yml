@@ -1,0 +1,19 @@
+services:
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-root}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - ${PGADMIN_HOST_PORT:-8085}:80
+    networks:
+      - boc-postgres-network
+
+volumes:
+  pgadmin-data:
+
+networks:
+  boc-postgres-network:
+    external: true

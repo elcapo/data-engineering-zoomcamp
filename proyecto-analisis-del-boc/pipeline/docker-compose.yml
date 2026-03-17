@@ -1,33 +1,4 @@
 services:
-  boc_postgres:
-    image: postgres:18
-    hostname: boc-postgres
-    environment:
-      POSTGRES_DB: boc
-      POSTGRES_USER: ${POSTGRES_DATA_USER:-root}
-      POSTGRES_PASSWORD: ${POSTGRES_DATA_PASSWORD:-root}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
-    volumes:
-      - boc-postgres-data:/var/lib/postgresql
-    networks:
-      - boc-postgres-network
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-root}
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    ports:
-      - ${PGADMIN_HOST_PORT:-8085}:80
-    networks:
-      - boc-postgres-network
-
   kestra_postgres:
     image: postgres:18
     hostname: kestra-postgres
@@ -97,7 +68,7 @@ services:
       - ./flows:/flows
     environment:
       # Exposed to flows as {{ envs.postgres_data_* }}
-      ENV_POSTGRES_DATA_HOST: boc-postgres
+      ENV_POSTGRES_DATA_HOST: ${POSTGRES_DATA_HOST}
       ENV_POSTGRES_DATA_DB: boc
       ENV_POSTGRES_DATA_USER: ${POSTGRES_DATA_USER:-root}
       ENV_POSTGRES_DATA_PASSWORD: ${POSTGRES_DATA_PASSWORD:-root}
@@ -160,8 +131,6 @@ services:
       - "${KESTRA_PORT:-8080}:8080"
       - "8081:8081"
     depends_on:
-      boc_postgres:
-        condition: service_healthy
       kestra_postgres:
         condition: service_healthy
       minio_client:
@@ -170,8 +139,6 @@ services:
       - boc-postgres-network
 
 volumes:
-  boc-postgres-data:
-  pgadmin-data:
   kestra-postgres-data:
   kestra-data:
   minio-data:

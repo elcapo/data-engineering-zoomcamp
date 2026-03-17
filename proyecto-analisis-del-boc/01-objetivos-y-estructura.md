@@ -38,6 +38,7 @@ Para facilitar el consumo de la información procesada, se crearán paneles de c
 | Tarea | Herramienta |
 | --- | --- |
 | Descarga y extracción de artículos del BOC | Kestra |
+| Lago de datos y versionado de documentos | MiniIO |
 | Almacenamiento estructurado | DLT |
 | Transformación y modelado de datos | spaCy |
 | Visualización y consulta de datos | Metabase |
