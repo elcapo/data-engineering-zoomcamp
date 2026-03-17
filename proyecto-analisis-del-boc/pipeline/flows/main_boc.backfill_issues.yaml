@@ -1,4 +1,4 @@
-id: backfill_bulletin_dispositions
+id: backfill_issues
 namespace: boc
 description: Backfill for bulletin dispositions
 
@@ -26,10 +26,10 @@ tasks:
     type: io.kestra.plugin.core.flow.ForEach
     values: "{{ range(inputs.from_bulletin, inputs.to_bulletin) }}"
     tasks:
-      - id: call_download_bulletin_dispositions
+      - id: call_download_issues
         type: io.kestra.plugin.core.flow.Subflow
         namespace: boc
-        flowId: download_bulletin_dispositions
+        flowId: download_issues
         inputs:
           year: "{{ inputs.year }}"
           bulletin: "{{ taskrun.value }}"

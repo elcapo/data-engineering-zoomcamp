@@ -1,6 +1,6 @@
-id: download_year_bulletins
+id: download_issues
 namespace: boc
-description: Download the index of bulletins of a year
+description: Download the index of dispositions of a bulletin
 
 inputs:
   - id: year
@@ -9,21 +9,34 @@ inputs:
     displayName: Year
     defaults: "{{ now() | date('yyyy') }}"
 
+  - id: bulletin
+    type: INT
+    displayName: Bulletin
+    defaults: "1"
+
   - id: overwrite
     type: BOOL
     displayName: Overwrite
     defaults: false
 
 variables:
-  source_url: "https://www.gobiernodecanarias.org/boc/archivo/{{ inputs.year }}"
-  key: "years/{{ inputs.year }}.html"
+  bulletin_padded: "{{ inputs.bulletin < 10 ? '00' ~ inputs.bulletin : inputs.bulletin < 100 ? '0' ~ inputs.bulletin : inputs.bulletin }}"
+  source_url: "https://www.gobiernodecanarias.org/boc/{{ inputs.year }}/{{ render(vars.bulletin_padded) }}/index.html"
+  key: "issues/{{ inputs.year }}-{{ render(vars.bulletin_padded) }}.html"
 
 tasks:
   - id: label
     type: io.kestra.plugin.core.execution.Labels
     labels:
-      type: year_bulletins
+      type: bulletin_dispositions
       year: "{{ inputs.year }}"
+      bulletin: "{{ render(vars.bulletin_padded) }}"
+
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: |
+      "Bulletin URL: {{ render(vars.source_url) }}"
+      "Target key: {{ render(vars.key) }}"
 
   - id: lookup_file
     type: io.kestra.plugin.minio.List

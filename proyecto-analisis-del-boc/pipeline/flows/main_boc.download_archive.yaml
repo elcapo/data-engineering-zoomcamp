@@ -1,6 +1,6 @@
-id: download_year_index
+id: download_archive
 namespace: boc
-description: Download the index of years
+description: Download the archive
 
 inputs:
   - id: extract

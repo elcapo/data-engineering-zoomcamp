@@ -1,6 +1,6 @@
-id: schedule_update_current_year_bulletins
+id: schedule_download_current_year
 namespace: boc
-description: Updates the index of bulletins of the current year on a schedule
+description: Download the index of bulletins of the current year on a schedule
 
 variables:
   is_not_current_year: "{{ trigger.date | date('yyyy') != now() | date('yyyy')) }}"
@@ -24,7 +24,7 @@ tasks:
   - id: download
     type: io.kestra.plugin.core.flow.Subflow
     namespace: boc
-    flowId: download_year_bulletins
+    flowId: download_years
     inputs:
       year: "{{ trigger.date | date('yyyy') }}"
       overwrite: true

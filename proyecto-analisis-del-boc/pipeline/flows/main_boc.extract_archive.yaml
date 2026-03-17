@@ -1,7 +1,6 @@
-id: extract_year_index
+id: extract_archive
 namespace: boc
-description: >
-  Extrae el índice de años a partir de los resultados de `download_year_index`.
+description: Extract year links from the archive
 
 tasks:
   - id: read_archive_html
