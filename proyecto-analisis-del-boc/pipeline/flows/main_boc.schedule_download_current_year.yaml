@@ -3,7 +3,7 @@ namespace: boc
 description: Download the index of bulletins of the current year on a schedule
 
 variables:
-  is_not_current_year: "{{ trigger.date | date('yyyy') != now() | date('yyyy')) }}"
+  is_not_current_year: "{{ trigger.date | date('yyyy') != now() | date('yyyy') }}"
 
 tasks:
   - id: label
