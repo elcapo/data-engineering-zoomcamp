@@ -1,16 +1,15 @@
-id: schedule_download_current_year
+id: schedule_downloads
 namespace: boc
-description: Download the index of bulletins of the current year on a schedule
+description: Scheduled downloads
 
 variables:
   is_not_current_year: "{{ trigger.date | date('yyyy') != now() | date('yyyy') }}"
 
 tasks:
-  - id: label
-    type: io.kestra.plugin.core.execution.Labels
-    labels:
-      type: year_bulletins
-      year: "{{ trigger.date | date('yyyy') }}"
+  - id: download_archive
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: boc
+    flowId: download_archive
 
   - id: if_not_current_year
     type: io.kestra.plugin.core.flow.If
@@ -21,7 +20,7 @@ tasks:
         state: CANCELED
         description: "Backfills are not supported for this job"
 
-  - id: download
+  - id: download_current_year
     type: io.kestra.plugin.core.flow.Subflow
     namespace: boc
     flowId: download_years
