@@ -62,7 +62,7 @@ services:
     command: server standalone
     volumes:
       - kestra-data:/app/storage
-      - ${XDG_RUNTIME_DIR}/docker.sock:/var/run/docker.sock
+      - ${DOCKER_SOCKET_DIR:-/var/run}/docker.sock:/var/run/docker.sock
       - /tmp/kestra-wd:/tmp/kestra-wd
       - ./data:/app/data
       - ./flows:/flows

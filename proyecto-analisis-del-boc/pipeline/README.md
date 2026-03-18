@@ -43,6 +43,10 @@ POSTGRES_DATA_HOST=frontend-server-hostname
 POSTGRES_DATA_USER=root
 POSTGRES_DATA_PASSWORD=password
 
+# Directorio que contiene el socket de Docker (docker.sock)
+# Esta línea se puede dejar comentada si el socket está en /var/run/docker.sock
+DOCKER_SOCKET_DIR=${XDG_RUNTIME_DIR}
+
 # Kestra - Orquestador
 KESTRA_PORT=8080
 KESTRA_USER=admin@domain.local
@@ -234,21 +238,23 @@ docker compose logs
 netstat -tlnp | grep -E '8080|8085|5432'
 ```
 
-### Error de permisos en Kestra (`Permission denied` al conectar con Docker)
+### Error de permisos en Kestra (`Permission denied` o `Connection refused` al conectar con Docker)
 
-Este proyecto asume que Docker corre en **modo rootless**, que es el predeterminado en instalaciones recientes de Ubuntu. En rootless Docker el socket activo está en `$XDG_RUNTIME_DIR/docker.sock` (normalmente `/run/user/1000/docker.sock`), no en `/var/run/docker.sock`. El docker-compose ya usa `${XDG_RUNTIME_DIR}/docker.sock` como volumen para que coincida.
+Kestra necesita acceso al socket de Docker para lanzar contenedores desde los flujos. La ruta del socket depende del modo en que corre Docker:
 
-Si arrancas el stack sin tener `XDG_RUNTIME_DIR` definido en el entorno, el compose fallará al resolver la ruta. Puedes exportarla manualmente:
+| Entorno | Modo Docker | Valor de `DOCKER_SOCKET_DIR` |
+|---|---|---|
+| Desarrollo (usuario normal) | Rootless | `${XDG_RUNTIME_DIR}` (p. ej. `/run/user/1000`) |
+| Servidor (root) | Clásico | `/var/run` |
+
+Configura la variable en tu `.env` según corresponda:
 
 ```bash
-export XDG_RUNTIME_DIR=/run/user/$(id -u)
-docker compose up -d
-```
+# Entorno de desarrollo con Docker rootless
+DOCKER_SOCKET_DIR=${XDG_RUNTIME_DIR}
 
-Si usas Docker en modo clásico (no rootless), cambia el volumen en `docker-compose.yml`:
-
-```yaml
-- /var/run/docker.sock:/var/run/docker.sock
+# Servidor corriendo Docker como root
+DOCKER_SOCKET_DIR=/var/run
 ```
 
 ### El bucket `boc-raw` no existe
