@@ -3,7 +3,7 @@ namespace: boc
 description: Extract year links from the archive
 
 tasks:
-  - id: read_archive_html
+  - id: read
     type: io.kestra.plugin.minio.Download
     endpoint: "{{ envs.minio_endpoint }}"
     accessKeyId: "{{ envs.minio_user }}"
@@ -11,27 +11,27 @@ tasks:
     bucket: boc-raw
     key: archive/archive.html
 
-  - id: parse_archive
+  - id: parse
     type: io.kestra.plugin.scripts.python.Commands
     containerImage: boc-python:latest
     taskRunner:
       type: io.kestra.plugin.scripts.runner.docker.Docker
       networkMode: boc-postgres-network
     inputFiles:
-      archive.html: "{{ outputs.read_archive_html.uri }}"
+      archive.html: "{{ outputs.read.uri }}"
     outputFiles:
-      - year_index.json
+      - archive.json
     commands:
-      - archive-parser archive.html -o year_index.json
+      - archive-parser archive.html -o archive.json
 
-  - id: load_year_index
+  - id: load
     type: io.kestra.plugin.scripts.python.Script
     containerImage: boc-python:latest
     taskRunner:
       type: io.kestra.plugin.scripts.runner.docker.Docker
       networkMode: boc-postgres-network
     inputFiles:
-      year_index.json: "{{ outputs.parse_archive.outputFiles['year_index.json'] }}"
+      archive.json: "{{ outputs.parse.outputFiles['archive.json'] }}"
     env:
       POSTGRES_HOST: "{{ envs.postgres_data_host }}"
       POSTGRES_DB: "{{ envs.postgres_data_db }}"
@@ -47,19 +47,19 @@ tasks:
       user = os.environ["POSTGRES_USER"]
       pwd  = os.environ["POSTGRES_PASSWORD"]
 
-      with open("year_index.json") as f:
+      with open("archive.json") as f:
           records = json.load(f)
 
-      @dlt.resource(name="year_index", write_disposition="merge", merge_key="year")
-      def year_index_data():
+      @dlt.resource(name="archive", write_disposition="merge", merge_key="year")
+      def archive_data():
           yield from records
 
       pipeline = dlt.pipeline(
-          pipeline_name="year_index",
+          pipeline_name="archive",
           destination=dlt.destinations.postgres(
               f"postgresql://{user}:{pwd}@{host}:5432/{db}"
           ),
-          dataset_name="year_index_dataset",
+          dataset_name="archive_dataset",
       )
 
-      pipeline.run(year_index_data)
+      pipeline.run(archive_data)

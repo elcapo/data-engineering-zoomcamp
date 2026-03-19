@@ -42,7 +42,7 @@ tasks:
         state: SUCCESS
         description: "Finishing after download because extraction wasn't solicited"
 
-  - id: call_extract
+  - id: call_extract_archive
     type: io.kestra.plugin.core.flow.Subflow
     namespace: boc
-    flowId: extract_year_index
+    flowId: extract_archive
