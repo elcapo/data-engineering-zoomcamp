@@ -13,7 +13,7 @@ Dado un archivo HTML del BOC (por ejemplo [`boc-2026_47.html`](./examples/boc-20
 - Lista de disposiciones, cada una con: sección, subsección, organización, texto del sumario, metadatos del documento, identificador CVE, y enlaces a PDF, HTML y firma.
 
 ```bash
-uv run boc-parser boc-2026_47.html
+uv run issue-parser boc-2026_47.html
 ```
 
 ```json
@@ -46,7 +46,7 @@ Cada formato implementa dos métodos:
 - `detect(soup)`: devuelve `True` si el HTML corresponde a ese formato.
 - `parse(soup)`: extrae y devuelve los datos estructurados.
 
-Los parsers se registran en una lista ordenada y se prueba cada uno hasta encontrar el que reconoce el archivo. Añadir soporte para un nuevo formato se reduce a crear un archivo en `boc_parser/formats/` y registrarlo.
+Los parsers se registran en una lista ordenada y se prueba cada uno hasta encontrar el que reconoce el archivo. Añadir soporte para un nuevo formato se reduce a crear un archivo en `issue_parser/formats/` y registrarlo.
 
 ### Formatos soportados
 
@@ -99,7 +99,7 @@ Los parsers se registran en una lista ordenada y se prueba cada uno hasta encont
 
 ## Añadir un nuevo formato
 
-1. Crear `boc_parser/formats/format_XXXX.py` implementando `FormatParser`:
+1. Crear `issue_parser/formats/format_XXXX.py` implementando `FormatParser`:
 
 ```python
 from bs4 import BeautifulSoup
@@ -116,7 +116,7 @@ class FormatXXXXParser(FormatParser):
         ...
 ```
 
-2. Registrarlo en `boc_parser/formats/__init__.py`:
+2. Registrarlo en `issue_parser/formats/__init__.py`:
 
 ```python
 from .format_xxxx import FormatXXXXParser
@@ -131,8 +131,8 @@ PARSERS = [
 ## Estructura del proyecto
 
 ```
-boc-parser/
-├── boc_parser/
+issue-parser/
+├── issue_parser/
 │   ├── __init__.py          # Exporta parse() y parse_to_json()
 │   ├── cli.py               # Punto de entrada CLI
 │   ├── parser.py            # Orquestador: detecta formato y delega
@@ -158,22 +158,22 @@ uv sync
 
 ## Uso
 
-Puedes usar `boc-parser` para parsear un archivo y mostrar el JSON resultante por la salida estándar.
+Puedes usar `issue-parser` para parsear un archivo y mostrar el JSON resultante por la salida estándar.
 
 ```bash
-uv run boc-parser boc-2026_47.html
+uv run issue-parser boc-2026_47.html
 ```
 
 También puedes guardar el resultado en un archivo.
 
 ```bash
-uv run boc-parser boc-2026_47.html -o boc-2026_47.json
+uv run issue-parser boc-2026_47.html -o boc-2026_47.json
 ```
 
 O incluso usar el parser como una librería en Python.
 
 ```python
-from boc_parser import parse
+from issue_parser import parse
 
 data = parse('boc-2026_47.html')
 print(data['título'])

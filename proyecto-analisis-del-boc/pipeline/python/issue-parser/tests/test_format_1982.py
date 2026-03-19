@@ -2,9 +2,9 @@ import pytest
 from bs4 import BeautifulSoup
 from pathlib import Path
 
-from boc_parser import parse
-from boc_parser.formats.format_1982 import Format1982Parser
-from boc_parser.formats.format_2026 import Format2026Parser
+from issue_parser import parse
+from issue_parser.formats.format_1982 import Format1982Parser
+from issue_parser.formats.format_2026 import Format2026Parser
 
 
 @pytest.fixture(scope="module")

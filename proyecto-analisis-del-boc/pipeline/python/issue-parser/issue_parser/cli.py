@@ -7,7 +7,7 @@ from .parser import parse_to_json
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        prog="boc-parser",
+        prog="issue-parser",
         description="Extrae información estructurada de un HTML del Boletín Oficial de Canarias.",
     )
     parser.add_argument("html_file", type=Path, help="Ruta al archivo HTML del BOC")

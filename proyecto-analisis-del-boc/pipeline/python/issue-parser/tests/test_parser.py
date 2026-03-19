@@ -2,8 +2,8 @@ import json
 import pytest
 from pathlib import Path
 
-from boc_parser import parse, parse_to_json
-from boc_parser.parser import parse
+from issue_parser import parse, parse_to_json
+from issue_parser.parser import parse
 
 
 def test_parse_1982_returns_dict(html_1982):
