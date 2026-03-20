@@ -9,7 +9,12 @@ tasks:
     accessKeyId: "{{ envs.minio_user }}"
     secretKeyId: "{{ envs.minio_password }}"
     bucket: boc-raw
-    key: archive/archive.html
+    key: archive/archive.html.gz
+
+  - id: decompress
+    type: io.kestra.plugin.compress.FileDecompress
+    from: "{{ outputs.read.uri }}"
+    compression: GZIP
 
   - id: parse
     type: io.kestra.plugin.scripts.python.Commands
@@ -18,7 +23,7 @@ tasks:
       type: io.kestra.plugin.scripts.runner.docker.Docker
       networkMode: boc-postgres-network
     inputFiles:
-      archive.html: "{{ outputs.read.uri }}"
+      archive.html: "{{ outputs.decompress.uri }}"
     outputFiles:
       - archive.json
     commands:

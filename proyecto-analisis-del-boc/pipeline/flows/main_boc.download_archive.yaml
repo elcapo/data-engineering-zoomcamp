@@ -24,14 +24,19 @@ tasks:
     content: "{{ outputs.fetch.body }}"
     extension: .html
 
+  - id: compress
+    type: io.kestra.plugin.compress.FileCompress
+    from: "{{ outputs.store.uri }}"
+    compression: GZIP
+
   - id: publish
     type: io.kestra.plugin.minio.Upload
     endpoint: "{{ envs.minio_endpoint }}"
     accessKeyId: "{{ envs.minio_user }}"
     secretKeyId: "{{ envs.minio_password }}"
     bucket: boc-raw
-    from: "{{ outputs.store.uri }}"
-    key: archive/archive.html
+    from: "{{ outputs.compress.uri }}"
+    key: archive/archive.html.gz
 
   - id: if_extract
     type: io.kestra.plugin.core.flow.If
