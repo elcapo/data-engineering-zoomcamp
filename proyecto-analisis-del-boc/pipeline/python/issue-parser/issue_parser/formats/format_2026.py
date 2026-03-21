@@ -2,7 +2,7 @@ import re
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
-from .base import FormatParser
+from .base import FormatParser, resolve_url
 
 _BASE_URL = "https://www.gobiernodecanarias.org/boc"
 
@@ -132,13 +132,13 @@ def _extract_cve_fields(li: Tag) -> tuple[str | None, str | None, str | None, st
             break
 
     html_a = cve_div.find("a", title=lambda t: t and "Vista previa" in t)
-    html_url = html_a["href"] if html_a else None
+    html_url = resolve_url(html_a["href"] if html_a else None)
 
     firma_a = cve_div.find("a", title=lambda t: t and "firma electrónica" in t)
-    firma_url = firma_a["href"] if firma_a else None
+    firma_url = resolve_url(firma_a["href"] if firma_a else None)
 
     pdf_a = cve_div.find("a", title=lambda t: t and "Descargar en formato PDF" in t)
-    pdf_url = pdf_a["href"] if pdf_a else None
+    pdf_url = resolve_url(pdf_a["href"] if pdf_a else None)
 
     return identificador, html_url, firma_url, pdf_url
 
@@ -152,7 +152,7 @@ def _extract_sumario_links(conten: Tag | None) -> tuple[str | None, str | None]:
         return None, None
 
     pdf_a = summary_p.find("a", title="Descargar en formato PDF")
-    sumario_url = pdf_a["href"] if pdf_a else None
+    sumario_url = resolve_url(pdf_a["href"] if pdf_a else None)
 
     cve_span = summary_p.find("span", class_="cve")
     firma_a = (
@@ -160,7 +160,7 @@ def _extract_sumario_links(conten: Tag | None) -> tuple[str | None, str | None]:
         if cve_span
         else None
     )
-    firma_url = firma_a["href"] if firma_a else None
+    firma_url = resolve_url(firma_a["href"] if firma_a else None)
 
     return sumario_url, firma_url
 

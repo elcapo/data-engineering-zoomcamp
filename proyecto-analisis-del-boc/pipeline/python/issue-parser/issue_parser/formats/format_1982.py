@@ -2,7 +2,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from .base import FormatParser
+from .base import FormatParser, resolve_url
 
 _BASE_URL = "https://www.gobiernodecanarias.org/boc"
 
@@ -30,7 +30,7 @@ class Format1982Parser(FormatParser):
         url = f"{_BASE_URL}/{year}/{number_padded}/"
 
         pdf_a = soup.find("a", title=lambda t: t and "Descarga el Boletín" in t)
-        sumario_url = pdf_a["href"] if pdf_a else None
+        sumario_url = resolve_url(pdf_a["href"] if pdf_a else None)
 
         return {
             "year": year,
@@ -79,10 +79,10 @@ def _parse_li_1982(li, section: str | None, org: str | None) -> dict:
     description = " ".join(abstract_a.get_text().split()) if abstract_a else ""
 
     html_a = li.find("a", title=lambda t: t and "Ir a la disposición" in t)
-    html_url = html_a["href"] if html_a else None
+    html_url = resolve_url(html_a["href"] if html_a else None)
 
     pdf_a = li.find("a", title=lambda t: t and "Descarga la disposición" in t)
-    pdf_url = pdf_a["href"] if pdf_a else None
+    pdf_url = resolve_url(pdf_a["href"] if pdf_a else None)
 
     sumario = f"{number} {description}".strip() if number or description else None
 
