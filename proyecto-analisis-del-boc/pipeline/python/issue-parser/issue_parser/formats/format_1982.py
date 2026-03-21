@@ -33,15 +33,15 @@ class Format1982Parser(FormatParser):
         sumario_url = pdf_a["href"] if pdf_a else None
 
         return {
-            "año": year,
-            "número": number,
-            "título": title,
+            "year": year,
+            "issue": number,
+            "title": title,
             "url": url,
-            "sumario": {
+            "summary": {
                 "url": sumario_url,
-                "firma": None,
+                "signature": None,
             },
-            "disposiciones": self._parse_dispositions(soup),
+            "dispositions": self._parse_dispositions(soup),
         }
 
     def _parse_dispositions(self, soup: BeautifulSoup) -> list[dict]:
@@ -87,15 +87,15 @@ def _parse_li_1982(li, section: str | None, org: str | None) -> dict:
     sumario = f"{number} {description}".strip() if number or description else None
 
     return {
-        "seccion": section,
-        "subseccion": None,
-        "organizacion": org,
-        "sumario": sumario,
-        "metadatos": None,
-        "identificador": None,
+        "section": section,
+        "subsection": None,
+        "organization": org,
+        "summary": sumario,
+        "metadata": None,
+        "identifier": None,
         "pdf": pdf_url,
         "html": html_url,
-        "firma": None,
+        "signature": None,
     }
 
 

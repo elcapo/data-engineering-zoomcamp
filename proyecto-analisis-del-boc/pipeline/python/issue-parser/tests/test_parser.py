@@ -9,13 +9,13 @@ from issue_parser.parser import parse
 def test_parse_1982_returns_dict(html_1982):
     result = parse(html_1982)
     assert isinstance(result, dict)
-    assert "disposiciones" in result
+    assert "dispositions" in result
 
 
 def test_parse_2026_returns_dict(html_2026):
     result = parse(html_2026)
     assert isinstance(result, dict)
-    assert "disposiciones" in result
+    assert "dispositions" in result
 
 
 def test_parse_to_json_is_valid_json(html_1982, html_2026):
@@ -33,7 +33,7 @@ def test_parse_to_json_uses_ensure_ascii_false(html_2026):
 
 def test_parse_accepts_string_path(html_1982):
     result = parse(str(html_1982))
-    assert result["año"] == 1982
+    assert result["year"] == 1982
 
 
 def test_parse_unknown_format_raises(tmp_path):

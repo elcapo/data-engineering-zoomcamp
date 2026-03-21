@@ -33,15 +33,15 @@ class Format2026Parser(FormatParser):
         sumario_url, firma_url = _extract_sumario_links(conten)
 
         return {
-            "año": year,
-            "número": number,
-            "título": title,
+            "year": year,
+            "issue": number,
+            "title": title,
             "url": url,
-            "sumario": {
+            "summary": {
                 "url": sumario_url,
-                "firma": firma_url,
+                "signature": firma_url,
             },
-            "disposiciones": self._parse_dispositions(conten),
+            "dispositions": self._parse_dispositions(conten),
         }
 
     def _parse_dispositions(self, conten: Tag | None) -> list[dict]:
@@ -95,15 +95,15 @@ def _parse_li_2026(
     identificador, html_url, firma_url, pdf_url = _extract_cve_fields(li)
 
     return {
-        "seccion": section,
-        "subseccion": subsection,
-        "organizacion": org,
-        "sumario": sumario,
-        "metadatos": metadatos,
-        "identificador": identificador,
+        "section": section,
+        "subsection": subsection,
+        "organization": org,
+        "summary": sumario,
+        "metadata": metadatos,
+        "identifier": identificador,
         "pdf": pdf_url,
         "html": html_url,
-        "firma": firma_url,
+        "signature": firma_url,
     }
 
 

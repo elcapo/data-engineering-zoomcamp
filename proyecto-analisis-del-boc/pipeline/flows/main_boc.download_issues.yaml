@@ -1,6 +1,6 @@
 id: download_issues
 namespace: boc
-description: Download the index of dispositions of a bulletin
+description: Download the dispositions of an issue
 
 inputs:
   - id: year
@@ -18,6 +18,11 @@ inputs:
     type: BOOL
     displayName: Overwrite
     defaults: false
+
+  - id: extract
+    type: BOOL
+    displayName: Extract
+    defaults: true
 
 variables:
   bulletin_padded: "{{ inputs.bulletin < 10 ? '00' ~ inputs.bulletin : inputs.bulletin < 100 ? '0' ~ inputs.bulletin : inputs.bulletin }}"
@@ -78,3 +83,15 @@ tasks:
     bucket: boc-raw
     from: "{{ outputs.compress.uri }}"
     key: "{{ render(vars.key) }}"
+
+  - id: if_extract
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ inputs.extract }}"
+    then:
+      - id: call_extract_issues
+        type: io.kestra.plugin.core.flow.Subflow
+        namespace: boc
+        flowId: extract_issues
+        inputs:
+          year: "{{ inputs.year }}"
+          bulletin: "{{ inputs.bulletin }}"

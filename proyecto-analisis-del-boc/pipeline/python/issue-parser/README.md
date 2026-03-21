@@ -18,17 +18,17 @@ uv run issue-parser boc-2026_47.html
 
 ```json
 {
-    "año": 2026,
-    "número": 47,
-    "título": "BOC Nº 47. Martes 10 de marzo de 2026",
+    "year": 2026,
+    "issue": 47,
+    "title": "BOC Nº 47. Martes 10 de marzo de 2026",
     "url": "https://www.gobiernodecanarias.org/boc/2026/047/",
-    "sumario": { ... },
-    "disposiciones": [
+    "summary": { ... },
+    "dispositions": [
         {
-            "seccion": "I. Disposiciones generales",
-            "subseccion": null,
-            "organizacion": "Presidencia del Gobierno",
-            "sumario": "762 DECRETO ley 2/2026, ...",
+            "section": "I. Disposiciones generales",
+            "subsection": null,
+            "organization": "Presidencia del Gobierno",
+            "summary": "762 DECRETO ley 2/2026, ...",
             ...
         }
     ]
@@ -176,7 +176,7 @@ O incluso usar el parser como una librería en Python.
 from issue_parser import parse
 
 data = parse('boc-2026_47.html')
-print(data['título'])
+print(data['title'])
 ```
 
 ## Tests

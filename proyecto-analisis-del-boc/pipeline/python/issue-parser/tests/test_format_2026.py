@@ -31,24 +31,24 @@ class TestDetection:
 
 class TestBocMetadata:
     def test_year(self, result):
-        assert result["año"] == 2026
+        assert result["year"] == 2026
 
-    def test_number(self, result):
-        assert result["número"] == 47
+    def test_issue(self, result):
+        assert result["issue"] == 47
 
     def test_title(self, result):
-        assert result["título"] == "BOC Nº 47. Martes 10 de marzo de 2026"
+        assert result["title"] == "BOC Nº 47. Martes 10 de marzo de 2026"
 
     def test_url(self, result):
         assert result["url"] == "https://www.gobiernodecanarias.org/boc/2026/047/"
 
-    def test_sumario_pdf_url(self, result):
-        assert result["sumario"]["url"] == (
+    def test_summary_pdf_url(self, result):
+        assert result["summary"]["url"] == (
             "https://sede.gobiernodecanarias.org/boc/boc-s-2026-047.pdf"
         )
 
-    def test_sumario_firma_url(self, result):
-        assert result["sumario"]["firma"] == (
+    def test_summary_signature_url(self, result):
+        assert result["summary"]["signature"] == (
             "https://sede.gobiernodecanarias.org/boc/boc-s-2026-047.xsign"
         )
 
@@ -56,76 +56,76 @@ class TestBocMetadata:
 class TestDispositions:
     def test_total_count(self, result):
         # BOC 2026/47 contains dispositions 762–782
-        assert len(result["disposiciones"]) == 21
+        assert len(result["dispositions"]) == 21
 
     def test_first_disposition_matches_reference(self, result):
-        d = result["disposiciones"][0]
-        assert d["seccion"] == "I. Disposiciones generales"
-        assert d["subseccion"] is None
-        assert d["organizacion"] == "Presidencia del Gobierno"
-        assert d["sumario"].startswith("762 DECRETO ley 2/2026")
-        assert d["metadatos"] == (
+        d = result["dispositions"][0]
+        assert d["section"] == "I. Disposiciones generales"
+        assert d["subsection"] is None
+        assert d["organization"] == "Presidencia del Gobierno"
+        assert d["summary"].startswith("762 DECRETO ley 2/2026")
+        assert d["metadata"] == (
             "6 páginas. Formato de archivo en PDF/Adobe Acrobat. Tamaño: 206.97 Kb."
         )
-        assert d["identificador"] is not None
-        assert "BOC-A-2026-047-762" in d["identificador"]
+        assert d["identifier"] is not None
+        assert "BOC-A-2026-047-762" in d["identifier"]
         assert d["html"] == "https://www.gobiernodecanarias.org/boc/2026/047/762.html"
         assert d["pdf"] == "https://sede.gobiernodecanarias.org/boc/boc-a-2026-047-762.pdf"
-        assert d["firma"] == "https://sede.gobiernodecanarias.org/boc/boc-a-2026-047-762.xsign"
+        assert d["signature"] == "https://sede.gobiernodecanarias.org/boc/boc-a-2026-047-762.xsign"
 
     def test_second_disposition_has_subsection(self, result):
-        d = result["disposiciones"][1]
-        assert d["seccion"] == "II. Autoridades y personal"
-        assert d["subseccion"] == "Oposiciones y concursos"
-        assert d["organizacion"] == "Consejería de Hacienda y Relaciones con la Unión Europea"
+        d = result["dispositions"][1]
+        assert d["section"] == "II. Autoridades y personal"
+        assert d["subsection"] == "Oposiciones y concursos"
+        assert d["organization"] == "Consejería de Hacienda y Relaciones con la Unión Europea"
 
     def test_sections_are_extracted(self, result):
-        sections = {d["seccion"] for d in result["disposiciones"]}
+        sections = {d["section"] for d in result["dispositions"]}
         assert "I. Disposiciones generales" in sections
         assert "II. Autoridades y personal" in sections
         assert "III. Otras Resoluciones" in sections
         assert "V. Anuncios" in sections
 
     def test_subsections_are_extracted(self, result):
-        subsections = {d["subseccion"] for d in result["disposiciones"]}
+        subsections = {d["subsection"] for d in result["dispositions"]}
         assert "Oposiciones y concursos" in subsections
         assert "Otros anuncios" in subsections
         assert None in subsections  # Some dispositions have no subsection
 
-    def test_all_have_html_pdf_and_firma_links(self, result):
-        for d in result["disposiciones"]:
+    def test_all_have_html_pdf_and_signature_links(self, result):
+        for d in result["dispositions"]:
             assert d["html"] is not None and d["html"].endswith(".html")
             assert d["pdf"] is not None and d["pdf"].endswith(".pdf")
-            assert d["firma"] is not None and d["firma"].endswith(".xsign")
+            assert d["signature"] is not None and d["signature"].endswith(".xsign")
 
-    def test_all_have_metadatos(self, result):
-        for d in result["disposiciones"]:
-            assert d["metadatos"] is not None
-            assert "Formato de archivo en PDF/Adobe Acrobat" in d["metadatos"]
+    def test_all_have_metadata(self, result):
+        for d in result["dispositions"]:
+            assert d["metadata"] is not None
+            assert "Formato de archivo en PDF/Adobe Acrobat" in d["metadata"]
 
-    def test_all_have_identificador(self, result):
-        for d in result["disposiciones"]:
-            assert d["identificador"] is not None
-            assert "BOC-A-2026-047" in d["identificador"]
+    def test_all_have_identifier(self, result):
+        for d in result["dispositions"]:
+            assert d["identifier"] is not None
+            assert "BOC-A-2026-047" in d["identifier"]
 
     def test_disposition_numbers_are_sequential(self, result):
-        # Sumario texts should start with the sequential number (762–782)
-        for i, d in enumerate(result["disposiciones"]):
+        # Summary texts should start with the sequential number (762–782)
+        for i, d in enumerate(result["dispositions"]):
             expected_num = str(762 + i)
-            assert d["sumario"].startswith(expected_num), (
+            assert d["summary"].startswith(expected_num), (
                 f"Disposition {i} should start with {expected_num}"
             )
 
     def test_administracion_local_section(self, result):
         admin_local = [
-            d for d in result["disposiciones"]
-            if d["seccion"] == "Administración Local"
+            d for d in result["dispositions"]
+            if d["section"] == "Administración Local"
         ]
         assert len(admin_local) == 3  # dispositions 779, 780, 781
 
     def test_otras_administraciones_section(self, result):
         otras = [
-            d for d in result["disposiciones"]
-            if d["seccion"] == "Otras Administraciones Públicas"
+            d for d in result["dispositions"]
+            if d["section"] == "Otras Administraciones Públicas"
         ]
         assert len(otras) == 1  # disposition 782
