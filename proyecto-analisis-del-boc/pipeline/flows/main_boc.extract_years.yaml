@@ -1,6 +1,13 @@
-id: extract_archive
+id: extract_years
 namespace: boc
-description: Extract year links from the archive
+description: Extract bulletin links from a given year
+
+inputs:
+   - id: year
+     type: INT
+     required: true
+     displayName: Year
+     defaults: "{{ now() | date('yyyy') }}"
 
 tasks:
   - id: read
@@ -9,7 +16,7 @@ tasks:
     accessKeyId: "{{ envs.minio_user }}"
     secretKeyId: "{{ envs.minio_password }}"
     bucket: boc-raw
-    key: archive/archive.html.gz
+    key: years/{{ inputs.year }}.html.gz
 
   - id: decompress
     type: io.kestra.plugin.compress.FileDecompress
@@ -23,11 +30,11 @@ tasks:
       type: io.kestra.plugin.scripts.runner.docker.Docker
       networkMode: boc-postgres-network
     inputFiles:
-      archive.html: "{{ outputs.decompress.uri }}"
+      year.html: "{{ outputs.decompress.uri }}"
     outputFiles:
-      - archive.json
+      - year.json
     commands:
-      - archive-parser archive.html -o archive.json
+      - year-parser year.html -o year.json
 
   - id: load
     type: io.kestra.plugin.scripts.python.Script
@@ -36,7 +43,7 @@ tasks:
       type: io.kestra.plugin.scripts.runner.docker.Docker
       networkMode: boc-postgres-network
     inputFiles:
-      archive.json: "{{ outputs.parse.outputFiles['archive.json'] }}"
+      year.json: "{{ outputs.parse.outputFiles['year.json'] }}"
     env:
       POSTGRES_HOST: "{{ envs.postgres_data_host }}"
       POSTGRES_DB: "{{ envs.postgres_data_db }}"
@@ -52,19 +59,21 @@ tasks:
       user = os.environ["POSTGRES_USER"]
       pwd  = os.environ["POSTGRES_PASSWORD"]
 
-      with open("archive.json") as f:
+      with open("year.json") as f:
           records = json.load(f)
 
-      @dlt.resource(name="archive", write_disposition="merge", merge_key="year")
-      def archive_data():
-          yield from records
+      @dlt.resource(name="year", write_disposition="merge", merge_key="year")
+      def year_data():
+          for record in records:
+              record["year"] = "{{ inputs.year }}"
+              yield record
 
       pipeline = dlt.pipeline(
-          pipeline_name="archive",
+          pipeline_name="year",
           destination=dlt.destinations.postgres(
               f"postgresql://{user}:{pwd}@{host}:5432/{db}"
           ),
           dataset_name="boc_dataset",
       )
 
-      pipeline.run(archive_data)
+      pipeline.run(year_data)
