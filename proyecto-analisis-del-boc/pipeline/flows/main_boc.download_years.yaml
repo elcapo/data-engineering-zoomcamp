@@ -21,7 +21,7 @@ inputs:
 
 variables:
   source_url: "https://www.gobiernodecanarias.org/boc/archivo/{{ inputs.year }}"
-  key: "years/{{ inputs.year }}.html.gz"
+  bucket_path: "years/{{ inputs.year }}.html.gz"
 
 tasks:
   - id: label
@@ -36,7 +36,7 @@ tasks:
     accessKeyId: "{{ envs.minio_user }}"
     secretKeyId: "{{ envs.minio_password }}"
     bucket: boc-raw
-    prefix: "{{ render(vars.key) }}"
+    prefix: "{{ render(vars.bucket_path) }}"
 
   - id: if_file_exists
     type: io.kestra.plugin.core.flow.If
@@ -45,7 +45,7 @@ tasks:
       - id: exit
         type: io.kestra.plugin.core.execution.Exit
         state: SUCCESS
-        description: "Key {{ render(vars.key) }} already exists and overwrite is set to false"
+        description: "Key {{ render(vars.bucket_path) }} already exists and overwrite is set to false"
 
   - id: fetch
     type: io.kestra.plugin.core.http.Request
@@ -69,7 +69,7 @@ tasks:
     secretKeyId: "{{ envs.minio_password }}"
     bucket: boc-raw
     from: "{{ outputs.compress.uri }}"
-    key: "{{ render(vars.key) }}"
+    key: "{{ render(vars.bucket_path) }}"
 
   - id: if_extract
     type: io.kestra.plugin.core.flow.If
