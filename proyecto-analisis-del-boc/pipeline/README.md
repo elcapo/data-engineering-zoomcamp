@@ -82,10 +82,10 @@ docker compose ps
 
 #### Despliegue en producción
 
-El archivo `docker-compose.prod.yml` añade atributos específicos de producción (política de reinicio automático). Úsalo combinado con el compose base:
+El archivo `docker-compose.restart.yml` añade atributos específicos de producción (política de reinicio automático). Úsalo combinado con el compose base:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.yml -f docker-compose.restart.yml up -d
 ```
 
 | Servicio | Política de reinicio | Motivo |
