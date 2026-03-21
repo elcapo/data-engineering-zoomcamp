@@ -1,0 +1,81 @@
+id: extract_years
+namespace: boc
+description: Extract the index of bulletins of a year
+
+inputs:
+  - id: year
+    type: INT
+    required: true
+    displayName: Year
+    defaults: "{{ now() | date('yyyy') }}"
+
+variables:
+  uncompressed_file: "years/{{ inputs.year }}.html"
+  compressed_file: "{{ render(vars.uncompressed_file) }}.gz"
+
+tasks:
+  - id: read
+    type: io.kestra.plugin.minio.Download
+    endpoint: "{{ envs.minio_endpoint }}"
+    accessKeyId: "{{ envs.minio_user }}"
+    secretKeyId: "{{ envs.minio_password }}"
+    bucket: boc-raw
+    key: "{{ render(vars.compressed_file) }}"
+
+  - id: decompress
+    type: io.kestra.plugin.compress.FileDecompress
+    from: "{{ outputs.read.uri }}"
+    compression: GZIP
+
+  - id: parse
+    type: io.kestra.plugin.scripts.python.Commands
+    containerImage: boc-python:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    inputFiles:
+      year.html: "{{ outputs.decompress.uri }}"
+    outputFiles:
+      - year.json
+    commands:
+      - year-parser year.html -o year.json
+
+  - id: load
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    inputFiles:
+      year.json: "{{ outputs.parse.outputFiles['year.json'] }}"
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import json
+      import os
+      import dlt
+
+      host = os.environ["POSTGRES_HOST"]
+      db   = os.environ["POSTGRES_DB"]
+      user = os.environ["POSTGRES_USER"]
+      pwd  = os.environ["POSTGRES_PASSWORD"]
+
+      with open("year.json") as f:
+          records = json.load(f)
+
+      @dlt.resource(name="year", write_disposition="merge", primary_key=["year", "issue"])
+      def year_data():
+          yield from records
+
+      pipeline = dlt.pipeline(
+          pipeline_name="issue",
+          destination=dlt.destinations.postgres(
+              f"postgresql://{user}:{pwd}@{host}:5432/{db}"
+          ),
+          dataset_name="boc_dataset",
+      )
+
+      pipeline.run(year_data)
