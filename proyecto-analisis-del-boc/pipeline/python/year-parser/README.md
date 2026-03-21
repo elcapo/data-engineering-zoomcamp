@@ -7,7 +7,7 @@ Parser para extraer el listado de boletines publicados en un año a partir del H
 
 ## Qué hace
 
-Dado el HTML de la página de archivo de un año (por ejemplo [`2025.html`](./examples/2025.html)), extrae la lista de boletines con su etiqueta y enlace absoluto:
+Dado el HTML de la página de archivo de un año (por ejemplo [`2025.html`](./examples/2025.html)), extrae la lista de boletines con su etiqueta, enlace absoluto, año y número de boletín:
 
 ```bash
 uv run year-parser 2025.html
@@ -17,11 +17,15 @@ uv run year-parser 2025.html
 [
   {
     "label": "BOC Nº 1 - 2 de enero de 2025 - Jueves",
-    "url": "https://www.gobiernodecanarias.org/boc/2025/001/index.html"
+    "url": "https://www.gobiernodecanarias.org/boc/2025/001/index.html",
+    "year": 2025,
+    "issue": 1
   },
   {
     "label": "BOC Nº 2 - 3 de enero de 2025 - Viernes",
-    "url": "https://www.gobiernodecanarias.org/boc/2025/002/index.html"
+    "url": "https://www.gobiernodecanarias.org/boc/2025/002/index.html",
+    "year": 2025,
+    "issue": 2
   }
 ]
 ```

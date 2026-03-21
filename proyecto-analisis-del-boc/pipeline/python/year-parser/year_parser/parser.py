@@ -4,7 +4,7 @@ from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 
 BASE_URL = "https://www.gobiernodecanarias.org"
-_ISSUE_HREF_RE = re.compile(r"/boc/\d{4}/\d+/(?:index\.html)?$")
+_ISSUE_HREF_RE = re.compile(r"/boc/(\d{4})/(\d+)/(?:index\.html)?$")
 
 
 def parse_issue_index(html: str) -> list[dict]:
@@ -18,7 +18,8 @@ def parse_issue_index(html: str) -> list[dict]:
 
     for tag in soup.find_all("a"):
         href = tag.get("href", "")
-        if not _ISSUE_HREF_RE.search(href):
+        m = _ISSUE_HREF_RE.search(href)
+        if not m:
             continue
 
         label = tag.get_text(" ", strip=True)
@@ -26,6 +27,11 @@ def parse_issue_index(html: str) -> list[dict]:
             continue
 
         absolute = href if urlparse(href).scheme else urljoin(BASE_URL, href)
-        results.append({"label": label, "url": absolute})
+        results.append({
+            "label": label,
+            "url": absolute,
+            "year": int(m.group(1)),
+            "issue": int(m.group(2)),
+        })
 
     return results
