@@ -51,7 +51,7 @@ tasks:
     then:
       - id: exit
         type: io.kestra.plugin.core.execution.Exit
-        state: CANCELED
+        state: SUCCESS
         description: "Key {{ render(vars.bucket_path) }} already exists and overwrite is set to false"
 
   - id: fetch
