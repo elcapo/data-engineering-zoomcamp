@@ -55,7 +55,7 @@ tasks:
       with open("archive.json") as f:
           records = json.load(f)
 
-      @dlt.resource(name="archive", write_disposition="merge", merge_key="year")
+      @dlt.resource(name="archive", write_disposition="merge", primary_key="year")
       def archive_data():
           yield from records
 

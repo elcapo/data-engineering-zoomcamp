@@ -26,20 +26,15 @@ tasks:
         accessKeyId: "{{ envs.minio_user }}"
         secretKeyId: "{{ envs.minio_password }}"
         bucket: boc-raw
-        prefix: "years/{{ taskrun.value }}.html"
+        prefix: "years/{{ taskrun.value }}.html.gz"
 
-      - id: if_file_exists
+      - id: if_file_missing
         type: io.kestra.plugin.core.flow.If
-        condition: "{{ outputs.lookup_file[taskrun.value].objects | length > 0 }}"
+        condition: "{{ (outputs.lookup_file[taskrun.value].objects | default([])) | length == 0 }}"
         then:
-          - id: exit
-            type: io.kestra.plugin.core.execution.Exit
-            state: SUCCESS
-            description: "Key `years/{{ taskrun.value }}.html` already exists"
-
-      - id: call_download_years
-        type: io.kestra.plugin.core.flow.Subflow
-        namespace: boc
-        flowId: download_years
-        inputs:
-          year: "{{ taskrun.value }}"
+          - id: call_download_years
+            type: io.kestra.plugin.core.flow.Subflow
+            namespace: boc
+            flowId: download_years
+            inputs:
+              year: "{{ parent.taskrun.value }}"

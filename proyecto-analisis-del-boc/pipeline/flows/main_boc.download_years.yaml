@@ -14,6 +14,11 @@ inputs:
     displayName: Overwrite
     defaults: false
 
+  - id: extract
+    type: BOOL
+    displayName: Extract
+    defaults: true
+
 variables:
   source_url: "https://www.gobiernodecanarias.org/boc/archivo/{{ inputs.year }}"
   key: "years/{{ inputs.year }}.html.gz"
@@ -35,11 +40,11 @@ tasks:
 
   - id: if_file_exists
     type: io.kestra.plugin.core.flow.If
-    condition: "{{ outputs.lookup_file.objects | length > 0 and not inputs.overwrite }}"
+    condition: "{{ (outputs.lookup_file.objects | default([])) | length > 0 and not inputs.overwrite }}"
     then:
       - id: exit
         type: io.kestra.plugin.core.execution.Exit
-        state: CANCELED
+        state: SUCCESS
         description: "Key {{ render(vars.key) }} already exists and overwrite is set to false"
 
   - id: fetch
@@ -65,3 +70,14 @@ tasks:
     bucket: boc-raw
     from: "{{ outputs.compress.uri }}"
     key: "{{ render(vars.key) }}"
+
+  - id: if_extract
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ inputs.extract }}"
+    then:
+      - id: call_extract_years
+        type: io.kestra.plugin.core.flow.Subflow
+        namespace: boc
+        flowId: extract_years
+        inputs:
+          year: "{{ inputs.year }}"

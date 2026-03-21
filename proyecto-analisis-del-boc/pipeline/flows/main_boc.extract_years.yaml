@@ -62,7 +62,7 @@ tasks:
       with open("year.json") as f:
           records = json.load(f)
 
-      @dlt.resource(name="year", write_disposition="merge", merge_key="year")
+      @dlt.resource(name="year", write_disposition="merge", primary_key=["year", "issue"])
       def year_data():
           yield from records
 
