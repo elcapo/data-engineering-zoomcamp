@@ -90,6 +90,38 @@ def test_1980_order_is_preserved(html_1980):
 
 
 # ---------------------------------------------------------------------------
+# Año 2020 — formato intermedio (texto multilínea dentro del <a>)
+# ---------------------------------------------------------------------------
+
+
+def test_2020_total_count(html_2020):
+    assert len(parse_issue_index(html_2020)) == 270
+
+
+def test_2020_first_entry(html_2020):
+    first = parse_issue_index(html_2020)[0]
+    assert first["label"] == "BOC Nº 1 - 2 de enero de 2020 - Jueves"
+    assert first["url"] == f"{BASE_URL}/boc/2020/001/index.html"
+    assert first["year"] == 2020
+    assert first["issue"] == 1
+
+
+def test_2020_last_entry(html_2020):
+    last = parse_issue_index(html_2020)[-1]
+    assert last["label"] == "BOC Nº 270 - 31 de diciembre de 2020 - Jueves"
+    assert last["url"] == f"{BASE_URL}/boc/2020/270/index.html"
+    assert last["year"] == 2020
+    assert last["issue"] == 270
+
+
+def test_2020_labels_have_no_extra_whitespace(html_2020):
+    for record in parse_issue_index(html_2020):
+        label = record["label"]
+        assert "\n" not in label
+        assert "  " not in label
+
+
+# ---------------------------------------------------------------------------
 # Casos límite
 # ---------------------------------------------------------------------------
 

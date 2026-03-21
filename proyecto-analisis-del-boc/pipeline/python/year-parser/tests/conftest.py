@@ -15,6 +15,11 @@ def html_1980_path() -> Path:
 
 
 @pytest.fixture(scope="session")
+def html_2020_path() -> Path:
+    return EXAMPLES_DIR / "2020.html"
+
+
+@pytest.fixture(scope="session")
 def html_2025(html_2025_path) -> str:
     return html_2025_path.read_text(encoding="utf-8")
 
@@ -22,3 +27,8 @@ def html_2025(html_2025_path) -> str:
 @pytest.fixture(scope="session")
 def html_1980(html_1980_path) -> str:
     return html_1980_path.read_text(encoding="utf-8")
+
+
+@pytest.fixture(scope="session")
+def html_2020(html_2020_path) -> str:
+    return html_2020_path.read_text(encoding="utf-8")

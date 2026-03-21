@@ -22,7 +22,7 @@ def parse_issue_index(html: str) -> list[dict]:
         if not m:
             continue
 
-        label = tag.get_text(" ", strip=True)
+        label = " ".join(tag.get_text(" ", strip=True).split())
         if not label.startswith("BOC"):
             continue
 
