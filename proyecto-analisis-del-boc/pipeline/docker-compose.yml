@@ -64,7 +64,6 @@ services:
       - kestra-data:/app/storage
       - ${DOCKER_SOCKET_DIR:-/var/run}/docker.sock:/var/run/docker.sock
       - /tmp/kestra-wd:/tmp/kestra-wd
-      - ./data:/app/data
       - ./flows:/flows
     environment:
       # Exposed to flows as {{ envs.postgres_data_* }}
@@ -113,20 +112,6 @@ services:
             gemini:
               api-key: ${KESTRA_GEMINI_APIKEY:-foo}
               model-name: gemini-2.5-flash
-          plugins:
-            configurations:
-              - type: io.kestra.plugin.fs.local.Upload
-                values:
-                  allowed-paths:
-                    - /app/data
-              - type: io.kestra.plugin.fs.local.Download
-                values:
-                  allowed-paths:
-                    - /app/data
-              - type: io.kestra.plugin.fs.local.List
-                values:
-                  allowed-paths:
-                    - /app/data
     ports:
       - "${KESTRA_PORT:-8080}:8080"
       - "8081:8081"
