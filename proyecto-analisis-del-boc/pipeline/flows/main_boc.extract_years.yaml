@@ -64,9 +64,7 @@ tasks:
 
       @dlt.resource(name="year", write_disposition="merge", merge_key="year")
       def year_data():
-          for record in records:
-              record["year"] = "{{ inputs.year }}"
-              yield record
+          yield from records
 
       pipeline = dlt.pipeline(
           pipeline_name="year",
