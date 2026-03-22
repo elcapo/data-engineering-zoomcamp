@@ -31,14 +31,13 @@ def parse(html: str) -> str:
     return _build_markdown(
         year=year,
         issue=issue,
-        document_number=meta.get("documentnumber"),
-        document_date=meta.get("documentdate"),
+        document=meta.get("documentnumber"),
+        number=number,
+        date=meta.get("documentdate"),
         entity=meta.get("entity"),
-        doc_type=int(meta["typedocument"]) if meta.get("typedocument") else None,
         section=section,
         subsection=subsection,
         organization=organization,
-        number=number,
         identifier=identifier,
         pdf=pdf_url,
         signature=signature_url,
@@ -69,14 +68,13 @@ def _build_markdown(
     *,
     year: int | None,
     issue: int | None,
-    document_number: str | None,
-    document_date: str | None,
+    document: str | None,
+    number: str | None,
+    date: str | None,
     entity: str | None,
-    doc_type: int | None,
     section: str | None,
     subsection: str | None,
     organization: str | None,
-    number: str | None,
     identifier: str | None,
     pdf: str | None,
     signature: str | None,
@@ -90,22 +88,20 @@ def _build_markdown(
         lines.append(f"year: {year}")
     if issue is not None:
         lines.append(f"issue: {issue}")
-    if document_number is not None:
-        lines.append(f"document_number: {_yaml_str(document_number)}")
-    if document_date is not None:
-        lines.append(f"document_date: {_yaml_str(document_date)}")
+    if document is not None:
+        lines.append(f"document: {_yaml_str(document)}")
+    if number is not None:
+        lines.append(f"number: {_yaml_str(number)}")
+    if date is not None:
+        lines.append(f"date: {_yaml_str(date)}")
     if entity is not None:
         lines.append(f"entity: {_yaml_str(entity)}")
-    if doc_type is not None:
-        lines.append(f"type: {doc_type}")
     if section is not None:
         lines.append(f"section: {_yaml_str(section)}")
     if subsection is not None:
         lines.append(f"subsection: {_yaml_str(subsection)}")
     if organization is not None:
         lines.append(f"organization: {_yaml_str(organization)}")
-    if number is not None:
-        lines.append(f"number: {_yaml_str(number)}")
     if identifier is not None:
         lines.append(f"identifier: {_yaml_str(identifier)}")
     if pdf is not None:

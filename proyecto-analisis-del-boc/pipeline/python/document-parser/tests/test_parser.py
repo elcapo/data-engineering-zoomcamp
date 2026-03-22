@@ -56,17 +56,14 @@ class TestFrontmatter2026:
     def test_issue(self, result_2026):
         assert "issue: 1" in result_2026
 
-    def test_document_number(self, result_2026):
-        assert 'document_number: "001"' in result_2026
+    def test_document(self, result_2026):
+        assert 'document: "001"' in result_2026
 
-    def test_document_date(self, result_2026):
-        assert 'document_date: "2026-01-02"' in result_2026
+    def test_date(self, result_2026):
+        assert 'date: "2026-01-02"' in result_2026
 
     def test_entity(self, result_2026):
         assert "Consejería de Presidencia" in result_2026
-
-    def test_type(self, result_2026):
-        assert "type: 2" in result_2026
 
     def test_section(self, result_2026):
         assert "II. Autoridades y personal" in result_2026
@@ -136,17 +133,14 @@ class TestFrontmatter1980:
     def test_issue(self, result_1980):
         assert "issue: 1" in result_1980
 
-    def test_document_number(self, result_1980):
-        assert 'document_number: "001"' in result_1980
+    def test_document(self, result_1980):
+        assert 'document: "001"' in result_1980
 
-    def test_document_date(self, result_1980):
-        assert 'document_date: "1980-04-01"' in result_1980
+    def test_date(self, result_1980):
+        assert 'date: "1980-04-01"' in result_1980
 
     def test_entity(self, result_1980):
         assert "Canarias Régimen Preautonómico" in result_1980
-
-    def test_type(self, result_1980):
-        assert "type: 1" in result_1980
 
     def test_section(self, result_1980):
         assert "I. DISPOSICIONES GENERALES" in result_1980

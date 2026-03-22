@@ -17,10 +17,10 @@ uv run document-parser <archivo.html> -o salida.md
 ---
 year: 2026
 issue: 1
-document_number: "001"
-document_date: "2026-01-02"
+document: "001"
+number: "1"
+date: "2026-01-02"
 entity: "Consejería de Presidencia, Administraciones Públicas, Justicia y Seguridad"
-type: 2
 section: "II. Autoridades y personal"
 subsection: "Oposiciones y concursos"
 organization: "Consejería de Presidencia, Administraciones Públicas, Justicia y Seguridad"
@@ -44,14 +44,13 @@ Nieves Lady Barreto Hernández.
 | Campo | Descripción |
 |---|---|
 | `year` / `issue` | Año y número del boletín |
-| `document_number` | Número del documento dentro del boletín |
-| `document_date` | Fecha de publicación (ISO 8601) |
+| `document` | Número del documento dentro del boletín |
+| `number` | Número de la disposición dentro del boletín |
+| `date` | Fecha de publicación (ISO 8601) |
 | `entity` | Organismo emisor (consejería, presidencia, etc.) |
-| `type` | Código de sección: 1 Disposiciones generales, 2 Autoridades y personal, 3 Otras resoluciones, 4 Anuncios |
 | `section` | Sección del boletín |
 | `subsection` | Subsección si existe (p. ej. "Oposiciones y concursos"); ausente en formato histórico |
 | `organization` | Organismo concreto dentro de la sección |
-| `number` | Número de la disposición dentro del boletín |
 | `identifier` | Código CVE (p. ej. `BOC-A-2026-001-1`); ausente en formato histórico |
 | `pdf` | URL absoluta al PDF de la disposición |
 | `signature` | URL de la firma electrónica; ausente en formato histórico |
