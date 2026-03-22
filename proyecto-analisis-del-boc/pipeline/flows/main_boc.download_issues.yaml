@@ -9,9 +9,9 @@ inputs:
     displayName: Year
     defaults: "{{ now() | date('yyyy') }}"
 
-  - id: bulletin
+  - id: issue
     type: INT
-    displayName: Bulletin
+    displayName: Issue
     defaults: "1"
 
   - id: overwrite
@@ -25,17 +25,17 @@ inputs:
     defaults: true
 
 variables:
-  bulletin_padded: "{{ inputs.bulletin < 10 ? '00' ~ inputs.bulletin : inputs.bulletin < 100 ? '0' ~ inputs.bulletin : inputs.bulletin }}"
-  source_url: "https://www.gobiernodecanarias.org/boc/{{ inputs.year }}/{{ render(vars.bulletin_padded) }}/index.html"
-  bucket_path: "issues/{{ inputs.year }}-{{ render(vars.bulletin_padded) }}.html.gz"
+  issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
+  source_url: "https://www.gobiernodecanarias.org/boc/{{ inputs.year }}/{{ render(vars.issue_padded) }}/index.html"
+  bucket_path: "issues/{{ inputs.year }}-{{ render(vars.issue_padded) }}.html.gz"
 
 tasks:
   - id: label
     type: io.kestra.plugin.core.execution.Labels
     labels:
-      type: bulletin_dispositions
+      type: issue_dispositions
       year: "{{ inputs.year }}"
-      bulletin: "{{ render(vars.bulletin_padded) }}"
+      issue: "{{ render(vars.issue_padded) }}"
 
   - id: lookup_file
     type: io.kestra.plugin.minio.List
@@ -88,4 +88,4 @@ tasks:
         flowId: extract_issues
         inputs:
           year: "{{ inputs.year }}"
-          bulletin: "{{ inputs.bulletin }}"
+          issue: "{{ inputs.issue }}"

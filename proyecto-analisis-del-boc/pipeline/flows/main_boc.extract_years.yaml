@@ -1,6 +1,6 @@
 id: extract_years
 namespace: boc
-description: Extract the index of bulletins of a year
+description: Extract the index of issues of a year
 
 inputs:
   - id: year

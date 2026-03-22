@@ -9,14 +9,14 @@ inputs:
     displayName: Year
     defaults: "{{ now() | date('yyyy') }}"
 
-  - id: bulletin
+  - id: issue
     type: INT
     displayName: Bulletin
     defaults: "1"
 
 variables:
-  bulletin_padded: "{{ inputs.bulletin < 10 ? '00' ~ inputs.bulletin : inputs.bulletin < 100 ? '0' ~ inputs.bulletin : inputs.bulletin }}"
-  uncompressed_file: "issues/{{ inputs.year }}-{{ render(vars.bulletin_padded) }}.html"
+  issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
+  uncompressed_file: "issues/{{ inputs.year }}-{{ render(vars.issue_padded) }}.html"
   compressed_file: "{{ render(vars.uncompressed_file) }}.gz"
 
 tasks:

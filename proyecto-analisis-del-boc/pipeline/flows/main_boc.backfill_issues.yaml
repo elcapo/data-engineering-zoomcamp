@@ -1,6 +1,6 @@
 id: backfill_issues
 namespace: boc
-description: Backfill for bulletin dispositions
+description: Backfill for issue dispositions
 
 inputs:
   - id: year
@@ -9,22 +9,22 @@ inputs:
     displayName: Year
     defaults: "{{ now() | date('yyyy') }}"
 
-  - id: from_bulletin
+  - id: from_issue
     type: INT
     required: true
-    displayName: From bulletin
+    displayName: From issue
     defaults: "1"
 
-  - id: to_bulletin
+  - id: to_issue
     type: INT
     required: true
-    displayName: To bulletin
+    displayName: To issue
     defaults: "1"
 
 tasks:
-  - id: iterate_bulletins
+  - id: iterate_issues
     type: io.kestra.plugin.core.flow.ForEach
-    values: "{{ range(inputs.from_bulletin, inputs.to_bulletin) }}"
+    values: "{{ range(inputs.from_issue, inputs.to_issue) }}"
     tasks:
       - id: call_download_issues
         type: io.kestra.plugin.core.flow.Subflow
@@ -32,4 +32,4 @@ tasks:
         flowId: download_issues
         inputs:
           year: "{{ inputs.year }}"
-          bulletin: "{{ taskrun.value }}"
+          issue: "{{ taskrun.value }}"

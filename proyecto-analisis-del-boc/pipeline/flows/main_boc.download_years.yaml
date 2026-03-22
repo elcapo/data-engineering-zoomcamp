@@ -1,6 +1,6 @@
 id: download_years
 namespace: boc
-description: Download the index of bulletins of a year
+description: Download the index of issues of a year
 
 inputs:
   - id: year
@@ -27,7 +27,7 @@ tasks:
   - id: label
     type: io.kestra.plugin.core.execution.Labels
     labels:
-      type: year_bulletins
+      type: year_issues
       year: "{{ inputs.year }}"
 
   - id: lookup_file

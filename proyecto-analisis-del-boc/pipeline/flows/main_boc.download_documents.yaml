@@ -9,9 +9,9 @@ inputs:
     displayName: Year
     defaults: "{{ now() | date('yyyy') }}"
 
-  - id: bulletin
+  - id: issue
     type: INT
-    displayName: Bulletin
+    displayName: Issue
     defaults: "1"
 
   - id: disposition
@@ -25,9 +25,9 @@ inputs:
     defaults: false
 
 variables:
-  bulletin_padded: "{{ inputs.bulletin < 10 ? '00' ~ inputs.bulletin : inputs.bulletin < 100 ? '0' ~ inputs.bulletin : inputs.bulletin }}"
+  issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
   disposition_padded: "{{ inputs.disposition < 10 ? '00' ~ inputs.disposition : inputs.disposition < 100 ? '0' ~ inputs.disposition : inputs.disposition }}"
-  target_filename: "{{ inputs.year }}/{{ render(vars.bulletin_padded) }}/{{ render(vars.disposition_padded) }}.html"
+  target_filename: "{{ inputs.year }}/{{ render(vars.issue_padded) }}/{{ render(vars.disposition_padded) }}.html"
   source_url: "https://www.gobiernodecanarias.org/boc/{{ render(vars.target_filename) }}"
   bucket_path: "documents/{{ render(vars.target_filename) }}.gz"
 
@@ -37,7 +37,7 @@ tasks:
     labels:
       type: disposition
       year: "{{ inputs.year }}"
-      bulletin: "{{ render(vars.bulletin_padded) }}"
+      issue: "{{ render(vars.issue_padded) }}"
       disposition: "{{ render(vars.disposition_padded) }}"
 
   - id: lookup_file
