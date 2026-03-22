@@ -192,7 +192,7 @@ boc-raw/
        └──────────────┘
 ```
 
-Consulta [docs/kestra/01-fuentes-de-datos.md](docs/kestra/01-fuentes-de-datos.md) para tener información concreta sobre los datos que descargamos del BOC.
+Consulta [docs/fuentes-de-datos/](docs/fuentes-de-datos/) para tener información concreta sobre los datos que descargamos del BOC.
 
 ## Uso
 
