@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Halt on error
+set -e
+
+DATABASE=$1
+
+if [ -z "$DATABASE" ]
+then
+    echo "The database name is missing. Try again:"
+    echo "> create-database <database>"
+    exit 1
+fi
+
+psql -q -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
+	CREATE DATABASE $DATABASE;
+EOSQL
+
+echo "A new database $DATABASE was created." \
+ | grep --color "^\|$DATABASE"

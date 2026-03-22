@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Halt on error
+set -e
+
+DATABASE=$1
+USER=$2
+
+if [ -z "$DATABASE" ]
+then
+    echo "The database name is missing. Try again:"
+    echo "> link-database-and-user <database> <user>"
+    exit 1
+fi
+
+if [ -z "$USER" ]
+then
+    echo "The user name is missing. Try again:"
+    echo "> link-database-and-user <database> <user>"
+    exit 1
+fi
+
+psql -q -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
+	GRANT ALL PRIVILEGES ON DATABASE $DATABASE TO $USER;
+EOSQL
+
+echo "The database $DATABASE was linked with the user $USER." \
+ | grep --color "^\|$DATABASE\|$USER"

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Halt on error
+set -e
+
+USER=$1
+
+if [ -z "$USER" ]
+then
+    echo "The user name is missing. Try again:"
+    echo "> create-user <user>"
+    exit 1
+fi
+
+PASSWORD=`openssl rand -base64 16`
+PASSWORD=${PASSWORD:0:16}
+
+psql -q -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
+	CREATE USER $USER WITH ENCRYPTED PASSWORD '$PASSWORD';
+EOSQL
+
+echo "A new user $USER was created with the password $PASSWORD." \
+ | grep --color "^\|$USER\|$PASSWORD"

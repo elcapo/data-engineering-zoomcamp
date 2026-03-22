@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Halt on error
+set -e
+
+DATABASE=$1
+
+if [ -z "$DATABASE" ]
+then
+    echo "The database name is missing. Try again:"
+    echo "> create-bundle <database>"
+    exit 1
+fi
+
+USER=$DATABASE
+
+create-database $DATABASE
+create-user $USER
+link-database-and-user $DATABASE $USER
+
+echo "The database $DATABASE was linked with the user $USER." \
+ | grep --color "^\|$DATABASE\|$USER"

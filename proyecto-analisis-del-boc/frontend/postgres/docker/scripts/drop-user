@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Halt on error
+set -e
+
+USER=$1
+
+if [ -z "$USER" ]
+then
+    echo "The user name is missing. Try again:"
+    echo "> drop-user <user>"
+    exit 1
+fi
+
+psql -q -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
+    DROP USER $USER;
+EOSQL
+
+echo "The user $USER was dropped." \
+ | grep --color "^\|$USER"

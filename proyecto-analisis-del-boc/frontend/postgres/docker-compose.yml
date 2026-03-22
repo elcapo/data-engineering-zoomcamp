@@ -1,0 +1,20 @@
+services:
+  postgresql:
+    build:
+      context: docker
+    environment:
+      - POSTGRES_PASSWORD
+    networks:
+      - boc-postgres-network
+    restart: always
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - ./backups:/var/backups
+
+networks:
+  boc-postgres-network:
+    name: "boc-postgres-network"
+    external: true
+
+volumes:
+  postgresql:

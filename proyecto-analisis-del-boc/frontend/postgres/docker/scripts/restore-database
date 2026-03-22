@@ -1,0 +1,19 @@
+#!/bin/bash
+
+DATABASE=$1
+
+if [ -z "$DATABASE" ]
+then
+    echo "The database name is missing. Try again:"
+    echo "> restore-database <database>"
+    exit 1
+fi
+
+drop-database $DATABASE
+create-database $DATABASE
+
+pushd /var/backups
+    gzip -d $DATABASE.sql.gz
+    psql --user postgres --dbname=$DATABASE --file=$DATABASE.sql
+    gzip $DATABASE.sql
+popd

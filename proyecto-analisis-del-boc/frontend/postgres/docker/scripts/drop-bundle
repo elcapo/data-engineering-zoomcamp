@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Halt on error
+set -e
+
+DATABASE=$1
+
+if [ -z "$DATABASE" ]
+then
+    echo "The database name is missing. Try again:"
+    echo "> drop-bundle <database>"
+    exit 1
+fi
+
+USER=$DATABASE
+
+drop-database $DATABASE
+drop-user $USER

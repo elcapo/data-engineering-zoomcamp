@@ -1,0 +1,9 @@
+services:
+  postgresql:
+    networks:
+      - postgresql
+      - traefik
+
+networks:
+  traefik:
+    external: true
