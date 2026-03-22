@@ -1,0 +1,183 @@
+id: extract_documents
+namespace: boc
+description: Parse a disposition HTML to Markdown and load it into PostgreSQL
+
+inputs:
+  - id: year
+    type: INT
+    required: true
+    displayName: Year
+    defaults: "{{ now() | date('yyyy') }}"
+
+  - id: issue
+    type: INT
+    displayName: Issue
+    defaults: "1"
+
+  - id: disposition
+    type: INT
+    displayName: Disposition
+    defaults: "1"
+
+variables:
+  issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
+  disposition_padded: "{{ inputs.disposition < 10 ? '00' ~ inputs.disposition : inputs.disposition < 100 ? '0' ~ inputs.disposition : inputs.disposition }}"
+  raw_path: "documents/{{ inputs.year }}/{{ render(vars.issue_padded) }}/{{ render(vars.disposition_padded) }}.html.gz"
+  md_path: "documents/{{ inputs.year }}/{{ render(vars.issue_padded) }}/{{ render(vars.disposition_padded) }}.md.gz"
+
+tasks:
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      type: disposition
+      year: "{{ inputs.year }}"
+      issue: "{{ render(vars.issue_padded) }}"
+      disposition: "{{ render(vars.disposition_padded) }}"
+
+  - id: read
+    type: io.kestra.plugin.minio.Download
+    endpoint: "{{ envs.minio_endpoint }}"
+    accessKeyId: "{{ envs.minio_user }}"
+    secretKeyId: "{{ envs.minio_password }}"
+    bucket: "{{ envs.minio_raw_bucket }}"
+    key: "{{ render(vars.raw_path) }}"
+
+  - id: decompress
+    type: io.kestra.plugin.compress.FileDecompress
+    from: "{{ outputs.read.uri }}"
+    compression: GZIP
+
+  - id: parse
+    type: io.kestra.plugin.scripts.python.Commands
+    containerImage: boc-python:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    inputFiles:
+      document.html: "{{ outputs.decompress.uri }}"
+    outputFiles:
+      - document.md
+    commands:
+      - document-parser document.html -o document.md
+
+  - id: compress
+    type: io.kestra.plugin.compress.FileCompress
+    from: "{{ outputs.parse.outputFiles['document.md'] }}"
+    compression: GZIP
+
+  - id: publish
+    type: io.kestra.plugin.minio.Upload
+    endpoint: "{{ envs.minio_endpoint }}"
+    accessKeyId: "{{ envs.minio_user }}"
+    secretKeyId: "{{ envs.minio_password }}"
+    bucket: "{{ envs.minio_markdown_bucket }}"
+    from: "{{ outputs.compress.uri }}"
+    key: "{{ render(vars.md_path) }}"
+
+  - id: load
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    inputFiles:
+      document.md: "{{ outputs.parse.outputFiles['document.md'] }}"
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import os
+      import yaml
+      import dlt
+
+      host = os.environ["POSTGRES_HOST"]
+      db   = os.environ["POSTGRES_DB"]
+      user = os.environ["POSTGRES_USER"]
+      pwd  = os.environ["POSTGRES_PASSWORD"]
+
+      with open("document.md", encoding="utf-8") as f:
+          content = f.read()
+
+      # Parse YAML frontmatter (content is ---\n<yaml>\n---\n\n<body>)
+      parts = content.split("---\n", 2)
+      frontmatter = yaml.safe_load(parts[1]) if len(parts) == 3 else {}
+      md_body = parts[2].strip() if len(parts) == 3 else content
+
+      # Extract title from the first Markdown heading
+      title = None
+      body = md_body
+      if md_body.startswith("# "):
+          lines = md_body.split("\n", 2)
+          title = lines[0][2:].strip()
+          body = lines[2].strip() if len(lines) > 2 else ""
+
+      record = {
+          "year":         frontmatter.get("year"),
+          "issue":        frontmatter.get("issue"),
+          "number":       frontmatter.get("number"),
+          "document":     frontmatter.get("document"),
+          "date":         frontmatter.get("date"),
+          "entity":       frontmatter.get("entity"),
+          "section":      frontmatter.get("section"),
+          "subsection":   frontmatter.get("subsection"),
+          "organization": frontmatter.get("organization"),
+          "identifier":   frontmatter.get("identifier"),
+          "pdf":          frontmatter.get("pdf"),
+          "signature":    frontmatter.get("signature"),
+          "title":        title,
+          "body":         body,
+      }
+
+      @dlt.resource(name="document", write_disposition="merge", primary_key=["year", "issue", "number"])
+      def document_data():
+          yield record
+
+      pipeline = dlt.pipeline(
+          pipeline_name="document",
+          destination=dlt.destinations.postgres(
+              f"postgresql://{user}:{pwd}@{host}:5432/{db}"
+          ),
+          dataset_name="boc_dataset",
+      )
+
+      pipeline.run(document_data)
+
+  - id: ensure_fts
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import os
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+      with conn.cursor() as cur:
+          cur.execute("""
+              ALTER TABLE boc_dataset.document
+                ADD COLUMN IF NOT EXISTS body_tsv tsvector
+                  GENERATED ALWAYS AS (
+                    to_tsvector('spanish',
+                      coalesce(title, '') || ' ' || coalesce(body, '')
+                    )
+                  ) STORED
+          """)
+          cur.execute("""
+              CREATE INDEX IF NOT EXISTS document_body_tsv_idx
+                ON boc_dataset.document USING gin(body_tsv)
+          """)
+      conn.close()

@@ -35,4 +35,11 @@ boc-raw/
 
 ## Salida
 
-Lista de URLs con el formato `/boc/archivo/{año}/`, una por cada año disponible en el archivo.
+### Tabla PostgreSQL `boc_dataset.archive`
+
+Un registro por año. Clave primaria: `year`.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `year` | text | Año (p. ej. `"2026"`) |
+| `absolute_link` | text | URL completa al índice de boletines de ese año |

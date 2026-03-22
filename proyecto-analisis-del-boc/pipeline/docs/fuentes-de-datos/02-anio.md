@@ -37,4 +37,13 @@ boc-raw/
 
 ## Salida
 
-Lista de URLs con el formato `/boc/{año}/{número}/index.html`, una por cada boletín publicado en el año.
+### Tabla PostgreSQL `boc_dataset.year`
+
+Un registro por boletín. Clave primaria: `(year, issue)`.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `year` | integer | Año del boletín |
+| `issue` | integer | Número del boletín dentro del año |
+| `label` | text | Etiqueta tal como aparece en la página (p. ej. `"BOC nº 1 - 2 de enero de 2026"`) |
+| `url` | text | URL completa al índice de disposiciones del boletín |
