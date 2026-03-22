@@ -2,6 +2,8 @@ import pytest
 
 from document_parser import parse, parse_file
 
+_PDF_2026_003 = "https://sede.gobiernodecanarias.org/boc/boc-a-2026-003-39.pdf"
+
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -184,3 +186,29 @@ class TestBody1980:
 
     def test_pdf_link_not_in_body(self, result_1980):
         assert "Descargar en formato pdf" not in result_1980
+
+
+# ---------------------------------------------------------------------------
+# Inline links (2026-003)
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="module")
+def result_2026_003(html_2026_003):
+    return parse(html_2026_003)
+
+
+class TestInlineLinks:
+    def test_link_rendered_as_markdown(self, result_2026_003):
+        expected = f"[Descargar]({_PDF_2026_003})"
+        assert expected in result_2026_003
+
+    def test_space_before_link(self, result_2026_003):
+        # "documento [Descargar](...)" — must have a space before the link
+        assert f"del documento [{_PDF_2026_003}" not in result_2026_003
+        assert f"documento [Descargar]({_PDF_2026_003})" in result_2026_003
+
+    def test_no_bare_href_in_body(self, result_2026_003):
+        # Links should appear as Markdown syntax, not as raw <a> tags
+        assert "<a " not in result_2026_003
+        assert "</a>" not in result_2026_003

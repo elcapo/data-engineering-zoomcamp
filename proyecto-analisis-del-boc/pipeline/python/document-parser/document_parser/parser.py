@@ -1,5 +1,6 @@
 import re
 from pathlib import Path
+from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
@@ -301,30 +302,56 @@ def _extract_body(soup: BeautifulSoup) -> str:
 
 
 def _para_to_text(tag: Tag) -> str:
-    """Convert a paragraph tag to plain text, preserving <br/> as line breaks.
+    """Convert a paragraph tag to plain text with Markdown links.
 
-    Whitespace within each text node is collapsed before concatenation, so
-    HTML source indentation does not produce spurious blank lines around <br/>.
+    Applies HTML inline whitespace collapsing: runs of whitespace (including
+    newlines from HTML source indentation) between inline elements collapse to
+    a single space. Only explicit <br/> tags produce a line break.
+    <a> tags are rendered as Markdown links with resolved absolute URLs.
     """
-    parts = []
+    tokens = []
     for node in tag.children:
         if isinstance(node, NavigableString):
-            normalized = " ".join(str(node).split())
+            s = str(node)
+            normalized = " ".join(s.split())
             if normalized:
-                parts.append(normalized)
+                # Preserve one space at the boundary if the original had whitespace
+                # there — prevents "textoDescargar" when a link follows inline text.
+                if s[0:1].isspace() and tokens and tokens[-1] != "\n":
+                    normalized = " " + normalized
+                if s[-1:].isspace():
+                    normalized = normalized + " "
+                tokens.append(normalized)
+            elif s and tokens and tokens[-1] not in ("\n", " ") and not tokens[-1].endswith(" "):
+                # Whitespace-only node between elements: emit a single space separator.
+                tokens.append(" ")
         elif isinstance(node, Tag):
             if node.name == "br":
-                parts.append("\n")
+                tokens.append("\n")
+            elif node.name == "a":
+                tokens.append(_link_to_markdown(node))
             else:
-                parts.append(_para_to_text(node))
+                tokens.append(_para_to_text(node))
 
-    return "".join(parts).strip()
+    raw = "".join(tokens)
+    # Normalise multiple spaces per line (spaces added above may double up),
+    # then strip each line's edges.
+    lines = raw.split("\n")
+    cleaned = [" ".join(line.split()) for line in lines]
+    return "\n".join(cleaned).strip()
+
+
+def _link_to_markdown(a: Tag) -> str:
+    """Render an <a> tag as a Markdown link with an absolute URL."""
+    text = " ".join(a.get_text().split())
+    href = _resolve_url(a.get("href"))
+    if href and text:
+        return f"[{text}]({href})"
+    return text
 
 
 def _resolve_url(url: str | None) -> str | None:
     """Convert a relative URL to an absolute URL using the BOC base domain."""
     if not url:
         return None
-    if url.startswith("http://") or url.startswith("https://"):
-        return url
-    return _BASE_URL + url
+    return url if urlparse(url).scheme else urljoin(_BASE_URL, url)

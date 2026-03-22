@@ -23,3 +23,13 @@ def html_1980_path() -> Path:
 @pytest.fixture(scope="session")
 def html_1980(html_1980_path: Path) -> str:
     return html_1980_path.read_text(encoding="utf-8")
+
+
+@pytest.fixture(scope="session")
+def html_2026_003_path() -> Path:
+    return EXAMPLES / "2026-003-007.html"
+
+
+@pytest.fixture(scope="session")
+def html_2026_003(html_2026_003_path: Path) -> str:
+    return html_2026_003_path.read_text(encoding="utf-8")
