@@ -58,6 +58,8 @@ MINIO_ROOT_USER=minio
 MINIO_ROOT_PASSWORD=miniopass
 MINIO_PORT=9000
 MINIO_CONSOLE_PORT=9001
+MINIO_RAW_BUCKET=boc-raw
+MINIO_MARKDOWN_BUCKET=boc-markdown
 ```
 
 **Notas importantes:**
@@ -144,7 +146,7 @@ Para conectar pgAdmin al servidor de datos:
    - Usuario: valor de `MINIO_ROOT_USER` (por defecto: `minio`)
    - Contraseña: valor de `MINIO_ROOT_PASSWORD` (por defecto: `miniopass`)
 
-El bucket `boc-raw` se crea automáticamente al arrancar el stack. Los HTMLs descargados del BOC se almacenan con la siguiente estructura:
+Los buckets `boc-raw` y `boc-markdown` (configurables con `MINIO_RAW_BUCKET` y `MINIO_MARKDOWN_BUCKET`) se crean automáticamente al arrancar el stack. Los HTMLs descargados del BOC se almacenan con la siguiente estructura:
 
 ```
 boc-raw/
@@ -172,7 +174,7 @@ boc-raw/
        │          │
        │          ↓
        │   ┌──────────────┐
-       │   │    MinIO     │  ← Almacenamiento raw (bucket boc-raw)
+       │   │    MinIO     │  ← Almacenamiento raw (bucket MINIO_RAW_BUCKET)
        │   └──────────────┘
        │          │
        ├─→ Extrae y carga en PostgreSQL
@@ -257,13 +259,13 @@ DOCKER_SOCKET_DIR=${XDG_RUNTIME_DIR}
 DOCKER_SOCKET_DIR=/var/run
 ```
 
-### El bucket `boc-raw` no existe
+### Los buckets no existen
 
-El servicio `minio_client` crea el bucket automáticamente al arrancar. Si por algún motivo no lo hizo:
+El servicio `minio_client` crea los buckets automáticamente al arrancar. Si por algún motivo no lo hizo:
 
 ```bash
 docker compose run --rm minio_client \
-  /bin/sh -c "mc alias set local http://minio:9000 minio miniopass && mc mb local/boc-raw"
+  /bin/sh -c "mc alias set local http://minio:9000 minio miniopass && mc mb local/boc-raw && mc mb local/boc-markdown"
 ```
 
 ### Limpiar y reiniciar desde cero

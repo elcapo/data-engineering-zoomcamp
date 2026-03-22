@@ -8,7 +8,7 @@ tasks:
     endpoint: "{{ envs.minio_endpoint }}"
     accessKeyId: "{{ envs.minio_user }}"
     secretKeyId: "{{ envs.minio_password }}"
-    bucket: boc-raw
+    bucket: "{{ envs.minio_raw_bucket }}"
     key: archive/archive.html.gz
 
   - id: decompress
