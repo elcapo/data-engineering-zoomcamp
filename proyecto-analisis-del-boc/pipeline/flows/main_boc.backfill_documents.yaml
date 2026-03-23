@@ -1,0 +1,42 @@
+id: backfill_documents
+namespace: boc
+description: Backfill for documents of an issue
+
+inputs:
+  - id: year
+    type: INT
+    required: true
+    displayName: Year
+    defaults: "{{ now() | date('yyyy') }}"
+
+  - id: issue
+    type: INT
+    required: true
+    displayName: Issue
+    defaults: "1"
+
+  - id: from_document
+    type: INT
+    required: true
+    displayName: From document
+    defaults: "1"
+
+  - id: to_document
+    type: INT
+    required: true
+    displayName: To document
+    defaults: "1"
+
+tasks:
+  - id: iterate_documents
+    type: io.kestra.plugin.core.flow.ForEach
+    values: "{{ range(inputs.from_document, inputs.to_document) }}"
+    tasks:
+      - id: call_download_documents
+        type: io.kestra.plugin.core.flow.Subflow
+        namespace: boc
+        flowId: download_documents
+        inputs:
+          year: "{{ inputs.year }}"
+          issue: "{{ inputs.issue }}"
+          disposition: "{{ taskrun.value }}"
