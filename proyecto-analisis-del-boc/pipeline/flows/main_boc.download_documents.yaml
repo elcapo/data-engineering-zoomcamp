@@ -24,6 +24,11 @@ inputs:
     displayName: Overwrite
     defaults: false
 
+  - id: extract
+    type: BOOL
+    displayName: Extract
+    defaults: true
+
 variables:
   issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
   disposition_padded: "{{ inputs.disposition < 10 ? '00' ~ inputs.disposition : inputs.disposition < 100 ? '0' ~ inputs.disposition : inputs.disposition }}"
@@ -119,3 +124,16 @@ tasks:
 
       conn.close()
       print(f"Logged: {os.environ['OBJECT_KEY']}")
+
+  - id: if_extract
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ inputs.extract }}"
+    then:
+      - id: call_extract_documents
+        type: io.kestra.plugin.core.flow.Subflow
+        namespace: boc
+        flowId: extract_documents
+        inputs:
+          year: "{{ inputs.year }}"
+          issue: "{{ inputs.issue }}"
+          disposition: "{{ inputs.disposition }}"
