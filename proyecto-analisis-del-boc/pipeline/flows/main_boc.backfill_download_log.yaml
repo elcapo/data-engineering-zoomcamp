@@ -1,0 +1,126 @@
+id: backfill_download_log
+namespace: boc
+description: |
+  Populate download_log for files already present in MinIO before the log_download
+  step was added to the download flows.
+
+  Lists all objects in the four prefixes of the raw bucket (archive/, years/,
+  issues/, documents/) and bulk-inserts one row per object into download_log,
+  parsing entity_type and identifiers from the object key.
+
+  Safe to re-run: uses ON CONFLICT (object_key) DO NOTHING.
+
+tasks:
+  - id: list_objects
+    type: io.kestra.plugin.core.flow.Parallel
+    tasks:
+      - id: list_archive
+        type: io.kestra.plugin.minio.List
+        endpoint: "{{ envs.minio_endpoint }}"
+        accessKeyId: "{{ envs.minio_user }}"
+        secretKeyId: "{{ envs.minio_password }}"
+        bucket: "{{ envs.minio_raw_bucket }}"
+        prefix: archive/
+
+      - id: list_years
+        type: io.kestra.plugin.minio.List
+        endpoint: "{{ envs.minio_endpoint }}"
+        accessKeyId: "{{ envs.minio_user }}"
+        secretKeyId: "{{ envs.minio_password }}"
+        bucket: "{{ envs.minio_raw_bucket }}"
+        prefix: years/
+
+      - id: list_issues
+        type: io.kestra.plugin.minio.List
+        endpoint: "{{ envs.minio_endpoint }}"
+        accessKeyId: "{{ envs.minio_user }}"
+        secretKeyId: "{{ envs.minio_password }}"
+        bucket: "{{ envs.minio_raw_bucket }}"
+        prefix: issues/
+
+      - id: list_documents
+        type: io.kestra.plugin.minio.List
+        endpoint: "{{ envs.minio_endpoint }}"
+        accessKeyId: "{{ envs.minio_user }}"
+        secretKeyId: "{{ envs.minio_password }}"
+        bucket: "{{ envs.minio_raw_bucket }}"
+        prefix: documents/
+
+  - id: insert
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    inputFiles:
+      keys.txt: |
+        {% for obj in outputs.list_archive.objects %}{{ obj.key }}
+        {% endfor %}{% for obj in outputs.list_years.objects %}{{ obj.key }}
+        {% endfor %}{% for obj in outputs.list_issues.objects %}{{ obj.key }}
+        {% endfor %}{% for obj in outputs.list_documents.objects %}{{ obj.key }}
+        {% endfor %}
+    script: |
+      import os
+      import re
+      import psycopg2
+
+      PATTERNS = [
+          (
+              re.compile(r"^archive/archive\.html\.gz$"),
+              lambda m: ("archive", None, None, None),
+          ),
+          (
+              re.compile(r"^years/(\d{4})\.html\.gz$"),
+              lambda m: ("year", int(m.group(1)), None, None),
+          ),
+          (
+              re.compile(r"^issues/(\d{4})-(\d{3})\.html\.gz$"),
+              lambda m: ("issue", int(m.group(1)), int(m.group(2)), None),
+          ),
+          (
+              re.compile(r"^documents/(\d{4})/(\d{3})/(\d{3})\.html\.gz$"),
+              lambda m: ("document", int(m.group(1)), int(m.group(2)), int(m.group(3))),
+          ),
+      ]
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+
+      inserted = already_present = unmatched = 0
+
+      with open("keys.txt") as f, conn.cursor() as cur:
+          for line in f:
+              key = line.strip()
+              if not key:
+                  continue
+
+              for pattern, extractor in PATTERNS:
+                  m = pattern.match(key)
+                  if m:
+                      entity_type, year, issue, disposition = extractor(m)
+                      cur.execute(
+                          "INSERT INTO boc_dataset.download_log "
+                          "  (object_key, entity_type, year, issue, disposition) "
+                          "VALUES (%s, %s, %s, %s, %s) "
+                          "ON CONFLICT (object_key) DO NOTHING",
+                          (key, entity_type, year, issue, disposition),
+                      )
+                      inserted += cur.rowcount
+                      already_present += 1 - cur.rowcount
+                      break
+              else:
+                  print(f"WARNING: unrecognised key: {key}")
+                  unmatched += 1
+
+      conn.close()
+      print(f"Inserted: {inserted}, already present: {already_present}, unmatched: {unmatched}")
