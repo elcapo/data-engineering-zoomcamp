@@ -3,9 +3,8 @@ namespace: boc
 description: |
   Create the tracking table and metric views in PostgreSQL.
 
-  Run this flow once before starting any downloads, and again whenever
-  the schema changes. All statements are idempotent (CREATE IF NOT EXISTS /
-  CREATE OR REPLACE VIEW), so it is safe to re-run at any time.
+  Run this flow once before starting any downloads.
+  All statements are idempotent so it is safe to re-run at any time.
 
   Steps:
     1. create_tables  – ensures boc_dataset schema and download_log table exist.
@@ -102,7 +101,7 @@ tasks:
                   COUNT(dl.year)                                            AS downloaded_years,
                   ROUND(
                       100.0 * COUNT(dl.year) / NULLIF(COUNT(*), 0), 1
-                  )                                                         AS pct
+                  )                                                         AS percentage
               FROM boc_dataset.archive a
               LEFT JOIN boc_dataset.download_log dl
                   ON dl.entity_type = 'year'
@@ -122,7 +121,7 @@ tasks:
                   COUNT(dl.issue)                                           AS downloaded_issues,
                   ROUND(
                       100.0 * COUNT(dl.issue) / NULLIF(COUNT(*), 0), 1
-                  )                                                         AS pct
+                  )                                                         AS percentage
               FROM boc_dataset.year y
               LEFT JOIN boc_dataset.download_log dl
                   ON dl.entity_type = 'issue'
@@ -148,7 +147,7 @@ tasks:
                   COUNT(dl.disposition)                                     AS downloaded_documents,
                   ROUND(
                       100.0 * COUNT(dl.disposition) / NULLIF(COUNT(*), 0), 1
-                  )                                                         AS pct
+                  )                                                         AS percentage
               FROM boc_dataset.issue i
               JOIN boc_dataset.issue__dispositions id
                   ON id._dlt_parent_id = i._dlt_id

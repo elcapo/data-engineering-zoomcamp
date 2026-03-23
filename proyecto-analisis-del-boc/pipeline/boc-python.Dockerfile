@@ -11,6 +11,7 @@ COPY python/document-parser /app/python/document-parser
 # lo instalamos aquí para que esté disponible en todos los contenedores.
 RUN uv pip install --system --no-cache \
     "dlt[postgres]" \
+    minio \
     /app/python/archive-parser \
     /app/python/year-parser \
     /app/python/issue-parser \
