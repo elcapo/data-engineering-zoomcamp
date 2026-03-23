@@ -1,17 +1,17 @@
 id: prepare_database
 namespace: boc
 description: |
-  Create the tracking table and metric views in PostgreSQL.
+  Create tracking tables and metric views in PostgreSQL.
 
-  Run this flow once before starting any downloads.
-  All statements are idempotent so it is safe to re-run at any time.
+  Run this flow once before starting any downloads or extractions, and again
+  whenever the schema changes. All statements are idempotent so it is safe to
+  re-run at any time.
 
   Steps:
-    1. create_tables  – ensures boc_dataset schema and download_log table exist.
-    2. create_views   – creates or replaces the three download-completeness views.
-                        If a base table (archive, year, issue…) does not exist yet
-                        because no data has been loaded, the view is skipped with a
-                        warning instead of failing the whole flow.
+    1. **create_tables**: creates the `download_log` and `extraction_log` tables.
+    2. **create_views**: creates or replaces the completeness views.
+
+  The download views that depend on dlt tables are skipped with a warning if those tables do not yet exist.
 
 tasks:
   - id: create_tables
@@ -42,12 +42,12 @@ tasks:
 
           cur.execute("""
               CREATE TABLE IF NOT EXISTS boc_dataset.download_log (
-                  object_key      TEXT        NOT NULL,
-                  entity_type     TEXT        NOT NULL,
-                  year            INTEGER,
-                  issue           INTEGER,
-                  disposition     INTEGER,
-                  downloaded_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+                  object_key TEXT NOT NULL,
+                  entity_type TEXT NOT NULL,
+                  year INTEGER,
+                  issue INTEGER,
+                  disposition INTEGER,
+                  downloaded_at TIMESTAMPTZ NOT NULL DEFAULT now(),
                   file_size_bytes BIGINT,
                   CONSTRAINT download_log_pkey PRIMARY KEY (object_key)
               )
@@ -63,8 +63,29 @@ tasks:
                   ON boc_dataset.download_log (entity_type, year, issue)
           """)
 
+          cur.execute("""
+              CREATE TABLE IF NOT EXISTS boc_dataset.extraction_log (
+                  object_key TEXT NOT NULL,
+                  entity_type TEXT NOT NULL,
+                  year INTEGER,
+                  issue INTEGER,
+                  disposition INTEGER,
+                  extracted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+                  CONSTRAINT extraction_log_pkey PRIMARY KEY (object_key)
+              )
+          """)
+
+          cur.execute("""
+              CREATE INDEX IF NOT EXISTS extraction_log_year_idx
+                  ON boc_dataset.extraction_log (entity_type, year)
+          """)
+
+          cur.execute("""
+              CREATE INDEX IF NOT EXISTS extraction_log_issue_idx
+                  ON boc_dataset.extraction_log (entity_type, year, issue)
+          """)
+
       conn.close()
-      print("Tables ready.")
 
   - id: create_views
     type: io.kestra.plugin.scripts.python.Script
@@ -90,74 +111,106 @@ tasks:
       conn.autocommit = True
 
       views = {
-          # ------------------------------------------------------------------
-          # metric_years
           # For each year listed in the archive, did we download its index?
-          # ------------------------------------------------------------------
           "metric_years": """
-              CREATE OR REPLACE VIEW boc_dataset.metric_years AS
+              CREATE OR REPLACE VIEW boc_dataset.metric_download_years AS
               SELECT
-                  COUNT(*)                                                  AS total_years,
-                  COUNT(dl.year)                                            AS downloaded_years,
-                  ROUND(
-                      100.0 * COUNT(dl.year) / NULLIF(COUNT(*), 0), 1
-                  )                                                         AS percentage
+                  COUNT(*) AS total_years,
+                  COUNT(dl.year) AS downloaded_years,
+                  ROUND(100.0 * COUNT(dl.year) / NULLIF(COUNT(*), 0), 1) AS percentage
               FROM boc_dataset.archive a
-              LEFT JOIN boc_dataset.download_log dl
-                  ON dl.entity_type = 'year'
-                 AND dl.year        = a.year::INT
+              LEFT JOIN boc_dataset.download_log dl ON
+                  dl.entity_type = 'year' AND
+                  dl.year = a.year::INT
           """,
 
-          # ------------------------------------------------------------------
-          # metric_issues
           # For each issue listed in a year index, did we download its index?
-          # One row per year.
-          # ------------------------------------------------------------------
           "metric_issues": """
-              CREATE OR REPLACE VIEW boc_dataset.metric_issues AS
+              CREATE OR REPLACE VIEW boc_dataset.metric_download_issues AS
               SELECT
                   y.year,
-                  COUNT(*)                                                  AS total_issues,
-                  COUNT(dl.issue)                                           AS downloaded_issues,
-                  ROUND(
-                      100.0 * COUNT(dl.issue) / NULLIF(COUNT(*), 0), 1
-                  )                                                         AS percentage
+                  COUNT(*) AS total_issues,
+                  COUNT(dl.issue) AS downloaded_issues,
+                  ROUND(100.0 * COUNT(dl.issue) / NULLIF(COUNT(*), 0), 1) AS percentage
               FROM boc_dataset.year y
-              LEFT JOIN boc_dataset.download_log dl
-                  ON dl.entity_type = 'issue'
-                 AND dl.year        = y.year
-                 AND dl.issue       = y.issue
+              LEFT JOIN boc_dataset.download_log dl ON
+                  dl.entity_type = 'issue' AND
+                  dl.year = y.year AND
+                  dl.issue = y.issue
               GROUP BY y.year
               ORDER BY y.year
           """,
 
-          # ------------------------------------------------------------------
-          # metric_documents
-          # For each disposition listed in an issue index, did we download
-          # its HTML?  Disposition number is extracted from the `html` URL
-          # stored in issue__dispositions (e.g. "/boc/2024/001/003.html").
-          # One row per (year, issue).
-          # ------------------------------------------------------------------
+          # For each disposition listed in an issue index, did we download its HTML?
           "metric_documents": """
-              CREATE OR REPLACE VIEW boc_dataset.metric_documents AS
+              CREATE OR REPLACE VIEW boc_dataset.metric_download_documents AS
               SELECT
                   i.year,
                   i.issue,
-                  COUNT(*)                                                  AS total_documents,
-                  COUNT(dl.disposition)                                     AS downloaded_documents,
-                  ROUND(
-                      100.0 * COUNT(dl.disposition) / NULLIF(COUNT(*), 0), 1
-                  )                                                         AS percentage
+                  COUNT(*) AS total_documents,
+                  COUNT(dl.disposition) AS downloaded_documents,
+                  ROUND(100.0 * COUNT(dl.disposition) / NULLIF(COUNT(*), 0), 1) AS percentage
               FROM boc_dataset.issue i
-              JOIN boc_dataset.issue__dispositions id
-                  ON id._dlt_parent_id = i._dlt_id
-              LEFT JOIN boc_dataset.download_log dl
-                  ON dl.entity_type  = 'document'
-                 AND dl.year         = i.year
-                 AND dl.issue        = i.issue
-                 AND dl.disposition  = (regexp_match(id.html, '/(\d+)\.html$'))[1]::INT
+              JOIN boc_dataset.issue__dispositions id ON id._dlt_parent_id = i._dlt_id
+              LEFT JOIN boc_dataset.download_log dl ON
+                  dl.entity_type = 'document' AND
+                  dl.year = i.year AND
+                  dl.issue = i.issue AND
+                  dl.disposition  = (regexp_match(id.html, '/(\d+)\.html$'))[1]::INT
               GROUP BY i.year, i.issue
               ORDER BY i.year, i.issue
+          """,
+
+          # For each downloaded year index, has it been extracted?
+          "metric_years_extraction": """
+              CREATE OR REPLACE VIEW boc_dataset.metric_extraction_years AS
+              SELECT
+                  COUNT(*) AS total_downloaded,
+                  COUNT(el.year) AS extracted,
+                  ROUND(100.0 * COUNT(el.year) / NULLIF(COUNT(*), 0), 1) AS percentage
+              FROM boc_dataset.download_log dl
+              LEFT JOIN boc_dataset.extraction_log el ON
+                  el.entity_type = 'year' AND
+                  el.year = dl.year
+              WHERE dl.entity_type = 'year'
+          """,
+
+          # For each downloaded issue index, has it been extracted? One row per year.
+          "metric_issues_extraction": """
+              CREATE OR REPLACE VIEW boc_dataset.metric_extraction_issues AS
+              SELECT
+                  dl.year,
+                  COUNT(*) AS total_downloaded,
+                  COUNT(el.issue) AS extracted,
+                  ROUND(100.0 * COUNT(el.issue) / NULLIF(COUNT(*), 0), 1) AS percentage
+              FROM boc_dataset.download_log dl
+              LEFT JOIN boc_dataset.extraction_log el ON
+                  el.entity_type = 'issue' AND
+                  el.year = dl.year AND
+                  el.issue = dl.issue
+              WHERE dl.entity_type = 'issue'
+              GROUP BY dl.year
+              ORDER BY dl.year
+          """,
+
+          # For each downloaded document, has it been extracted? One row per (year, issue).
+          "metric_documents_extraction": """
+              CREATE OR REPLACE VIEW boc_dataset.metric_extraction_documents AS
+              SELECT
+                  dl.year,
+                  dl.issue,
+                  COUNT(*) AS total_downloaded,
+                  COUNT(el.disposition) AS extracted,
+                  ROUND(100.0 * COUNT(el.disposition) / NULLIF(COUNT(*), 0), 1) AS percentage
+              FROM boc_dataset.download_log dl
+              LEFT JOIN boc_dataset.extraction_log el ON
+                  el.entity_type  = 'document' AND
+                  el.year = dl.year AND
+                  el.issue = dl.issue AND
+                  el.disposition  = dl.disposition
+              WHERE dl.entity_type = 'document'
+              GROUP BY dl.year, dl.issue
+              ORDER BY dl.year, dl.issue
           """,
       }
 
@@ -165,12 +218,10 @@ tasks:
           try:
               with conn.cursor() as cur:
                   cur.execute(sql)
-              print(f"View {name}: OK")
           except psycopg2.errors.UndefinedTable as e:
               # Base table not yet created by dlt (no data loaded yet).
               # The view will be created the next time this flow runs after
               # the first extraction has populated the missing table.
-              print(f"View {name}: SKIPPED – {e.pgerror.strip()}")
               conn.rollback()
 
       conn.close()

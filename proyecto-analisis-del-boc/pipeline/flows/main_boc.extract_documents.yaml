@@ -181,3 +181,42 @@ tasks:
                 ON boc_dataset.document USING gin(body_tsv)
           """)
       conn.close()
+
+  - id: log_extraction
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+      OBJECT_KEY: "{{ render(vars.raw_path) }}"
+      YEAR: "{{ inputs.year }}"
+      ISSUE: "{{ inputs.issue }}"
+      DISPOSITION: "{{ inputs.disposition }}"
+    script: |
+      import os
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+
+      with conn.cursor() as cur:
+          cur.execute(
+              "INSERT INTO boc_dataset.extraction_log (object_key, entity_type, year, issue, disposition) "
+              "VALUES (%s, %s, %s, %s, %s) "
+              "ON CONFLICT (object_key) DO UPDATE SET extracted_at = now()",
+              (os.environ["OBJECT_KEY"], "document",
+               int(os.environ["YEAR"]), int(os.environ["ISSUE"]), int(os.environ["DISPOSITION"])),
+          )
+
+      conn.close()
+      print(f"Logged: {os.environ['OBJECT_KEY']}")
