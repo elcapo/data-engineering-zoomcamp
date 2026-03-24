@@ -63,7 +63,7 @@ tasks:
 
       with conn.cursor() as cur:
           cur.execute(
-              "INSERT INTO boc_dataset.download_log (object_key, entity_type) "
+              "INSERT INTO boc_log.download_log (object_key, entity_type) "
               "VALUES (%s, %s) "
               "ON CONFLICT (object_key) DO UPDATE SET downloaded_at = now()",
               ("archive/archive.html.gz", "archive"),

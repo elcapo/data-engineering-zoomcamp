@@ -211,7 +211,7 @@ tasks:
 
       with conn.cursor() as cur:
           cur.execute(
-              "INSERT INTO boc_dataset.extraction_log (object_key, entity_type, year, issue, disposition) "
+              "INSERT INTO boc_log.extraction_log (object_key, entity_type, year, issue, disposition) "
               "VALUES (%s, %s, %s, %s, %s) "
               "ON CONFLICT (object_key) DO UPDATE SET extracted_at = now()",
               (os.environ["OBJECT_KEY"], "document",

@@ -79,7 +79,7 @@ tasks:
           if not batch:
               return 0, 0
           cur.executemany(
-              "INSERT INTO boc_dataset.download_log "
+              "INSERT INTO boc_log.download_log "
               "  (object_key, entity_type, year, issue, disposition) "
               "VALUES (%s, %s, %s, %s, %s) "
               "ON CONFLICT (object_key) DO NOTHING",

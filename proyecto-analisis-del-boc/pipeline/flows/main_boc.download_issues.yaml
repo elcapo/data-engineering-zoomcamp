@@ -103,7 +103,7 @@ tasks:
 
       with conn.cursor() as cur:
           cur.execute(
-              "INSERT INTO boc_dataset.download_log (object_key, entity_type, year, issue) "
+              "INSERT INTO boc_log.download_log (object_key, entity_type, year, issue) "
               "VALUES (%s, %s, %s, %s) "
               "ON CONFLICT (object_key) DO UPDATE SET downloaded_at = now()",
               (os.environ["OBJECT_KEY"], "issue", int(os.environ["YEAR"]), int(os.environ["ISSUE"])),

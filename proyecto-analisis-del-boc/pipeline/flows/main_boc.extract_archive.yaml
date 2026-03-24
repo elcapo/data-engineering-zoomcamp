@@ -94,7 +94,7 @@ tasks:
 
       with conn.cursor() as cur:
           cur.execute(
-              "INSERT INTO boc_dataset.extraction_log (object_key, entity_type) "
+              "INSERT INTO boc_log.extraction_log (object_key, entity_type) "
               "VALUES (%s, %s) "
               "ON CONFLICT (object_key) DO UPDATE SET extracted_at = now()",
               ("archive/archive.html.gz", "archive"),
