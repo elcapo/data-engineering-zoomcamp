@@ -101,3 +101,10 @@ class TestDispositions:
             assert d["summary"].startswith(expected_num), (
                 f"Disposition {i} should start with {expected_num}"
             )
+
+    def test_first_disposition_number(self, result):
+        assert result["dispositions"][0]["disposition"] == 1
+
+    def test_disposition_field_is_sequential(self, result):
+        for i, d in enumerate(result["dispositions"]):
+            assert d["disposition"] == i + 1

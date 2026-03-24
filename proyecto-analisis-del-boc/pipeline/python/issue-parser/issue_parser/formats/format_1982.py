@@ -2,7 +2,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from .base import FormatParser, resolve_url
+from .base import FormatParser, disposition_number, resolve_url
 
 _BASE_URL = "https://www.gobiernodecanarias.org/boc"
 
@@ -87,6 +87,7 @@ def _parse_li_1982(li, section: str | None, org: str | None) -> dict:
     sumario = f"{number} {description}".strip() if number or description else None
 
     return {
+        "disposition": disposition_number(html_url),
         "section": section,
         "subsection": None,
         "organization": org,

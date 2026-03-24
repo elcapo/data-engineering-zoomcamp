@@ -116,6 +116,13 @@ class TestDispositions:
                 f"Disposition {i} should start with {expected_num}"
             )
 
+    def test_first_disposition_number(self, result):
+        assert result["dispositions"][0]["disposition"] == 762
+
+    def test_disposition_field_is_sequential(self, result):
+        for i, d in enumerate(result["dispositions"]):
+            assert d["disposition"] == 762 + i
+
     def test_administracion_local_section(self, result):
         admin_local = [
             d for d in result["dispositions"]

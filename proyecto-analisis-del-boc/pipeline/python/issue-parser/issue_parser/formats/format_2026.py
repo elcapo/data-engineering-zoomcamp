@@ -2,7 +2,7 @@ import re
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
-from .base import FormatParser, resolve_url
+from .base import FormatParser, disposition_number, resolve_url
 
 _BASE_URL = "https://www.gobiernodecanarias.org/boc"
 
@@ -95,6 +95,7 @@ def _parse_li_2026(
     identificador, html_url, firma_url, pdf_url = _extract_cve_fields(li)
 
     return {
+        "disposition": disposition_number(html_url),
         "section": section,
         "subsection": subsection,
         "organization": org,
