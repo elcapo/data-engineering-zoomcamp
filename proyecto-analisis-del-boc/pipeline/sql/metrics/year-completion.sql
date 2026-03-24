@@ -1,3 +1,7 @@
+/**
+ * Summary of the download and extraction completion of each year.
+ */
+
 SELECT
   di.year,
   di.total_issues,

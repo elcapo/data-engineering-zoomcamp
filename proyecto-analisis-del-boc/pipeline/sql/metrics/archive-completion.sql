@@ -1,3 +1,7 @@
+/**
+ * Summary of the download and extraction completion of the archive.
+ */
+
 SELECT
   dy.total_years,
   dy.downloaded_years,

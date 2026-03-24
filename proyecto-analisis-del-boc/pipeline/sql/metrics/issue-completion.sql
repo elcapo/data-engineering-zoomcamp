@@ -1,3 +1,7 @@
+/**
+ * Summary of the download and extraction completion of each issue.
+ */
+
 SELECT
   dd.year,
   dd.issue,

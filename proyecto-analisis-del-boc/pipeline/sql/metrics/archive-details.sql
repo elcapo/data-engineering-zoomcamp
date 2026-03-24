@@ -1,3 +1,7 @@
+/**
+ * Details of the download and extraction completion of the archive.
+ */
+
 SELECT
   a.year,
   a.absolute_link,
