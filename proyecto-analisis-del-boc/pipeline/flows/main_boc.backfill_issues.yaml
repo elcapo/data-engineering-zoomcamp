@@ -3,7 +3,7 @@ namespace: boc
 description: |
   Trigger **download_issues** sequentially for a range of boletines within a given year.
 
-  Iterates from **from_issue** up to (but not including) **to_issue** and invokes **download_issues** for each boletín number. Both **overwrite** and **extract** are hardcoded to `true`, so existing files are always re-downloaded and each boletín is extracted immediately after download.
+  Iterates from **from_issue** up to **to_issue** and invokes **download_issues** for each boletín number.
 
   Inputs:
     - **year**: the year whose boletines should be processed. Defaults to the current year.
@@ -41,5 +41,3 @@ tasks:
         inputs:
           year: "{{ inputs.year }}"
           issue: "{{ taskrun.value }}"
-          overwrite: true
-          extract: true

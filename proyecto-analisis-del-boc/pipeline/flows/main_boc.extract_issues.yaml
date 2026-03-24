@@ -3,7 +3,10 @@ namespace: boc
 description: |
   Parse a boletín index and load its disposition list into PostgreSQL.
 
-  Downloads the compressed HTML for a specific boletín from MinIO (**issues/YEAR-NNN.html.gz**), decompresses it, parses it with the **issue-parser** CLI tool to produce a JSON object, and loads the data into PostgreSQL via dlt (merge on `year` + `issue`). Records the extraction in **boc_log.extraction_log**.
+  1. Downloads the compressed HTML for a specific boletín from MinIO (**issues/YEAR-NNN.html.gz**).
+  2. Decompresses it, parses it with the **issue-parser** CLI tool to produce a JSON object.
+  3. Loads the data into PostgreSQL via dlt (merge on `year` + `issue`).
+  4. Records the extraction in **boc_log.extraction_log**.
 
   dlt populates two tables from the parsed output:
   - **boc_dataset.issue**: one row per boletín with metadata (`year`, `issue`, `title`, `url`, `summary__url`, `summary__signature`).
