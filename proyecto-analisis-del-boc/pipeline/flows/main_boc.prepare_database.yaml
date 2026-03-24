@@ -3,12 +3,10 @@ namespace: boc
 description: |
   Create tracking tables and metric views in PostgreSQL.
 
-  Run this flow once before starting any downloads or extractions, and again
-  whenever the schema changes. All statements are idempotent so it is safe to
-  re-run at any time.
+  Run this flow once before starting any downloads or extractions, and again whenever the schema changes. All statements are idempotent so it is safe to re-run at any time.
 
   Steps:
-    1. **create_tables**: creates the `download_log` and `extraction_log` tables.
+    1. **create_tables**: creates the **download_log** and **extraction_log** tables.
     2. **create_views**: creates or replaces the completeness views.
 
   The download views that depend on dlt tables are skipped with a warning if those tables do not yet exist.
