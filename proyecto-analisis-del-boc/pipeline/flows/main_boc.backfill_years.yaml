@@ -1,6 +1,15 @@
 id: backfill_years
 namespace: boc
-description: Backfill for years
+description: |
+  Trigger **download_years** sequentially for a range of years.
+
+  Use this flow to perform an initial load or to fill gaps in the archive. It iterates from **from_year** up to (but not including) **to_year** and invokes the **download_years** subflow for each year in order.
+
+  Inputs:
+    - **from_year**: first year to process (inclusive). Defaults to the current year.
+    - **to_year**: last year to process (exclusive). Defaults to the current year.
+
+  Note: because **download_years** has **extract** enabled by default, each downloaded year index is automatically extracted unless that default is changed in the subflow.
 
 inputs:
   - id: from_year
@@ -16,25 +25,17 @@ inputs:
     defaults: "{{ now() | date('yyyy') }}"
 
 tasks:
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Backfilling years from {{ inputs.from_year }} to {{ inputs.to_year }}"
+
   - id: iterate_issues
     type: io.kestra.plugin.core.flow.ForEach
     values: "{{ range(inputs.from_year, inputs.to_year) }}"
     tasks:
-      - id: lookup_file
-        type: io.kestra.plugin.minio.List
-        endpoint: "{{ envs.minio_endpoint }}"
-        accessKeyId: "{{ envs.minio_user }}"
-        secretKeyId: "{{ envs.minio_password }}"
-        bucket: "{{ envs.minio_raw_bucket }}"
-        prefix: "years/{{ taskrun.value }}.html.gz"
-
-      - id: if_file_missing
-        type: io.kestra.plugin.core.flow.If
-        condition: "{{ (outputs.lookup_file[taskrun.value].objects | default([])) | length == 0 }}"
-        then:
-          - id: call_download_years
-            type: io.kestra.plugin.core.flow.Subflow
-            namespace: boc
-            flowId: download_years
-            inputs:
-              year: "{{ parent.taskrun.value }}"
+      - id: call_download_years
+        type: io.kestra.plugin.core.flow.Subflow
+        namespace: boc
+        flowId: download_years
+        inputs:
+            year: "{{ taskrun.value }}"

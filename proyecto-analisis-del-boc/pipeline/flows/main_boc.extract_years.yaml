@@ -1,6 +1,19 @@
 id: extract_years
 namespace: boc
-description: Extract the index of issues of a year
+description: |
+  Parse the yearly issue index and load it into PostgreSQL.
+
+  Downloads the compressed HTML for the given year from MinIO (**years/YEAR.html.gz**), decompresses it, parses it with the **year-parser** CLI tool to produce a JSON list of issues, loads the records into **boc_dataset.year** via dlt (merge on year + issue), and records the extraction in **boc_log.extraction_log**.
+
+  Inputs:
+    - **year**: the year to extract. Defaults to the current year.
+
+  Steps:
+    1. **read**: downloads **years/YEAR.html.gz** from MinIO.
+    2. **decompress**: decompresses the GZIP file.
+    3. **parse**: runs `year-parser` to extract the list of issues as **year.json**.
+    4. **load**: uses dlt to merge the parsed records into **boc_dataset.year**.
+    5. **log_extraction**: upserts a row in **boc_log.extraction_log** to record the extraction timestamp.
 
 inputs:
   - id: year
@@ -14,6 +27,10 @@ variables:
   compressed_file: "{{ render(vars.uncompressed_file) }}.gz"
 
 tasks:
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Extracting the index of issues of year {{ inputs.year }}"
+
   - id: read
     type: io.kestra.plugin.minio.Download
     endpoint: "{{ envs.minio_endpoint }}"
@@ -114,4 +131,3 @@ tasks:
           )
 
       conn.close()
-      print(f"Logged: {os.environ['OBJECT_KEY']}")

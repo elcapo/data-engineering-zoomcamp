@@ -1,6 +1,20 @@
 id: download_years
 namespace: boc
-description: Download the index of issues of a year
+description: |
+  Download the yearly issue index from the BOC archive and store it in MinIO.
+
+  Fetches the HTML index page for the given year from the official BOC archive (https://www.gobiernodecanarias.org/boc/archivo/YEAR), compresses it with GZIP, uploads it to MinIO as **years/YEAR.html.gz**, and records the download in **boc_log.download_log**. If the file already exists in MinIO the download is skipped unless **overwrite** is set.
+
+  Inputs:
+    - **year**: the year to download. Defaults to the current year.
+    - **overwrite**: re-download and overwrite the file even if it already exists in MinIO. Defaults to false.
+    - **extract**: call the **extract_years** subflow after a successful download. Defaults to true.
+
+  Steps:
+    1. **lookup_file**: checks whether the compressed file already exists in MinIO.
+    2. **if_not_file_exists**: fetches, compresses, and uploads the HTML only when the file is absent or **overwrite** is true.
+    3. **log_download**: upserts a row in **boc_log.download_log** to record the download timestamp.
+    4. **if_extract**: conditionally invokes **extract_years** for the same year.
 
 inputs:
   - id: year
@@ -24,11 +38,9 @@ variables:
   bucket_path: "years/{{ inputs.year }}.html.gz"
 
 tasks:
-  - id: label
-    type: io.kestra.plugin.core.execution.Labels
-    labels:
-      type: year_issues
-      year: "{{ inputs.year }}"
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Downloading the index of issues of year {{ inputs.year }}"
 
   - id: lookup_file
     type: io.kestra.plugin.minio.List
@@ -38,38 +50,33 @@ tasks:
     bucket: "{{ envs.minio_raw_bucket }}"
     prefix: "{{ render(vars.bucket_path) }}"
 
-  - id: if_file_exists
+  - id: if_not_file_exists
     type: io.kestra.plugin.core.flow.If
-    condition: "{{ (outputs.lookup_file.objects | default([])) | length > 0 and not inputs.overwrite }}"
+    condition: "{{ (outputs.lookup_file.objects | default([])) | length == 0 or inputs.overwrite }}"
     then:
-      - id: exit
-        type: io.kestra.plugin.core.execution.Exit
-        state: SUCCESS
-        description: "Key {{ render(vars.bucket_path) }} already exists and overwrite is set to false"
+      - id: fetch
+        type: io.kestra.plugin.core.http.Request
+        uri: "{{ render(vars.source_url) }}"
+        method: GET
 
-  - id: fetch
-    type: io.kestra.plugin.core.http.Request
-    uri: "{{ render(vars.source_url) }}"
-    method: GET
+      - id: store
+        type: io.kestra.plugin.core.storage.Write
+        content: "{{ outputs.fetch.body }}"
+        extension: .html
 
-  - id: store
-    type: io.kestra.plugin.core.storage.Write
-    content: "{{ outputs.fetch.body }}"
-    extension: .html
+      - id: compress
+        type: io.kestra.plugin.compress.FileCompress
+        from: "{{ outputs.store.uri }}"
+        compression: GZIP
 
-  - id: compress
-    type: io.kestra.plugin.compress.FileCompress
-    from: "{{ outputs.store.uri }}"
-    compression: GZIP
-
-  - id: publish
-    type: io.kestra.plugin.minio.Upload
-    endpoint: "{{ envs.minio_endpoint }}"
-    accessKeyId: "{{ envs.minio_user }}"
-    secretKeyId: "{{ envs.minio_password }}"
-    bucket: "{{ envs.minio_raw_bucket }}"
-    from: "{{ outputs.compress.uri }}"
-    key: "{{ render(vars.bucket_path) }}"
+      - id: publish
+        type: io.kestra.plugin.minio.Upload
+        endpoint: "{{ envs.minio_endpoint }}"
+        accessKeyId: "{{ envs.minio_user }}"
+        secretKeyId: "{{ envs.minio_password }}"
+        bucket: "{{ envs.minio_raw_bucket }}"
+        from: "{{ outputs.compress.uri }}"
+        key: "{{ render(vars.bucket_path) }}"
 
   - id: log_download
     type: io.kestra.plugin.scripts.python.Script
@@ -105,7 +112,6 @@ tasks:
           )
 
       conn.close()
-      print(f"Logged: {os.environ['OBJECT_KEY']}")
 
   - id: if_extract
     type: io.kestra.plugin.core.flow.If
