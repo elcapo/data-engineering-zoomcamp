@@ -24,7 +24,7 @@ inputs:
 tasks:
   - id: iterate_issues
     type: io.kestra.plugin.core.flow.ForEach
-    values: "{{ range(inputs.from_issue, inputs.to_issue) | reverse }}"
+    values: "{{ range(inputs.from_issue, inputs.to_issue) }}"
     tasks:
       - id: call_download_issues
         type: io.kestra.plugin.core.flow.Subflow
@@ -33,3 +33,5 @@ tasks:
         inputs:
           year: "{{ inputs.year }}"
           issue: "{{ taskrun.value }}"
+          overwrite: true
+          extract: true

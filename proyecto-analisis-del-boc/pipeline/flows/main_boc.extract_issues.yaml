@@ -20,6 +20,10 @@ variables:
   compressed_file: "{{ render(vars.uncompressed_file) }}.gz"
 
 tasks:
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Extract issues running for year: {{ inputs.year }} and issue: {{ inputs.issue }}"
+
   - id: read
     type: io.kestra.plugin.minio.Download
     endpoint: "{{ envs.minio_endpoint }}"

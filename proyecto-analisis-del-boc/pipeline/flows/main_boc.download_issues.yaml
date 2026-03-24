@@ -30,12 +30,9 @@ variables:
   bucket_path: "issues/{{ inputs.year }}-{{ render(vars.issue_padded) }}.html.gz"
 
 tasks:
-  - id: label
-    type: io.kestra.plugin.core.execution.Labels
-    labels:
-      type: issue_dispositions
-      year: "{{ inputs.year }}"
-      issue: "{{ render(vars.issue_padded) }}"
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Download issues running for year: {{ inputs.year }} and issue: {{ inputs.issue }}"
 
   - id: lookup_file
     type: io.kestra.plugin.minio.List
