@@ -1,6 +1,15 @@
 id: backfill_documents
 namespace: boc
-description: Backfill for documents of an issue
+description: |
+  Trigger **download_documents** sequentially for a range of dispositions within a single boletín.
+
+  Iterates from **from_document** up to **to_document** and invokes **download_documents** for each disposition number. Because **download_documents** has **extract** enabled by default, each downloaded disposition is also extracted (converted to Markdown and loaded into PostgreSQL) unless the subflow default is changed.
+
+  Inputs:
+    - **year**: the year of the boletín. Defaults to the current year.
+    - **issue**: the boletín number within that year. Defaults to 1.
+    - **from_document**: first disposition number to process. Defaults to 1.
+    - **to_document**: last disposition number to process. Defaults to 1.
 
 inputs:
   - id: year

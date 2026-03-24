@@ -1,6 +1,14 @@
 id: backfill_issues
 namespace: boc
-description: Backfill for issue dispositions
+description: |
+  Trigger **download_issues** sequentially for a range of boletines within a given year.
+
+  Iterates from **from_issue** up to (but not including) **to_issue** and invokes **download_issues** for each boletín number. Both **overwrite** and **extract** are hardcoded to `true`, so existing files are always re-downloaded and each boletín is extracted immediately after download.
+
+  Inputs:
+    - **year**: the year whose boletines should be processed. Defaults to the current year.
+    - **from_issue**: first boletín number to process (inclusive). Defaults to 1.
+    - **to_issue**: last boletín number to process (exclusive). Defaults to 1.
 
 inputs:
   - id: year

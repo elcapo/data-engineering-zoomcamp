@@ -1,6 +1,18 @@
 id: extract_archive
 namespace: boc
-description: Extract year links from the archive
+description: |
+  Parse the archive index and load the list of years into PostgreSQL.
+
+  Downloads **archive/archive.html.gz** from MinIO, decompresses it, parses it with the **archive-parser** CLI tool to produce a JSON list of years, and loads the records into **boc_dataset.archive** via dlt (merge on `year`). Finally records the extraction in **boc_log.extraction_log**.
+
+  The resulting **boc_dataset.archive** table has one row per year (`year`, `absolute_link`) and is used by the **metric_download_years** view to track how many year indexes have been downloaded.
+
+  Steps:
+    1. **read**: downloads **archive/archive.html.gz** from MinIO.
+    2. **decompress**: decompresses the GZIP file.
+    3. **parse**: runs `archive-parser` to extract the list of years as **archive.json**.
+    4. **load**: uses dlt to merge the records into **boc_dataset.archive** (primary key: `year`).
+    5. **log_extraction**: upserts a row in **boc_log.extraction_log** (entity_type = `archive`).
 
 tasks:
   - id: read

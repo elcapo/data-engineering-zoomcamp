@@ -1,6 +1,23 @@
 id: download_documents
 namespace: boc
-description: Download a single disposition
+description: |
+  Download the full text of a single BOC disposition and store it in MinIO.
+
+  Fetches the HTML page for a specific disposition from https://www.gobiernodecanarias.org/boc/YEAR/NNN/DDD.html, compresses it with GZIP, and uploads it to MinIO as **documents/YEAR/NNN/DDD.html.gz** in the `boc-raw` bucket. If the file already exists the download is skipped unless **overwrite** is set. Records the download in **boc_log.download_log** and optionally triggers **extract_documents**.
+
+  Inputs:
+    - **year**: the year of the boletín. Defaults to the current year.
+    - **issue**: the issue number within that year. Defaults to 1.
+    - **disposition**: the disposition number within the boletín. Defaults to 1.
+    - **overwrite**: re-download even if the file already exists. Defaults to false.
+    - **extract**: call **extract_documents** after a successful download. Defaults to true.
+
+  Steps:
+    1. **lookup_file**: checks whether the compressed file already exists in MinIO.
+    2. **if_file_exists**: exits early (CANCELED) if the file exists and overwrite is false.
+    3. **fetch / store / compress / publish**: downloads, compresses, and uploads the HTML.
+    4. **log_download**: upserts a row in **boc_log.download_log** (entity_type = `document`).
+    5. **if_extract**: conditionally invokes **extract_documents** for the same year + issue + disposition.
 
 inputs:
   - id: year

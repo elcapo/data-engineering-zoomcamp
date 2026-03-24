@@ -1,6 +1,28 @@
 id: extract_documents
 namespace: boc
-description: Parse a disposition HTML to Markdown and load it into PostgreSQL
+description: |
+  Convert a disposition HTML to Markdown, store it in MinIO, and load its structured data into PostgreSQL.
+
+  This is the deepest extraction step in the pipeline. It reads the raw HTML of a single BOC disposition from `boc-raw`, converts it to Markdown with YAML frontmatter using the **document-parser** CLI tool, uploads the result (compressed) to the `boc-markdown` bucket, and loads the structured fields into **boc_dataset.document** via dlt (merge on `year` + `issue` + `number`). After the first load it also ensures the full-text search column (**body_tsv**) and its GIN index exist so that `@@` queries work immediately.
+
+  Storage paths:
+    - Source:  `boc-raw/documents/YEAR/NNN/DDD.html.gz`
+    - Output:  `boc-markdown/documents/YEAR/NNN/DDD.md.gz`
+
+  Key fields loaded into **boc_dataset.document**: `year`, `issue`, `number`, `document`, `date`, `entity`, `section`, `subsection`, `organization`, `identifier`, `pdf`, `signature`, `title`, `body`, `body_tsv` (generated tsvector with GIN index, configuration `spanish`).
+
+  Inputs:
+    - **year**: the year of the boletín. Defaults to the current year.
+    - **issue**: the issue number within that year. Defaults to 1.
+    - **disposition**: the disposition number within the boletín. Defaults to 1.
+
+  Steps:
+    1. **read / decompress**: downloads and decompresses the raw HTML from `boc-raw`.
+    2. **parse**: runs `document-parser` to produce **document.md** (Markdown + YAML frontmatter).
+    3. **compress / publish**: compresses the Markdown and uploads it to `boc-markdown`.
+    4. **load**: parses the frontmatter and body, then merges the record into **boc_dataset.document** via dlt.
+    5. **ensure_fts**: adds `body_tsv` (generated tsvector) and its GIN index if not yet present.
+    6. **log_extraction**: upserts a row in **boc_log.extraction_log** (entity_type = `document`).
 
 inputs:
   - id: year

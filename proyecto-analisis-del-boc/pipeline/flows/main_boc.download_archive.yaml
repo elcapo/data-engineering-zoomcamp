@@ -1,6 +1,17 @@
 id: download_archive
 namespace: boc
-description: Download the archive
+description: |
+  Download the top-level archive index and store it in MinIO.
+
+  Fetches the main archive page from https://www.gobiernodecanarias.org/boc/archivo/ — the entry point of the entire BOC pipeline that lists every year for which boletines have been published. The HTML is compressed with GZIP, uploaded to MinIO as **archive/archive.html.gz**, and recorded in **boc_log.download_log**. Unlike the other download flows this one has no skip-if-exists guard: it always overwrites so the list of years stays current.
+
+  Inputs:
+    - **extract**: call **extract_archive** after the upload. Defaults to true.
+
+  Steps:
+    1. **fetch / store / compress / publish**: downloads the HTML, compresses it, and uploads to MinIO.
+    2. **log_download**: upserts a row in **boc_log.download_log** (entity_type = `archive`).
+    3. **if_extract**: conditionally invokes **extract_archive**.
 
 inputs:
   - id: extract

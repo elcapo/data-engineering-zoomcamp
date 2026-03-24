@@ -1,14 +1,11 @@
 id: backfill_download_log
 namespace: boc
 description: |
-  Populate download_log for files already present in MinIO before the log_download
-  step was added to the download flows.
+  Populate download_log for files already present in MinIO before the log_download step was added to the download flows.
 
-  Uses the MinIO Python SDK to iterate over objects in a streaming fashion (one
-  page at a time), so memory usage is bounded regardless of bucket size.
-  Inserts are batched for efficiency.
+  Uses the MinIO Python SDK to iterate over objects in a streaming fashion (one page at a time), so memory usage is bounded regardless of bucket size. Inserts are batched for efficiency.
 
-  Safe to re-run: uses ON CONFLICT (object_key) DO NOTHING.
+  Safe to re-run.
 
 tasks:
   - id: insert

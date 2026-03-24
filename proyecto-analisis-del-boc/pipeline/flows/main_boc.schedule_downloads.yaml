@@ -1,6 +1,16 @@
 id: schedule_downloads
 namespace: boc
-description: Scheduled downloads
+description: |
+  Refresh the archive index and the current year's issue list every day.
+
+  This flow is triggered daily at midnight. It always re-downloads the top-level archive page (the list of all years) and then re-downloads the issue index for the current year with **overwrite: true** so it picks up any new boletines published during the day. Because each download_years call has **extract** enabled by default, the year index is also re-extracted automatically.
+
+  Backfill runs are not supported: if the trigger date does not match the current year the flow exits as CANCELED.
+
+  Steps:
+    1. **download_archive**: re-downloads and re-extracts `archive/archive.html.gz`.
+    2. **if_not_current_year**: cancels the execution if the trigger date is from a past year.
+    3. **download_current_year**: calls **download_years** for the current year with overwrite enabled.
 
 variables:
   is_not_current_year: "{{ trigger.date | date('yyyy') != now() | date('yyyy') }}"

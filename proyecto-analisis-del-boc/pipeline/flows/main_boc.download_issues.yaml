@@ -1,6 +1,22 @@
 id: download_issues
 namespace: boc
-description: Download the dispositions of an issue
+description: |
+  Download the disposition index of a boletín and store it in MinIO.
+
+  Fetches the HTML index page for a specific boletín (issue) from the BOC website (https://www.gobiernodecanarias.org/boc/YEAR/NNN/index.html), compresses it with GZIP, and uploads it to MinIO as **issues/YEAR-NNN.html.gz**. If the file already exists the download is skipped unless **overwrite** is set. Records the download in **boc_log.download_log** and optionally triggers **extract_issues**.
+
+  Inputs:
+    - **year**: the year of the boletín. Defaults to the current year.
+    - **issue**: the issue number within that year. Defaults to 1.
+    - **overwrite**: re-download and overwrite the file even if it already exists. Defaults to false.
+    - **extract**: call **extract_issues** after a successful download. Defaults to true.
+
+  Steps:
+    1. **lookup_file**: checks whether the compressed file already exists in MinIO.
+    2. **if_file_exists**: exits early (SUCCESS) if the file exists and overwrite is false.
+    3. **fetch / store / compress / publish**: downloads, compresses, and uploads the HTML.
+    4. **log_download**: upserts a row in **boc_log.download_log** (entity_type = `issue`).
+    5. **if_extract**: conditionally invokes **extract_issues** for the same year + issue.
 
 inputs:
   - id: year

@@ -3,11 +3,11 @@ namespace: boc
 description: |
   Trigger **download_years** sequentially for a range of years.
 
-  Use this flow to perform an initial load or to fill gaps in the archive. It iterates from **from_year** up to (but not including) **to_year** and invokes the **download_years** subflow for each year in order.
+  Use this flow to perform an initial load or to fill gaps in the archive. It iterates from **from_year** up to **to_year** and invokes the **download_years** subflow for each year in order.
 
   Inputs:
-    - **from_year**: first year to process (inclusive). Defaults to the current year.
-    - **to_year**: last year to process (exclusive). Defaults to the current year.
+    - **from_year**: first year to process. Defaults to the current year.
+    - **to_year**: last year to process. Defaults to the current year.
 
   Note: because **download_years** has **extract** enabled by default, each downloaded year index is automatically extracted unless that default is changed in the subflow.
 

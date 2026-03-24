@@ -1,6 +1,24 @@
 id: extract_issues
 namespace: boc
-description: Extract the dispositions of an issue
+description: |
+  Parse a boletín index and load its disposition list into PostgreSQL.
+
+  Downloads the compressed HTML for a specific boletín from MinIO (**issues/YEAR-NNN.html.gz**), decompresses it, parses it with the **issue-parser** CLI tool to produce a JSON object, and loads the data into PostgreSQL via dlt (merge on `year` + `issue`). Records the extraction in **boc_log.extraction_log**.
+
+  dlt populates two tables from the parsed output:
+  - **boc_dataset.issue**: one row per boletín with metadata (`year`, `issue`, `title`, `url`, `summary__url`, `summary__signature`).
+  - **boc_dataset.issue__dispositions**: one row per disposition within the boletín (`section`, `subsection`, `organization`, `summary`, `html`, `pdf`, `signature`, …).
+
+  Inputs:
+    - **year**: the year of the boletín. Defaults to the current year.
+    - **issue**: the issue number within that year. Defaults to 1.
+
+  Steps:
+    1. **read**: downloads **issues/YEAR-NNN.html.gz** from MinIO.
+    2. **decompress**: decompresses the GZIP file.
+    3. **parse**: runs `issue-parser` to extract the boletín data as **issue.json**.
+    4. **load**: uses dlt to merge the record into **boc_dataset.issue** (and its child table).
+    5. **log_extraction**: upserts a row in **boc_log.extraction_log** (entity_type = `issue`).
 
 inputs:
   - id: year
