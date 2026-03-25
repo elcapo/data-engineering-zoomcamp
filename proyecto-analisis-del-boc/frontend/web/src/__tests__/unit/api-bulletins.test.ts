@@ -54,10 +54,12 @@ describe("GET /api/bulletins", () => {
   });
 
   it("devuelve 500 si el repositorio falla", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
     mockFindRecent.mockRejectedValue(new Error("DB down"));
     const res = await GET(request());
     expect(res.status).toBe(500);
     const body = await res.json();
     expect(body.error).toBeTruthy();
+    vi.restoreAllMocks();
   });
 });

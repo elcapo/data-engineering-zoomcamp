@@ -1,0 +1,13 @@
+# Configuración de secciones de la página de inicio.
+# Cada bloque se renderiza en orden. Tipos disponibles:
+#   - latest-bulletins: últimos N boletines (automático desde BD)
+#   - editorial: artículos destacados desde content/home/featured/
+
+sections:
+  - type: latest-bulletins
+    title: Últimos boletines
+    limit: 5
+
+  - type: editorial
+    title: Destacados
+    source: featured

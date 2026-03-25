@@ -74,6 +74,27 @@ Las rutas son capas finas sobre los repositorios: parsean query params, delegan 
 
 ---
 
+## Contenidos Estáticos
+
+Los contenidos editoriales se gestionan en ficheros Markdown y YAML dentro de `content/`, sin necesidad de BD ni CMS:
+
+| Fichero | Propósito |
+|---|---|
+| `content/home/sections.yaml` | Define los bloques y su orden en la página de inicio |
+| `content/home/featured/` | Artículos destacados (Markdown con frontmatter) |
+| `content/pages/aviso-legal.md` | Aviso legal |
+| `content/pages/metodologia.md` | Metodología y fuentes |
+| `content/pages/sobre-el-proyecto.md` | Descripción de la iniciativa |
+
+La utilidad `src/lib/content/markdown.ts` expone:
+- `readMarkdownPage(slug)` — lee una página de `content/pages/`, parsea frontmatter y convierte a HTML.
+- `readSectionsConfig()` — lee `content/home/sections.yaml`.
+- `listPageSlugs()` — lista los slugs disponibles en `content/pages/`.
+
+Agregar o modificar páginas estáticas solo requiere editar los ficheros Markdown.
+
+---
+
 ## Base de Datos
 
 El proyecto se conecta a la BD del pipeline (`boc_dataset` + `boc_log`) como cliente de solo lectura. No gestiona migraciones sobre esos esquemas.
