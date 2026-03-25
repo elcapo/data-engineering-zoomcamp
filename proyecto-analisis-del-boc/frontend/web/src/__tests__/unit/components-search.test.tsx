@@ -64,21 +64,22 @@ describe("BooleanTermInput", () => {
 });
 
 describe("DateRangePicker", () => {
-  it("renderiza dos inputs de fecha", () => {
+  it("renderiza dos inputs con placeholder DD/MM/AAAA", () => {
     render(<DateRangePicker onChange={() => {}} />);
-    expect(screen.getByLabelText("Desde")).toBeInTheDocument();
-    expect(screen.getByLabelText("Hasta")).toBeInTheDocument();
+    expect(screen.getByLabelText("Desde")).toHaveAttribute("placeholder", "DD/MM/AAAA");
+    expect(screen.getByLabelText("Hasta")).toHaveAttribute("placeholder", "DD/MM/AAAA");
   });
 
-  it("llama onChange con el valor actualizado", async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    render(<DateRangePicker from="2024-01-01" onChange={onChange} />);
+  it("muestra la fecha en formato DD/MM/YYYY", () => {
+    render(<DateRangePicker from="2024-01-15" to="2024-12-31" onChange={() => {}} />);
+    expect(screen.getByLabelText("Desde")).toHaveValue("15/01/2024");
+    expect(screen.getByLabelText("Hasta")).toHaveValue("31/12/2024");
+  });
 
-    const toInput = screen.getByLabelText("Hasta");
-    await user.type(toInput, "2024-12-31");
-
-    expect(onChange).toHaveBeenCalled();
+  it("usa inputMode numeric para teclado numérico en móvil", () => {
+    render(<DateRangePicker onChange={() => {}} />);
+    expect(screen.getByLabelText("Desde")).toHaveAttribute("inputMode", "numeric");
+    expect(screen.getByLabelText("Hasta")).toHaveAttribute("inputMode", "numeric");
   });
 });
 

@@ -37,6 +37,7 @@ const disposition: Disposition = {
   title: "Convocatoria de becas",
   date: "2024-01-15",
   pdfUrl: "https://boc.example.com/pdf/3",
+  htmlUrl: "https://sede.gobiernodecanarias.org/boc/boc-a-2024-100-3.xsign",
   excerpt: "Se convoca <mark>beca</mark> para estudiantes",
 };
 
@@ -87,10 +88,17 @@ describe("DispositionCard", () => {
     expect(screen.getByText("Consejería de Educación")).toBeInTheDocument();
   });
 
-  it("enlaza a la página de detalle", () => {
+  it("enlaza al HTML oficial del Gobierno de Canarias", () => {
     render(<DispositionCard disposition={disposition} />);
-    const links = screen.getAllByText("Ver disposición");
-    expect(links[0]).toHaveAttribute("href", "/disposicion/2024/100/3");
+    const link = screen.getByText("Ver disposición");
+    expect(link).toHaveAttribute("href", "https://sede.gobiernodecanarias.org/boc/boc-a-2024-100-3.xsign");
+    expect(link).toHaveAttribute("target", "_blank");
+  });
+
+  it("no muestra 'Ver disposición' si no hay htmlUrl", () => {
+    const { htmlUrl: _, ...withoutHtml } = disposition;
+    render(<DispositionCard disposition={withoutHtml} />);
+    expect(screen.queryByText("Ver disposición")).not.toBeInTheDocument();
   });
 
   it("renderiza excerpt con HTML (mark)", () => {

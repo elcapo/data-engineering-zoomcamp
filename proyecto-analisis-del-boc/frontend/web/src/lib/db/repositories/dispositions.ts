@@ -109,6 +109,7 @@ export const DispositionRepository = {
       signature: string | null;
       body: string | null;
       excerpt: string | null;
+      html_url: string | null;
     };
 
     const rows = await prisma.$queryRaw<Row[]>`
@@ -116,6 +117,7 @@ export const DispositionRepository = {
         d.year, d.issue, d.number,
         d.section, d.subsection, d.organization,
         d.title, d.date, d.identifier, d.pdf, d.signature, d.body,
+        id.html AS html_url,
         ${headlineExpr} AS excerpt
       ${FROM_WITH_JOIN}
       ${where}
@@ -159,15 +161,18 @@ export const DispositionRepository = {
     issue: number,
     number: string
   ): Promise<Disposition | null> {
-    const row = await prisma.document.findFirst({
-      where: {
-        year: BigInt(year),
-        issue: BigInt(issue),
-        number,
-      },
-    });
+    const rows = await prisma.$queryRaw<DocumentRow[]>`
+      SELECT
+        d.year, d.issue, d.number,
+        d.section, d.subsection, d.organization,
+        d.title, d.date, d.identifier, d.pdf, d.body,
+        id.html AS html_url
+      ${FROM_WITH_JOIN}
+      WHERE d.year = ${BigInt(year)} AND d.issue = ${BigInt(issue)} AND d.number = ${number}
+      LIMIT 1
+    `;
 
-    return row ? toDisposition(row) : null;
+    return rows.length > 0 ? toDisposition(rows[0]) : null;
   },
 };
 
@@ -184,9 +189,9 @@ type DocumentRow = {
   date?: string | null;
   identifier?: string | null;
   pdf?: string | null;
-  signature?: string | null;
   body?: string | null;
   excerpt?: string | null;
+  html_url?: string | null;
 };
 
 function toDisposition(row: DocumentRow): Disposition {
@@ -201,7 +206,7 @@ function toDisposition(row: DocumentRow): Disposition {
     date: row.date ?? "",
     identifier: row.identifier ?? undefined,
     pdfUrl: row.pdf ?? "",
-    htmlUrl: row.signature ?? undefined,
+    htmlUrl: row.html_url ?? undefined,
     body: row.body ?? undefined,
     excerpt: row.excerpt ?? undefined,
   };

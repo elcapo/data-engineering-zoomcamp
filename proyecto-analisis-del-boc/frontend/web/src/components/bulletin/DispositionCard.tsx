@@ -7,7 +7,8 @@ interface DispositionCardProps {
 }
 
 export function DispositionCard({ disposition }: DispositionCardProps) {
-  const detailUrl = `/disposicion/${disposition.year}/${disposition.issue}/${disposition.number}`;
+  // Enlace al HTML oficial del Gobierno de Canarias
+  const officialUrl = disposition.htmlUrl;
 
   return (
     <Card as="article" className="flex flex-col gap-2">
@@ -17,11 +18,17 @@ export function DispositionCard({ disposition }: DispositionCardProps) {
         organization={disposition.organization}
       />
 
-      <a href={detailUrl} className="group">
-        <h3 className="font-semibold text-zinc-900 group-hover:text-blue-600 dark:text-zinc-100 dark:group-hover:text-blue-400">
+      {officialUrl ? (
+        <a href={officialUrl} target="_blank" rel="noopener noreferrer" className="group">
+          <h3 className="font-semibold text-zinc-900 group-hover:text-blue-600 dark:text-zinc-100 dark:group-hover:text-blue-400">
+            {disposition.title || "Sin título"}
+          </h3>
+        </a>
+      ) : (
+        <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
           {disposition.title || "Sin título"}
         </h3>
-      </a>
+      )}
 
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
         {disposition.date && <span>{disposition.date}</span>}
@@ -37,9 +44,16 @@ export function DispositionCard({ disposition }: DispositionCardProps) {
       )}
 
       <div className="mt-auto flex gap-3 pt-1 text-sm">
-        <a href={detailUrl} className="font-medium text-blue-600 hover:underline dark:text-blue-400">
-          Ver disposición
-        </a>
+        {officialUrl && (
+          <a
+            href={officialUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+          >
+            Ver disposición
+          </a>
+        )}
         {disposition.pdfUrl && (
           <a
             href={disposition.pdfUrl}
