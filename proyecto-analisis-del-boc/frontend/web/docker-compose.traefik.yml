@@ -1,0 +1,14 @@
+services:
+  boc-web:
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.boc-web.rule=Host(`${BOC_WEB_DOMAIN}`)"
+      - "traefik.http.routers.boc-web.entrypoints=websecure"
+      - "traefik.http.routers.boc-web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.boc-web.loadbalancer.server.port=3000"
+
+networks:
+  traefik:
+    external: true

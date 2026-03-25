@@ -1,0 +1,4 @@
+services:
+  boc-web:
+    ports:
+      - "${BOC_WEB_PORT:-3000}:3000"
