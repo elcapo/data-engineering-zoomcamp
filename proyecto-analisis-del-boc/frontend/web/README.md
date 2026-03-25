@@ -60,6 +60,20 @@ Las páginas y API routes nunca acceden a la BD directamente: siempre pasan por 
 
 ---
 
+## API
+
+Todas las rutas son `GET` y devuelven JSON.
+
+| Endpoint | Parámetros | Respuesta |
+|---|---|---|
+| `/api/bulletins` | `limit` (1–50, default 5) | `Bulletin[]` |
+| `/api/search` | `q`, `section[]`, `subsection[]`, `org`, `from`, `to`, `year`, `issue`, `cursor`, `limit` (1–100, default 20) | `{ results, total, nextCursor, prevCursor }` |
+| `/api/metrics` | — | `DataQualityReport` |
+
+Las rutas son capas finas sobre los repositorios: parsean query params, delegan en el repositorio correspondiente y devuelven el resultado. Los errores internos producen un 500 con `{ error: "..." }`.
+
+---
+
 ## Base de Datos
 
 El proyecto se conecta a la BD del pipeline (`boc_dataset` + `boc_log`) como cliente de solo lectura. No gestiona migraciones sobre esos esquemas.
@@ -103,6 +117,23 @@ npm run dev
 ```
 
 La app estará disponible en `http://localhost:3000`.
+
+---
+
+## Tests
+
+```bash
+# Todos los tests (unitarios + integración)
+npm test
+
+# Solo unitarios (sin BD)
+npx vitest run src/__tests__/unit/
+
+# Solo integración (requiere DATABASE_URL)
+npx vitest run src/__tests__/integration/
+```
+
+Los tests unitarios mockean los repositorios y verifican parsing de parámetros, validación de límites y manejo de errores en las API routes. Los tests de integración se conectan a la BD real para verificar las consultas SQL (incluyendo `tsquery` y `ts_headline`).
 
 ---
 

@@ -204,3 +204,7 @@ npm run test:watch
 Los tests de integración se conectan a la BD real definida en `.env`. No usan mocks
 de Prisma porque las consultas SQL (especialmente `tsquery` y `ts_headline`) no son
 verificables de forma significativa sin ejecutarlas contra PostgreSQL.
+
+Los tests unitarios de las API routes (`src/__tests__/unit/api-*.test.ts`) mockean
+los repositorios y verifican el parsing de parámetros, la validación de límites y
+el manejo de errores HTTP, sin necesidad de conexión a BD.
