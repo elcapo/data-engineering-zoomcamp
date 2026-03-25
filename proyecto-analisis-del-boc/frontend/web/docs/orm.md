@@ -138,24 +138,37 @@ const rows = await prisma.$queryRaw(
 
 ### Full-text search con `tsquery`
 
-La columna `body_tsv` de `document` es un `tsvector` generado (no se declara en
-el schema Prisma). Se consulta exclusivamente con raw SQL:
+La búsqueda de texto completo opera sobre dos columnas `tsvector` (no declaradas
+en el schema Prisma, se usan exclusivamente en raw SQL):
+
+| Tabla | Columna | Contenido indexado |
+|---|---|---|
+| `document` | `body_tsv` | Título + cuerpo completo de la disposición |
+| `issue__dispositions` | `summary_tsv` | Resumen del índice del boletín |
+
+La consulta de búsqueda hace JOIN entre ambas tablas y busca coincidencias en
+cualquiera de los dos tsvectors con `OR`:
 
 ```ts
 const results = await prisma.$queryRaw(Prisma.sql`
-  SELECT
-    d.year, d.issue, d.number, d.title, d.section, d.organization,
-    ts_headline(
-      'spanish', COALESCE(d.body, ''),
-      to_tsquery('spanish', ${tsquery}),
-      'MaxWords=60, MinWords=20, StartSel=<mark>, StopSel=</mark>'
-    ) AS excerpt
+  SELECT DISTINCT ON (d.year, d.issue, CAST(d.number AS integer))
+    d.year, d.issue, d.number, d.title, ...,
+    CASE
+      WHEN d.body_tsv @@ tsq THEN ts_headline('spanish', d.body, tsq, ...)
+      WHEN id.summary_tsv @@ tsq THEN ts_headline('spanish', id.summary, tsq, ...)
+    END AS excerpt
   FROM boc_dataset.document d
-  WHERE d.body_tsv @@ to_tsquery('spanish', ${tsquery})
-  ORDER BY d.year DESC, d.issue DESC
+  JOIN boc_dataset.issue i ON i.year = d.year AND i.issue = d.issue
+  LEFT JOIN boc_dataset.issue__dispositions id
+    ON id._dlt_root_id = i._dlt_id AND id.disposition = CAST(d.number AS bigint)
+  WHERE (d.body_tsv @@ tsq OR id.summary_tsv @@ tsq)
+  ORDER BY d.year DESC, d.issue DESC, CAST(d.number AS integer) DESC
   LIMIT ${limit}
-`) as Promise<SearchRow[]>;
+`);
 ```
+
+`DISTINCT ON` evita duplicados cuando hay múltiples filas de `issue` para el
+mismo (year, issue). El excerpt prioriza coincidencias en `body` sobre `summary`.
 
 El helper `buildTsqueryFromString` (en `src/lib/search/query-builder.ts`) convierte
 texto libre a una expresión `tsquery` segura:

@@ -35,6 +35,12 @@ export async function GET(request: NextRequest) {
   const rawLimit = parseInt(searchParams.get("limit") ?? "", 10);
   const limit = Math.min(Math.max(Number.isNaN(rawLimit) ? 20 : rawLimit, 1), 100);
 
+  if (process.env.NODE_ENV === "development") {
+    console.log("[search] params:", Object.fromEntries(searchParams.entries()));
+    console.log("[search] filters:", JSON.stringify(filters));
+    console.log("[search] cursor:", cursor, "limit:", limit);
+  }
+
   try {
     const result = await DispositionRepository.search(filters, cursor, limit);
     return NextResponse.json(result);

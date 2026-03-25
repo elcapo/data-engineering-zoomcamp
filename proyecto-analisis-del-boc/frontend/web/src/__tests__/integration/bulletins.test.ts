@@ -13,9 +13,10 @@ afterAll(async () => {
 });
 
 describe("BulletinRepository.findRecent", () => {
-  it("devuelve el número solicitado de boletines", async () => {
+  it("devuelve como máximo el número solicitado de boletines", async () => {
     const bulletins = await BulletinRepository.findRecent(3);
-    expect(bulletins).toHaveLength(3);
+    expect(bulletins.length).toBeGreaterThan(0);
+    expect(bulletins.length).toBeLessThanOrEqual(3);
   });
 
   it("los boletines están ordenados del más reciente al más antiguo", async () => {

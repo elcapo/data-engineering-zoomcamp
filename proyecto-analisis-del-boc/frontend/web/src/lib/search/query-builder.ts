@@ -12,7 +12,9 @@ export interface BooleanTerm {
  *
  * Ejemplo:
  *   include "convocatoria" (grupo 0) + include "beca" (grupo 0) + exclude "universidad"
- *   → (convocatoria | beca) & !universidad
+ *   → (convocatoria:* | beca:*) & !universidad:*
+ *
+ *   include "Fernández Trujillo" →  (fernández:* & trujillo:*)
  */
 export function buildTsquery(terms: BooleanTerm[]): string | null {
   if (terms.length === 0) return null;
@@ -27,17 +29,25 @@ export function buildTsquery(terms: BooleanTerm[]): string | null {
   for (const term of includes) {
     const g = term.group ?? 0;
     const existing = groups.get(g) ?? [];
-    existing.push(sanitizeTerm(term.value));
+    const sanitized = sanitizeTerm(term.value);
+    if (sanitized) existing.push(sanitized);
     groups.set(g, existing);
   }
 
-  const includeParts = Array.from(groups.values()).map((terms) =>
-    terms.length === 1 ? terms[0] : `(${terms.join(" | ")})`
-  );
+  const includeParts = Array.from(groups.values())
+    .map((terms) => terms.filter(Boolean))
+    .filter((terms) => terms.length > 0)
+    .map((terms) =>
+      terms.length === 1 ? terms[0] : `(${terms.join(" | ")})`
+    );
 
-  const excludeParts = excludes.map((t) => `!${sanitizeTerm(t.value)}`);
+  const excludeParts = excludes
+    .map((t) => sanitizeTerm(t.value))
+    .filter(Boolean)
+    .map((s) => `!${s}`);
 
   const allParts = [...includeParts, ...excludeParts];
+  if (allParts.length === 0) return null;
   return allParts.join(" & ");
 }
 
@@ -54,11 +64,32 @@ export function buildTsqueryFromString(q: string): string | null {
 
   if (words.length === 0) return null;
 
-  return words.map(sanitizeTerm).join(" & ");
+  const parts = words.map(sanitizeWord).filter(Boolean);
+  if (parts.length === 0) return null;
+
+  return parts.join(" & ");
 }
 
-// Elimina caracteres que romperían tsquery y aplica prefijo de concordancia parcial
+/**
+ * Sanitiza un término que puede contener espacios (ej. "Fernández Trujillo").
+ * Lo divide en palabras y las une con AND, envolviendo en paréntesis si es multi-palabra.
+ */
 function sanitizeTerm(term: string): string {
-  const clean = term.replace(/[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ0-9\-]/g, "").toLowerCase();
-  return `${clean}:*`; // prefijo → busca también derivaciones
+  const words = term
+    .split(/\s+/)
+    .map(sanitizeWord)
+    .filter(Boolean);
+
+  if (words.length === 0) return "";
+  if (words.length === 1) return words[0];
+  return `(${words.join(" & ")})`;
+}
+
+/**
+ * Limpia una palabra individual: elimina caracteres especiales y aplica prefijo.
+ */
+function sanitizeWord(word: string): string {
+  const clean = word.replace(/[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ0-9\-]/g, "").toLowerCase();
+  if (!clean) return "";
+  return `${clean}:*`;
 }

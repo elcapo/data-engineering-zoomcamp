@@ -21,7 +21,11 @@ describe("buildTsqueryFromString", () => {
 
   it("elimina caracteres especiales que romperían tsquery", () => {
     expect(buildTsqueryFromString("beca's")).toBe("becas:*");
+  });
+
+  it("ignora tokens que quedan vacíos tras sanitizar", () => {
     expect(buildTsqueryFromString("A&B")).toBe("ab:*");
+    expect(buildTsqueryFromString("& |")).toBeNull();
   });
 });
 
@@ -64,5 +68,27 @@ describe("buildTsquery", () => {
       { value: "universidad", mode: "exclude" },
     ];
     expect(buildTsquery(terms)).toBe("(convocatoria:* | beca:*) & !universidad:*");
+  });
+
+  it("término multi-palabra se divide en AND con paréntesis", () => {
+    const terms: BooleanTerm[] = [
+      { value: "Fernández Trujillo", mode: "include" },
+    ];
+    expect(buildTsquery(terms)).toBe("(fernández:* & trujillo:*)");
+  });
+
+  it("exclude multi-palabra también se divide", () => {
+    const terms: BooleanTerm[] = [
+      { value: "Consejería de Educación", mode: "exclude" },
+    ];
+    expect(buildTsquery(terms)).toBe("!(consejería:* & de:* & educación:*)");
+  });
+
+  it("multi-palabra combinado con otros términos", () => {
+    const terms: BooleanTerm[] = [
+      { value: "Fernández Trujillo", mode: "include", group: 0 },
+      { value: "convocatoria", mode: "include", group: 1 },
+    ];
+    expect(buildTsquery(terms)).toBe("(fernández:* & trujillo:*) & convocatoria:*");
   });
 });

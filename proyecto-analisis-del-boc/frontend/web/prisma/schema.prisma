@@ -3,9 +3,8 @@
 // como cliente de solo lectura. Este proyecto no gestiona migraciones.
 
 generator client {
-  provider        = "prisma-client"
-  output          = "../app/generated/prisma"
-  // multiSchema ya no requiere previewFeatures en Prisma 7+
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
 }
 
 datasource db {
@@ -14,18 +13,16 @@ datasource db {
 }
 
 // ── boc_dataset.issue ─────────────────────────────────────────────────────
-// Un boletín (número de publicación dentro de un año).
-// _dlt_id es la clave única generada por el pipeline.
 
 model Issue {
-  dltId            String             @id @map("_dlt_id")
-  dltLoadId        String             @map("_dlt_load_id")
+  dltId            String             @id @map("_dlt_id") @db.VarChar
+  dltLoadId        String             @map("_dlt_load_id") @db.VarChar
   year             BigInt
   issue            BigInt
-  title            String?
-  url              String?
-  summaryUrl       String?            @map("summary__url")
-  summarySignature String?            @map("summary__signature")
+  title            String?            @db.VarChar
+  url              String?            @db.VarChar
+  summaryUrl       String?            @map("summary__url") @db.VarChar
+  summarySignature String?            @map("summary__signature") @db.VarChar
   dispositions     IssueDisposition[]
 
   @@map("issue")
@@ -34,22 +31,25 @@ model Issue {
 
 // ── boc_dataset.issue__dispositions ──────────────────────────────────────
 // Listado de disposiciones tal como aparecen en el índice del boletín.
-// Contiene metadatos de índice; el texto completo está en Document.
+// Contiene metadatos de índice y resumen; el texto completo está en Document.
+// La columna summary_tsv es un tsvector generado (no se declara aquí;
+// se usa directamente en raw queries con @@ y ts_headline).
 
 model IssueDisposition {
-  dltId        String  @id @map("_dlt_id")
-  dltRootId    String  @map("_dlt_root_id")
-  dltParentId  String  @map("_dlt_parent_id")
+  dltId        String  @id @map("_dlt_id") @db.VarChar
+  dltRootId    String  @map("_dlt_root_id") @db.VarChar
+  dltParentId  String  @map("_dlt_parent_id") @db.VarChar
   dltListIdx   BigInt  @map("_dlt_list_idx")
-  section      String?
-  subsection   String?
-  organization String?
-  summary      String?
-  metadata     String?
-  identifier   String?
-  pdf          String?
-  html         String?
-  signature    String?
+  disposition  BigInt?
+  section      String? @db.VarChar
+  subsection   String? @db.VarChar
+  organization String? @db.VarChar
+  summary      String? @db.VarChar
+  metadata     String? @db.VarChar
+  identifier   String? @db.VarChar
+  pdf          String? @db.VarChar
+  html         String? @db.VarChar
+  signature    String? @db.VarChar
   issue        Issue   @relation(fields: [dltRootId], references: [dltId])
 
   @@map("issue__dispositions")
@@ -62,22 +62,22 @@ model IssueDisposition {
 // se usa directamente en raw queries con @@ y ts_headline).
 
 model Document {
-  dltId        String  @id @map("_dlt_id")
-  dltLoadId    String  @map("_dlt_load_id")
+  dltId        String  @id @map("_dlt_id") @db.VarChar
+  dltLoadId    String  @map("_dlt_load_id") @db.VarChar
   year         BigInt
   issue        BigInt
-  number       String
-  document     String?
-  date         String?
-  entity       String?
-  section      String?
-  subsection   String?
-  organization String?
-  identifier   String?
-  pdf          String?
-  signature    String?
-  title        String?
-  body         String?
+  number       String  @db.VarChar
+  document     String? @db.VarChar
+  date         String? @db.VarChar
+  entity       String? @db.VarChar
+  section      String? @db.VarChar
+  subsection   String? @db.VarChar
+  organization String? @db.VarChar
+  identifier   String? @db.VarChar
+  pdf          String? @db.VarChar
+  signature    String? @db.VarChar
+  title        String? @db.VarChar
+  body         String? @db.VarChar
 
   @@map("document")
   @@schema("boc_dataset")

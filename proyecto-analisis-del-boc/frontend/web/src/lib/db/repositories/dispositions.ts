@@ -5,10 +5,18 @@ import { buildTsqueryFromString } from "@/lib/search/query-builder";
 
 const DEFAULT_LIMIT = 20;
 
+// JOINs comunes: document → issue → issue__dispositions
+const FROM_WITH_JOIN = Prisma.sql`
+  FROM boc_dataset.document d
+  JOIN boc_dataset.issue i ON i.year = d.year AND i.issue = d.issue
+  LEFT JOIN boc_dataset.issue__dispositions id
+    ON id._dlt_root_id = i._dlt_id
+    AND id.disposition = CAST(d.number AS bigint)`;
+
 export const DispositionRepository = {
   /**
    * Búsqueda full-text con filtros combinados y paginación por cursor.
-   * El cursor tiene el formato "YYYY-NNN-number" (ej. "2024-045-3").
+   * Busca tanto en document.body_tsv como en issue__dispositions.summary_tsv.
    */
   async search(
     filters: SearchFilters,
@@ -22,8 +30,9 @@ export const DispositionRepository = {
     const conditions: Prisma.Sql[] = [];
 
     if (tsquery) {
+      // Busca coincidencias en el texto completo (document) O en el resumen (issue__dispositions)
       conditions.push(
-        Prisma.sql`d.body_tsv @@ to_tsquery('spanish', ${tsquery})`
+        Prisma.sql`(d.body_tsv @@ to_tsquery('spanish', ${tsquery}) OR id.summary_tsv @@ to_tsquery('spanish', ${tsquery}))`
       );
     }
     if (filters.section?.length) {
@@ -50,8 +59,9 @@ export const DispositionRepository = {
       conditions.push(Prisma.sql`d.issue = ${filters.issue}`);
     }
     if (cursorParsed) {
+      // El ORDER BY es todo DESC, así que "siguiente página" = tupla menor
       conditions.push(
-        Prisma.sql`(d.year, d.issue, d.number) < (${cursorParsed.year}, ${cursorParsed.issue}, ${cursorParsed.number})`
+        Prisma.sql`(d.year, d.issue, CAST(d.number AS integer)) < (${cursorParsed.year}, ${cursorParsed.issue}, ${parseInt(cursorParsed.number, 10)})`
       );
     }
 
@@ -60,11 +70,31 @@ export const DispositionRepository = {
         ? Prisma.sql`WHERE ${Prisma.join(conditions, " AND ")}`
         : Prisma.empty;
 
+    // Excerpt: prioriza coincidencia en body, luego en summary
     const headlineExpr = tsquery
-      ? Prisma.sql`ts_headline('spanish', COALESCE(d.body, ''), to_tsquery('spanish', ${tsquery}), 'MaxWords=60, MinWords=20, StartSel=<mark>, StopSel=</mark>')`
+      ? Prisma.sql`CASE
+          WHEN d.body_tsv @@ to_tsquery('spanish', ${tsquery})
+          THEN ts_headline('spanish', COALESCE(d.body, ''), to_tsquery('spanish', ${tsquery}), 'MaxWords=60, MinWords=20, StartSel=<mark>, StopSel=</mark>')
+          WHEN id.summary_tsv @@ to_tsquery('spanish', ${tsquery})
+          THEN ts_headline('spanish', COALESCE(id.summary, ''), to_tsquery('spanish', ${tsquery}), 'MaxWords=60, MinWords=20, StartSel=<mark>, StopSel=</mark>')
+          ELSE NULL
+        END`
       : Prisma.sql`NULL`;
 
-    // Consulta principal
+    if (process.env.NODE_ENV === "development") {
+      const debugParts: string[] = [];
+      if (tsquery) debugParts.push(`(d.body_tsv @@ tsq OR id.summary_tsv @@ tsq) [tsq='${tsquery}']`);
+      if (filters.section?.length) debugParts.push(`d.section = ANY(${JSON.stringify(filters.section)})`);
+      if (filters.org) debugParts.push(`d.organization ILIKE '%${filters.org}%'`);
+      if (filters.year) debugParts.push(`d.year = ${filters.year}`);
+      if (filters.issue) debugParts.push(`d.issue = ${filters.issue}`);
+      if (filters.from) debugParts.push(`d.date >= '${filters.from}'`);
+      if (filters.to) debugParts.push(`d.date <= '${filters.to}'`);
+      if (cursorParsed) debugParts.push(`cursor < (${cursorParsed.year}, ${cursorParsed.issue}, '${cursorParsed.number}')`);
+      const debugWhere = debugParts.length > 0 ? `WHERE ${debugParts.join(" AND ")}` : "";
+      console.log(`[dispositions.search] SQL: SELECT ... FROM document d JOIN issue i ... LEFT JOIN issue__dispositions id ... ${debugWhere} LIMIT ${limit + 1}`);
+    }
+
     type Row = {
       year: bigint;
       issue: bigint;
@@ -82,14 +112,14 @@ export const DispositionRepository = {
     };
 
     const rows = await prisma.$queryRaw<Row[]>`
-      SELECT
+      SELECT DISTINCT ON (d.year, d.issue, CAST(d.number AS integer))
         d.year, d.issue, d.number,
         d.section, d.subsection, d.organization,
         d.title, d.date, d.identifier, d.pdf, d.signature, d.body,
         ${headlineExpr} AS excerpt
-      FROM boc_dataset.document d
+      ${FROM_WITH_JOIN}
       ${where}
-      ORDER BY d.year DESC, d.issue DESC, d.number ASC
+      ORDER BY d.year DESC, d.issue DESC, CAST(d.number AS integer) DESC
       LIMIT ${limit + 1}
     `;
 
@@ -103,8 +133,8 @@ export const DispositionRepository = {
         : Prisma.empty;
 
     const [{ count }] = await prisma.$queryRaw<[{ count: bigint }]>`
-      SELECT COUNT(*) AS count
-      FROM boc_dataset.document d
+      SELECT COUNT(DISTINCT (d.year, d.issue, d.number)) AS count
+      ${FROM_WITH_JOIN}
       ${whereForCount}
     `;
 

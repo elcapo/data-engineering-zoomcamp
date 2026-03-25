@@ -124,7 +124,7 @@ Agregar o modificar páginas estáticas solo requiere editar los ficheros Markdo
 | Ruta | Estado | Descripción |
 |---|---|---|
 | `/` | Implementada | Home: bloques configurables via `sections.yaml` (últimos boletines + editorial) |
-| `/buscar` | Pendiente | Búsqueda full-text con filtros combinados |
+| `/buscar` | Implementada | Búsqueda full-text con filtros combinados |
 | `/metricas` | Pendiente | Métricas de cobertura del corpus |
 | `/disposicion/[year]/[issue]/[number]` | Pendiente | Detalle de disposición individual |
 | `/metodologia` | Pendiente | Página estática desde Markdown |
