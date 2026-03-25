@@ -64,10 +64,10 @@ describe("BooleanTermInput", () => {
 });
 
 describe("DateRangePicker", () => {
-  it("renderiza dos inputs con placeholder DD/MM/AAAA", () => {
+  it("renderiza dos inputs con placeholder dd/mm/aaaa", () => {
     render(<DateRangePicker onChange={() => {}} />);
-    expect(screen.getByLabelText("Desde")).toHaveAttribute("placeholder", "DD/MM/AAAA");
-    expect(screen.getByLabelText("Hasta")).toHaveAttribute("placeholder", "DD/MM/AAAA");
+    expect(screen.getByLabelText("Desde")).toHaveAttribute("placeholder", "dd/mm/aaaa");
+    expect(screen.getByLabelText("Hasta")).toHaveAttribute("placeholder", "dd/mm/aaaa");
   });
 
   it("muestra la fecha en formato DD/MM/YYYY", () => {
