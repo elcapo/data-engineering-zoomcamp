@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { GET } from "@/app/api/metrics/route";
+import { GET } from "@app/api/metrics/route";
 
 const mockGetReport = vi.fn();
 

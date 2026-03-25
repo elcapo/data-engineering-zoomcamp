@@ -34,7 +34,13 @@ app/  (Next.js App Router)
     └── metrics/route.ts
 
 src/
-├── components/    UI reutilizables (ui/, layout/, search/, bulletin/, metrics/)
+├── components/
+│   ├── ui/           Card, Badge, Button, Spinner, MetricBar
+│   ├── layout/       Header (con SearchBar), Footer, Nav
+│   ├── bulletin/     BulletinCard, DispositionCard, EditorialCard, SectionBreadcrumb
+│   ├── search/       SearchBar, FilterPanel, BooleanTermInput, DateRangePicker, SemanticPaginator
+│   ├── metrics/      BarChart (Recharts), MetricKPI
+│   └── MarkdownPage
 ├── lib/
 │   ├── db/
 │   │   ├── prisma.ts              cliente Prisma singleton
@@ -57,6 +63,23 @@ prisma/
 ```
 
 Las páginas y API routes nunca acceden a la BD directamente: siempre pasan por los repositorios, que mapean el esquema del pipeline a entidades de dominio propias (`Bulletin`, `Disposition`, `DataQualityReport`).
+
+---
+
+## Componentes
+
+Los componentes de `src/components/` están organizados por dominio:
+
+| Directorio | Componentes | Propósito |
+|---|---|---|
+| `ui/` | Card, Badge, Button, Spinner, MetricBar | Primitivas de UI reutilizables |
+| `layout/` | Header, Footer, Nav | Estructura de la app (Header incluye SearchBar) |
+| `bulletin/` | BulletinCard, DispositionCard, EditorialCard, SectionBreadcrumb | Tarjetas de boletines y disposiciones |
+| `search/` | SearchBar, FilterPanel, BooleanTermInput, DateRangePicker, SemanticPaginator | UI de búsqueda y filtros |
+| `metrics/` | BarChart, MetricKPI | Visualización de métricas (BarChart envuelve Recharts) |
+| raíz | MarkdownPage | Renderiza páginas Markdown con estilos `prose` |
+
+Los componentes con estado del cliente (`"use client"`) son: SearchBar, BooleanTermInput, DateRangePicker, FilterPanel y BarChart. El resto son server-compatible.
 
 ---
 

@@ -6,13 +6,14 @@ export default defineConfig({
     // Los tests de integración requieren la variable DATABASE_URL del .env
     env: loadEnv(),
     globals: true,
-    // Separa tests unitarios (sin BD) de tests de integración
-    // Ejecutar solo unitarios: vitest run --project unit
-    // Ejecutar integración: vitest run --project integration
+    // jsdom para tests de componentes React
+    environment: "jsdom",
+    setupFiles: ["./src/__tests__/setup.ts"],
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@/": path.resolve(__dirname, "./src") + "/",
+      "@app/": path.resolve(__dirname, "./app") + "/",
     },
   },
 });

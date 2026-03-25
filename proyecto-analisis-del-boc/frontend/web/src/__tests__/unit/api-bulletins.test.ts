@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { GET } from "@/app/api/bulletins/route";
+import { GET } from "@app/api/bulletins/route";
 import { NextRequest } from "next/server";
 
 const mockFindRecent = vi.fn();
