@@ -111,10 +111,27 @@ Los contenidos editoriales se gestionan en ficheros Markdown y YAML dentro de `c
 
 La utilidad `src/lib/content/markdown.ts` expone:
 - `readMarkdownPage(slug)` — lee una página de `content/pages/`, parsea frontmatter y convierte a HTML.
+- `readFeaturedArticles(source)` — lee artículos de `content/home/<source>/`, ordenados por `order`.
 - `readSectionsConfig()` — lee `content/home/sections.yaml`.
 - `listPageSlugs()` — lista los slugs disponibles en `content/pages/`.
 
 Agregar o modificar páginas estáticas solo requiere editar los ficheros Markdown.
+
+---
+
+## Páginas
+
+| Ruta | Estado | Descripción |
+|---|---|---|
+| `/` | Implementada | Home: bloques configurables via `sections.yaml` (últimos boletines + editorial) |
+| `/buscar` | Pendiente | Búsqueda full-text con filtros combinados |
+| `/metricas` | Pendiente | Métricas de cobertura del corpus |
+| `/disposicion/[year]/[issue]/[number]` | Pendiente | Detalle de disposición individual |
+| `/metodologia` | Pendiente | Página estática desde Markdown |
+| `/aviso-legal` | Pendiente | Página estática desde Markdown |
+| `/sobre-el-proyecto` | Pendiente | Página estática desde Markdown |
+
+La home (`/`) es un Server Component que lee `sections.yaml`, renderiza cada bloque dinámicamente y obtiene datos del servidor (boletines recientes desde BD, artículos editoriales desde ficheros Markdown).
 
 ---
 

@@ -52,6 +52,41 @@ export function listPageSlugs(): string[] {
     .map((f) => f.replace(/\.md$/, ""));
 }
 
+// ── Artículos destacados (editorial) ──────────────────────────────────────
+
+export interface FeaturedArticle {
+  slug: string;
+  title: string;
+  excerpt: string;
+  link: string;
+  order: number;
+}
+
+/**
+ * Lee los ficheros Markdown de content/home/<source>/ y devuelve los artículos
+ * ordenados por el campo `order` del frontmatter.
+ */
+export function readFeaturedArticles(source: string): FeaturedArticle[] {
+  const dir = path.join(CONTENT_DIR, "home", source);
+  if (!fs.existsSync(dir)) return [];
+
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith(".md"))
+    .map((f) => {
+      const raw = fs.readFileSync(path.join(dir, f), "utf-8");
+      const { data } = matter(raw);
+      return {
+        slug: f.replace(/\.md$/, ""),
+        title: (data.title as string) ?? "",
+        excerpt: (data.excerpt as string) ?? "",
+        link: (data.link as string) ?? "",
+        order: (data.order as number) ?? 0,
+      };
+    })
+    .sort((a, b) => a.order - b.order);
+}
+
 // ── Configuración de la Home ──────────────────────────────────────────────
 
 export interface HomeSection {

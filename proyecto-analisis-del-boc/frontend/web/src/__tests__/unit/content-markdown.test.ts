@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   readMarkdownPage,
   readSectionsConfig,
+  readFeaturedArticles,
   listPageSlugs,
 } from "@/lib/content/markdown";
 
@@ -73,5 +74,31 @@ describe("readSectionsConfig", () => {
     const second = config.sections[1];
     expect(second.type).toBe("editorial");
     expect(second.source).toBe("featured");
+  });
+});
+
+describe("readFeaturedArticles", () => {
+  it("lee los artículos de content/home/featured/", () => {
+    const articles = readFeaturedArticles("featured");
+    expect(articles.length).toBeGreaterThan(0);
+  });
+
+  it("cada artículo tiene título, excerpt y link", () => {
+    const [article] = readFeaturedArticles("featured");
+    expect(article.title).toBeTruthy();
+    expect(article.excerpt).toBeTruthy();
+    expect(article.link).toBeTruthy();
+  });
+
+  it("los artículos están ordenados por order", () => {
+    const articles = readFeaturedArticles("featured");
+    for (let i = 1; i < articles.length; i++) {
+      expect(articles[i].order).toBeGreaterThanOrEqual(articles[i - 1].order);
+    }
+  });
+
+  it("devuelve array vacío para un source inexistente", () => {
+    const articles = readFeaturedArticles("no-existe");
+    expect(articles).toEqual([]);
   });
 });
