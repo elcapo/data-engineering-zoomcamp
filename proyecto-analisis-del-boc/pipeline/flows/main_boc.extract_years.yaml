@@ -31,6 +31,11 @@ tasks:
     type: io.kestra.plugin.core.log.Log
     message: "Extracting the index of issues of year {{ inputs.year }}"
 
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      year: "{{ inputs.year }}"
+
   - id: read
     type: io.kestra.plugin.minio.Download
     endpoint: "{{ envs.minio_endpoint }}"

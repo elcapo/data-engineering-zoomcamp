@@ -42,6 +42,11 @@ tasks:
     type: io.kestra.plugin.core.log.Log
     message: "Downloading the index of issues of year {{ inputs.year }}"
 
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      year: "{{ inputs.year }}"
+
   - id: lookup_file
     type: io.kestra.plugin.minio.List
     endpoint: "{{ envs.minio_endpoint }}"
@@ -54,29 +59,29 @@ tasks:
     type: io.kestra.plugin.core.flow.If
     condition: "{{ (outputs.lookup_file.objects | default([])) | length == 0 or inputs.overwrite }}"
     then:
-      - id: fetch
-        type: io.kestra.plugin.core.http.Request
-        uri: "{{ render(vars.source_url) }}"
-        method: GET
+    - id: fetch
+      type: io.kestra.plugin.core.http.Request
+      uri: "{{ render(vars.source_url) }}"
+      method: GET
 
-      - id: store
-        type: io.kestra.plugin.core.storage.Write
-        content: "{{ outputs.fetch.body }}"
-        extension: .html
+    - id: store
+      type: io.kestra.plugin.core.storage.Write
+      content: "{{ outputs.fetch.body }}"
+      extension: .html
 
-      - id: compress
-        type: io.kestra.plugin.compress.FileCompress
-        from: "{{ outputs.store.uri }}"
-        compression: GZIP
+    - id: compress
+      type: io.kestra.plugin.compress.FileCompress
+      from: "{{ outputs.store.uri }}"
+      compression: GZIP
 
-      - id: publish
-        type: io.kestra.plugin.minio.Upload
-        endpoint: "{{ envs.minio_endpoint }}"
-        accessKeyId: "{{ envs.minio_user }}"
-        secretKeyId: "{{ envs.minio_password }}"
-        bucket: "{{ envs.minio_raw_bucket }}"
-        from: "{{ outputs.compress.uri }}"
-        key: "{{ render(vars.bucket_path) }}"
+    - id: publish
+      type: io.kestra.plugin.minio.Upload
+      endpoint: "{{ envs.minio_endpoint }}"
+      accessKeyId: "{{ envs.minio_user }}"
+      secretKeyId: "{{ envs.minio_password }}"
+      bucket: "{{ envs.minio_raw_bucket }}"
+      from: "{{ outputs.compress.uri }}"
+      key: "{{ render(vars.bucket_path) }}"
 
   - id: log_download
     type: io.kestra.plugin.scripts.python.Script

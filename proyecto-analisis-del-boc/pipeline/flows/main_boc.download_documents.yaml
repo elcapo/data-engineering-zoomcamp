@@ -54,10 +54,13 @@ variables:
   bucket_path: "documents/{{ render(vars.target_filename) }}.gz"
 
 tasks:
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Download documents running for year: {{ inputs.year }}, issue: {{ inputs.issue }} and disposition {{ inputs.disposition }}"
+
   - id: label
     type: io.kestra.plugin.core.execution.Labels
     labels:
-      type: disposition
       year: "{{ inputs.year }}"
       issue: "{{ render(vars.issue_padded) }}"
       disposition: "{{ render(vars.disposition_padded) }}"
@@ -70,38 +73,33 @@ tasks:
     bucket: "{{ envs.minio_raw_bucket }}"
     prefix: "{{ render(vars.bucket_path) }}"
 
-  - id: if_file_exists
+  - id: if_not_file_exists
     type: io.kestra.plugin.core.flow.If
-    condition: "{{ outputs.lookup_file.objects | length > 0 and not inputs.overwrite }}"
+    condition: "{{ outputs.lookup_file.objects | length == 0 or inputs.overwrite }}"
     then:
-      - id: exit
-        type: io.kestra.plugin.core.execution.Exit
-        state: CANCELED
-        description: "Key {{ render(vars.bucket_path) }} already exists and overwrite is set to false"
+    - id: fetch
+      type: io.kestra.plugin.core.http.Request
+      uri: "{{ render(vars.source_url) }}"
+      method: GET
 
-  - id: fetch
-    type: io.kestra.plugin.core.http.Request
-    uri: "{{ render(vars.source_url) }}"
-    method: GET
+    - id: store
+      type: io.kestra.plugin.core.storage.Write
+      content: "{{ outputs.fetch.body }}"
+      extension: .html
 
-  - id: store
-    type: io.kestra.plugin.core.storage.Write
-    content: "{{ outputs.fetch.body }}"
-    extension: .html
+    - id: compress
+      type: io.kestra.plugin.compress.FileCompress
+      from: "{{ outputs.store.uri }}"
+      compression: GZIP
 
-  - id: compress
-    type: io.kestra.plugin.compress.FileCompress
-    from: "{{ outputs.store.uri }}"
-    compression: GZIP
-
-  - id: publish
-    type: io.kestra.plugin.minio.Upload
-    endpoint: "{{ envs.minio_endpoint }}"
-    accessKeyId: "{{ envs.minio_user }}"
-    secretKeyId: "{{ envs.minio_password }}"
-    bucket: "{{ envs.minio_raw_bucket }}"
-    from: "{{ outputs.compress.uri }}"
-    key: "{{ render(vars.bucket_path) }}"
+    - id: publish
+      type: io.kestra.plugin.minio.Upload
+      endpoint: "{{ envs.minio_endpoint }}"
+      accessKeyId: "{{ envs.minio_user }}"
+      secretKeyId: "{{ envs.minio_password }}"
+      bucket: "{{ envs.minio_raw_bucket }}"
+      from: "{{ outputs.compress.uri }}"
+      key: "{{ render(vars.bucket_path) }}"
 
   - id: log_download
     type: io.kestra.plugin.scripts.python.Script
@@ -136,11 +134,10 @@ tasks:
               "VALUES (%s, %s, %s, %s, %s) "
               "ON CONFLICT (object_key) DO UPDATE SET downloaded_at = now()",
               (os.environ["OBJECT_KEY"], "document",
-               int(os.environ["YEAR"]), int(os.environ["ISSUE"]), int(os.environ["DISPOSITION"])),
+              int(os.environ["YEAR"]), int(os.environ["ISSUE"]), int(os.environ["DISPOSITION"])),
           )
 
       conn.close()
-      print(f"Logged: {os.environ['OBJECT_KEY']}")
 
   - id: if_extract
     type: io.kestra.plugin.core.flow.If

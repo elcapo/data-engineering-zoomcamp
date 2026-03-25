@@ -111,6 +111,42 @@ tasks:
 
       pipeline.run(issue_data)
 
+  - id: ensure_fts
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import os
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+      with conn.cursor() as cur:
+          cur.execute("""
+              ALTER TABLE boc_dataset.issue__dispositions
+                ADD COLUMN IF NOT EXISTS summary_tsv tsvector
+                  GENERATED ALWAYS AS (
+                    to_tsvector('spanish', coalesce(summary, ''))
+                  ) STORED
+          """)
+          cur.execute("""
+              CREATE INDEX IF NOT EXISTS issue__dispositions_summary_tsv_idx
+                ON boc_dataset.issue__dispositions USING gin(summary_tsv)
+          """)
+      conn.close()
+
   - id: log_extraction
     type: io.kestra.plugin.scripts.python.Script
     containerImage: boc-python:latest

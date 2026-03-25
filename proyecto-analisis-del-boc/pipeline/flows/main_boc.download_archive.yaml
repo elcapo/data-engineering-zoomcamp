@@ -20,11 +20,6 @@ inputs:
     defaults: true
 
 tasks:
-  - id: label
-    type: io.kestra.plugin.core.execution.Labels
-    labels:
-      type: archive
-
   - id: fetch
     type: io.kestra.plugin.core.http.Request
     uri: https://www.gobiernodecanarias.org/boc/archivo/

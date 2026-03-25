@@ -5,6 +5,7 @@
 SELECT
   i.year,
   i.issue,
+  d.disposition,
   i.title,
   d.section,
   d.subsection,

@@ -48,10 +48,13 @@ variables:
   md_path: "documents/{{ inputs.year }}/{{ render(vars.issue_padded) }}/{{ render(vars.disposition_padded) }}.md.gz"
 
 tasks:
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Extract documents running for year: {{ inputs.year }}, issue: {{ inputs.issue }} and disposition {{ inputs.disposition }}"
+
   - id: label
     type: io.kestra.plugin.core.execution.Labels
     labels:
-      type: disposition
       year: "{{ inputs.year }}"
       issue: "{{ render(vars.issue_padded) }}"
       disposition: "{{ render(vars.disposition_padded) }}"
