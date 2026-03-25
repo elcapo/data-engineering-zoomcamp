@@ -1,13 +1,88 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// Prisma schema — BOC Canarias Web
+// Mapea las tablas del pipeline (boc_dataset) y las vistas de métricas (boc_log)
+// como cliente de solo lectura. Este proyecto no gestiona migraciones.
 
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../app/generated/prisma"
+  // multiSchema ya no requiere previewFeatures en Prisma 7+
 }
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["boc_dataset", "boc_log"]
 }
+
+// ── boc_dataset.issue ─────────────────────────────────────────────────────
+// Un boletín (número de publicación dentro de un año).
+// _dlt_id es la clave única generada por el pipeline.
+
+model Issue {
+  dltId            String             @id @map("_dlt_id")
+  dltLoadId        String             @map("_dlt_load_id")
+  year             BigInt
+  issue            BigInt
+  title            String?
+  url              String?
+  summaryUrl       String?            @map("summary__url")
+  summarySignature String?            @map("summary__signature")
+  dispositions     IssueDisposition[]
+
+  @@map("issue")
+  @@schema("boc_dataset")
+}
+
+// ── boc_dataset.issue__dispositions ──────────────────────────────────────
+// Listado de disposiciones tal como aparecen en el índice del boletín.
+// Contiene metadatos de índice; el texto completo está en Document.
+
+model IssueDisposition {
+  dltId        String  @id @map("_dlt_id")
+  dltRootId    String  @map("_dlt_root_id")
+  dltParentId  String  @map("_dlt_parent_id")
+  dltListIdx   BigInt  @map("_dlt_list_idx")
+  section      String?
+  subsection   String?
+  organization String?
+  summary      String?
+  metadata     String?
+  identifier   String?
+  pdf          String?
+  html         String?
+  signature    String?
+  issue        Issue   @relation(fields: [dltRootId], references: [dltId])
+
+  @@map("issue__dispositions")
+  @@schema("boc_dataset")
+}
+
+// ── boc_dataset.document ─────────────────────────────────────────────────
+// Texto completo de cada disposición extraído del HTML oficial.
+// La columna body_tsv es un tsvector generado (no se declara aquí;
+// se usa directamente en raw queries con @@ y ts_headline).
+
+model Document {
+  dltId        String  @id @map("_dlt_id")
+  dltLoadId    String  @map("_dlt_load_id")
+  year         BigInt
+  issue        BigInt
+  number       String
+  document     String?
+  date         String?
+  entity       String?
+  section      String?
+  subsection   String?
+  organization String?
+  identifier   String?
+  pdf          String?
+  signature    String?
+  title        String?
+  body         String?
+
+  @@map("document")
+  @@schema("boc_dataset")
+}
+
+// ── boc_log — vistas de métricas ─────────────────────────────────────────
+// Las vistas no tienen clave primaria; se consultan con $queryRaw
+// en MetricsRepository. No se definen modelos Prisma para ellas.
