@@ -15,6 +15,7 @@ tasks:
   - id: create_tables
     type: io.kestra.plugin.scripts.python.Script
     containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
     taskRunner:
       type: io.kestra.plugin.scripts.runner.docker.Docker
       networkMode: boc-postgres-network
@@ -90,6 +91,7 @@ tasks:
   - id: create_views
     type: io.kestra.plugin.scripts.python.Script
     containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
     taskRunner:
       type: io.kestra.plugin.scripts.runner.docker.Docker
       networkMode: boc-postgres-network
