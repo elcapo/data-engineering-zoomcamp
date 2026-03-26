@@ -90,7 +90,15 @@ tasks:
       with open("year.json") as f:
           records = json.load(f)
 
-      @dlt.resource(name="year", write_disposition="merge", primary_key=["year", "issue"])
+      @dlt.resource(
+          name="year",
+          write_disposition="merge",
+          primary_key=["year", "issue"],
+          columns={
+              "year": {"data_type": "bigint"},
+              "issue": {"data_type": "bigint"},
+          },
+      )
       def year_data():
           yield from records
 

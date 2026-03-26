@@ -99,7 +99,15 @@ tasks:
       with open("issue.json") as f:
           records = json.load(f)
 
-      @dlt.resource(name="issue", write_disposition="merge", primary_key=["year", "issue"])
+      @dlt.resource(
+          name="issue",
+          write_disposition="merge",
+          primary_key=["year", "issue"],
+          columns={
+              "year": {"data_type": "bigint"},
+              "issue": {"data_type": "bigint"},
+          },
+      )
       def issue_data():
           yield from [records]
 

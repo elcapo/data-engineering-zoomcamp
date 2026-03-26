@@ -9,6 +9,6 @@ SELECT
   dl.downloaded_at,
   el.extracted_at
 FROM boc_dataset.archive AS a
-LEFT JOIN boc_log.download_log AS dl ON dl.entity_type = 'year' AND dl.year = a.year::INT
-LEFT JOIN boc_log.extraction_log AS el ON el.entity_type = 'year' AND el.year = a.year::INT
-ORDER BY a.year::INT DESC
+LEFT JOIN boc_log.download_log AS dl ON dl.entity_type = 'year' AND dl.year = a.year
+LEFT JOIN boc_log.extraction_log AS el ON el.entity_type = 'year' AND el.year = a.year
+ORDER BY a.year DESC

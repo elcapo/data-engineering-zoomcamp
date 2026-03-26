@@ -157,7 +157,16 @@ tasks:
           "body":         body,
       }
 
-      @dlt.resource(name="document", write_disposition="merge", primary_key=["year", "issue", "number"])
+      @dlt.resource(
+          name="document",
+          write_disposition="merge",
+          primary_key=["year", "issue", "number"],
+          columns={
+              "year": {"data_type": "bigint"},
+              "issue": {"data_type": "bigint"},
+              "number": {"data_type": "bigint"},
+          },
+      )
       def document_data():
           yield record
 

@@ -123,7 +123,7 @@ tasks:
               FROM boc_dataset.archive a
               LEFT JOIN boc_log.download_log dl ON
                   dl.entity_type = 'year' AND
-                  dl.year = a.year::INT
+                  dl.year = a.year
           """,
 
           # For each issue listed in a year index, did we download its index?

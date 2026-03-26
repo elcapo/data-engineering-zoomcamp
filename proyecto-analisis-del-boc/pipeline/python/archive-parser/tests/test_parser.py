@@ -22,10 +22,10 @@ def test_each_record_has_required_keys(archive_html):
         assert "absolute_link" in record
 
 
-def test_year_is_four_digit_string(archive_html):
+def test_year_is_four_digit_int(archive_html):
     for record in parse_year_index(archive_html):
-        assert record["year"].isdigit()
-        assert len(record["year"]) == 4
+        assert isinstance(record["year"], int)
+        assert 1000 <= record["year"] <= 9999
 
 
 def test_links_are_absolute(archive_html):
@@ -52,15 +52,15 @@ def test_no_duplicate_years(archive_html):
 def test_contains_known_years(archive_html):
     years = {r["year"] for r in parse_year_index(archive_html)}
     # Años presentes en el archivo de ejemplo
-    assert "2026" in years
-    assert "2025" in years
-    assert "2024" in years
+    assert 2026 in years
+    assert 2025 in years
+    assert 2024 in years
 
 
 def test_link_for_known_year(archive_html):
     result = parse_year_index(archive_html)
     by_year = {r["year"]: r for r in result}
-    assert by_year["2026"]["absolute_link"] == BASE_URL + "2026/"
+    assert by_year[2026]["absolute_link"] == BASE_URL + "2026/"
 
 
 # ---------------------------------------------------------------------------
@@ -88,4 +88,4 @@ def test_absolute_links_are_accepted():
     html = f'<html><body><a href="{BASE_URL}2020/">2020</a></body></html>'
     result = parse_year_index(html)
     assert len(result) == 1
-    assert result[0]["year"] == "2020"
+    assert result[0]["year"] == 2020

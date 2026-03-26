@@ -12,9 +12,9 @@ def _is_absolute(url: str) -> bool:
     return bool(parsed.scheme and parsed.netloc)
 
 
-def _year_from_link(link: str) -> str | None:
+def _year_from_link(link: str) -> int | None:
     matches = _YEAR_PATTERN.findall(link)
-    return matches[0] if matches else None
+    return int(matches[0]) if matches and matches[0] else None
 
 
 def parse_year_index(html: str) -> list[dict]:
@@ -24,7 +24,7 @@ def parse_year_index(html: str) -> list[dict]:
     sin duplicados (un registro por año).
     """
     soup = BeautifulSoup(html, "html.parser")
-    seen: dict[str, dict] = {}
+    seen: dict[int, dict] = {}
 
     for tag in soup.find_all("a"):
         if not tag.has_attr("href"):

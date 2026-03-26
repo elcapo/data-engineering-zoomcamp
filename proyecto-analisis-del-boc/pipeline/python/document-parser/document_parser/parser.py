@@ -70,7 +70,7 @@ def _build_markdown(
     year: int | None,
     issue: int | None,
     document: str | None,
-    number: str | None,
+    number: int | str | None,
     date: str | None,
     entity: str | None,
     section: str | None,
@@ -92,7 +92,7 @@ def _build_markdown(
     if document is not None:
         lines.append(f"document: {_yaml_str(document)}")
     if number is not None:
-        lines.append(f"number: {_yaml_str(number)}")
+        lines.append(f"number: {number}" if isinstance(number, int) else f"number: {_yaml_str(number)}")
     if date is not None:
         lines.append(f"date: {_yaml_str(date)}")
     if entity is not None:
@@ -210,12 +210,12 @@ def _extract_title(soup: BeautifulSoup) -> tuple[str | None, str | None]:
     if b_tag:
         number = b_tag.get_text(strip=True)
         title = re.sub(r"^\s*" + re.escape(number) + r"\s*", "", text).strip()
-        return number, title
+        return int(number) if number.isdigit() else number, title
 
     # Historical format: "1 - REAL DECRETO…"
     match = re.match(r"^(\d+)\s*[-–]\s*(.+)$", text, re.DOTALL)
     if match:
-        return match.group(1).strip(), match.group(2).strip()
+        return int(match.group(1)), match.group(2).strip()
 
     return None, text
 
