@@ -54,7 +54,7 @@ services:
       - boc-postgres-network
 
   kestra:
-    image: kestra/kestra:v1.1
+    image: kestra/kestra:v1.3
     pull_policy: always
     # Kestra, by default, has a termination grace period of 5m. We need to wait a little more to be sure no active tasks are running.
     stop_grace_period: 6m

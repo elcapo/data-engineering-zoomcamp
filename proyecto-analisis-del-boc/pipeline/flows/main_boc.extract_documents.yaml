@@ -75,6 +75,7 @@ tasks:
   - id: parse
     type: io.kestra.plugin.scripts.python.Commands
     containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
     taskRunner:
       type: io.kestra.plugin.scripts.runner.docker.Docker
       networkMode: boc-postgres-network

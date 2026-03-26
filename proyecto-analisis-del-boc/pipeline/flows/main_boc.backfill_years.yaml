@@ -33,9 +33,9 @@ tasks:
     type: io.kestra.plugin.core.flow.ForEach
     values: "{{ range(inputs.from_year, inputs.to_year) }}"
     tasks:
-      - id: call_download_years
-        type: io.kestra.plugin.core.flow.Subflow
-        namespace: boc
-        flowId: download_years
-        inputs:
-            year: "{{ taskrun.value }}"
+    - id: call_download_years
+      type: io.kestra.plugin.core.flow.Subflow
+      namespace: boc
+      flowId: download_years
+      inputs:
+        year: "{{ taskrun.value | number }}"
