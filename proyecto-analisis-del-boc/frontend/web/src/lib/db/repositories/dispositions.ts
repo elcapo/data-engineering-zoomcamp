@@ -98,7 +98,7 @@ export const DispositionRepository = {
     type Row = {
       year: bigint;
       issue: bigint;
-      number: string;
+      number: bigint | string;
       section: string | null;
       subsection: string | null;
       organization: string | null;
@@ -181,7 +181,7 @@ export const DispositionRepository = {
 type DocumentRow = {
   year: bigint;
   issue: bigint;
-  number: string;
+  number: bigint | string;
   section?: string | null;
   subsection?: string | null;
   organization?: string | null;
@@ -198,7 +198,7 @@ function toDisposition(row: DocumentRow): Disposition {
   return {
     year: Number(row.year),
     issue: Number(row.issue),
-    number: row.number,
+    number: String(row.number),
     section: row.section ?? "",
     subsection: row.subsection ?? undefined,
     organization: row.organization ?? "",
