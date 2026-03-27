@@ -33,7 +33,7 @@ export function ComparisonChart({ data, height = 350, className = "" }: Comparis
           <YAxis domain={[0, 100]} />
           <Tooltip formatter={(v) => `${Number(v).toFixed(1)}%`} />
           <Legend />
-          <Bar dataKey="downloaded" name="Descargado" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="downloaded" name="Descargado" fill="#4f46e5" radius={[4, 4, 0, 0]} />
           <Bar dataKey="extracted" name="Extraído" fill="#10b981" radius={[4, 4, 0, 0]} />
         </RechartsBarChart>
       </ResponsiveContainer>

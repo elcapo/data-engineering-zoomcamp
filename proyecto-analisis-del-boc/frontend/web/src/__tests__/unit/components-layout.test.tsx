@@ -11,6 +11,11 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+// Mock next/navigation
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+}));
+
 describe("Nav", () => {
   it("renderiza los enlaces de navegación principales", () => {
     render(<Nav />);

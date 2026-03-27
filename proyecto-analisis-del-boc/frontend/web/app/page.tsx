@@ -8,10 +8,10 @@ export default async function Home() {
   const config = readSectionsConfig();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-10">
       {/* Hero con barra de búsqueda */}
       <section className="mb-12 text-center">
-        <h1 className="mb-2 text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+        <h1 className="mb-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
           BOC Canarias Web
         </h1>
         <p className="mb-6 text-zinc-600 dark:text-zinc-400">
@@ -45,8 +45,8 @@ async function LatestBulletins({ title, limit }: { title: string; limit: number 
   if (bulletins.length === 0) return null;
 
   return (
-    <section className="mb-10">
-      <h2 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-100">{title}</h2>
+    <section className="mb-12">
+      <h2 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">{title}</h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {bulletins.map((b) => (
           <BulletinCard key={`${b.year}-${b.issue}`} bulletin={b} />
@@ -62,8 +62,8 @@ function Editorial({ title, source }: { title: string; source: string }) {
   if (articles.length === 0) return null;
 
   return (
-    <section className="mb-10">
-      <h2 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-100">{title}</h2>
+    <section className="mb-12">
+      <h2 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">{title}</h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {articles.map((a) => (
           <EditorialCard key={a.slug} title={a.title} excerpt={a.excerpt} link={a.link} />

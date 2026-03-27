@@ -21,22 +21,23 @@ export default async function MetricasPage() {
   ]);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+    <div className="mx-auto max-w-7xl px-4 py-10">
+      <p className="mb-1 text-sm text-zinc-500 dark:text-zinc-400">Inicio &gt; Métricas</p>
+      <h1 className="mb-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
         Métricas de cobertura
       </h1>
       <p className="mb-8 text-zinc-600 dark:text-zinc-400">
         Porcentaje del corpus histórico del BOC disponible en la base de datos.
         Consulta la{" "}
-        <Link href="/metodologia" className="font-medium text-blue-600 hover:underline dark:text-blue-400">
+        <Link href="/metodologia" className="font-medium text-accent hover:underline underline-offset-4 dark:text-accent-light">
           metodología
         </Link>{" "}
         para más detalles sobre el proceso de obtención de datos.
       </p>
 
       {/* KPIs */}
-      <section className="mb-10">
-        <h2 className="mb-4 text-lg font-bold text-zinc-900 dark:text-zinc-100">Resumen general</h2>
+      <section className="mb-12">
+        <h2 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">Resumen general</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <MetricKPI
             label="Años descargados"

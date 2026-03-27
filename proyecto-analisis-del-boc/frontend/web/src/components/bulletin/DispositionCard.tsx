@@ -7,11 +7,10 @@ interface DispositionCardProps {
 }
 
 export function DispositionCard({ disposition }: DispositionCardProps) {
-  // Enlace al HTML oficial del Gobierno de Canarias
   const officialUrl = disposition.htmlUrl;
 
   return (
-    <Card as="article" className="flex flex-col gap-2">
+    <Card as="article" className="flex flex-col gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/30">
       <SectionBreadcrumb
         section={disposition.section}
         subsection={disposition.subsection}
@@ -20,7 +19,7 @@ export function DispositionCard({ disposition }: DispositionCardProps) {
 
       {officialUrl ? (
         <a href={officialUrl} target="_blank" rel="noopener noreferrer" className="group">
-          <h3 className="font-semibold text-zinc-900 group-hover:text-blue-600 dark:text-zinc-100 dark:group-hover:text-blue-400">
+          <h3 className="font-semibold text-zinc-900 group-hover:text-accent dark:text-zinc-100 dark:group-hover:text-accent-light">
             {disposition.title || "Sin título"}
           </h3>
         </a>
@@ -49,7 +48,7 @@ export function DispositionCard({ disposition }: DispositionCardProps) {
             href={officialUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+            className="font-medium text-accent hover:underline underline-offset-4 dark:text-accent-light"
           >
             Ver disposición
           </a>
@@ -59,7 +58,7 @@ export function DispositionCard({ disposition }: DispositionCardProps) {
             href={disposition.pdfUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-zinc-500 hover:underline dark:text-zinc-400"
+            className="text-zinc-500 hover:underline underline-offset-4 dark:text-zinc-400"
           >
             PDF oficial
           </a>

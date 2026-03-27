@@ -26,8 +26,8 @@ interface BarChartProps {
 
 function barFill(value: number): string {
   if (value >= 95) return "#10b981"; // emerald-500
-  if (value >= 50) return "#f59e0b"; // amber-500
-  return "#ef4444"; // red-500
+  if (value >= 50) return "#0ea5e9"; // sky-500
+  return "#f97316"; // orange-500
 }
 
 export function BarChart({ data, layout = "vertical", height = 400, colorByValue = false, className = "" }: BarChartProps) {

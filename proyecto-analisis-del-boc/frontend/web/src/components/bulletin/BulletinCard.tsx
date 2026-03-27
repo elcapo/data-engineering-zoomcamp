@@ -18,7 +18,7 @@ export function BulletinCard({ bulletin }: BulletinCardProps) {
             <p className="text-sm text-zinc-500 dark:text-zinc-400">{bulletin.date}</p>
           )}
         </div>
-        <Badge variant="blue">{bulletin.dispositionCount} disp.</Badge>
+        <Badge variant="accent">{bulletin.dispositionCount} disp.</Badge>
       </div>
 
       {bulletin.sectionCounts.length > 0 && (
@@ -36,7 +36,7 @@ export function BulletinCard({ bulletin }: BulletinCardProps) {
           href={bulletin.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-auto text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+          className="mt-auto text-sm font-medium text-accent hover:underline underline-offset-4 dark:text-accent-light"
         >
           Ver en BOC oficial
         </a>

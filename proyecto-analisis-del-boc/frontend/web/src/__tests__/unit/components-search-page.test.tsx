@@ -63,7 +63,7 @@ describe("SearchPage", () => {
     mockSearchParams = new URLSearchParams("q=test");
     render(<SearchPage />);
     await waitFor(() => {
-      expect(screen.getByText("2 resultados")).toBeInTheDocument();
+      expect(screen.getAllByText("2 resultados").length).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -75,7 +75,7 @@ describe("SearchPage", () => {
     mockSearchParams = new URLSearchParams("q=xzqwerty");
     render(<SearchPage />);
     await waitFor(() => {
-      expect(screen.getByText(/No se encontraron resultados/)).toBeInTheDocument();
+      expect(screen.getByText(/Sin resultados/)).toBeInTheDocument();
     });
   });
 

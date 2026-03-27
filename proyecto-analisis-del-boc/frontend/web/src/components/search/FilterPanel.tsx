@@ -14,13 +14,35 @@ interface FilterPanelProps {
   onSubmit: () => void;
 }
 
+const inputClass =
+  "w-full rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm placeholder:text-zinc-400 transition-colors duration-150 focus:border-accent focus:ring-2 focus:ring-accent/30 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100";
+
+function hasAnyFilter(filters: SearchFilters, terms: BooleanTerm[]): boolean {
+  return (
+    terms.length > 0 ||
+    !!filters.section?.length ||
+    !!filters.org ||
+    !!filters.from ||
+    !!filters.to ||
+    !!filters.year ||
+    !!filters.issue
+  );
+}
+
 export function FilterPanel({ filters, terms, onFiltersChange, onTermsChange, onSubmit }: FilterPanelProps) {
   function update(patch: Partial<SearchFilters>) {
     onFiltersChange({ ...filters, ...patch });
   }
 
+  function handleClear() {
+    onFiltersChange({});
+    onTermsChange([]);
+  }
+
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50">
+    <div className="flex flex-col gap-4 rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/50">
+      <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">Filtros</h2>
+
       <div>
         <label className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Términos de búsqueda
@@ -42,7 +64,7 @@ export function FilterPanel({ filters, terms, onFiltersChange, onTermsChange, on
               update({ section: vals.length > 0 ? vals : undefined });
             }}
             placeholder="Ej: I, II, III"
-            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm placeholder:text-zinc-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className={inputClass}
           />
         </div>
 
@@ -56,7 +78,7 @@ export function FilterPanel({ filters, terms, onFiltersChange, onTermsChange, on
             value={filters.org ?? ""}
             onChange={(e) => update({ org: e.target.value || undefined })}
             placeholder="Ej: Consejería de Educación"
-            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm placeholder:text-zinc-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className={inputClass}
           />
         </div>
       </div>
@@ -79,7 +101,7 @@ export function FilterPanel({ filters, terms, onFiltersChange, onTermsChange, on
             value={filters.year ?? ""}
             onChange={(e) => update({ year: e.target.value ? parseInt(e.target.value, 10) : undefined })}
             placeholder="Ej: 2024"
-            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className={inputClass}
           />
         </div>
 
@@ -94,14 +116,21 @@ export function FilterPanel({ filters, terms, onFiltersChange, onTermsChange, on
             value={filters.issue ?? ""}
             onChange={(e) => update({ issue: e.target.value ? parseInt(e.target.value, 10) : undefined })}
             placeholder="Ej: 45"
-            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className={inputClass}
           />
         </div>
       </div>
 
-      <Button onClick={onSubmit} className="self-start">
-        Aplicar filtros
-      </Button>
+      <div className="flex items-center gap-3">
+        <Button onClick={onSubmit} className="self-start">
+          Aplicar filtros
+        </Button>
+        {hasAnyFilter(filters, terms) && (
+          <Button variant="ghost" onClick={handleClear} className="self-start">
+            Limpiar filtros
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

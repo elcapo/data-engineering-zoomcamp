@@ -9,7 +9,7 @@ import { FilterPanel } from "./FilterPanel";
 import { ResultsChart } from "./ResultsChart";
 import { SemanticPaginator } from "./SemanticPaginator";
 import { DispositionCard } from "@/components/bulletin/DispositionCard";
-import { Spinner } from "@/components/ui/Spinner";
+import { SkeletonCard } from "@/components/ui/Skeleton";
 
 export function SearchPage() {
   const router = useRouter();
@@ -77,8 +77,9 @@ export function SearchPage() {
   const hasQuery = searchParams.size > 0;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-zinc-900 dark:text-zinc-100">Buscar en el BOC</h1>
+    <div className="mx-auto max-w-7xl px-4 py-10">
+      <p className="mb-1 text-sm text-zinc-500 dark:text-zinc-400">Inicio &gt; Buscar</p>
+      <h1 className="mb-6 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Buscar en el BOC</h1>
 
       <FilterPanel
         filters={filters}
@@ -90,8 +91,10 @@ export function SearchPage() {
 
       <div className="mt-8">
         {loading && (
-          <div className="flex justify-center py-12">
-            <Spinner size="lg" />
+          <div className="flex flex-col gap-4">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
           </div>
         )}
 
@@ -106,15 +109,24 @@ export function SearchPage() {
             <ResultsChart results={result.results} />
 
             {result.results.length === 0 ? (
-              <p className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-                No se encontraron resultados. Prueba con otros términos o filtros.
-              </p>
-            ) : (
-              <div className="flex flex-col gap-4">
-                {result.results.map((d) => (
-                  <DispositionCard key={`${d.year}-${d.issue}-${d.number}`} disposition={d} />
-                ))}
+              <div className="flex flex-col items-center gap-3 py-12">
+                <svg className="size-12 text-zinc-300 dark:text-zinc-600" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+                <p className="text-lg font-medium text-zinc-700 dark:text-zinc-300">Sin resultados</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">Prueba con otros términos o ajusta los filtros.</p>
               </div>
+            ) : (
+              <>
+                <p className="mb-4 text-lg font-medium text-zinc-900 dark:text-zinc-100">
+                  {result.total.toLocaleString("es-ES")} {result.total === 1 ? "resultado" : "resultados"}
+                </p>
+                <div className="flex flex-col gap-4">
+                  {result.results.map((d) => (
+                    <DispositionCard key={`${d.year}-${d.issue}-${d.number}`} disposition={d} />
+                  ))}
+                </div>
+              </>
             )}
 
             <div className="mt-6">
@@ -129,9 +141,13 @@ export function SearchPage() {
         )}
 
         {!loading && !error && !result && !hasQuery && (
-          <p className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-            Usa los filtros de arriba para buscar disposiciones en el BOC.
-          </p>
+          <div className="flex flex-col items-center gap-3 py-12">
+            <svg className="size-12 text-zinc-300 dark:text-zinc-600" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+            </svg>
+            <p className="text-lg font-medium text-zinc-700 dark:text-zinc-300">Busca en el BOC</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">Usa los filtros de arriba para encontrar disposiciones.</p>
+          </div>
         )}
       </div>
     </div>
