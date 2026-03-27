@@ -121,7 +121,7 @@ tasks:
 
       pipeline.run(issue_data)
 
-  - id: ensure_fts
+  - id: ensure_fulltext_search
     type: io.kestra.plugin.scripts.python.Script
     containerImage: boc-python:latest
     pythonVersion: "python: 3.11"
@@ -194,4 +194,3 @@ tasks:
           )
 
       conn.close()
-      print(f"Logged: {os.environ['OBJECT_KEY']}")
