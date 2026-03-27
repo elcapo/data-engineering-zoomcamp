@@ -32,11 +32,11 @@ export function ArchiveSection({ summary, details }: ArchiveSectionProps) {
             <span className="text-sm text-zinc-500 dark:text-zinc-400">años publicados</span>
           </div>
           <div className="text-center">
-            <span className="block text-2xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400">{summary.downloadedYears}</span>
+            <span className="block text-2xl font-bold tabular-nums text-blue-600 dark:text-blue-400">{summary.downloadedYears}</span>
             <span className="text-sm text-zinc-500 dark:text-zinc-400">años descargados</span>
           </div>
           <div className="text-center">
-            <span className="block text-2xl font-bold tabular-nums text-blue-600 dark:text-blue-400">{summary.extractedYears}</span>
+            <span className="block text-2xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400">{summary.extractedYears}</span>
             <span className="text-sm text-zinc-500 dark:text-zinc-400">años extraídos</span>
           </div>
         </div>
@@ -64,12 +64,12 @@ export function ArchiveSection({ summary, details }: ArchiveSectionProps) {
                     <td className="py-1.5 pr-4 tabular-nums font-medium text-zinc-900 dark:text-zinc-100">{d.year}</td>
                     <td className="py-1.5 pr-4">
                       {d.downloadedAt
-                        ? <span className="text-emerald-600 dark:text-emerald-400">{formatDate(d.downloadedAt)}</span>
+                        ? <span className="text-blue-600 dark:text-blue-400">{formatDate(d.downloadedAt)}</span>
                         : <span className="text-zinc-400">—</span>}
                     </td>
                     <td className="py-1.5">
                       {d.extractedAt
-                        ? <span className="text-blue-600 dark:text-blue-400">{formatDate(d.extractedAt)}</span>
+                        ? <span className="text-emerald-600 dark:text-emerald-400">{formatDate(d.extractedAt)}</span>
                         : <span className="text-zinc-400">—</span>}
                     </td>
                   </tr>

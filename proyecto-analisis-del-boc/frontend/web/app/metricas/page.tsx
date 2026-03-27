@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MetricsRepository } from "@/lib/db/repositories/metrics";
 import { MetricKPI } from "@/components/metrics/MetricKPI";
-import { BarChart } from "@/components/metrics/BarChart";
-import { ComparisonChart } from "@/components/metrics/ComparisonChart";
-import { YearDetailTable } from "@/components/metrics/YearDetailTable";
 import { ArchiveSection } from "@/components/metrics/ArchiveSection";
 import { BulletinSection } from "@/components/metrics/BulletinSection";
 import { DispositionSection } from "@/components/metrics/DispositionSection";
@@ -22,20 +19,6 @@ export default async function MetricasPage() {
     MetricsRepository.getYearCompletion(),
     MetricsRepository.getIssueCompletion(),
   ]);
-
-  const downloadByYear = report.downloads.issues.map((r) => ({
-    label: String(r.year),
-    value: r.percentage,
-  }));
-
-  const comparisonData = report.downloads.issues.map((dl) => {
-    const ext = report.extractions.issues.find((e) => e.year === dl.year);
-    return {
-      label: String(dl.year),
-      downloaded: dl.percentage,
-      extracted: ext?.percentage ?? 0,
-    };
-  });
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
@@ -77,41 +60,6 @@ export default async function MetricasPage() {
             detail={`${report.extractions.years.extracted} de ${report.extractions.years.total}`}
           />
         </div>
-      </section>
-
-      {/* Progreso por año */}
-      <section className="mb-10">
-        <h2 className="mb-4 text-lg font-bold text-zinc-900 dark:text-zinc-100">
-          Progreso de descarga por año
-        </h2>
-        <BarChart
-          data={downloadByYear}
-          layout="vertical"
-          height={Math.max(300, downloadByYear.length * 28)}
-          colorByValue
-        />
-      </section>
-
-      {/* Detalle expandible por año */}
-      <section className="mb-10">
-        <h2 className="mb-4 text-lg font-bold text-zinc-900 dark:text-zinc-100">
-          Detalle por año y boletín
-        </h2>
-        <p className="mb-3 text-sm text-zinc-500 dark:text-zinc-400">
-          Haz clic en un año para ver el desglose por boletín.
-        </p>
-        <YearDetailTable
-          years={report.downloads.issues}
-          documents={report.downloads.documents}
-        />
-      </section>
-
-      {/* Comparativa descarga vs extracción */}
-      <section className="mb-10">
-        <h2 className="mb-4 text-lg font-bold text-zinc-900 dark:text-zinc-100">
-          Descarga vs extracción por año
-        </h2>
-        <ComparisonChart data={comparisonData} height={350} />
       </section>
 
       {/* Archivo */}

@@ -163,12 +163,12 @@ export function DispositionSection({ issues }: DispositionSectionProps) {
                                       <td className="py-0.5 pr-3 tabular-nums text-zinc-700 dark:text-zinc-300">{d.disposition}</td>
                                       <td className="py-0.5 pr-3">
                                         {d.downloadedAt
-                                          ? <span className="text-emerald-600 dark:text-emerald-400">{formatDate(d.downloadedAt)}</span>
+                                          ? <span className="text-blue-600 dark:text-blue-400">{formatDate(d.downloadedAt)}</span>
                                           : <span className="text-zinc-400">—</span>}
                                       </td>
                                       <td className="py-0.5">
                                         {d.extractedAt
-                                          ? <span className="text-blue-600 dark:text-blue-400">{formatDate(d.extractedAt)}</span>
+                                          ? <span className="text-emerald-600 dark:text-emerald-400">{formatDate(d.extractedAt)}</span>
                                           : <span className="text-zinc-400">—</span>}
                                       </td>
                                     </tr>
