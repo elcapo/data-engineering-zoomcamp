@@ -20,6 +20,10 @@ export default async function MetricasPage() {
     MetricsRepository.getIssueCompletion(),
   ]);
 
+  const totalDispositions = issueCompletion.reduce((s, i) => s + i.totalDocuments, 0);
+  const extractedDispositions = issueCompletion.reduce((s, i) => s + i.extractedDocuments, 0);
+  const extractedPct = totalDispositions > 0 ? (extractedDispositions / totalDispositions) * 100 : 0;
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       <p className="mb-1 text-sm text-zinc-500 dark:text-zinc-400">Inicio &gt; Métricas</p>
@@ -57,8 +61,8 @@ export default async function MetricasPage() {
           />
           <MetricKPI
             label="Texto completo extraído"
-            value={report.extractions.years.percentage}
-            detail={`${report.extractions.years.extracted} de ${report.extractions.years.total}`}
+            value={extractedPct}
+            detail={`${extractedDispositions.toLocaleString("es-ES")} de ${totalDispositions.toLocaleString("es-ES")} disposiciones`}
           />
         </div>
       </section>
