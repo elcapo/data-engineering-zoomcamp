@@ -5,6 +5,9 @@ import { MetricKPI } from "@/components/metrics/MetricKPI";
 import { BarChart } from "@/components/metrics/BarChart";
 import { ComparisonChart } from "@/components/metrics/ComparisonChart";
 import { YearDetailTable } from "@/components/metrics/YearDetailTable";
+import { ArchiveSection } from "@/components/metrics/ArchiveSection";
+import { BulletinSection } from "@/components/metrics/BulletinSection";
+import { DispositionSection } from "@/components/metrics/DispositionSection";
 
 export const metadata: Metadata = {
   title: "Métricas — BOC Canarias Web",
@@ -12,7 +15,13 @@ export const metadata: Metadata = {
 };
 
 export default async function MetricasPage() {
-  const report = await MetricsRepository.getDataQualityReport();
+  const [report, archiveSummary, archiveDetails, yearCompletion, issueCompletion] = await Promise.all([
+    MetricsRepository.getDataQualityReport(),
+    MetricsRepository.getArchiveCompletion(),
+    MetricsRepository.getArchiveDetails(),
+    MetricsRepository.getYearCompletion(),
+    MetricsRepository.getIssueCompletion(),
+  ]);
 
   const downloadByYear = report.downloads.issues.map((r) => ({
     label: String(r.year),
@@ -104,6 +113,15 @@ export default async function MetricasPage() {
         </h2>
         <ComparisonChart data={comparisonData} height={350} />
       </section>
+
+      {/* Archivo */}
+      <ArchiveSection summary={archiveSummary} details={archiveDetails} />
+
+      {/* Boletines */}
+      <BulletinSection years={yearCompletion} />
+
+      {/* Disposiciones */}
+      <DispositionSection issues={issueCompletion} />
     </div>
   );
 }

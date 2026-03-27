@@ -31,7 +31,11 @@ app/  (Next.js App Router)
 └── api/
     ├── search/route.ts
     ├── bulletins/route.ts
-    └── metrics/route.ts
+    └── metrics/
+        ├── route.ts
+        ├── archive-details/route.ts
+        ├── year-details/route.ts
+        └── issue-details/route.ts
 
 src/
 ├── components/
@@ -39,7 +43,7 @@ src/
 │   ├── layout/       Header (con SearchBar), Footer, Nav
 │   ├── bulletin/     BulletinCard, DispositionCard, EditorialCard, SectionBreadcrumb
 │   ├── search/       SearchBar, FilterPanel, BooleanTermInput, DateRangePicker, SemanticPaginator
-│   ├── metrics/      BarChart (Recharts), MetricKPI
+│   ├── metrics/      BarChart, MetricKPI, ArchiveSection, BulletinSection, DispositionSection
 │   └── MarkdownPage
 ├── lib/
 │   ├── db/
@@ -47,7 +51,7 @@ src/
 │   │   └── repositories/          BulletinRepository, DispositionRepository, MetricsRepository
 │   ├── search/query-builder.ts    convierte filtros UI a tsquery
 │   └── content/markdown.ts        lee content/ en tiempo de servidor
-└── types/domain.ts                Bulletin, Disposition, DataQualityReport
+└── types/domain.ts                Bulletin, Disposition, DataQualityReport, ArchiveCompletion, YearCompletion, IssueCompletion, …
 
 content/           contenidos editoriales en Markdown (no requieren BD)
 ├── home/
@@ -76,10 +80,10 @@ Los componentes de `src/components/` están organizados por dominio:
 | `layout/` | Header, Footer, Nav | Estructura de la app (Header incluye SearchBar) |
 | `bulletin/` | BulletinCard, DispositionCard, EditorialCard, SectionBreadcrumb | Tarjetas de boletines y disposiciones |
 | `search/` | SearchBar, FilterPanel, BooleanTermInput, DateRangePicker, SemanticPaginator | UI de búsqueda y filtros |
-| `metrics/` | BarChart, MetricKPI | Visualización de métricas (BarChart envuelve Recharts) |
+| `metrics/` | BarChart, MetricKPI, ArchiveSection, BulletinSection, DispositionSection | Visualización de métricas: gráficas (BarChart/Recharts), KPIs y secciones de cobertura por entidad |
 | raíz | MarkdownPage | Renderiza páginas Markdown con estilos `prose` |
 
-Los componentes con estado del cliente (`"use client"`) son: SearchBar, BooleanTermInput, DateRangePicker, FilterPanel y BarChart. El resto son server-compatible.
+Los componentes con estado del cliente (`"use client"`) son: SearchBar, BooleanTermInput, DateRangePicker, FilterPanel, BarChart, ArchiveSection, BulletinSection y DispositionSection. El resto son server-compatible.
 
 ---
 
@@ -92,6 +96,9 @@ Todas las rutas son `GET` y devuelven JSON.
 | `/api/bulletins` | `limit` (1–50, default 5) | `Bulletin[]` |
 | `/api/search` | `q`, `section[]`, `subsection[]`, `org`, `from`, `to`, `year`, `issue`, `cursor`, `limit` (1–100, default 20) | `{ results, total, nextCursor, prevCursor }` |
 | `/api/metrics` | — | `DataQualityReport` |
+| `/api/metrics/archive-details` | — | `ArchiveDetail[]` |
+| `/api/metrics/year-details` | `year` | `YearDetail[]` |
+| `/api/metrics/issue-details` | `year`, `issue`, `page` (default 1), `pageSize` (1–100, default 50) | `PaginatedResult<IssueDetail>` |
 
 Las rutas son capas finas sobre los repositorios: parsean query params, delegan en el repositorio correspondiente y devuelven el resultado. Los errores internos producen un 500 con `{ error: "..." }`.
 
@@ -146,6 +153,9 @@ Tablas y vistas utilizadas:
 | `Bulletin` | `boc_dataset.issue` |
 | `Disposition` | `boc_dataset.issue__dispositions` + `boc_dataset.document` |
 | `DataQualityReport` | vistas `boc_log.metric_*` |
+| `ArchiveCompletion/Detail` | `boc_dataset.archive` + `boc_log.download_log` + `boc_log.extraction_log` |
+| `YearCompletion/Detail` | `boc_dataset.year` + vistas `boc_log.metric_*` + `boc_log.download_log` |
+| `IssueCompletion/Detail` | `boc_dataset.issue` + `boc_dataset.issue__dispositions` + vistas `boc_log.metric_*` + `boc_log.download_log` + `boc_log.extraction_log` |
 
 ---
 

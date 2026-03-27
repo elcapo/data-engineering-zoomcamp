@@ -86,3 +86,69 @@ export interface DataQualityReport {
     documents: IssueBreakdown[];
   };
 }
+
+// ── Métricas por entidad ──────────────────────────────────────────────────
+
+export interface ArchiveCompletion {
+  totalYears: number;
+  downloadedYears: number;
+  extractedYears: number;
+  downloadedPercentage: number;
+  extractedPercentage: number;
+  downloadedAt: string | null;
+}
+
+export interface ArchiveDetail {
+  year: number;
+  absoluteLink: string | null;
+  objectKey: string | null;
+  downloadedAt: string | null;
+  extractedAt: string | null;
+}
+
+export interface YearCompletion {
+  year: number;
+  totalIssues: number;
+  downloadedIssues: number;
+  downloadPercentage: number;
+  extractedIssues: number;
+  extractedPercentage: number;
+  downloadedAt: string | null;
+}
+
+export interface YearDetail {
+  year: number;
+  issue: number;
+  url: string | null;
+  objectKey: string | null;
+  downloadedAt: string | null;
+  extractedAt: string | null;
+}
+
+export interface IssueCompletion {
+  year: number;
+  issue: number;
+  totalDocuments: number;
+  downloadedDocuments: number;
+  downloadPercentage: number;
+  extractedDocuments: number;
+  extractedPercentage: number;
+  downloadedAt: string | null;
+}
+
+export interface IssueDetail {
+  year: number;
+  issue: number;
+  disposition: number;
+  objectKey: string | null;
+  downloadedAt: string | null;
+  extractedAt: string | null;
+}
+
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
