@@ -29,6 +29,12 @@ inputs:
     displayName: To issue
     defaults: "1"
 
+  - id: concurrency
+    type: INT
+    required: true
+    displayName: Concurrency
+    defaults: "1"
+
 tasks:
   - id: iterate_issues
     type: io.kestra.plugin.core.flow.ForEach
@@ -37,6 +43,7 @@ tasks:
       - id: call_download_issues
         type: io.kestra.plugin.core.flow.Subflow
         namespace: boc
+        concurrencyLimit: "{{ inputs.concurrency }}"
         flowId: download_issues
         inputs:
           year: "{{ inputs.year }}"
