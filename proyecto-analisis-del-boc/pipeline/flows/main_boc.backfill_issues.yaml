@@ -7,8 +7,8 @@ description: |
 
   Inputs:
     - **year**: the year whose boletines should be processed. Defaults to the current year.
-    - **from_issue**: first boletín number to process (inclusive). Defaults to 1.
-    - **to_issue**: last boletín number to process (exclusive). Defaults to 1.
+    - **from_issue**: first boletín number to process. Defaults to 1.
+    - **to_issue**: last boletín number to process. Defaults to 1.
 
 inputs:
   - id: year
@@ -41,3 +41,5 @@ tasks:
         inputs:
           year: "{{ inputs.year }}"
           issue: "{{ taskrun.value }}"
+        wait: true
+        transmitFailed: true

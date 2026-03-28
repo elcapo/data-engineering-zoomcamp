@@ -1,0 +1,77 @@
+id: followup_issues
+namespace: boc
+description: |
+  Query the **view_followup_issues** view for years with pending downloads or extractions and trigger **backfill_issues** for each one.
+
+  Inputs:
+    - **limit**: maximum number of years to process.
+
+inputs:
+  - id: limit
+    type: INT
+    required: true
+    displayName: Limit
+    defaults: "10"
+
+tasks:
+  - id: query_pending
+    type: io.kestra.plugin.scripts.python.Commands
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+      LIMIT: "{{ inputs.limit }}"
+    beforeCommands:
+      - pip install kestra > /dev/null 2>&1
+    inputFiles:
+      query.py: |
+        import json
+        import os
+        import psycopg2
+        from kestra import Kestra
+
+        conn = psycopg2.connect(
+            host=os.environ["POSTGRES_HOST"],
+            dbname=os.environ["POSTGRES_DB"],
+            user=os.environ["POSTGRES_USER"],
+            password=os.environ["POSTGRES_PASSWORD"],
+        )
+
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT year, first_issue, last_issue
+                FROM boc_log.view_followup_issues
+                WHERE missing_downloads > 0 OR missing_extractions > 0
+                LIMIT %s
+            """, (int(os.environ["LIMIT"]),))
+            rows = [
+                json.dumps({"year": year, "from_issue": first, "to_issue": last})
+                for year, first, last in cur.fetchall()
+            ]
+
+        conn.close()
+
+        Kestra.outputs({"rows": rows})
+    commands:
+      - python query.py
+
+  - id: backfill_each
+    type: io.kestra.plugin.core.flow.ForEach
+    values: "{{ outputs.query_pending.vars.rows }}"
+    tasks:
+    - id: call_backfill
+      type: io.kestra.plugin.core.flow.Subflow
+      namespace: boc
+      flowId: backfill_issues
+      inputs:
+        year: "{{ json(taskrun.value).year }}"
+        from_issue: "{{ json(taskrun.value).from_issue }}"
+        to_issue: "{{ json(taskrun.value).to_issue }}"
+      wait: true
+      transmitFailed: true

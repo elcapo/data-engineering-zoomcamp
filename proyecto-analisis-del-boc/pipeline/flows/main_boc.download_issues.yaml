@@ -132,7 +132,6 @@ tasks:
           )
 
       conn.close()
-      print(f"Logged: {os.environ['OBJECT_KEY']}")
 
   - id: if_extract
     type: io.kestra.plugin.core.flow.If
@@ -145,3 +144,5 @@ tasks:
         inputs:
           year: "{{ inputs.year }}"
           issue: "{{ inputs.issue }}"
+        wait: true
+        transmitFailed: true
