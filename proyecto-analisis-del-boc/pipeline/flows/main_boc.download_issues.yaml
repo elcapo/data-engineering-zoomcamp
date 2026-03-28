@@ -27,12 +27,12 @@ inputs:
     type: INT
     required: true
     displayName: Year
-    defaults: "{{ now() | date('yyyy') }}"
+    # defaults: "{{ now() | date('yyyy') }}"
 
   - id: issue
     type: INT
     displayName: Issue
-    defaults: "1"
+    # defaults: "1"
 
   - id: overwrite
     type: BOOL

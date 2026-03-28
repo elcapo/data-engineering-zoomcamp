@@ -28,12 +28,12 @@ inputs:
     type: INT
     required: true
     displayName: Year
-    defaults: "{{ now() | date('yyyy') }}"
+    # defaults: "{{ now() | date('yyyy') }}"
 
   - id: issue
     type: INT
     displayName: Bulletin
-    defaults: "1"
+    # defaults: "1"
 
 variables:
   issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
