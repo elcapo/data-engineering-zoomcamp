@@ -42,7 +42,3 @@ tasks:
         inputs:
           year: "{{ inputs.year }}"
           issue: "{{ taskrun.value }}"
-    errors:
-      - id: log_error
-        type: io.kestra.plugin.core.log.Log
-        message: "The download of year: {{ inputs.year }} and issue: {{ taskrun.value }} failed"
