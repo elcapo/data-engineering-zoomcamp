@@ -26,6 +26,7 @@ tasks:
       POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
     script: |
       import os
+      from pathlib import Path
       import psycopg2
 
       conn = psycopg2.connect(
@@ -36,55 +37,18 @@ tasks:
       )
       conn.autocommit = True
 
+      sql_dir = Path("/app/sql/prepare")
+
+      files = [
+          "schema_boc_dataset.sql",
+          "schema_boc_log.sql",
+          "table_download_log.sql",
+          "table_extraction_log.sql",
+      ]
+
       with conn.cursor() as cur:
-          cur.execute("CREATE SCHEMA IF NOT EXISTS boc_dataset")
-
-          cur.execute("CREATE SCHEMA IF NOT EXISTS boc_log")
-
-          cur.execute("""
-              CREATE TABLE IF NOT EXISTS boc_log.download_log (
-                  object_key TEXT NOT NULL,
-                  entity_type TEXT NOT NULL,
-                  year INTEGER,
-                  issue INTEGER,
-                  disposition INTEGER,
-                  downloaded_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-                  file_size_bytes BIGINT,
-                  CONSTRAINT download_log_pkey PRIMARY KEY (object_key)
-              )
-          """)
-
-          cur.execute("""
-              CREATE INDEX IF NOT EXISTS download_log_year_idx
-                  ON boc_log.download_log (entity_type, year)
-          """)
-
-          cur.execute("""
-              CREATE INDEX IF NOT EXISTS download_log_issue_idx
-                  ON boc_log.download_log (entity_type, year, issue)
-          """)
-
-          cur.execute("""
-              CREATE TABLE IF NOT EXISTS boc_log.extraction_log (
-                  object_key TEXT NOT NULL,
-                  entity_type TEXT NOT NULL,
-                  year INTEGER,
-                  issue INTEGER,
-                  disposition INTEGER,
-                  extracted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-                  CONSTRAINT extraction_log_pkey PRIMARY KEY (object_key)
-              )
-          """)
-
-          cur.execute("""
-              CREATE INDEX IF NOT EXISTS extraction_log_year_idx
-                  ON boc_log.extraction_log (entity_type, year)
-          """)
-
-          cur.execute("""
-              CREATE INDEX IF NOT EXISTS extraction_log_issue_idx
-                  ON boc_log.extraction_log (entity_type, year, issue)
-          """)
+          for f in files:
+              cur.execute((sql_dir / f).read_text())
 
       conn.close()
 
@@ -102,6 +66,7 @@ tasks:
       POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
     script: |
       import os
+      from pathlib import Path
       import psycopg2
 
       conn = psycopg2.connect(
@@ -112,115 +77,22 @@ tasks:
       )
       conn.autocommit = True
 
-      views = {
-          # For each year listed in the archive, did we download its index?
-          "metric_years": """
-              CREATE OR REPLACE VIEW boc_log.metric_download_years AS
-              SELECT
-                  COUNT(*) AS total_years,
-                  COUNT(dl.year) AS downloaded_years,
-                  ROUND(100.0 * COUNT(dl.year) / NULLIF(COUNT(*), 0), 1) AS percentage
-              FROM boc_dataset.archive a
-              LEFT JOIN boc_log.download_log dl ON
-                  dl.entity_type = 'year' AND
-                  dl.year = a.year
-          """,
+      sql_dir = Path("/app/sql/prepare")
 
-          # For each issue listed in a year index, did we download its index?
-          "metric_issues": """
-              CREATE OR REPLACE VIEW boc_log.metric_download_issues AS
-              SELECT
-                  y.year,
-                  COUNT(*) AS total_issues,
-                  COUNT(dl.issue) AS downloaded_issues,
-                  ROUND(100.0 * COUNT(dl.issue) / NULLIF(COUNT(*), 0), 1) AS percentage
-              FROM boc_dataset.year y
-              LEFT JOIN boc_log.download_log dl ON
-                  dl.entity_type = 'issue' AND
-                  dl.year = y.year AND
-                  dl.issue = y.issue
-              GROUP BY y.year
-              ORDER BY y.year
-          """,
+      view_files = [
+          "view_metric_download_years.sql",
+          "view_metric_download_issues.sql",
+          "view_metric_download_documents.sql",
+          "view_metric_extraction_years.sql",
+          "view_metric_extraction_issues.sql",
+          "view_metric_extraction_documents.sql",
+      ]
 
-          # For each disposition listed in an issue index, did we download its HTML?
-          "metric_documents": """
-              CREATE OR REPLACE VIEW boc_log.metric_download_documents AS
-              SELECT
-                  i.year,
-                  i.issue,
-                  COUNT(*) AS total_documents,
-                  COUNT(dl.disposition) AS downloaded_documents,
-                  ROUND(100.0 * COUNT(dl.disposition) / NULLIF(COUNT(*), 0), 1) AS percentage
-              FROM boc_dataset.issue i
-              JOIN boc_dataset.issue__dispositions id ON id._dlt_parent_id = i._dlt_id
-              LEFT JOIN boc_log.download_log dl ON
-                  dl.entity_type = 'document' AND
-                  dl.year = i.year AND
-                  dl.issue = i.issue AND
-                  dl.disposition  = (regexp_match(id.html, '/(\d+)\.html$'))[1]::INT
-              GROUP BY i.year, i.issue
-              ORDER BY i.year, i.issue
-          """,
-
-          # For each downloaded year index, has it been extracted?
-          "metric_years_extraction": """
-              CREATE OR REPLACE VIEW boc_log.metric_extraction_years AS
-              SELECT
-                  COUNT(*) AS total_downloaded,
-                  COUNT(el.year) AS extracted,
-                  ROUND(100.0 * COUNT(el.year) / NULLIF(COUNT(*), 0), 1) AS percentage
-              FROM boc_log.download_log dl
-              LEFT JOIN boc_log.extraction_log el ON
-                  el.entity_type = 'year' AND
-                  el.year = dl.year
-              WHERE dl.entity_type = 'year'
-          """,
-
-          # For each downloaded issue index, has it been extracted? One row per year.
-          "metric_issues_extraction": """
-              CREATE OR REPLACE VIEW boc_log.metric_extraction_issues AS
-              SELECT
-                  dl.year,
-                  COUNT(*) AS total_downloaded,
-                  COUNT(el.issue) AS extracted,
-                  ROUND(100.0 * COUNT(el.issue) / NULLIF(COUNT(*), 0), 1) AS percentage
-              FROM boc_log.download_log dl
-              LEFT JOIN boc_log.extraction_log el ON
-                  el.entity_type = 'issue' AND
-                  el.year = dl.year AND
-                  el.issue = dl.issue
-              WHERE dl.entity_type = 'issue'
-              GROUP BY dl.year
-              ORDER BY dl.year
-          """,
-
-          # For each downloaded document, has it been extracted? One row per (year, issue).
-          "metric_documents_extraction": """
-              CREATE OR REPLACE VIEW boc_log.metric_extraction_documents AS
-              SELECT
-                  dl.year,
-                  dl.issue,
-                  COUNT(*) AS total_downloaded,
-                  COUNT(el.disposition) AS extracted,
-                  ROUND(100.0 * COUNT(el.disposition) / NULLIF(COUNT(*), 0), 1) AS percentage
-              FROM boc_log.download_log dl
-              LEFT JOIN boc_log.extraction_log el ON
-                  el.entity_type  = 'document' AND
-                  el.year = dl.year AND
-                  el.issue = dl.issue AND
-                  el.disposition  = dl.disposition
-              WHERE dl.entity_type = 'document'
-              GROUP BY dl.year, dl.issue
-              ORDER BY dl.year, dl.issue
-          """,
-      }
-
-      for name, sql in views.items():
+      for f in view_files:
           try:
               with conn.cursor() as cur:
-                  cur.execute(sql)
-          except psycopg2.errors.UndefinedTable as e:
+                  cur.execute((sql_dir / f).read_text())
+          except psycopg2.errors.UndefinedTable:
               # Base table not yet created by dlt (no data loaded yet).
               # The view will be created the next time this flow runs after
               # the first extraction has populated the missing table.

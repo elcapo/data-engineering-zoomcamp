@@ -2,6 +2,8 @@ FROM python:3.11-slim
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
 
+COPY sql /app/sql
+
 COPY python/archive-parser /app/python/archive-parser
 COPY python/year-parser /app/python/year-parser
 COPY python/issue-parser /app/python/issue-parser
