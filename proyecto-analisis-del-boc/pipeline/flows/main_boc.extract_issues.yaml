@@ -46,6 +46,12 @@ tasks:
     type: io.kestra.plugin.core.log.Log
     message: "Extract issues running for year: {{ inputs.year }} and issue: {{ inputs.issue }}"
 
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      year: "{{ inputs.year }}"
+      issue: "{{ render(vars.issue_padded) }}"
+
   - id: read
     type: io.kestra.plugin.minio.Download
     endpoint: "{{ envs.minio_endpoint }}"
