@@ -1,8 +1,6 @@
-import re
-
 from bs4 import BeautifulSoup, NavigableString, Tag
 
-from .base import FormatParser, disposition_number, resolve_url
+from .base import FormatParser, disposition_number, extract_year_and_number, resolve_url
 
 _BASE_URL = "https://www.gobiernodecanarias.org/boc"
 
@@ -21,7 +19,7 @@ class Format2026Parser(FormatParser):
         return soup.find("li", class_="justificado_boc") is not None
 
     def parse(self, soup: BeautifulSoup) -> dict:
-        year, number = _extract_year_and_number(soup)
+        year, number = extract_year_and_number(soup)
         number_padded = f"{number:03d}" if number is not None else "000"
 
         h2 = soup.find("h2")
@@ -166,10 +164,3 @@ def _extract_sumario_links(conten: Tag | None) -> tuple[str | None, str | None]:
     return sumario_url, firma_url
 
 
-def _extract_year_and_number(soup: BeautifulSoup) -> tuple[int | None, int | None]:
-    title_tag = soup.find("title")
-    title_text = title_tag.get_text(strip=True) if title_tag else ""
-    match = re.search(r"(\d{4})/(\d+)", title_text)
-    if not match:
-        return None, None
-    return int(match.group(1)), int(match.group(2))

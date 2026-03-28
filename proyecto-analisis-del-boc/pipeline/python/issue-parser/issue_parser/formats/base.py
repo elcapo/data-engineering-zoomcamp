@@ -1,3 +1,4 @@
+import re
 from abc import ABC, abstractmethod
 from urllib.parse import urlsplit, urljoin
 
@@ -29,6 +30,27 @@ def disposition_number(url: str | None) -> int | None:
         return int(stem)
     except ValueError:
         return None
+
+
+def extract_year_and_number(soup: BeautifulSoup) -> tuple[int | None, int | None]:
+    """Extract year and issue number from a BOC HTML page.
+
+    Tries the <title> tag first (e.g. "BOC - 2026/47"), then falls back to the
+    <h2> tag (e.g. "BOC Nº 168. Martes 28 de Agosto de 2012").
+    """
+    for tag_name in ("title", "h2"):
+        tag = soup.find(tag_name)
+        if not tag:
+            continue
+        text = tag.get_text(strip=True)
+        m = re.search(r"(\d{4})/(\d+)", text)
+        if m:
+            return int(m.group(1)), int(m.group(2))
+        m_h2 = re.search(r"[Nn]º\s*(\d+)", text)
+        m_year = re.search(r"\b(\d{4})\b", text)
+        if m_h2 and m_year:
+            return int(m_year.group(1)), int(m_h2.group(1))
+    return None, None
 
 
 class FormatParser(ABC):
