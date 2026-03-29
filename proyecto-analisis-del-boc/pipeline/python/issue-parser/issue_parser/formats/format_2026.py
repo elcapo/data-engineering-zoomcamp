@@ -46,12 +46,17 @@ class Format2026Parser(FormatParser):
         if not conten:
             return []
 
+        # Some issues (e.g. 2020/062) wrap dispositions inside a
+        # <div id="bloq_menu"> instead of placing them as direct children
+        # of <div class="conten">.  Use that wrapper when present.
+        container = conten.find("div", id="bloq_menu") or conten
+
         dispositions = []
         current_section = None
         current_subsection = None
         current_org = None
 
-        for element in conten.children:
+        for element in container.children:
             if not hasattr(element, "name") or element.name is None:
                 continue
 
