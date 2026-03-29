@@ -42,7 +42,8 @@ class Format2001Reader(FormatReader):
         title = _build_title(first_line, number)
 
         lines = _extract_sumario_lines(pdf)
-        dispositions = _parse_dispositions(lines)
+        pdf_url = build_pdf_url(year, number)
+        dispositions = _parse_dispositions(lines, pdf_url)
 
         return {
             "year": year,
@@ -50,7 +51,7 @@ class Format2001Reader(FormatReader):
             "title": title,
             "url": build_issue_url(year, number),
             "summary": {
-                "url": build_pdf_url(year, number),
+                "url": pdf_url,
                 "signature": None,
             },
             "dispositions": dispositions,
@@ -109,6 +110,7 @@ def _extract_sumario_lines(pdf: pdfplumber.PDF) -> list[dict]:
             break
 
         lines = _annotated_lines(page)
+        filtered = []
         for line in lines:
             text = line["text"]
             # Skip page headers
@@ -117,12 +119,24 @@ def _extract_sumario_lines(pdf: pdfplumber.PDF) -> list[dict]:
             # Skip footer/small text (size < 8)
             if line["size"] < _MIN_BODY_SIZE:
                 continue
-            all_lines.append(line)
+            filtered.append(line)
+
+        # Only keep lines up to (and including) the last "Página" reference.
+        # On the final sumario page, content body text may follow the last
+        # entry — discard those trailing lines.
+        last_page_idx = -1
+        for i, line in enumerate(filtered):
+            if _PAGE_REF_RE.search(line["text"]):
+                last_page_idx = i
+        if last_page_idx >= 0:
+            filtered = filtered[: last_page_idx + 1]
+
+        all_lines.extend(filtered)
 
     return all_lines
 
 
-def _parse_dispositions(lines: list[dict]) -> list[dict]:
+def _parse_dispositions(lines: list[dict], pdf_url: str | None = None) -> list[dict]:
     """Parse annotated sumario lines into structured dispositions."""
     dispositions: list[dict] = []
     current_section: str | None = None
@@ -146,7 +160,7 @@ def _parse_dispositions(lines: list[dict]) -> list[dict]:
             "summary": summary if summary else None,
             "metadata": None,
             "identifier": None,
-            "pdf": None,
+            "pdf": pdf_url,
             "html": None,
             "signature": None,
         })

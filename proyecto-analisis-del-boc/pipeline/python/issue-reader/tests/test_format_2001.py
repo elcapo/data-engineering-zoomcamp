@@ -101,8 +101,12 @@ class TestDispositions:
             assert d["summary"] is not None
             assert len(d["summary"]) > 10
 
-    def test_pdf_html_signature_are_none(self, result):
+    def test_pdf_matches_summary_url(self, result):
+        expected_url = result["summary"]["url"]
         for d in result["dispositions"]:
-            assert d["pdf"] is None
+            assert d["pdf"] == expected_url
+
+    def test_html_signature_are_none(self, result):
+        for d in result["dispositions"]:
             assert d["html"] is None
             assert d["signature"] is None
