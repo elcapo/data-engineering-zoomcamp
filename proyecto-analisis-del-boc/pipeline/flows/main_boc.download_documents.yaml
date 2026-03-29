@@ -78,18 +78,13 @@ tasks:
     condition: "{{ outputs.lookup_file.objects | length == 0 or inputs.overwrite }}"
     then:
     - id: fetch
-      type: io.kestra.plugin.core.http.Request
+      type: io.kestra.plugin.core.http.Download
       uri: "{{ render(vars.source_url) }}"
       method: GET
 
-    - id: store
-      type: io.kestra.plugin.core.storage.Write
-      content: "{{ outputs.fetch.body }}"
-      extension: .html
-
     - id: compress
       type: io.kestra.plugin.compress.FileCompress
-      from: "{{ outputs.store.uri }}"
+      from: "{{ outputs.fetch.uri }}"
       compression: GZIP
 
     - id: publish

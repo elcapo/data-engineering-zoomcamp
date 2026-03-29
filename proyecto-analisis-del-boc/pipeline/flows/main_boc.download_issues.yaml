@@ -18,7 +18,7 @@ description: |
   Steps:
     1. **lookup_file**: checks whether the compressed file already exists in MinIO.
     2. **if_file_exists**: exits early (SUCCESS) if the file exists and overwrite is false.
-    3. **fetch / store / compress / publish**: downloads, compresses, and uploads the HTML.
+    3. **fetch / compress / publish**: downloads, compresses, and uploads the HTML.
     4. **log_download**: upserts a row in **boc_log.download_log** (entity_type = `issue`).
     5. **if_extract**: conditionally invokes **extract_issues** for the same year + issue.
 
@@ -74,18 +74,13 @@ tasks:
     condition: "{{ (outputs.lookup_file.objects | default([])) | length == 0 or inputs.overwrite }}"
     then:
     - id: fetch
-      type: io.kestra.plugin.core.http.Request
+      type: io.kestra.plugin.core.http.Download
       uri: "{{ render(vars.source_url) }}"
       method: GET
 
-    - id: store
-      type: io.kestra.plugin.core.storage.Write
-      content: "{{ outputs.fetch.body }}"
-      extension: .html
-
     - id: compress
       type: io.kestra.plugin.compress.FileCompress
-      from: "{{ outputs.store.uri }}"
+      from: "{{ outputs.fetch.uri }}"
       compression: GZIP
 
     - id: publish

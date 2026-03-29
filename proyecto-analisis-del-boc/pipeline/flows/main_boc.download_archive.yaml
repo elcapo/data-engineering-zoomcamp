@@ -21,18 +21,13 @@ inputs:
 
 tasks:
   - id: fetch
-    type: io.kestra.plugin.core.http.Request
+    type: io.kestra.plugin.core.http.Download
     uri: https://www.gobiernodecanarias.org/boc/archivo/
     method: GET
 
-  - id: store
-    type: io.kestra.plugin.core.storage.Write
-    content: "{{ outputs.fetch.body }}"
-    extension: .html
-
   - id: compress
     type: io.kestra.plugin.compress.FileCompress
-    from: "{{ outputs.store.uri }}"
+    from: "{{ outputs.fetch.uri }}"
     compression: GZIP
 
   - id: publish
