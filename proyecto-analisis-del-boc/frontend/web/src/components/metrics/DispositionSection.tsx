@@ -105,7 +105,7 @@ export function DispositionSection({ issues }: DispositionSectionProps) {
         Haz clic en un año para ver sus boletines, y en un boletín para ver el detalle por disposición.
       </p>
 
-      <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800">
+      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-800">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>

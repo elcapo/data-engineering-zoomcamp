@@ -46,16 +46,18 @@ describe("Sidebar", () => {
     expect(screen.queryByText("Buscar")).not.toBeInTheDocument();
   });
 
-  it("muestra el logo bocana", () => {
+  it("muestra el logo bocana con wording cuando está expandido", () => {
     render(<Sidebar collapsed={false} onToggleCollapse={noop} />);
-    expect(screen.getByAltText("bocana")).toBeInTheDocument();
-    expect(screen.getByText("bocana")).toBeInTheDocument();
+    const img = screen.getByAltText("bocana");
+    expect(img).toBeInTheDocument();
+    expect(img).toHaveAttribute("src", "/bocana-logo-wording.svg");
   });
 
-  it("oculta el texto bocana cuando está colapsado", () => {
+  it("muestra solo el icono cuando está colapsado", () => {
     render(<Sidebar collapsed={true} onToggleCollapse={noop} />);
-    expect(screen.getByAltText("bocana")).toBeInTheDocument();
-    expect(screen.queryByText("bocana")).not.toBeInTheDocument();
+    const img = screen.getByAltText("bocana");
+    expect(img).toBeInTheDocument();
+    expect(img).toHaveAttribute("src", "/bocana-logo.svg");
   });
 });
 

@@ -86,13 +86,12 @@ export function Sidebar({ collapsed, onToggleCollapse, onNavigate }: SidebarProp
       }`}
     >
       {/* Logo */}
-      <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-zinc-200 px-3 dark:border-zinc-800">
-        <Link href="/" onClick={onNavigate} className="flex items-center gap-2.5 overflow-hidden">
-          <Image src="/bocana-logo.svg" alt="bocana" width={28} height={28} className="shrink-0" />
-          {!collapsed && (
-            <span className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-              bocana
-            </span>
+      <div className="flex shrink-0 items-center border-b border-zinc-200 px-3 dark:border-zinc-800" style={{ height: 71 }}>
+        <Link href="/" onClick={onNavigate} className="flex items-center overflow-hidden">
+          {collapsed ? (
+            <Image src="/bocana-logo.svg" alt="bocana" width={36} height={36} className="shrink-0" />
+          ) : (
+            <Image src="/bocana-logo-wording.svg" alt="bocana" width={193} height={55} className="shrink-0" priority />
           )}
         </Link>
       </div>
