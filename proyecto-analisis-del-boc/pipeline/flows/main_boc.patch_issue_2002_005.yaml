@@ -1,0 +1,415 @@
+id: patch_issue_2002_005
+namespace: boc
+description: |
+  Patch flow for BOC 2002/005 — published only as PDF, no HTML index available.
+
+  Hardcodes the issue data extracted manually from the scanned PDF and loads it
+  into PostgreSQL via dlt, exactly as extract_issues would.
+
+  Tables affected:
+  - **boc_dataset.issue** (merge on year + issue)
+  - **boc_dataset.issue__dispositions** (child table)
+  - **boc_log.extraction_log** (upsert)
+
+tasks:
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Patch: loading BOC 2002/005 (PDF-only issue)"
+
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      year: "2002"
+      issue: "005"
+
+  - id: load
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import json
+      import dlt
+      import os
+
+      host = os.environ["POSTGRES_HOST"]
+      db   = os.environ["POSTGRES_DB"]
+      user = os.environ["POSTGRES_USER"]
+      pwd  = os.environ["POSTGRES_PASSWORD"]
+
+      records = {
+          "year": 2002,
+          "issue": 5,
+          "title": "BOC Nº 005. Viernes 11 de Enero de 2002",
+          "url": "https://www.gobiernodecanarias.org/boc/2002/005/",
+          "summary": {
+              "url": "https://www.gobiernodecanarias.org/boc/2002/005/boc-2002-005.pdf",
+              "signature": None,
+          },
+          "dispositions": [
+              {
+                  "section": "I. Disposiciones Generales",
+                  "subsection": None,
+                  "organization": "Consejería de Economía, Hacienda y Comercio",
+                  "summary": "36 Orden de 4 de enero de 2002, por la que se modifica la Orden de 7 de diciembre de 2001, que fija los índices, módulos y demás parámetros del régimen simplificado del Impuesto General Indirecto Canario para el año 2002.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "II. Autoridades y Personal",
+                  "subsection": "Oposiciones y concursos",
+                  "organization": "Consejería de Economía, Hacienda y Comercio",
+                  "summary": "37 Orden de 12 de diciembre de 2001, por la que se resuelve la convocatoria para la provisión, por el procedimiento de libre designación, de un puesto de trabajo en la Intervención General del Gobierno de Canarias, convocada por Orden de la Consejería de Presidencia e Innovación Tecnológica, de 10 de octubre de 2001 (B.O.C. nº 137, de 19.10.01).",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "III. Otras Resoluciones",
+                  "subsection": None,
+                  "organization": "Consejería de Empleo y Asuntos Sociales",
+                  "summary": "38 Dirección General de Servicios Sociales.- Resolución de 22 de noviembre de 2001, por la que se da publicidad a la suscripción del Convenio de Colaboración entre la Consejería de Empleo y Asuntos Sociales y el Excmo. Ayuntamiento de Arrecife de Lanzarote para la encomienda de gestión del Centro de Día para Mayores de Arrecife de Lanzarote.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Anuncios de contratación",
+                  "organization": "Consejería de Economía, Hacienda y Comercio",
+                  "summary": "Secretaría General Técnica.- Anuncio de 26 de diciembre de 2001, relativo al procedimiento abierto de adjudicación, mediante concurso y tramitación anticipada, para la realización de auditorías de cuentas anuales y de cumplimiento, correspondientes al ejercicio 2001 de las empresas públicas relacionadas en los lotes I, II, III, IV y V.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Anuncios de contratación",
+                  "organization": "Consejería de Agricultura, Ganadería, Pesca y Alimentación",
+                  "summary": "Secretaría General Técnica.- Anuncio de 10 de diciembre de 2001, por el que se hace pública la adjudicación del contrato relativo al suministro de material técnico para el control de lácteos, mediante procedimiento negociado sin publicidad y trámite de urgencia.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Anuncios de contratación",
+                  "organization": "Consejería de Agricultura, Ganadería, Pesca y Alimentación",
+                  "summary": "Secretaría General Técnica.- Anuncio de 10 de diciembre de 2001, por el que se hace pública la adjudicación del contrato relativo al suministro de material informático, mediante procedimiento negociado sin publicidad y trámite de urgencia.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Anuncios de contratación",
+                  "organization": "Consejería de Sanidad y Consumo",
+                  "summary": "Servicio Canario de la Salud. Gerencia de Servicios Sanitarios del Área de Salud de La Gomera.- Anuncio de 5 de diciembre de 2001, por el que se convoca concurso público, procedimiento abierto y tramitación anticipada, para la contratación del servicio de limpieza del Hospital Nuestra Señora de Guadalupe y de los Centros de Salud de La Gomera.- Expte. nº GSS/CP/1/2002.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Anuncios de contratación",
+                  "organization": "Consejería de Sanidad y Consumo",
+                  "summary": "Servicio Canario de la Salud. Dirección Gerencia del Complejo Universitario Hospitalario Nuestra Señora de Candelaria-Ofra del Área de Salud de Tenerife.- Anuncio de 17 de diciembre de 2001, por el que se convoca concurso público, procedimiento abierto, para la adquisición de material p/extracción al vacío y material específico p/hematología.- Exptes. números 2002-0-7 y 2002-0-25, respectivamente.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Anuncios de contratación",
+                  "organization": "Consejería de Sanidad y Consumo",
+                  "summary": "Servicio Canario de la Salud. Dirección Gerencia del Complejo Universitario Hospitalario Nuestra Señora de Candelaria-Ofra del Área de Salud de Tenerife.- Anuncio de 17 de diciembre de 2001, por el que se convoca concurso público, procedimiento abierto, tramitación de urgencia para la adquisición de nitrógeno y óxido nitroso.- Exptes. números C.P.SCT-2002-0-29 y C.P.SCT-2002-0-31.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Anuncios de contratación",
+                  "organization": "Consejería de Sanidad y Consumo",
+                  "summary": "Servicio Canario de la Salud. Dirección Gerencia del Complejo Universitario Hospitalario Nuestra Señora de Candelaria-Ofra del Área de Salud de Tenerife.- Anuncio de 18 de diciembre de 2001, por el que se convoca concurso público, procedimiento abierto, para la adquisición de material oficina, pequeño utillaje, material p/laboratorio-hematología, líquidos p/laboratorio.- Exptes. números CP2002-0-1, 2002-0-23, 2002-0-24 y 2002-0-26, respectivamente.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Otros anuncios",
+                  "organization": "Consejería de Presidencia e Innovación Tecnológica",
+                  "summary": "Dirección General de la Función Pública.- Anuncio de 2 de enero de 2002, relativo a notificación de la Resolución de 30 de noviembre de 2000, por la que se emplaza a cuantos aparezcan como interesados en el recurso que se tramita como Procedimiento Abreviado nº 323/00 del Juzgado de lo Contencioso-Administrativo nº Tres de Las Palmas de Gran Canaria.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Otros anuncios",
+                  "organization": "Consejería de Presidencia e Innovación Tecnológica",
+                  "summary": "Dirección General de la Función Pública.- Anuncio de 2 de enero de 2002, relativo a notificación de la Resolución de 3 de septiembre de 2001, por la que se emplaza a cuantos aparezcan como interesados en el recurso que se tramita como Procedimiento Derechos Fundamentales nº 253/01 del Juzgado de lo Contencioso-Administrativo nº Tres de Santa Cruz de Tenerife.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Otros anuncios",
+                  "organization": "Consejería de Presidencia e Innovación Tecnológica",
+                  "summary": "Dirección General de la Función Pública.- Anuncio de 2 de enero de 2002, relativo a notificación de la Resolución de 3 de septiembre de 2001, por la que se emplaza a cuantos aparezcan como interesados en el recurso que se tramita como Procedimiento Derechos Fundamentales nº 263/01 del Juzgado de lo Contencioso-Administrativo nº Tres de Santa Cruz de Tenerife.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Otros anuncios",
+                  "organization": "Consejería de Presidencia e Innovación Tecnológica",
+                  "summary": "Dirección General de la Función Pública.- Anuncio de 2 de enero de 2002, relativo a notificación de la Resolución de 17 de septiembre de 2001, por la que se emplaza a cuantos aparezcan como interesados en el recurso que se tramita como Procedimiento Derechos Fundamentales nº 265/01 del Juzgado de lo Contencioso-Administrativo nº Tres de Santa Cruz de Tenerife.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Otros anuncios",
+                  "organization": "Consejería de Presidencia e Innovación Tecnológica",
+                  "summary": "Dirección General de la Función Pública.- Anuncio de 2 de enero de 2002, relativo a notificación de la Resolución de 16 de octubre de 2001, por la que se emplaza a cuantos aparezcan como interesados en el recurso que se tramita como Procedimiento Abreviado nº 283/01 del Juzgado de lo Contencioso-Administrativo nº Tres de Santa Cruz de Tenerife.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Otros anuncios",
+                  "organization": "Consejería de Economía, Hacienda y Comercio",
+                  "summary": "Tesorería Territorial de Las Palmas.- Edicto de 11 de diciembre de 2001, relativo a notificación de providencias de apremio.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Otros anuncios",
+                  "organization": "Consejería de Economía, Hacienda y Comercio",
+                  "summary": "Tesorería Territorial de Las Palmas.- Edicto de 12 de diciembre de 2001, relativo a notificación de providencias de apremio.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Otros anuncios",
+                  "organization": "Consejería de Agricultura, Ganadería, Pesca y Alimentación",
+                  "summary": "Dirección General de Ganadería.- Anuncio de 13 de diciembre de 2001, por el que se procede a dar publicidad al procedimiento que pone fin a la convocatoria para el ejercicio 2001 de las subvenciones acogidas a la Orden de 12 de junio de 2000, de modernización de las explotaciones agrarias de Canarias, adaptada al Programa Operativo Integrado de Canarias mediante la Orden de 23 de mayo de 2001.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Otros anuncios",
+                  "organization": "Consejería de Turismo y Transportes",
+                  "summary": "Dirección General de Ordenación e Infraestructura Turística.- Anuncio por el que se hace pública la Resolución de 26 de diciembre de 2001, sobre notificación de Resoluciones de iniciación de expediente sancionador, así como los cargos que se imputan a titulares de empresas y actividades turísticas de ignorado domicilio.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Otros anuncios",
+                  "organization": "Consejería de Empleo y Asuntos Sociales",
+                  "summary": "Anuncio por el que se hace pública la Orden de 16 de octubre de 2001, que dispone la publicación de las ayudas y subvenciones concedidas por esta Consejería durante el tercer trimestre de 2001.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Otros anuncios",
+                  "organization": "Consejería de Empleo y Asuntos Sociales",
+                  "summary": "Instituto Canario de Formación y Empleo (ICFEM).- Anuncio por el que se hace pública Resolución de 26 de diciembre de 2001, del Director, que dispone la publicación de la remisión del expediente administrativo correspondiente al recurso nº 1.532/2001, interpuesto por D. Gandhi Parsram Chellaram, contra la desestimación presunta del recurso de alzada de 1 de junio de 2001, interpuesto contra la Resolución nº 01-35/1253, de 24 de abril de 2001, y se emplaza a los interesados en el mismo.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Administración Local",
+                  "organization": "Cabildo Insular de Lanzarote",
+                  "summary": "Anuncio de 11 de diciembre de 2001, relativo a notificación de la Resolución de 30 de julio de 2001, por la que se incoa expediente de declaración de Bien de Interés Cultural, con la categoría de Zona Arqueológica, a favor del yacimiento arqueológico de El Berrugo 2, sito entre Playa Blanca y Papagayo, término municipal de Yaiza.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Administración Local",
+                  "organization": "Cabildo Insular de Tenerife",
+                  "summary": "Anuncio de 21 de noviembre de 2001, por el que se somete a información pública el Proyecto denominado Modificado del Depósito Prefabricado y Estación de Filtrado en Los Llanos del Tablero, término municipal de Santa Cruz de Tenerife.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+              {
+                  "section": "IV. Anuncios",
+                  "subsection": "Administración Local",
+                  "organization": "Ayuntamiento de El Rosario (Tenerife)",
+                  "summary": "Anuncio de 19 de noviembre de 2001, relativo al nombramiento de dos Cabos de la Policía Municipal.",
+                  "metadata": None,
+                  "identifier": None,
+                  "pdf": None,
+                  "html": None,
+                  "signature": None,
+              },
+          ],
+      }
+
+      @dlt.resource(
+          name="issue",
+          write_disposition="merge",
+          primary_key=["year", "issue"],
+          columns={
+              "year": {"data_type": "bigint"},
+              "issue": {"data_type": "bigint"},
+          },
+      )
+      def issue_data():
+          yield from [records]
+
+      pipeline = dlt.pipeline(
+          pipeline_name="issue_2002_5",
+          destination=dlt.destinations.postgres(
+              f"postgresql://{user}:{pwd}@{host}:5432/{db}"
+          ),
+          dataset_name="boc_dataset",
+      )
+
+      pipeline.run(issue_data)
+
+  - id: ensure_fulltext_search
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import os
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+      with conn.cursor() as cur:
+          cur.execute("""
+              ALTER TABLE boc_dataset.issue__dispositions
+                ADD COLUMN IF NOT EXISTS summary_tsv tsvector
+                  GENERATED ALWAYS AS (
+                    to_tsvector('spanish', coalesce(summary, ''))
+                  ) STORED
+          """)
+          cur.execute("""
+              CREATE INDEX IF NOT EXISTS issue__dispositions_summary_tsv_idx
+                ON boc_dataset.issue__dispositions USING gin(summary_tsv)
+          """)
+      conn.close()
+
+  - id: log_extraction
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import os
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+
+      with conn.cursor() as cur:
+          cur.execute(
+              "INSERT INTO boc_log.extraction_log (object_key, entity_type, year, issue) "
+              "VALUES (%s, %s, %s, %s) "
+              "ON CONFLICT (object_key) DO UPDATE SET extracted_at = now()",
+              ("issues/2002-005.html.gz", "issue", 2002, 5),
+          )
+
+      conn.close()
