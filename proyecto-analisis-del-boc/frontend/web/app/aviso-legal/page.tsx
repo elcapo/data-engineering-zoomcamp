@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { readMarkdownPage } from "@/lib/content/markdown";
 import { MarkdownPage } from "@/components/MarkdownPage";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 const SLUG = "aviso-legal";
 
@@ -19,5 +20,13 @@ export default async function AvisoLegalPage() {
   const page = await readMarkdownPage(SLUG);
   if (!page) notFound();
 
-  return <MarkdownPage title={page.title} html={page.html} />;
+  return (
+    <>
+      <PageHeader
+        breadcrumbs={[{ label: "Inicio", href: "/" }]}
+        title={page.title}
+      />
+      <MarkdownPage html={page.html} />
+    </>
+  );
 }
