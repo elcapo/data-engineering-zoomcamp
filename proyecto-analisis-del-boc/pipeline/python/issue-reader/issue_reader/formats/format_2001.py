@@ -11,7 +11,7 @@ from .base import (
 )
 
 _SECTION_RE = re.compile(r"^[IVXLC]+\.\s")
-_PAGE_REF_RE = re.compile(r"Página\s+(\d+)\s*$", re.MULTILINE)
+_PAGE_REF_RE = re.compile(r"Página\s*(\d+)\s*$", re.MULTILINE)
 _HEADER_RE = re.compile(
     r"^\d{4,}\s*Boletín Oficial|^Boletín Oficial.*\d{4,}$"
 )
