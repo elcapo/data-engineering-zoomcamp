@@ -109,9 +109,12 @@ function DateInput({ value, onChangeIso, label }: {
   }
 
   function handleBlur() {
-    // Si el input está incompleto, limpia el valor
     const current = (maskRef.current as HTMLInputElement | null)?.value ?? "";
-    if (current && !displayToIso(current)) {
+    if (!current) {
+      // El usuario borró el campo: limpia el filtro
+      onChangeIso(undefined);
+    } else if (!displayToIso(current)) {
+      // Fecha incompleta o inválida: limpia input y filtro
       setValue("");
       onChangeIso(undefined);
     }
