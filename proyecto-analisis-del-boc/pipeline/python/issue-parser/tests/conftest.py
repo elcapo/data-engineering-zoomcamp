@@ -15,5 +15,10 @@ def html_2026() -> Path:
 
 
 @pytest.fixture(scope="session")
+def html_2009() -> Path:
+    return FIXTURES_DIR / "boc-2009_255.html"
+
+
+@pytest.fixture(scope="session")
 def html_pdf_only() -> Path:
     return FIXTURES_DIR / "boc-2001_121.html"

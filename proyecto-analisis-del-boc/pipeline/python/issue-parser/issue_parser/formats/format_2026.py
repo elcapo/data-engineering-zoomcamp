@@ -122,7 +122,15 @@ def _extract_metadatos(li: Tag) -> str | None:
 def _extract_cve_fields(li: Tag) -> tuple[str | None, str | None, str | None, str | None]:
     cve_div = li.find("div", class_="cve")
     if not cve_div:
-        return None, None, None, None
+        # Fallback for older formats (e.g. 2009) that use justificado_boc
+        # but place links directly in the <li> without a CVE block.
+        html_a = li.find("a", title=lambda t: t and "Ir a la disposición" in t)
+        html_url = resolve_url(html_a["href"] if html_a else None)
+
+        pdf_a = li.find("a", title=lambda t: t and "Descarga la disposición" in t)
+        pdf_url = resolve_url(pdf_a["href"] if pdf_a else None)
+
+        return None, html_url, None, pdf_url
 
     identificador = None
     for node in cve_div.children:
@@ -150,7 +158,7 @@ def _extract_sumario_links(conten: Tag | None) -> tuple[str | None, str | None]:
     if not summary_p:
         return None, None
 
-    pdf_a = summary_p.find("a", title="Descargar en formato PDF")
+    pdf_a = summary_p.find("a", title=lambda t: t and "formato PDF" in t)
     sumario_url = resolve_url(pdf_a["href"] if pdf_a else None)
 
     cve_span = summary_p.find("span", class_="cve")
