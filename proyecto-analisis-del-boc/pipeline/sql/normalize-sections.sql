@@ -42,3 +42,7 @@ $$ LANGUAGE plpgsql;
 UPDATE boc_dataset.issue__dispositions
 SET section = pg_temp.normalize_section(section)
 WHERE section IS NOT NULL AND section != '';
+
+UPDATE boc_dataset.document
+SET section = pg_temp.normalize_section(section)
+WHERE section IS NOT NULL AND section != '';
