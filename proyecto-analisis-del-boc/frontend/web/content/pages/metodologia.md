@@ -1,41 +1,43 @@
 ---
 title: Metodología y Fuentes
-description: Cómo se obtienen, procesan y almacenan los datos del Boletín Oficial de Canarias.
+description: Cómo se obtienen, procesan y presentan los datos del Boletín Oficial de Canarias en esta plataforma.
 ---
 
-## Fuente de Datos
+## De dónde vienen los datos
 
-Los datos provienen del **Boletín Oficial de Canarias (BOC)**, publicación oficial del Gobierno de Canarias disponible en [www.gobiernodecanarias.org/boc](https://www.gobiernodecanarias.org/boc).
+Toda la información que encuentras en esta web procede del **Boletín Oficial de Canarias (BOC)**, la publicación oficial del Gobierno de Canarias. Puedes consultarlo directamente en [www.gobiernodecanarias.org/boc](https://www.gobiernodecanarias.org/boc).
 
-La autoría de todos los textos publicados corresponde al Gobierno de Canarias y a los organismos emisores de cada disposición. Este proyecto los reproduce citando la fuente conforme a las condiciones de reproducción establecidas.
+La autoría de todos los textos corresponde al Gobierno de Canarias y a los organismos emisores de cada disposición. Nosotros los reproducimos citando la fuente, conforme a las condiciones de reproducción establecidas por el propio Gobierno.
 
-## Proceso de Obtención
+## Cómo funciona el proceso
 
-La plataforma obtiene los datos mediante un proceso automatizado que:
+La plataforma obtiene y procesa los datos del BOC de forma automatizada, en tres pasos:
 
-1. **Descarga** los índices del BOC (archivo histórico, años, boletines y disposiciones individuales) desde la web oficial en formato HTML.
-2. **Extrae** los metadatos y el texto completo de cada disposición, preservando la estructura original.
-3. **Almacena** los textos en una base de datos con índices de búsqueda de texto completo en español.
+1. **Descarga de índices.** Se recorren los índices del archivo histórico del BOC (años, boletines y disposiciones individuales) desde la web oficial.
+2. **Extracción de contenido.** De cada disposición se extraen los metadatos (fecha, sección, organismo, título) y el texto completo, preservando la estructura original del documento.
+3. **Almacenamiento e indexación.** Los textos se guardan en una base de datos PostgreSQL con índices de búsqueda de texto completo configurados para el idioma español, lo que te permite buscar con precisión dentro del contenido de las disposiciones.
 
-El proceso respeta los tiempos de respuesta del servidor oficial y no genera carga significativa sobre la infraestructura del Gobierno de Canarias.
+El proceso está diseñado para respetar los tiempos de respuesta del servidor oficial y no generar una carga significativa sobre su infraestructura.
 
-## Cobertura Histórica
+## Cobertura histórica
 
-El BOC publica en su web el archivo completo desde **1980** hasta la actualidad. Esta plataforma aspira a indexar la totalidad del archivo histórico disponible.
+El archivo digital del BOC abarca desde **1980** hasta la actualidad. Esta plataforma aspira a indexar la totalidad de ese corpus histórico.
 
-La página de [métricas](/metricas) muestra en tiempo real el porcentaje del corpus histórico que está actualmente disponible en la base de datos, desglosado por año y boletín.
+En la página de [métricas](/metricas) puedes consultar en tiempo real qué porcentaje del archivo está disponible en nuestra base de datos, desglosado por año y por boletín. Así puedes saber exactamente qué períodos están completos y cuáles están aún en proceso.
 
-## Limitaciones Conocidas
+## Limitaciones que debes conocer
 
-- Los boletines más antiguos (anteriores a cierto año) pueden presentar una estructura HTML diferente que limita la extracción del texto completo.
-- Las imágenes, tablas complejas y anexos en formato PDF no son actualmente indexados.
-- El proceso de actualización no es en tiempo real. Puede haber un desfase de horas o días respecto a la publicación oficial.
+- **Boletines antiguos.** Los números más antiguos del BOC pueden tener una estructura HTML diferente que dificulta la extracción automática del texto completo. En estos casos, es posible que solo dispongas de los metadatos básicos.
+- **Contenido no textual.** Las imágenes, tablas complejas y anexos en formato PDF no se indexan actualmente. Si la disposición que buscas incluye este tipo de contenido, te recomendamos consultar el documento original en la web del BOC.
+- **Desfase temporal.** La actualización no es en tiempo real. Puede haber un desfase de horas o días entre la publicación oficial de un boletín y su disponibilidad en esta plataforma.
 
 ## Tecnología
 
 - **Base de datos:** PostgreSQL con búsqueda de texto completo (`tsvector`) en configuración lingüística española.
-- **Código fuente:** disponible en [repositorio por definir] bajo licencia de código abierto.
+- **Pipeline de datos:** orquestado con Kestra, con flujos de descarga y extracción independientes.
+- **Frontend:** Next.js con renderizado en servidor.
+- **Código fuente:** disponible de forma abierta para su consulta y reutilización.
 
 ## Contacto
 
-Para reportar errores en los datos o en la extracción, o para sugerencias: [formulario / email por definir].
+Si detectas algún error en los datos, crees que falta algún boletín o tienes sugerencias para mejorar el proceso, escríbenos a **[pendiente de definir]**.

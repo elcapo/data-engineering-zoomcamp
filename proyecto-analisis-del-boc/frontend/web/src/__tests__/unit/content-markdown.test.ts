@@ -12,9 +12,9 @@ describe("readMarkdownPage", () => {
     expect(page).not.toBeNull();
     expect(page!.slug).toBe("aviso-legal");
     expect(page!.title).toBe("Aviso Legal");
-    expect(page!.description).toContain("Términos legales");
+    expect(page!.description).toContain("autoría");
     expect(page!.html).toContain("<h2>");
-    expect(page!.html).toContain("Autoría y Derechos");
+    expect(page!.html).toContain("Autoría de los contenidos");
   });
 
   it("lee metodologia.md y convierte Markdown a HTML", async () => {
@@ -22,7 +22,7 @@ describe("readMarkdownPage", () => {
     expect(page).not.toBeNull();
     expect(page!.title).toBe("Metodología y Fuentes");
     expect(page!.html).toContain("<ol>");
-    expect(page!.html).toContain("<strong>Descarga</strong>");
+    expect(page!.html).toContain("<strong>Descarga de índices.</strong>");
   });
 
   it("lee sobre-el-proyecto.md", async () => {
