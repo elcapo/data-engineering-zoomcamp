@@ -19,6 +19,11 @@ const fakeResult = {
   total: 1,
   nextCursor: null,
   prevCursor: null,
+  facets: {
+    byYear: [{ label: "2024", count: 1 }],
+    bySection: [{ label: "I", count: 1 }],
+    byOrg: [{ label: "Test Org", count: 1 }],
+  },
 };
 
 beforeEach(() => {

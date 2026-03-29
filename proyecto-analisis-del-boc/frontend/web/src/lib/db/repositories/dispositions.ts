@@ -1,6 +1,6 @@
 import { Prisma } from "../../../../app/generated/prisma/client";
 import { prisma } from "../prisma";
-import { Disposition, SearchFilters, SearchResult } from "@/types/domain";
+import { Disposition, SearchFacets, SearchFilters, SearchResult } from "@/types/domain";
 import { buildTsqueryFromString } from "@/lib/search/query-builder";
 
 const DEFAULT_LIMIT = 20;
@@ -131,7 +131,7 @@ export const DispositionRepository = {
       LIMIT ${limit + 1}
     `;
 
-    // Consulta de total (sin cursor ni limit)
+    // Condiciones sin cursor para total y facets
     const conditionsForCount = conditions.filter(
       (c) => !cursorParsed || c !== conditions[conditions.length - 1]
     );
@@ -140,11 +140,15 @@ export const DispositionRepository = {
         ? Prisma.sql`WHERE ${Prisma.join(conditionsForCount, " AND ")}`
         : Prisma.empty;
 
-    const [{ count }] = await prisma.$queryRaw<[{ count: bigint }]>`
-      SELECT COUNT(DISTINCT (i.year, i.issue, id.disposition)) AS count
-      ${FROM_WITH_JOIN}
-      ${whereForCount}
-    `;
+    // Total + facets en paralelo
+    const [countResult, facets] = await Promise.all([
+      prisma.$queryRaw<[{ count: bigint }]>`
+        SELECT COUNT(DISTINCT (i.year, i.issue, id.disposition)) AS count
+        ${FROM_WITH_JOIN}
+        ${whereForCount}
+      `,
+      computeFacets(whereForCount),
+    ]);
 
     const hasMore = rows.length > limit;
     const results = rows.slice(0, limit).map(toDisposition);
@@ -152,10 +156,11 @@ export const DispositionRepository = {
 
     return {
       results,
-      total: Number(count),
+      total: Number(countResult[0].count),
       nextCursor:
         hasMore && last ? formatCursor(last.year, last.issue, last.number) : null,
       prevCursor: cursor ?? null,
+      facets,
     };
   },
 
@@ -186,6 +191,43 @@ export const DispositionRepository = {
     return rows.length > 0 ? toDisposition(rows[0]) : null;
   },
 };
+
+// ── facets ────────────────────────────────────────────────────────────────
+
+/** Límites por defecto para cada facet (top N). */
+const FACET_LIMIT_YEAR = 20;
+const FACET_LIMIT_SECTION = 10;
+const FACET_LIMIT_ORG = 15;
+
+type FacetRow = { label: string; count: bigint };
+
+async function computeFacets(where: Prisma.Sql): Promise<SearchFacets> {
+  const [byYear, bySection, byOrg] = await Promise.all([
+    prisma.$queryRaw<FacetRow[]>`
+      SELECT i.year::text AS label, COUNT(DISTINCT (i.year, i.issue, id.disposition)) AS count
+      ${FROM_WITH_JOIN}
+      ${where}
+      GROUP BY i.year ORDER BY count DESC LIMIT ${FACET_LIMIT_YEAR}`,
+    prisma.$queryRaw<FacetRow[]>`
+      SELECT COALESCE(d.section, id.section, 'Sin sección') AS label,
+             COUNT(DISTINCT (i.year, i.issue, id.disposition)) AS count
+      ${FROM_WITH_JOIN}
+      ${where}
+      GROUP BY label ORDER BY count DESC LIMIT ${FACET_LIMIT_SECTION}`,
+    prisma.$queryRaw<FacetRow[]>`
+      SELECT COALESCE(d.organization, id.organization, 'Sin organismo') AS label,
+             COUNT(DISTINCT (i.year, i.issue, id.disposition)) AS count
+      ${FROM_WITH_JOIN}
+      ${where}
+      GROUP BY label ORDER BY count DESC LIMIT ${FACET_LIMIT_ORG}`,
+  ]);
+
+  return {
+    byYear: byYear.map((r) => ({ label: r.label, count: Number(r.count) })),
+    bySection: bySection.map((r) => ({ label: r.label, count: Number(r.count) })),
+    byOrg: byOrg.map((r) => ({ label: r.label, count: Number(r.count) })),
+  };
+}
 
 // ── mappers ───────────────────────────────────────────────────────────────
 

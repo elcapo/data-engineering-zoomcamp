@@ -6,7 +6,7 @@ import { SearchFilters, SearchResult } from "@/types/domain";
 import type { BooleanTerm } from "@/lib/search/query-builder";
 import { parseSearchParams, buildSearchUrl } from "@/lib/search/url-params";
 import { FilterPanel } from "./FilterPanel";
-import { ResultsChart } from "./ResultsChart";
+import { ResultsFacets } from "./ResultsChart";
 import { SemanticPaginator } from "./SemanticPaginator";
 import { DispositionCard } from "@/components/bulletin/DispositionCard";
 import { SkeletonCard } from "@/components/ui/Skeleton";
@@ -55,14 +55,15 @@ export function SearchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams.toString()]);
 
-  function handleSubmit() {
-    const url = buildSearchUrl(filters, terms);
+  function submitWith(f: SearchFilters, t: BooleanTerm[]) {
+    const url = buildSearchUrl(f, t);
     const qs = url.split("?")[1] ?? "";
-    const apiParams = new URLSearchParams(qs);
-
-    // Actualiza URL y lanza fetch en paralelo
     router.push(url);
-    fetchResults(apiParams);
+    fetchResults(new URLSearchParams(qs));
+  }
+
+  function handleSubmit() {
+    submitWith(filters, terms);
   }
 
   function handleNavigate(cursor: string | null) {
@@ -106,8 +107,6 @@ export function SearchPage() {
 
         {!loading && !error && result && (
           <>
-            <ResultsChart results={result.results} />
-
             {result.results.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-12">
                 <svg className="size-12 text-zinc-300 dark:text-zinc-600" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor">
@@ -137,6 +136,29 @@ export function SearchPage() {
                 onNavigate={handleNavigate}
               />
             </div>
+
+            {result.facets && (
+              <div className="mt-8">
+                <ResultsFacets
+                  facets={result.facets}
+                  onYearClick={(year) => {
+                    const next = { ...filters, year };
+                    setFilters(next);
+                    submitWith(next, terms);
+                  }}
+                  onSectionClick={(section) => {
+                    const next = { ...filters, section: [section] };
+                    setFilters(next);
+                    submitWith(next, terms);
+                  }}
+                  onOrgClick={(org) => {
+                    const next = { ...filters, org };
+                    setFilters(next);
+                    submitWith(next, terms);
+                  }}
+                />
+              </div>
+            )}
           </>
         )}
 

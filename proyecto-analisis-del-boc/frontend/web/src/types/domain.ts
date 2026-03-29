@@ -50,11 +50,23 @@ export interface SearchCursor {
   number: string;
 }
 
+export interface FacetBucket {
+  label: string;
+  count: number;
+}
+
+export interface SearchFacets {
+  byYear: FacetBucket[];
+  bySection: FacetBucket[];
+  byOrg: FacetBucket[];
+}
+
 export interface SearchResult {
   results: Disposition[];
   total: number;
   nextCursor: string | null;
   prevCursor: string | null;
+  facets: SearchFacets;
 }
 
 // ── Métricas ──────────────────────────────────────────────────────────────

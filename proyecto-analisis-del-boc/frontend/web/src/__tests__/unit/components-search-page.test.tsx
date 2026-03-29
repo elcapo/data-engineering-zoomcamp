@@ -30,6 +30,11 @@ const fakeResult = {
   total: 2,
   nextCursor: null,
   prevCursor: null,
+  facets: {
+    byYear: [{ label: "2024", count: 1 }, { label: "2023", count: 1 }],
+    bySection: [{ label: "I", count: 1 }, { label: "II", count: 1 }],
+    byOrg: [{ label: "Consejería", count: 1 }, { label: "ULPGC", count: 1 }],
+  },
 };
 
 beforeEach(() => {
@@ -70,7 +75,7 @@ describe("SearchPage", () => {
   it("muestra mensaje de sin resultados", async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve({ results: [], total: 0, nextCursor: null, prevCursor: null }),
+      json: () => Promise.resolve({ results: [], total: 0, nextCursor: null, prevCursor: null, facets: { byYear: [], bySection: [], byOrg: [] } }),
     });
     mockSearchParams = new URLSearchParams("q=xzqwerty");
     render(<SearchPage />);

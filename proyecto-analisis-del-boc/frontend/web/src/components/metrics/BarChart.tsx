@@ -22,6 +22,7 @@ interface BarChartProps {
   height?: number;
   colorByValue?: boolean;
   className?: string;
+  onBarClick?: (label: string) => void;
 }
 
 function barFill(value: number): string {
@@ -30,16 +31,25 @@ function barFill(value: number): string {
   return "#f97316"; // orange-500
 }
 
-export function BarChart({ data, layout = "vertical", height = 400, colorByValue = false, className = "" }: BarChartProps) {
+export function BarChart({ data, layout = "vertical", height = 400, colorByValue = false, className = "", onBarClick }: BarChartProps) {
   const isVertical = layout === "vertical";
+  const clickable = !!onBarClick;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleClick(entry: any) {
+    if (onBarClick && entry?.activeLabel) {
+      onBarClick(entry.activeLabel);
+    }
+  }
 
   return (
-    <div className={className} style={{ width: "100%", height }}>
+    <div className={className} style={{ width: "100%", height, cursor: clickable ? "pointer" : undefined }}>
       <ResponsiveContainer>
         <RechartsBarChart
           data={data}
           layout={isVertical ? "vertical" : "horizontal"}
           margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+          onClick={clickable ? handleClick : undefined}
         >
           <CartesianGrid strokeDasharray="3 3" />
           {isVertical ? (
