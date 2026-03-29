@@ -9,7 +9,8 @@ from .formats import PARSERS
 def parse(html_path: str | Path) -> dict:
     """Parse a BOC HTML file and return its structured data as a dict."""
     path = Path(html_path)
-    soup = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
+    html = path.read_text(encoding="utf-8").replace("\x00", "")
+    soup = BeautifulSoup(html, "html.parser")
 
     for parser_class in PARSERS:
         if parser_class.detect(soup):
