@@ -5,13 +5,14 @@ import { buildTsqueryFromString } from "@/lib/search/query-builder";
 
 const DEFAULT_LIMIT = 20;
 
-// JOINs comunes: document → issue → issue__dispositions
+// JOINs comunes: issue__dispositions → issue → document (LEFT)
+// Base: disposiciones del índice; document se une opcionalmente.
 const FROM_WITH_JOIN = Prisma.sql`
-  FROM boc_dataset.document d
-  JOIN boc_dataset.issue i ON i.year = d.year AND i.issue = d.issue
-  LEFT JOIN boc_dataset.issue__dispositions id
-    ON id._dlt_root_id = i._dlt_id
-    AND id.disposition = CAST(d.number AS bigint)`;
+  FROM boc_dataset.issue__dispositions id
+  JOIN boc_dataset.issue i ON id._dlt_root_id = i._dlt_id
+  LEFT JOIN boc_dataset.document d
+    ON d.year = i.year AND d.issue = i.issue
+    AND CAST(d.number AS bigint) = id.disposition`;
 
 export const DispositionRepository = {
   /**
@@ -36,14 +37,14 @@ export const DispositionRepository = {
       );
     }
     if (filters.section?.length) {
-      conditions.push(Prisma.sql`d.section = ANY(${filters.section})`);
+      conditions.push(Prisma.sql`COALESCE(d.section, id.section) = ANY(${filters.section})`);
     }
     if (filters.subsection?.length) {
-      conditions.push(Prisma.sql`d.subsection = ANY(${filters.subsection})`);
+      conditions.push(Prisma.sql`COALESCE(d.subsection, id.subsection) = ANY(${filters.subsection})`);
     }
     if (filters.org) {
       conditions.push(
-        Prisma.sql`d.organization ILIKE ${"%" + filters.org + "%"}`
+        Prisma.sql`COALESCE(d.organization, id.organization) ILIKE ${"%" + filters.org + "%"}`
       );
     }
     if (filters.from) {
@@ -53,15 +54,15 @@ export const DispositionRepository = {
       conditions.push(Prisma.sql`d.date <= ${filters.to}`);
     }
     if (filters.year) {
-      conditions.push(Prisma.sql`d.year = ${filters.year}`);
+      conditions.push(Prisma.sql`i.year = ${filters.year}`);
     }
     if (filters.issue) {
-      conditions.push(Prisma.sql`d.issue = ${filters.issue}`);
+      conditions.push(Prisma.sql`i.issue = ${filters.issue}`);
     }
     if (cursorParsed) {
       // El ORDER BY es todo DESC, así que "siguiente página" = tupla menor
       conditions.push(
-        Prisma.sql`(d.year, d.issue, CAST(d.number AS integer)) < (${cursorParsed.year}, ${cursorParsed.issue}, ${parseInt(cursorParsed.number, 10)})`
+        Prisma.sql`(i.year, i.issue, id.disposition) < (${cursorParsed.year}, ${cursorParsed.issue}, ${parseInt(cursorParsed.number, 10)})`
       );
     }
 
@@ -84,15 +85,15 @@ export const DispositionRepository = {
     if (process.env.NODE_ENV === "development") {
       const debugParts: string[] = [];
       if (tsquery) debugParts.push(`(d.body_tsv @@ tsq OR id.summary_tsv @@ tsq) [tsq='${tsquery}']`);
-      if (filters.section?.length) debugParts.push(`d.section = ANY(${JSON.stringify(filters.section)})`);
-      if (filters.org) debugParts.push(`d.organization ILIKE '%${filters.org}%'`);
-      if (filters.year) debugParts.push(`d.year = ${filters.year}`);
-      if (filters.issue) debugParts.push(`d.issue = ${filters.issue}`);
+      if (filters.section?.length) debugParts.push(`COALESCE(d.section, id.section) = ANY(${JSON.stringify(filters.section)})`);
+      if (filters.org) debugParts.push(`COALESCE(d.organization, id.organization) ILIKE '%${filters.org}%'`);
+      if (filters.year) debugParts.push(`i.year = ${filters.year}`);
+      if (filters.issue) debugParts.push(`i.issue = ${filters.issue}`);
       if (filters.from) debugParts.push(`d.date >= '${filters.from}'`);
       if (filters.to) debugParts.push(`d.date <= '${filters.to}'`);
       if (cursorParsed) debugParts.push(`cursor < (${cursorParsed.year}, ${cursorParsed.issue}, '${cursorParsed.number}')`);
       const debugWhere = debugParts.length > 0 ? `WHERE ${debugParts.join(" AND ")}` : "";
-      console.log(`[dispositions.search] SQL: SELECT ... FROM document d JOIN issue i ... LEFT JOIN issue__dispositions id ... ${debugWhere} LIMIT ${limit + 1}`);
+      console.log(`[dispositions.search] SQL: SELECT ... FROM issue__dispositions id JOIN issue i ... LEFT JOIN document d ... ${debugWhere} LIMIT ${limit + 1}`);
     }
 
     type Row = {
@@ -113,15 +114,20 @@ export const DispositionRepository = {
     };
 
     const rows = await prisma.$queryRaw<Row[]>`
-      SELECT DISTINCT ON (d.year, d.issue, CAST(d.number AS integer))
-        d.year, d.issue, d.number,
-        d.section, d.subsection, d.organization,
-        d.title, d.date, d.identifier, d.pdf, d.signature, d.body,
+      SELECT DISTINCT ON (i.year, i.issue, id.disposition)
+        i.year, i.issue, id.disposition AS number,
+        COALESCE(d.section, id.section) AS section,
+        COALESCE(d.subsection, id.subsection) AS subsection,
+        COALESCE(d.organization, id.organization) AS organization,
+        d.title, d.date,
+        COALESCE(d.identifier, id.identifier) AS identifier,
+        COALESCE(d.pdf, id.pdf) AS pdf,
+        d.signature, d.body,
         id.html AS html_url,
         ${headlineExpr} AS excerpt
       ${FROM_WITH_JOIN}
       ${where}
-      ORDER BY d.year DESC, d.issue DESC, CAST(d.number AS integer) DESC
+      ORDER BY i.year DESC, i.issue DESC, id.disposition DESC
       LIMIT ${limit + 1}
     `;
 
@@ -135,7 +141,7 @@ export const DispositionRepository = {
         : Prisma.empty;
 
     const [{ count }] = await prisma.$queryRaw<[{ count: bigint }]>`
-      SELECT COUNT(DISTINCT (d.year, d.issue, d.number)) AS count
+      SELECT COUNT(DISTINCT (i.year, i.issue, id.disposition)) AS count
       ${FROM_WITH_JOIN}
       ${whereForCount}
     `;
@@ -163,12 +169,17 @@ export const DispositionRepository = {
   ): Promise<Disposition | null> {
     const rows = await prisma.$queryRaw<DocumentRow[]>`
       SELECT
-        d.year, d.issue, d.number,
-        d.section, d.subsection, d.organization,
-        d.title, d.date, d.identifier, d.pdf, d.body,
+        i.year, i.issue, id.disposition AS number,
+        COALESCE(d.section, id.section) AS section,
+        COALESCE(d.subsection, id.subsection) AS subsection,
+        COALESCE(d.organization, id.organization) AS organization,
+        d.title, d.date,
+        COALESCE(d.identifier, id.identifier) AS identifier,
+        COALESCE(d.pdf, id.pdf) AS pdf,
+        d.body,
         id.html AS html_url
       ${FROM_WITH_JOIN}
-      WHERE d.year = ${BigInt(year)} AND d.issue = ${BigInt(issue)} AND d.number = ${number}
+      WHERE i.year = ${BigInt(year)} AND i.issue = ${BigInt(issue)} AND id.disposition = ${BigInt(parseInt(number, 10))}
       LIMIT 1
     `;
 
