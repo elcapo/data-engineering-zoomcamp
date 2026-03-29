@@ -10,7 +10,7 @@ export function DispositionCard({ disposition }: DispositionCardProps) {
   const officialUrl = disposition.htmlUrl;
 
   return (
-    <Card as="article" className="flex flex-col gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/30">
+    <Card as="article" className="flex flex-col gap-2 transition-colors duration-200 hover:border-accent/30">
       <SectionBreadcrumb
         section={disposition.section}
         subsection={disposition.subsection}
