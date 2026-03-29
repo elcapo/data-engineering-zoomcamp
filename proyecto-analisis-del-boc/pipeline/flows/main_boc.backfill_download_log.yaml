@@ -1,7 +1,7 @@
 id: backfill_download_log
 namespace: boc
 description: |
-  Populate download_log for files already present in MinIO before the log_download step was added to the download flows.
+  Populate `download_log` for files already present in MinIO before the `log_download` step was added to the download flows. It may also be useful for marking as downloaded files that were uploaded directly to MinIO.
 
   Uses the MinIO Python SDK to iterate over objects in a streaming fashion (one page at a time), so memory usage is bounded regardless of bucket size. Inserts are batched for efficiency.
 
