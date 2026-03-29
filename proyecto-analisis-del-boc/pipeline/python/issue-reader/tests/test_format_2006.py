@@ -49,7 +49,7 @@ class TestDispositions:
     def test_first_disposition(self, result):
         d = result["dispositions"][0]
         assert d["disposition"] == 1
-        assert d["section"] == "II. Autoridades y Personal"
+        assert d["section"] == "Autoridades y Personal"
         assert d["subsection"] == "Oposiciones y concursos"
         assert d["organization"] == "Consejería de Economía y Hacienda"
         assert d["summary"].startswith(
@@ -58,9 +58,9 @@ class TestDispositions:
 
     def test_sections_are_extracted(self, result):
         sections = {d["section"] for d in result["dispositions"]}
-        assert "II. Autoridades y Personal" in sections
-        assert "III. Otras Resoluciones" in sections
-        assert "IV. Anuncios" in sections
+        assert "Autoridades y Personal" in sections
+        assert "Otras Resoluciones" in sections
+        assert "Anuncios" in sections
 
     def test_subsections_are_extracted(self, result):
         subsections = {d["subsection"] for d in result["dispositions"] if d["subsection"]}

@@ -53,6 +53,33 @@ def extract_year_and_number(soup: BeautifulSoup) -> tuple[int | None, int | None
     return None, None
 
 
+_ROMAN_PREFIX_RE = re.compile(r"^([IVXLC]+[\.\-]+\s*)+")
+_LOWERCASE_WORDS = {"de", "del", "la", "las", "los", "y", "el", "en"}
+
+
+def normalize_section(section: str | None) -> str | None:
+    """Normalize a BOC section name.
+
+    Removes the leading Roman-numeral prefix (e.g. "IV. ", "III.-") and
+    converts the remaining text to title case, keeping Spanish
+    prepositions/articles lowercase.
+    """
+    if not section:
+        return section
+    text = _ROMAN_PREFIX_RE.sub("", section).strip()
+    if not text:
+        return section
+    words = text.split()
+    result = []
+    for i, word in enumerate(words):
+        lower = word.lower()
+        if i == 0 or lower not in _LOWERCASE_WORDS:
+            result.append(lower.capitalize())
+        else:
+            result.append(lower)
+    return " ".join(result)
+
+
 class FormatParser(ABC):
     @classmethod
     @abstractmethod

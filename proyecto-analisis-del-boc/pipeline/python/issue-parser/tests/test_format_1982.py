@@ -59,7 +59,7 @@ class TestDispositions:
 
     def test_first_disposition_matches_reference(self, result):
         d = result["dispositions"][0]
-        assert d["section"] == "I. DISPOSICIONES GENERALES"
+        assert d["section"] == "Disposiciones Generales"
         assert d["subsection"] is None
         assert d["organization"] == "Junta de Canarias"
         assert d["summary"] == (
@@ -76,11 +76,11 @@ class TestDispositions:
 
     def test_sections_are_extracted(self, result):
         sections = {d["section"] for d in result["dispositions"]}
-        assert "I. DISPOSICIONES GENERALES" in sections
-        assert "I. ASUNTOS DE PERSONAL" in sections
-        assert "III. RESOLUCIONES" in sections
-        assert "IV. ANUNCIOS" in sections
-        assert "V. ADMINISTRACION DE JUSTICIA" in sections
+        assert "Disposiciones Generales" in sections
+        assert "Asuntos de Personal" in sections
+        assert "Resoluciones" in sections
+        assert "Anuncios" in sections
+        assert "Administracion de Justicia" in sections
 
     def test_all_organizations_are_junta(self, result):
         orgs = {d["organization"] for d in result["dispositions"]}

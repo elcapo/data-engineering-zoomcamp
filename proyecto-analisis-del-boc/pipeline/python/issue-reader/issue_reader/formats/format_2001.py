@@ -8,6 +8,7 @@ from .base import (
     build_issue_url,
     build_pdf_url,
     extract_year_and_number,
+    normalize_section,
 )
 
 _SECTION_RE = re.compile(r"^[IVXLC]+\.\s")
@@ -195,7 +196,7 @@ def _parse_dispositions(lines: list[dict], pdf_url: str | None = None) -> list[d
                 break
             seen_sections.add(normalized)
             _flush()
-            current_section = normalized
+            current_section = normalize_section(normalized)
             current_subsection = None
             current_org = None
             continue

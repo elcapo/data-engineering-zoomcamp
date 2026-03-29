@@ -60,7 +60,7 @@ class TestDispositions:
 
     def test_first_disposition_matches_reference(self, result):
         d = result["dispositions"][0]
-        assert d["section"] == "I. Disposiciones generales"
+        assert d["section"] == "Disposiciones Generales"
         assert d["subsection"] is None
         assert d["organization"] == "Presidencia del Gobierno"
         assert d["summary"].startswith("762 DECRETO ley 2/2026")
@@ -75,16 +75,16 @@ class TestDispositions:
 
     def test_second_disposition_has_subsection(self, result):
         d = result["dispositions"][1]
-        assert d["section"] == "II. Autoridades y personal"
+        assert d["section"] == "Autoridades y Personal"
         assert d["subsection"] == "Oposiciones y concursos"
         assert d["organization"] == "Consejería de Hacienda y Relaciones con la Unión Europea"
 
     def test_sections_are_extracted(self, result):
         sections = {d["section"] for d in result["dispositions"]}
-        assert "I. Disposiciones generales" in sections
-        assert "II. Autoridades y personal" in sections
-        assert "III. Otras Resoluciones" in sections
-        assert "V. Anuncios" in sections
+        assert "Disposiciones Generales" in sections
+        assert "Autoridades y Personal" in sections
+        assert "Otras Resoluciones" in sections
+        assert "Anuncios" in sections
 
     def test_subsections_are_extracted(self, result):
         subsections = {d["subsection"] for d in result["dispositions"]}

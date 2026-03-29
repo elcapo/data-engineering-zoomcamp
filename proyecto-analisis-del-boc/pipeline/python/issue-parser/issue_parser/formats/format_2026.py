@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup, NavigableString, Tag
 
-from .base import FormatParser, disposition_number, extract_year_and_number, resolve_url
+from .base import FormatParser, disposition_number, extract_year_and_number, normalize_section, resolve_url
 
 _BASE_URL = "https://www.gobiernodecanarias.org/boc"
 
@@ -61,7 +61,7 @@ class Format2026Parser(FormatParser):
                 continue
 
             if element.name == "h4":
-                current_section = " ".join(element.get_text().split())
+                current_section = normalize_section(" ".join(element.get_text().split()))
                 current_subsection = None
                 current_org = None
             elif element.name == "h3" and "titboc" in element.get("class", []):
