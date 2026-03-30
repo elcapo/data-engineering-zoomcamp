@@ -89,6 +89,7 @@ tasks:
           "view_metric_extraction_issues.sql",
           "view_metric_extraction_documents.sql",
           "view_followup_issues.sql",
+          "view_followup_documents.sql",
       ]
 
       for f in view_files:
