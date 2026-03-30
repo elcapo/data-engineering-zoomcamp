@@ -8,7 +8,7 @@ import { ChevronIcon } from "@/components/ui/ChevronIcon";
 
 function formatDate(iso: string | null): string {
   if (!iso) return "—";
-  return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" });
+  return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
 }
 
 interface BulletinSectionProps {

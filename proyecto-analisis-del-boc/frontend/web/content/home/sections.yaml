@@ -6,8 +6,4 @@
 sections:
   - type: latest-bulletins
     title: Últimos boletines
-    limit: 5
-
-  - type: editorial
-    title: Destacados
-    source: featured
+    limit: 12
