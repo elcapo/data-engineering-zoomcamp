@@ -155,10 +155,21 @@ export function SearchPage() {
               </div>
             ) : (
               <>
+                {result.facets && (
+                  <div className="mb-6">
+                    <ResultsFacets
+                      facets={result.facets}
+                      onYearClick={() => {}}
+                      onSectionClick={(section) => handleFacetClick({ type: "section", value: section })}
+                      onOrgClick={(org) => handleFacetClick({ type: "org", value: org })}
+                    />
+                  </div>
+                )}
+
                 <p className="mb-4 text-lg font-medium text-zinc-900 dark:text-zinc-100">
                   {formatNumber(result.total)} {result.total === 1 ? "resultado" : "resultados"}
                 </p>
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
                   {result.results.map((d) => (
                     <DispositionCard key={`${d.year}-${d.issue}-${d.number}`} disposition={d} />
                   ))}
@@ -174,19 +185,6 @@ export function SearchPage() {
                 onNavigate={handleNavigate}
               />
             </div>
-
-            {result.facets && (
-              <div className="mt-8">
-                <ResultsFacets
-                  facets={result.facets}
-                  onYearClick={() => {
-                    // Years are no longer a filter type; ignore or could add as term
-                  }}
-                  onSectionClick={(section) => handleFacetClick({ type: "section", value: section })}
-                  onOrgClick={(org) => handleFacetClick({ type: "org", value: org })}
-                />
-              </div>
-            )}
           </>
         )}
 

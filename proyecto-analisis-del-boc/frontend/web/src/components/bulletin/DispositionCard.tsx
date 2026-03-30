@@ -15,6 +15,7 @@ export function DispositionCard({ disposition }: DispositionCardProps) {
         section={disposition.section}
         subsection={disposition.subsection}
         organization={disposition.organization}
+        linkable
       />
 
       {officialUrl ? (
