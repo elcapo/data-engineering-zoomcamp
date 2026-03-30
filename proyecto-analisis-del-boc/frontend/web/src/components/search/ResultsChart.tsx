@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { SearchFacets } from "@/types/domain";
 import { BarChart } from "@/components/metrics/BarChart";
 import { formatNumber } from "@/lib/format";
@@ -78,7 +79,9 @@ function FacetCardList({ title, items, limit, onClick }: {
   limit: number;
   onClick: (label: string) => void;
 }) {
-  const visible = items.slice(0, limit);
+  const [visibleCount, setVisibleCount] = useState(limit);
+  const visible = items.slice(0, visibleCount);
+  const hasMore = visibleCount < items.length;
 
   return (
     <div>
@@ -97,6 +100,15 @@ function FacetCardList({ title, items, limit, onClick }: {
             </span>
           </button>
         ))}
+        {hasMore && (
+          <button
+            type="button"
+            onClick={() => setVisibleCount((c) => c + limit)}
+            className="mt-1 text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            Mostrar más
+          </button>
+        )}
       </div>
     </div>
   );
