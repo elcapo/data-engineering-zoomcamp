@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ActiveFilter, FilterType, FilterMode } from "@/types/domain";
 import { DateRangePicker } from "./DateRangePicker";
+import { Autocomplete } from "./Autocomplete";
 
 // ── Iconos ───────────────────────────────────────────────────────────────
 
@@ -82,6 +83,15 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [filterOptions, setFilterOptions] = useState<{ sections: string[]; organizations: string[] }>({ sections: [], organizations: [] });
+
+  // Carga secciones y organismos una sola vez
+  useEffect(() => {
+    fetch("/api/filters")
+      .then((r) => r.json())
+      .then((data) => setFilterOptions(data))
+      .catch(() => {});
+  }, []);
 
   // Cierra menú al hacer clic fuera
   useEffect(() => {
@@ -170,8 +180,10 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
           key={filter.id}
           filter={filter}
           editing={editingId === filter.id}
+          filterOptions={filterOptions}
           onEdit={() => setEditingId(filter.id)}
           onCommit={() => commitFilter(filter.id)}
+          onStopEditing={() => setEditingId(null)}
           onUpdate={(patch) => updateFilter(filter.id, patch)}
           onRemove={() => removeFilter(filter.id)}
           onToggleMode={() => toggleMode(filter.id)}
@@ -197,14 +209,16 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
 interface FilterChipProps {
   filter: ActiveFilter;
   editing: boolean;
+  filterOptions: { sections: string[]; organizations: string[] };
   onEdit: () => void;
   onCommit: () => void;
+  onStopEditing: () => void;
   onUpdate: (patch: Partial<ActiveFilter>) => void;
   onRemove: () => void;
   onToggleMode: () => void;
 }
 
-function FilterChip({ filter, editing, onEdit, onCommit, onUpdate, onRemove, onToggleMode }: FilterChipProps) {
+function FilterChip({ filter, editing, filterOptions, onEdit, onCommit, onStopEditing, onUpdate, onRemove, onToggleMode }: FilterChipProps) {
   const chipRef = useRef<HTMLDivElement>(null);
   const [focused, setFocused] = useState(false);
 
@@ -262,7 +276,7 @@ function FilterChip({ filter, editing, onEdit, onCommit, onUpdate, onRemove, onT
 
       {/* Valor (editable o solo lectura) */}
       {editing ? (
-        <FilterEditor filter={filter} onUpdate={onUpdate} onCommit={onCommit} />
+        <FilterEditor filter={filter} filterOptions={filterOptions} onUpdate={onUpdate} onCommit={onCommit} onStopEditing={onStopEditing} />
       ) : (
         <button
           type="button"
@@ -293,12 +307,16 @@ function FilterChip({ filter, editing, onEdit, onCommit, onUpdate, onRemove, onT
 
 function FilterEditor({
   filter,
+  filterOptions,
   onUpdate,
   onCommit,
+  onStopEditing,
 }: {
   filter: ActiveFilter;
+  filterOptions: { sections: string[]; organizations: string[] };
   onUpdate: (patch: Partial<ActiveFilter>) => void;
   onCommit: () => void;
+  onStopEditing: () => void;
 }) {
   if (filter.type === "dateRange") {
     return (
@@ -317,6 +335,20 @@ function FilterEditor({
     org: "Ej: Consejería de Educación",
     dateRange: "",
   }[filter.type];
+
+  if (filter.type === "section" || filter.type === "org") {
+    const options = filter.type === "section" ? filterOptions.sections : filterOptions.organizations;
+    return (
+      <Autocomplete
+        value={filter.value}
+        options={options}
+        placeholder={placeholder}
+        onChange={(value) => onUpdate({ value })}
+        onCommit={onCommit}
+        onSelect={(value) => { onUpdate({ value }); onStopEditing(); }}
+      />
+    );
+  }
 
   return (
     <input
