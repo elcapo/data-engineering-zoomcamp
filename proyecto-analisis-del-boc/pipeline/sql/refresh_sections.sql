@@ -1,17 +1,24 @@
 /**
  * Refresh boc_dataset.sections from document and issue__dispositions.
  *
- * Uses INSERT ... ON CONFLICT to be idempotent.
- * Excludes NULL and empty-string values.
+ * Counts distinct dispositions (year, issue, disposition) per section.
+ * Uses COALESCE(NULLIF(...)) to prefer document.section over
+ * issue__dispositions.section, skipping empty strings.
+ * ON CONFLICT updates the count on re-runs.
  */
 
-INSERT INTO boc_dataset.sections (section)
-SELECT DISTINCT section
+INSERT INTO boc_dataset.sections (section, dispositions)
+SELECT section, COUNT(*) AS dispositions
 FROM (
-    SELECT section FROM boc_dataset.document
-    WHERE section IS NOT NULL AND section != ''
-    UNION
-    SELECT section FROM boc_dataset.issue__dispositions
-    WHERE section IS NOT NULL AND section != ''
-) AS all_sections
-ON CONFLICT (section) DO NOTHING;
+    SELECT DISTINCT
+        COALESCE(NULLIF(d.section, ''), NULLIF(id.section, '')) AS section,
+        i.year, i.issue, id.disposition
+    FROM boc_dataset.issue__dispositions id
+    JOIN boc_dataset.issue i ON id._dlt_root_id = i._dlt_id
+    LEFT JOIN boc_dataset.document d
+        ON d.year = i.year AND d.issue = i.issue
+        AND CAST(d.number AS bigint) = id.disposition
+) AS disps
+WHERE section IS NOT NULL
+GROUP BY section
+ON CONFLICT (section) DO UPDATE SET dispositions = EXCLUDED.dispositions;
