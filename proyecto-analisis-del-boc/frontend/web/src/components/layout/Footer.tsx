@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useMemo } from "react";
+import { buildSearchHref } from "@/lib/search/url-params";
 
 const navLinks = [
   { href: "/", label: "Inicio" },
@@ -13,6 +17,8 @@ const legalLinks = [
 ] as const;
 
 export function Footer() {
+  const searchHref = useMemo(buildSearchHref, []);
+
   return (
     <footer className="mt-auto border-t border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950">
       <div className="mx-auto max-w-7xl px-4 py-8">
@@ -33,7 +39,7 @@ export function Footer() {
               <ul className="mt-2 flex flex-col gap-1.5">
                 {navLinks.map(({ href, label }) => (
                   <li key={href}>
-                    <Link href={href} className="text-sm text-zinc-600 transition-colors duration-150 hover:text-accent dark:text-zinc-400 dark:hover:text-accent-light">
+                    <Link href={href === "/buscar" ? searchHref : href} className="text-sm text-zinc-600 transition-colors duration-150 hover:text-accent dark:text-zinc-400 dark:hover:text-accent-light">
                       {label}
                     </Link>
                   </li>

@@ -171,6 +171,18 @@ export function activeFiltersToSearchFilters(activeFilters: ActiveFilter[]): Sea
   return sf;
 }
 
+/**
+ * Genera la URL de búsqueda por defecto: últimos 7 días.
+ */
+export function buildSearchHref(): string {
+  const today = new Date();
+  const weekAgo = new Date(today);
+  weekAgo.setDate(today.getDate() - 7);
+  const to = today.toISOString().slice(0, 10);
+  const from = weekAgo.toISOString().slice(0, 10);
+  return `/buscar?include_from_0=${from}&include_to_0=${to}`;
+}
+
 // ── helpers ───────────────────────────────────────────────────────────────
 
 function asString(v: string | string[] | undefined): string | undefined {

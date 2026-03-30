@@ -3,7 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useMemo } from "react";
 import { ThemeToggle } from "./ThemeToggle";
+import { buildSearchHref } from "@/lib/search/url-params";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -78,6 +80,7 @@ function isActive(href: string, pathname: string) {
 
 export function Sidebar({ collapsed, onToggleCollapse, onNavigate }: SidebarProps) {
   const pathname = usePathname();
+  const searchHref = useMemo(buildSearchHref, []);
 
   return (
     <aside
@@ -102,7 +105,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onNavigate }: SidebarProp
           {mainNav.map(({ href, label, icon }) => (
             <SidebarLink
               key={href}
-              href={href}
+              href={href === "/buscar" ? searchHref : href}
               label={label}
               icon={icon}
               active={isActive(href, pathname)}

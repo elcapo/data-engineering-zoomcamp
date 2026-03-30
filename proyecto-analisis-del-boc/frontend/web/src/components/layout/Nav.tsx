@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useMemo } from "react";
+import { buildSearchHref } from "@/lib/search/url-params";
 
 const links = [
   {
@@ -50,6 +52,7 @@ interface NavProps {
 
 export function Nav({ className = "", vertical = false, onNavigate }: NavProps) {
   const pathname = usePathname();
+  const searchHref = useMemo(buildSearchHref, []);
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
@@ -60,11 +63,12 @@ export function Nav({ className = "", vertical = false, onNavigate }: NavProps) 
     <nav aria-label="Principal" className={className}>
       <ul className={`flex items-center gap-1 ${vertical ? "flex-col items-stretch" : ""}`}>
         {links.map(({ href, label, icon }) => {
+          const resolvedHref = href === "/buscar" ? searchHref : href;
           const active = isActive(href);
           return (
             <li key={href}>
               <Link
-                href={href}
+                href={resolvedHref}
                 onClick={onNavigate}
                 className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ${
                   active
