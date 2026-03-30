@@ -38,6 +38,13 @@ tasks:
       year: "{{ trigger.date | date('yyyy') }}"
       overwrite: true
 
+  - id: call_refresh_catalogs
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: boc
+    flowId: refresh_catalogs
+    wait: true
+    transmitFailed: true
+
 triggers:
   - id: daily_schedule
     type: io.kestra.plugin.core.trigger.Schedule

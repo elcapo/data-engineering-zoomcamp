@@ -44,6 +44,8 @@ tasks:
           "schema_boc_log.sql",
           "table_download_log.sql",
           "table_extraction_log.sql",
+          "table_sections.sql",
+          "table_organizations.sql",
       ]
 
       with conn.cursor() as cur:

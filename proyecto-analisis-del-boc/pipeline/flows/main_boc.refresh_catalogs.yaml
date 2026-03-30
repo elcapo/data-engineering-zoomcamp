@@ -1,0 +1,52 @@
+id: refresh_catalogs
+namespace: boc
+description: |
+  Populate the **sections** and **organizations** catalog tables from
+  the raw data in `document` and `issue__dispositions`.
+
+  Each run inserts any new values that appeared since the last execution.
+  Existing rows are left untouched (INSERT ... ON CONFLICT DO NOTHING).
+
+  This flow is safe to run at any time and should be scheduled after
+  extraction flows complete.
+
+tasks:
+  - id: refresh
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import os
+      from pathlib import Path
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+
+      sql_dir = Path("/app/sql")
+
+      files = [
+          "refresh_sections.sql",
+          "refresh_organizations.sql",
+      ]
+
+      with conn.cursor() as cur:
+          for f in files:
+              sql = (sql_dir / f).read_text()
+              cur.execute(sql)
+              print(f"  {f}: {cur.rowcount} rows inserted")
+
+      conn.close()
