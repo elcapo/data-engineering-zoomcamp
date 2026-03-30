@@ -87,7 +87,7 @@ export function Autocomplete({ value, options, placeholder, onChange, onCommit, 
       {showDropdown && (
         <ul
           ref={listRef}
-          className="absolute left-0 top-full z-50 mt-1 max-h-48 w-64 overflow-auto rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
+          className="absolute left-0 top-full z-50 mt-1 max-h-64 w-[28rem] overflow-auto rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
         >
           {filtered.map((option, i) => (
             <li key={option}>

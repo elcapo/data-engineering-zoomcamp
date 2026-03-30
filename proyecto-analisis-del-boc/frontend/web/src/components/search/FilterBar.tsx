@@ -194,7 +194,6 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
           filter={filter}
           initiallyActive={newFilterId === filter.id}
           filterOptions={filterOptions}
-          onClearNew={() => { if (newFilterId === filter.id) setNewFilterId(null); }}
           onCommit={() => commitFilter(filter.id)}
           onUpdate={(patch) => updateFilter(filter.id, patch)}
           onRemove={() => removeFilter(filter.id)}
@@ -222,22 +221,23 @@ interface FilterChipProps {
   filter: ActiveFilter;
   initiallyActive: boolean;
   filterOptions: { sections: string[]; organizations: string[] };
-  onClearNew: () => void;
   onCommit: () => void;
   onUpdate: (patch: Partial<ActiveFilter>) => void;
   onRemove: () => void;
   onToggleMode: () => void;
 }
 
-function FilterChip({ filter, initiallyActive, filterOptions, onClearNew, onCommit, onUpdate, onRemove, onToggleMode }: FilterChipProps) {
+function FilterChip({ filter, initiallyActive, filterOptions, onCommit, onUpdate, onRemove, onToggleMode }: FilterChipProps) {
   const chipRef = useRef<HTMLDivElement>(null);
   const blurTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const mounted = useRef(false);
   const [active, setActive] = useState(initiallyActive);
 
-  // Marca como consumido el flag de "recién creado"
+  // Ignora blurs durante el montaje inicial (autoFocus puede tardar un tick)
   useEffect(() => {
-    if (initiallyActive) onClearNew();
-  }, [initiallyActive, onClearNew]);
+    const id = setTimeout(() => { mounted.current = true; }, 50);
+    return () => clearTimeout(id);
+  }, []);
 
   function handleFocus() {
     clearTimeout(blurTimeout.current);
@@ -246,11 +246,11 @@ function FilterChip({ filter, initiallyActive, filterOptions, onClearNew, onComm
 
   function handleBlur() {
     blurTimeout.current = setTimeout(() => {
-      if (!chipRef.current?.contains(document.activeElement)) {
+      if (mounted.current && !chipRef.current?.contains(document.activeElement)) {
         setActive(false);
         onCommit();
       }
-    }, 0);
+    }, 10);
   }
 
   useEffect(() => () => clearTimeout(blurTimeout.current), []);
