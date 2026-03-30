@@ -28,7 +28,7 @@ Cada uno recibe un archivo y devuelve datos estructurados, sin dependencias con 
 
 El beneficio inmediato fue poder testearlos de forma aislada. Cada módulo tiene su directorio de ejemplos reales y sus "fixtures" de sesión. Puedo ejecutar los tests en segundos sin levantar ningún servicio.
 
-La ventaja real apareció cuando empecé a procesar años antiguos. La web del BOC no usa la misma estructura HTML para todas las épocas. Los boletines de 2026 tienen un DOM completamente distinto al de 1982, y hay variantes intermedias. En lugar de llenar el código de condicionales, implementé un sistema de detección de formato: cada parser registra sus variantes y el sistema prueba cuál reconoce el documento. Añadir soporte para un nuevo formato es crear una clase, escribir su test con un ejemplo real y registrarla.
+La ventaja apareció cuando empecé a procesar años antiguos. La web del BOC no usa la misma estructura HTML para todas las épocas. Los boletines de 2026 tienen un DOM distinto al de 1982 y hay variantes intermedias. En lugar de llenar el código de condicionales, implementé un sistema de detección de formato: cada parser registra sus variantes y el sistema prueba cuál reconoce el documento. Añadir soporte para un nuevo formato es pan comido.
 
 Esto permitió un desarrollo gradual. El resultado: Kestra se limita a orquestar (descargar, invocar el parser, cargar el resultado) y toda la lógica de negocio vive en módulos testeados. Si mañana migro a otro orquestador, los parsers funcionan igual.
 
