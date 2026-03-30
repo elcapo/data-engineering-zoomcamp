@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import { formatNumber } from "@/lib/format";
 
 interface BarChartDatum {
   label: string;
@@ -64,12 +65,12 @@ export function BarChart({ data, layout = "vertical", height = 400, colorByValue
               <XAxis dataKey="label" />
               <YAxis
                 domain={[0, "auto"]}
-                tickFormatter={(v: number) => v.toLocaleString("es-ES")}
+                tickFormatter={(v: number) => formatNumber(v)}
               />
             </>
           )}
           <Tooltip
-            formatter={(value) => [Number(value).toLocaleString("es-ES"), "Resultados"]}
+            formatter={(value) => [formatNumber(Number(value)), "Resultados"]}
             cursor={clickable ? { fill: "var(--accent-muted, rgba(99,102,241,0.12))" } : undefined}
           />
           <Bar

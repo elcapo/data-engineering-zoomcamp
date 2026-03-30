@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import type { IssueCompletion, IssueDetail, PaginatedResult } from "@/types/domain";
 import { MetricBar } from "@/components/ui/MetricBar";
+import { formatNumber } from "@/lib/format";
 import { ChevronIcon } from "@/components/ui/ChevronIcon";
 
 function formatDate(iso: string | null): string {
@@ -97,7 +98,7 @@ export function DispositionSection({ issues }: DispositionSectionProps) {
       <p className="mb-3 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
         <span className="font-mono tabular-nums">{globalSummary.pct.toFixed(1)}%</span> descargado
         <span className="ml-2 text-sm font-normal text-zinc-500 dark:text-zinc-400">
-          ({globalSummary.downloaded.toLocaleString("es-ES")} de {globalSummary.total.toLocaleString("es-ES")} disposiciones)
+          ({formatNumber(globalSummary.downloaded)} de {formatNumber(globalSummary.total)} disposiciones)
         </span>
       </p>
 

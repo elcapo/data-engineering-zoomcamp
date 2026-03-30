@@ -8,6 +8,7 @@ import { FilterBar } from "./FilterBar";
 import { ResultsFacets } from "./ResultsChart";
 import { SemanticPaginator } from "./SemanticPaginator";
 import { DispositionCard } from "@/components/bulletin/DispositionCard";
+import { formatNumber } from "@/lib/format";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 
 export function SearchPage() {
@@ -155,7 +156,7 @@ export function SearchPage() {
             ) : (
               <>
                 <p className="mb-4 text-lg font-medium text-zinc-900 dark:text-zinc-100">
-                  {result.total.toLocaleString("es-ES")} {result.total === 1 ? "resultado" : "resultados"}
+                  {formatNumber(result.total)} {result.total === 1 ? "resultado" : "resultados"}
                 </p>
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                   {result.results.map((d) => (

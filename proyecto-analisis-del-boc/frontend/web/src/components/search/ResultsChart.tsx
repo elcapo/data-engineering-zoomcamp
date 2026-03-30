@@ -2,6 +2,7 @@
 
 import { SearchFacets } from "@/types/domain";
 import { BarChart } from "@/components/metrics/BarChart";
+import { formatNumber } from "@/lib/format";
 
 const DEFAULT_CARD_LIMIT = 5;
 
@@ -92,7 +93,7 @@ function FacetCardList({ title, items, limit, onClick }: {
           >
             <span className="text-sm text-zinc-800 dark:text-zinc-200">{item.label}</span>
             <span className="ml-3 shrink-0 rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium tabular-nums text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
-              {item.count.toLocaleString("es-ES")}
+              {formatNumber(item.count)}
             </span>
           </button>
         ))}

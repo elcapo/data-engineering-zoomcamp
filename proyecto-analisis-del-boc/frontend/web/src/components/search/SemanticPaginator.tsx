@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/Button";
+import { formatNumber } from "@/lib/format";
 
 interface SemanticPaginatorProps {
   total: number;
@@ -22,7 +23,7 @@ export function SemanticPaginator({ total, nextCursor, prevCursor, onNavigate }:
       </Button>
 
       <span className="text-sm text-zinc-500 dark:text-zinc-400">
-        {total.toLocaleString("es-ES")} resultado{total !== 1 && "s"}
+        {formatNumber(total)} resultado{total !== 1 && "s"}
       </span>
 
       <Button

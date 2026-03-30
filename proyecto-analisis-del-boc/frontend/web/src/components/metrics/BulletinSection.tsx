@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import type { YearCompletion, YearDetail } from "@/types/domain";
 import { MetricBar } from "@/components/ui/MetricBar";
+import { formatNumber } from "@/lib/format";
 import { ChevronIcon } from "@/components/ui/ChevronIcon";
 
 function formatDate(iso: string | null): string {
@@ -51,7 +52,7 @@ export function BulletinSection({ years }: BulletinSectionProps) {
       <p className="mb-3 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
         <span className="font-mono tabular-nums">{summary.pct.toFixed(1)}%</span> descargado
         <span className="ml-2 text-sm font-normal text-zinc-500 dark:text-zinc-400">
-          ({summary.downloadedIssues.toLocaleString("es-ES")} de {summary.totalIssues.toLocaleString("es-ES")} boletines)
+          ({formatNumber(summary.downloadedIssues)} de {formatNumber(summary.totalIssues)} boletines)
         </span>
       </p>
 
