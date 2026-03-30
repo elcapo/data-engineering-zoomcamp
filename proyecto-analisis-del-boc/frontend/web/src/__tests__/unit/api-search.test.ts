@@ -38,26 +38,37 @@ describe("GET /api/search", () => {
     expect(mockSearch).toHaveBeenCalledWith({}, undefined, 20);
   });
 
-  it("parsea q, org, from, to, year, issue", async () => {
-    await GET(request("q=beca&org=ULPGC&from=2024-01-01&to=2024-12-31&year=2024&issue=10"));
+  it("parsea q, org, from, to (formato legacy)", async () => {
+    await GET(request("q=beca&org=ULPGC&from=2024-01-01&to=2024-12-31"));
     expect(mockSearch).toHaveBeenCalledWith(
       {
         q: "beca",
-        org: "ULPGC",
-        from: "2024-01-01",
-        to: "2024-12-31",
-        year: 2024,
-        issue: 10,
+        org: ["ULPGC"],
+        dateRanges: [{ from: "2024-01-01", to: "2024-12-31" }],
       },
       undefined,
       20,
     );
   });
 
-  it("parsea arrays de section y subsection", async () => {
-    await GET(request("section=I&section=II&subsection=A"));
+  it("parsea arrays de section (formato legacy)", async () => {
+    await GET(request("section=I&section=II"));
     expect(mockSearch).toHaveBeenCalledWith(
-      { section: ["I", "II"], subsection: ["A"] },
+      { section: ["I", "II"] },
+      undefined,
+      20,
+    );
+  });
+
+  it("parsea include/exclude section y org", async () => {
+    await GET(request("include_section=I&exclude_section=III&include_org=ULPGC&exclude_org=Test"));
+    expect(mockSearch).toHaveBeenCalledWith(
+      {
+        section: ["I"],
+        excludeSection: ["III"],
+        org: ["ULPGC"],
+        excludeOrg: ["Test"],
+      },
       undefined,
       20,
     );
@@ -83,9 +94,16 @@ describe("GET /api/search", () => {
     expect(mockSearch).toHaveBeenCalledWith({}, undefined, 1);
   });
 
-  it("ignora year no numérico", async () => {
-    await GET(request("year=abc"));
-    expect(mockSearch).toHaveBeenCalledWith({}, undefined, 20);
+  it("parsea date ranges indexados", async () => {
+    await GET(request("include_from_0=2024-01-01&include_to_0=2024-12-31&exclude_from_0=2022-06-01&exclude_to_0=2022-12-31"));
+    expect(mockSearch).toHaveBeenCalledWith(
+      {
+        dateRanges: [{ from: "2024-01-01", to: "2024-12-31" }],
+        excludeDateRanges: [{ from: "2022-06-01", to: "2022-12-31" }],
+      },
+      undefined,
+      20,
+    );
   });
 
   it("devuelve el resultado del repositorio como JSON", async () => {

@@ -10,6 +10,7 @@ interface DateRangePickerProps {
   from?: string;  // YYYY-MM-DD
   to?: string;
   onChange: (from: string | undefined, to: string | undefined) => void;
+  compact?: boolean;
 }
 
 const DISPLAY_FORMAT = "dd/MM/yyyy";
@@ -36,7 +37,20 @@ function isoToDate(iso: string | undefined): Date | undefined {
 const inputClass =
   "w-[7.5rem] rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm tabular-nums placeholder:text-zinc-400 focus:border-blue-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100";
 
-export function DateRangePicker({ from, to, onChange }: DateRangePickerProps) {
+const compactInputClass =
+  "w-24 rounded border-0 bg-transparent px-1 py-0 text-sm tabular-nums font-medium placeholder:opacity-40 focus:outline-none focus:ring-0";
+
+export function DateRangePicker({ from, to, onChange, compact }: DateRangePickerProps) {
+  if (compact) {
+    return (
+      <div className="flex items-center gap-1">
+        <DateInput value={from} onChangeIso={(v) => onChange(v, to)} label="Desde" compact />
+        <span className="text-xs opacity-60">&ndash;</span>
+        <DateInput value={to} onChangeIso={(v) => onChange(from, v)} label="Hasta" compact />
+      </div>
+    );
+  }
+
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Rango de fechas</legend>
@@ -59,10 +73,11 @@ export function DateRangePicker({ from, to, onChange }: DateRangePickerProps) {
 
 // ── Input individual con máscara y calendario ────────────────────────────
 
-function DateInput({ value, onChangeIso, label }: {
+function DateInput({ value, onChangeIso, label, compact }: {
   value?: string;
   onChangeIso: (iso: string | undefined) => void;
   label: string;
+  compact?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -130,7 +145,7 @@ function DateInput({ value, onChangeIso, label }: {
         onFocus={() => setOpen(true)}
         onBlur={handleBlur}
         aria-label={label}
-        className={inputClass}
+        className={compact ? compactInputClass : inputClass}
       />
       {open && (
         <div className="absolute left-0 top-full z-50 mt-1 rounded-lg border border-zinc-200 bg-white p-2 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">

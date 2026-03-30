@@ -1,67 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { BooleanTermInput } from "@/components/search/BooleanTermInput";
 import { DateRangePicker } from "@/components/search/DateRangePicker";
 import { SemanticPaginator } from "@/components/search/SemanticPaginator";
-
-describe("BooleanTermInput", () => {
-  it("renderiza términos existentes como chips", () => {
-    const terms = [
-      { value: "beca", mode: "include" as const },
-      { value: "universidad", mode: "exclude" as const },
-    ];
-    render(<BooleanTermInput terms={terms} onChange={() => {}} />);
-    expect(screen.getByText("beca")).toBeInTheDocument();
-    expect(screen.getByText(/universidad/)).toBeInTheDocument();
-  });
-
-  it("añade un término al hacer clic en Añadir", async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    render(<BooleanTermInput terms={[]} onChange={onChange} />);
-
-    const input = screen.getByPlaceholderText("Añadir término...");
-    await user.type(input, "convocatoria");
-    await user.click(screen.getByText("Añadir"));
-
-    expect(onChange).toHaveBeenCalledWith([
-      expect.objectContaining({ value: "convocatoria", mode: "include" }),
-    ]);
-  });
-
-  it("añade un término al pulsar Enter", async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    render(<BooleanTermInput terms={[]} onChange={onChange} />);
-
-    const input = screen.getByPlaceholderText("Añadir término...");
-    await user.type(input, "beca{Enter}");
-
-    expect(onChange).toHaveBeenCalledWith([
-      expect.objectContaining({ value: "beca", mode: "include" }),
-    ]);
-  });
-
-  it("elimina un término al hacer clic en ×", async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    const terms = [{ value: "beca", mode: "include" as const }];
-    render(<BooleanTermInput terms={terms} onChange={onChange} />);
-
-    await user.click(screen.getByLabelText("Eliminar beca"));
-    expect(onChange).toHaveBeenCalledWith([]);
-  });
-
-  it("no añade términos vacíos", async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    render(<BooleanTermInput terms={[]} onChange={onChange} />);
-
-    await user.click(screen.getByText("Añadir"));
-    expect(onChange).not.toHaveBeenCalled();
-  });
-});
 
 describe("DateRangePicker", () => {
   it("renderiza dos inputs con placeholder dd/mm/aaaa", () => {

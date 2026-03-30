@@ -36,28 +36,56 @@ export const DispositionRepository = {
         Prisma.sql`(d.body_tsv @@ to_tsquery('spanish', ${tsquery}) OR id.summary_tsv @@ to_tsquery('spanish', ${tsquery}))`
       );
     }
+    // Secciones: include (OR) / exclude (AND NOT)
     if (filters.section?.length) {
       conditions.push(Prisma.sql`COALESCE(d.section, id.section) = ANY(${filters.section})`);
     }
-    if (filters.subsection?.length) {
-      conditions.push(Prisma.sql`COALESCE(d.subsection, id.subsection) = ANY(${filters.subsection})`);
+    if (filters.excludeSection?.length) {
+      conditions.push(Prisma.sql`COALESCE(d.section, id.section) != ALL(${filters.excludeSection})`);
     }
-    if (filters.org) {
-      conditions.push(
-        Prisma.sql`COALESCE(d.organization, id.organization) ILIKE ${"%" + filters.org + "%"}`
+
+    // Organismos: include (OR con ILIKE) / exclude (AND NOT ILIKE)
+    if (filters.org?.length) {
+      const orgConditions = filters.org.map(
+        (o) => Prisma.sql`COALESCE(d.organization, id.organization) ILIKE ${"%" + o + "%"}`
       );
+      conditions.push(Prisma.sql`(${Prisma.join(orgConditions, " OR ")})`);
     }
-    if (filters.from) {
-      conditions.push(Prisma.sql`d.date >= ${filters.from}`);
+    if (filters.excludeOrg?.length) {
+      for (const o of filters.excludeOrg) {
+        conditions.push(
+          Prisma.sql`COALESCE(d.organization, id.organization) NOT ILIKE ${"%" + o + "%"}`
+        );
+      }
     }
-    if (filters.to) {
-      conditions.push(Prisma.sql`d.date <= ${filters.to}`);
+
+    // Rangos de fecha: include (OR entre rangos) / exclude (AND NOT entre rangos)
+    if (filters.dateRanges?.length) {
+      const dateConditions = filters.dateRanges.map((dr) => {
+        const parts: Prisma.Sql[] = [];
+        if (dr.from) parts.push(Prisma.sql`d.date >= ${dr.from}`);
+        if (dr.to) parts.push(Prisma.sql`d.date <= ${dr.to}`);
+        return parts.length > 1
+          ? Prisma.sql`(${Prisma.join(parts, " AND ")})`
+          : parts[0];
+      }).filter(Boolean);
+      if (dateConditions.length === 1) {
+        conditions.push(dateConditions[0]);
+      } else if (dateConditions.length > 1) {
+        conditions.push(Prisma.sql`(${Prisma.join(dateConditions, " OR ")})`);
+      }
     }
-    if (filters.year) {
-      conditions.push(Prisma.sql`i.year = ${filters.year}`);
-    }
-    if (filters.issue) {
-      conditions.push(Prisma.sql`i.issue = ${filters.issue}`);
+    if (filters.excludeDateRanges?.length) {
+      for (const dr of filters.excludeDateRanges) {
+        const parts: Prisma.Sql[] = [];
+        if (dr.from) parts.push(Prisma.sql`d.date >= ${dr.from}`);
+        if (dr.to) parts.push(Prisma.sql`d.date <= ${dr.to}`);
+        if (parts.length > 0) {
+          conditions.push(
+            Prisma.sql`NOT (${Prisma.join(parts, " AND ")})`
+          );
+        }
+      }
     }
     if (cursorParsed) {
       // El ORDER BY es todo DESC, así que "siguiente página" = tupla menor
@@ -84,16 +112,16 @@ export const DispositionRepository = {
 
     if (process.env.NODE_ENV === "development") {
       const debugParts: string[] = [];
-      if (tsquery) debugParts.push(`(d.body_tsv @@ tsq OR id.summary_tsv @@ tsq) [tsq='${tsquery}']`);
-      if (filters.section?.length) debugParts.push(`COALESCE(d.section, id.section) = ANY(${JSON.stringify(filters.section)})`);
-      if (filters.org) debugParts.push(`COALESCE(d.organization, id.organization) ILIKE '%${filters.org}%'`);
-      if (filters.year) debugParts.push(`i.year = ${filters.year}`);
-      if (filters.issue) debugParts.push(`i.issue = ${filters.issue}`);
-      if (filters.from) debugParts.push(`d.date >= '${filters.from}'`);
-      if (filters.to) debugParts.push(`d.date <= '${filters.to}'`);
+      if (tsquery) debugParts.push(`tsq='${tsquery}'`);
+      if (filters.section?.length) debugParts.push(`section IN ${JSON.stringify(filters.section)}`);
+      if (filters.excludeSection?.length) debugParts.push(`section NOT IN ${JSON.stringify(filters.excludeSection)}`);
+      if (filters.org?.length) debugParts.push(`org ILIKE ${JSON.stringify(filters.org)}`);
+      if (filters.excludeOrg?.length) debugParts.push(`org NOT ILIKE ${JSON.stringify(filters.excludeOrg)}`);
+      if (filters.dateRanges?.length) debugParts.push(`dateRanges: ${JSON.stringify(filters.dateRanges)}`);
+      if (filters.excludeDateRanges?.length) debugParts.push(`excludeDateRanges: ${JSON.stringify(filters.excludeDateRanges)}`);
       if (cursorParsed) debugParts.push(`cursor < (${cursorParsed.year}, ${cursorParsed.issue}, '${cursorParsed.number}')`);
       const debugWhere = debugParts.length > 0 ? `WHERE ${debugParts.join(" AND ")}` : "";
-      console.log(`[dispositions.search] SQL: SELECT ... FROM issue__dispositions id JOIN issue i ... LEFT JOIN document d ... ${debugWhere} LIMIT ${limit + 1}`);
+      console.log(`[dispositions.search] ${debugWhere} LIMIT ${limit + 1}`);
     }
 
     type Row = {

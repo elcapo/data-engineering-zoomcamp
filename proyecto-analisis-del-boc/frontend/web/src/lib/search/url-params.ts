@@ -1,106 +1,174 @@
-import { SearchFilters } from "@/types/domain";
-import type { BooleanTerm } from "@/lib/search/query-builder";
-import { buildTsquery } from "@/lib/search/query-builder";
+import type { ActiveFilter, SearchFilters, DateRangeFilter } from "@/types/domain";
+import { buildTsquery, activeFiltersToTerms } from "@/lib/search/query-builder";
 
 /**
- * Extrae SearchFilters y BooleanTerm[] de los searchParams de la URL.
+ * Reconstruye ActiveFilter[] y cursor/limit desde los searchParams de la URL.
  */
 export function parseSearchParams(params: Record<string, string | string[] | undefined>): {
-  filters: SearchFilters;
-  terms: BooleanTerm[];
+  filters: ActiveFilter[];
   cursor?: string;
   limit: number;
 } {
-  const filters: SearchFilters = {};
+  const filters: ActiveFilter[] = [];
+  let nextId = 1;
+  const id = () => String(nextId++);
 
-  // filters.q nunca se almacena — el texto de búsqueda se gestiona
-  // exclusivamente a través de BooleanTerms (chips).
+  // Términos: include_term / exclude_term (o legacy q sin include/exclude)
+  const includeTerms = asArray(params.include_term);
+  const excludeTerms = asArray(params.exclude_term);
 
-  const section = asArray(params.section);
-  if (section.length > 0) filters.section = section;
+  // Legacy: si no hay include_term/exclude_term pero sí include/exclude (formato antiguo)
+  const legacyIncludes = asArray(params.include);
+  const legacyExcludes = asArray(params.exclude);
 
-  const subsection = asArray(params.subsection);
-  if (subsection.length > 0) filters.subsection = subsection;
+  const termIncludes = includeTerms.length > 0 ? includeTerms : legacyIncludes;
+  const termExcludes = excludeTerms.length > 0 ? excludeTerms : legacyExcludes;
 
-  const org = asString(params.org);
-  if (org) filters.org = org;
-
-  const from = asString(params.from);
-  if (from) filters.from = from;
-
-  const to = asString(params.to);
-  if (to) filters.to = to;
-
-  const year = asInt(params.year);
-  if (year) filters.year = year;
-
-  const issue = asInt(params.issue);
-  if (issue) filters.issue = issue;
-
-  // Reconstruye BooleanTerms desde los parámetros include/exclude de la URL.
-  // Si la URL solo tiene q (ej. desde SearchBar) sin include/exclude,
-  // lo convertimos a chips include para que sea visible y editable.
-  const terms: BooleanTerm[] = [];
-  const includes = asArray(params.include);
-  const excludes = asArray(params.exclude);
-
-  if (includes.length > 0 || excludes.length > 0) {
-    for (const val of includes) {
-      terms.push({ value: val, mode: "include", group: 0 });
+  if (termIncludes.length > 0 || termExcludes.length > 0) {
+    for (const val of termIncludes) {
+      filters.push({ id: id(), type: "term", mode: "include", value: val });
     }
-    for (const val of excludes) {
-      terms.push({ value: val, mode: "exclude" });
+    for (const val of termExcludes) {
+      filters.push({ id: id(), type: "term", mode: "exclude", value: val });
     }
   } else {
-    // Sin include/exclude: convierte q a chips (ej. "beca convocatoria" → 2 chips include)
+    // Sin include/exclude: convierte q a chips (ej. "beca convocatoria" → 2 chips)
     const q = asString(params.q);
     if (q) {
       for (const word of q.split(/\s+/).filter(Boolean)) {
-        terms.push({ value: word, mode: "include", group: 0 });
+        filters.push({ id: id(), type: "term", mode: "include", value: word });
       }
+    }
+  }
+
+  // Secciones
+  for (const val of asArray(params.include_section)) {
+    filters.push({ id: id(), type: "section", mode: "include", value: val });
+  }
+  for (const val of asArray(params.exclude_section)) {
+    filters.push({ id: id(), type: "section", mode: "exclude", value: val });
+  }
+  // Legacy: section sin prefijo → include
+  if (!params.include_section && !params.exclude_section) {
+    for (const val of asArray(params.section)) {
+      filters.push({ id: id(), type: "section", mode: "include", value: val });
+    }
+  }
+
+  // Organismos
+  for (const val of asArray(params.include_org)) {
+    filters.push({ id: id(), type: "org", mode: "include", value: val });
+  }
+  for (const val of asArray(params.exclude_org)) {
+    filters.push({ id: id(), type: "org", mode: "exclude", value: val });
+  }
+  // Legacy: org sin prefijo → include
+  if (!params.include_org && !params.exclude_org) {
+    const org = asString(params.org);
+    if (org) filters.push({ id: id(), type: "org", mode: "include", value: org });
+  }
+
+  // Rangos de fecha (indexados: include_from_0, include_to_0, ...)
+  parseDateRangeParams(params, "include", filters, id);
+  parseDateRangeParams(params, "exclude", filters, id);
+  // Legacy: from/to sin prefijo → include
+  if (!hasPrefixedDateParams(params)) {
+    const from = asString(params.from);
+    const to = asString(params.to);
+    if (from || to) {
+      filters.push({ id: id(), type: "dateRange", mode: "include", value: "", from, to });
     }
   }
 
   return {
     filters,
-    terms,
     cursor: asString(params.cursor),
     limit: Math.min(Math.max(asInt(params.limit) ?? 20, 1), 100),
   };
 }
 
 /**
- * Construye query string para la URL de búsqueda a partir de filtros y términos.
+ * Serializa ActiveFilter[] a URL para navegación del browser.
  */
-export function buildSearchUrl(filters: SearchFilters, terms: BooleanTerm[], cursor?: string | null): string {
+export function buildSearchUrl(activeFilters: ActiveFilter[], cursor?: string | null): string {
   const params = new URLSearchParams();
 
-  // q viene exclusivamente de los BooleanTerms.
-  // include/exclude se guardan en la URL para reconstruir los chips.
+  // Construye tsquery desde los términos
+  const terms = activeFiltersToTerms(activeFilters);
   const tsquery = buildTsquery(terms);
-  if (tsquery) {
-    params.set("q", tsquery);
-  }
-  for (const t of terms) {
-    if (t.mode === "include") params.append("include", t.value);
-    else params.append("exclude", t.value);
+  if (tsquery) params.set("q", tsquery);
+
+  // Serializa cada filtro
+  let dateIncludeIdx = 0;
+  let dateExcludeIdx = 0;
+
+  for (const f of activeFilters) {
+    switch (f.type) {
+      case "term":
+        if (f.value.trim()) {
+          params.append(f.mode === "include" ? "include_term" : "exclude_term", f.value);
+        }
+        break;
+      case "section":
+        if (f.value.trim()) {
+          params.append(f.mode === "include" ? "include_section" : "exclude_section", f.value);
+        }
+        break;
+      case "org":
+        if (f.value.trim()) {
+          params.append(f.mode === "include" ? "include_org" : "exclude_org", f.value);
+        }
+        break;
+      case "dateRange": {
+        const prefix = f.mode === "include" ? "include" : "exclude";
+        const idx = f.mode === "include" ? dateIncludeIdx++ : dateExcludeIdx++;
+        if (f.from) params.set(`${prefix}_from_${idx}`, f.from);
+        if (f.to) params.set(`${prefix}_to_${idx}`, f.to);
+        break;
+      }
+    }
   }
 
-  if (filters.section) {
-    for (const s of filters.section) params.append("section", s);
-  }
-  if (filters.subsection) {
-    for (const s of filters.subsection) params.append("subsection", s);
-  }
-  if (filters.org) params.set("org", filters.org);
-  if (filters.from) params.set("from", filters.from);
-  if (filters.to) params.set("to", filters.to);
-  if (filters.year) params.set("year", String(filters.year));
-  if (filters.issue) params.set("issue", String(filters.issue));
   if (cursor) params.set("cursor", cursor);
 
   const qs = params.toString();
   return `/buscar${qs ? `?${qs}` : ""}`;
+}
+
+/**
+ * Convierte ActiveFilter[] al formato SearchFilters que espera la API/repositorio.
+ */
+export function activeFiltersToSearchFilters(activeFilters: ActiveFilter[]): SearchFilters {
+  const sf: SearchFilters = {};
+
+  // Términos → tsquery
+  const terms = activeFiltersToTerms(activeFilters);
+  const tsquery = buildTsquery(terms);
+  if (tsquery) sf.q = tsquery;
+
+  // Secciones
+  const includeSections = activeFilters.filter((f) => f.type === "section" && f.mode === "include" && f.value.trim()).map((f) => f.value);
+  const excludeSections = activeFilters.filter((f) => f.type === "section" && f.mode === "exclude" && f.value.trim()).map((f) => f.value);
+  if (includeSections.length > 0) sf.section = includeSections;
+  if (excludeSections.length > 0) sf.excludeSection = excludeSections;
+
+  // Organismos
+  const includeOrgs = activeFilters.filter((f) => f.type === "org" && f.mode === "include" && f.value.trim()).map((f) => f.value);
+  const excludeOrgs = activeFilters.filter((f) => f.type === "org" && f.mode === "exclude" && f.value.trim()).map((f) => f.value);
+  if (includeOrgs.length > 0) sf.org = includeOrgs;
+  if (excludeOrgs.length > 0) sf.excludeOrg = excludeOrgs;
+
+  // Rangos de fecha
+  const includeDates: DateRangeFilter[] = activeFilters
+    .filter((f) => f.type === "dateRange" && f.mode === "include" && (f.from || f.to))
+    .map((f) => ({ from: f.from, to: f.to }));
+  const excludeDates: DateRangeFilter[] = activeFilters
+    .filter((f) => f.type === "dateRange" && f.mode === "exclude" && (f.from || f.to))
+    .map((f) => ({ from: f.from, to: f.to }));
+  if (includeDates.length > 0) sf.dateRanges = includeDates;
+  if (excludeDates.length > 0) sf.excludeDateRanges = excludeDates;
+
+  return sf;
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────
@@ -121,4 +189,22 @@ function asInt(v: string | string[] | undefined): number | undefined {
   if (!s) return undefined;
   const n = parseInt(s, 10);
   return Number.isNaN(n) ? undefined : n;
+}
+
+function parseDateRangeParams(
+  params: Record<string, string | string[] | undefined>,
+  mode: "include" | "exclude",
+  filters: ActiveFilter[],
+  id: () => string,
+) {
+  for (let i = 0; i < 10; i++) {
+    const from = asString(params[`${mode}_from_${i}`]);
+    const to = asString(params[`${mode}_to_${i}`]);
+    if (!from && !to) break;
+    filters.push({ id: id(), type: "dateRange", mode, value: "", from, to });
+  }
+}
+
+function hasPrefixedDateParams(params: Record<string, string | string[] | undefined>): boolean {
+  return !!(params.include_from_0 || params.include_to_0 || params.exclude_from_0 || params.exclude_to_0);
 }

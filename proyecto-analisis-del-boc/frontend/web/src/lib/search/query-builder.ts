@@ -1,10 +1,26 @@
 // Convierte los filtros de la UI a una expresión tsquery válida para PostgreSQL
 // con la configuración lingüística española.
 
+import type { ActiveFilter } from "@/types/domain";
+
 export interface BooleanTerm {
   value: string;
   mode: "include" | "exclude";
   group?: number; // términos del mismo grupo se unen con OR
+}
+
+/**
+ * Extrae BooleanTerms de un array de ActiveFilter (solo los de tipo "term").
+ * Todos los includes comparten grupo 0 (OR entre ellos).
+ */
+export function activeFiltersToTerms(filters: ActiveFilter[]): BooleanTerm[] {
+  return filters
+    .filter((f) => f.type === "term" && f.value.trim())
+    .map((f) => ({
+      value: f.value,
+      mode: f.mode,
+      group: f.mode === "include" ? 0 : undefined,
+    }));
 }
 
 /**

@@ -4,10 +4,11 @@ import { SearchPage } from "@/components/search/SearchPage";
 
 // Mock next/navigation
 const mockPush = vi.fn();
+const mockReplace = vi.fn();
 let mockSearchParams = new URLSearchParams();
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: mockPush }),
+  useRouter: () => ({ push: mockPush, replace: mockReplace }),
   useSearchParams: () => mockSearchParams,
 }));
 
@@ -39,6 +40,7 @@ const fakeResult = {
 
 beforeEach(() => {
   mockPush.mockReset();
+  mockReplace.mockReset();
   mockFetch.mockReset();
   mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve(fakeResult) });
   mockSearchParams = new URLSearchParams();
@@ -47,7 +49,7 @@ beforeEach(() => {
 describe("SearchPage", () => {
   it("muestra mensaje inicial cuando no hay parámetros", () => {
     render(<SearchPage />);
-    expect(screen.getByText(/Usa los filtros/)).toBeInTheDocument();
+    expect(screen.getByText(/Busca en el BOC/)).toBeInTheDocument();
   });
 
   it("hace fetch y muestra resultados cuando hay parámetros en la URL", async () => {
@@ -96,8 +98,9 @@ describe("SearchPage", () => {
   it("reconstruye términos include/exclude desde la URL", () => {
     mockSearchParams = new URLSearchParams("include=beca&include=ayuda&exclude=universidad");
     render(<SearchPage />);
-    expect(screen.getByText("beca")).toBeInTheDocument();
-    expect(screen.getByText("ayuda")).toBeInTheDocument();
-    expect(screen.getByText(/universidad/)).toBeInTheDocument();
+    // Los valores aparecen como botones dentro de los chips
+    expect(screen.getByTitle("beca")).toBeInTheDocument();
+    expect(screen.getByTitle("ayuda")).toBeInTheDocument();
+    expect(screen.getByTitle("universidad")).toBeInTheDocument();
   });
 });

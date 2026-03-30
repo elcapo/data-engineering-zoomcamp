@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DispositionRepository } from "@/lib/db/repositories/dispositions";
-import { SearchFilters } from "@/types/domain";
+import type { SearchFilters, DateRangeFilter } from "@/types/domain";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -10,26 +10,36 @@ export async function GET(request: NextRequest) {
   const q = searchParams.get("q");
   if (q) filters.q = q;
 
-  const sections = searchParams.getAll("section");
-  if (sections.length > 0) filters.section = sections;
+  // Secciones (nuevo formato con prefijo, con fallback al formato legacy)
+  const includeSections = searchParams.getAll("include_section");
+  const excludeSections = searchParams.getAll("exclude_section");
+  const legacySections = searchParams.getAll("section");
 
-  const subsections = searchParams.getAll("subsection");
-  if (subsections.length > 0) filters.subsection = subsections;
+  if (includeSections.length > 0) filters.section = includeSections;
+  else if (legacySections.length > 0) filters.section = legacySections;
+  if (excludeSections.length > 0) filters.excludeSection = excludeSections;
 
-  const org = searchParams.get("org");
-  if (org) filters.org = org;
+  // Organismos (nuevo formato con prefijo, con fallback)
+  const includeOrgs = searchParams.getAll("include_org");
+  const excludeOrgs = searchParams.getAll("exclude_org");
+  const legacyOrg = searchParams.get("org");
 
-  const from = searchParams.get("from");
-  if (from) filters.from = from;
+  if (includeOrgs.length > 0) filters.org = includeOrgs;
+  else if (legacyOrg) filters.org = [legacyOrg];
+  if (excludeOrgs.length > 0) filters.excludeOrg = excludeOrgs;
 
-  const to = searchParams.get("to");
-  if (to) filters.to = to;
+  // Rangos de fecha (indexados: include_from_0, include_to_0, ...)
+  filters.dateRanges = parseDateRangeParams(searchParams, "include");
+  filters.excludeDateRanges = parseDateRangeParams(searchParams, "exclude");
 
-  const year = searchParams.get("year");
-  if (year) filters.year = parseInt(year, 10) || undefined;
-
-  const issue = searchParams.get("issue");
-  if (issue) filters.issue = parseInt(issue, 10) || undefined;
+  // Legacy: from/to sin prefijo
+  if (!filters.dateRanges?.length) {
+    const from = searchParams.get("from");
+    const to = searchParams.get("to");
+    if (from || to) {
+      filters.dateRanges = [{ from: from ?? undefined, to: to ?? undefined }];
+    }
+  }
 
   const cursor = searchParams.get("cursor") ?? undefined;
   const rawLimit = parseInt(searchParams.get("limit") ?? "", 10);
@@ -48,4 +58,15 @@ export async function GET(request: NextRequest) {
     console.error("GET /api/search error:", error);
     return NextResponse.json({ error: "Error en la busqueda" }, { status: 500 });
   }
+}
+
+function parseDateRangeParams(params: URLSearchParams, mode: string): DateRangeFilter[] | undefined {
+  const ranges: DateRangeFilter[] = [];
+  for (let i = 0; i < 10; i++) {
+    const from = params.get(`${mode}_from_${i}`) ?? undefined;
+    const to = params.get(`${mode}_to_${i}`) ?? undefined;
+    if (!from && !to) break;
+    ranges.push({ from, to });
+  }
+  return ranges.length > 0 ? ranges : undefined;
 }

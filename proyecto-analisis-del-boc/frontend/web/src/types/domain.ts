@@ -36,12 +36,30 @@ export interface Disposition {
 export interface SearchFilters {
   q?: string;
   section?: string[];
-  subsection?: string[];
-  org?: string;
+  excludeSection?: string[];
+  org?: string[];
+  excludeOrg?: string[];
+  dateRanges?: DateRangeFilter[];
+  excludeDateRanges?: DateRangeFilter[];
+}
+
+export interface DateRangeFilter {
   from?: string; // YYYY-MM-DD
   to?: string;   // YYYY-MM-DD
-  year?: number;
-  issue?: number;
+}
+
+// ── Filtros activos (UI) ─────────────────────────────────────────────────
+
+export type FilterType = "term" | "section" | "org" | "dateRange";
+export type FilterMode = "include" | "exclude";
+
+export interface ActiveFilter {
+  id: string;
+  type: FilterType;
+  mode: FilterMode;
+  value: string;     // texto para term/section/org, "" para dateRange
+  from?: string;     // solo dateRange, YYYY-MM-DD
+  to?: string;       // solo dateRange, YYYY-MM-DD
 }
 
 export interface SearchCursor {

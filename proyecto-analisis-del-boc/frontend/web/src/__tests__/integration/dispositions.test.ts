@@ -47,11 +47,11 @@ describe("DispositionRepository.search — sin filtros", () => {
   });
 });
 
-describe("DispositionRepository.search — filtro por año", () => {
-  it("todos los resultados pertenecen al año filtrado", async () => {
-    const { results } = await DispositionRepository.search({ year: 2024 }, undefined, 10);
+describe("DispositionRepository.search — filtro por sección", () => {
+  it("todos los resultados pertenecen a la sección filtrada", async () => {
+    const { results } = await DispositionRepository.search({ section: ["I"] }, undefined, 10);
     for (const d of results) {
-      expect(d.year).toBe(2024);
+      expect(d.section).toBe("I");
     }
   });
 });
