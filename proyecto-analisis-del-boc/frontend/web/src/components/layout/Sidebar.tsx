@@ -89,7 +89,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onNavigate }: SidebarProp
       }`}
     >
       {/* Logo */}
-      <div className="flex shrink-0 items-center border-b border-zinc-200 px-3 dark:border-zinc-800" style={{ height: 71 }}>
+      <div className="flex h-[71px] shrink-0 items-center border-b border-zinc-200 px-3 dark:border-zinc-800">
         <Link href="/" onClick={onNavigate} className="flex items-center overflow-hidden">
           {collapsed ? (
             <Image src="/bocana-logo.svg" alt="bocana" width={36} height={36} className="shrink-0" />

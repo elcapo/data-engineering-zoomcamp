@@ -10,7 +10,7 @@ export default async function Home() {
 
   return (
     <>
-      <PageHeader title="Inicio" />
+      <PageHeader breadcrumbs={[{ label: "Inicio" }]} title="Bocana" />
 
       <div className="px-4 py-8 sm:px-6 lg:px-8">
         {/* Hero con barra de búsqueda */}

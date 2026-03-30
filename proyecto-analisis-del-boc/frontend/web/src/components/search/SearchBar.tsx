@@ -10,7 +10,7 @@ interface SearchBarProps {
   compact?: boolean;
 }
 
-export function SearchBar({ defaultValue = "", placeholder = "Buscar en el BOC...", className = "", compact = false }: SearchBarProps) {
+export function SearchBar({ defaultValue = "", placeholder = "Ej. Ayudas al alquiler", className = "", compact = false }: SearchBarProps) {
   const [query, setQuery] = useState(defaultValue);
   const router = useRouter();
 
