@@ -240,7 +240,6 @@ export const DispositionRepository = {
 // ── facets ────────────────────────────────────────────────────────────────
 
 /** Límites por defecto para cada facet (top N). */
-const FACET_LIMIT_YEAR = 20;
 const FACET_LIMIT_SECTION = 10;
 const FACET_LIMIT_ORG = 15;
 
@@ -252,7 +251,7 @@ async function computeFacets(where: Prisma.Sql): Promise<SearchFacets> {
       SELECT i.year::text AS label, COUNT(DISTINCT (i.year, i.issue, id.disposition)) AS count
       ${FROM_WITH_JOIN}
       ${where}
-      GROUP BY i.year ORDER BY count DESC LIMIT ${FACET_LIMIT_YEAR}`,
+      GROUP BY i.year ORDER BY i.year DESC`,
     prisma.$queryRaw<FacetRow[]>`
       SELECT COALESCE(NULLIF(d.section, ''), NULLIF(id.section, ''), 'Sin sección') AS label,
              COUNT(DISTINCT (i.year, i.issue, id.disposition)) AS count
