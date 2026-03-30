@@ -7,6 +7,8 @@ import { BulletinSection } from "@/components/metrics/BulletinSection";
 import { DispositionSection } from "@/components/metrics/DispositionSection";
 import { PageHeader } from "@/components/layout/PageHeader";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Cobertura — BOC Canarias Web",
   description: "Cobertura del corpus histórico del Boletín Oficial de Canarias: descarga y extracción por año.",

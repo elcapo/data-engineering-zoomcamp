@@ -5,6 +5,8 @@ import { BulletinCard } from "@/components/bulletin/BulletinCard";
 import { EditorialCard } from "@/components/bulletin/EditorialCard";
 import { PageHeader } from "@/components/layout/PageHeader";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const config = readSectionsConfig();
 
