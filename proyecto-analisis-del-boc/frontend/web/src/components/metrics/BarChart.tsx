@@ -31,27 +31,29 @@ function barFill(value: number): string {
   return "#f97316"; // orange-500
 }
 
+const ACCENT = "#6366f1"; // indigo-500 — matches --accent-light
+const ACCENT_HOVER = "#818cf8"; // indigo-400
+
 export function BarChart({ data, layout = "vertical", height = 400, colorByValue = false, className = "", onBarClick }: BarChartProps) {
   const isVertical = layout === "vertical";
   const clickable = !!onBarClick;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleClick(entry: any) {
-    if (onBarClick && entry?.activeLabel) {
-      onBarClick(entry.activeLabel);
+  function handleBarClick(entry: any) {
+    if (onBarClick && entry?.label) {
+      onBarClick(entry.label);
     }
   }
 
   return (
-    <div className={className} style={{ width: "100%", height, cursor: clickable ? "pointer" : undefined }}>
+    <div className={className} style={{ width: "100%", height }}>
       <ResponsiveContainer>
         <RechartsBarChart
           data={data}
           layout={isVertical ? "vertical" : "horizontal"}
           margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-          onClick={clickable ? handleClick : undefined}
         >
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
           {isVertical ? (
             <>
               <XAxis type="number" domain={[0, 100]} />
@@ -60,11 +62,24 @@ export function BarChart({ data, layout = "vertical", height = 400, colorByValue
           ) : (
             <>
               <XAxis dataKey="label" />
-              <YAxis domain={[0, "auto"]} />
+              <YAxis
+                domain={[0, "auto"]}
+                tickFormatter={(v: number) => v.toLocaleString("es-ES")}
+              />
             </>
           )}
-          <Tooltip />
-          <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+          <Tooltip
+            formatter={(value) => [Number(value).toLocaleString("es-ES"), "Resultados"]}
+            cursor={clickable ? { fill: "var(--accent-muted, rgba(99,102,241,0.12))" } : undefined}
+          />
+          <Bar
+            dataKey="value"
+            radius={[4, 4, 0, 0]}
+            fill={colorByValue ? undefined : ACCENT}
+            style={clickable ? { cursor: "pointer" } : undefined}
+            onClick={clickable ? handleBarClick : undefined}
+            activeBar={{ fill: ACCENT_HOVER }}
+          >
             {colorByValue
               ? data.map((entry, i) => <Cell key={i} fill={barFill(entry.value)} />)
               : null}

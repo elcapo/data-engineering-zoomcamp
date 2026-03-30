@@ -237,7 +237,7 @@ async function computeFacets(where: Prisma.Sql): Promise<SearchFacets> {
       ${where}
       GROUP BY i.year ORDER BY count DESC LIMIT ${FACET_LIMIT_YEAR}`,
     prisma.$queryRaw<FacetRow[]>`
-      SELECT COALESCE(d.section, id.section, 'Sin sección') AS label,
+      SELECT COALESCE(NULLIF(d.section, ''), NULLIF(id.section, ''), 'Sin sección') AS label,
              COUNT(DISTINCT (i.year, i.issue, id.disposition)) AS count
       ${FROM_WITH_JOIN}
       ${where}
