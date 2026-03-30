@@ -32,8 +32,21 @@ function barFill(value: number): string {
   return "#f97316"; // orange-500
 }
 
-const ACCENT = "#1a5fb4"; // logo blue — matches --accent
-const ACCENT_HOVER = "#3584e4"; // logo blue light — matches --accent-light
+const ACCENT = "#60a5fa"; // blue-400
+const ACCENT_HOVER = "#93c5fd"; // blue-300
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function CustomTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-lg border border-zinc-200 bg-white px-3 py-2 shadow-lg dark:border-zinc-700 dark:bg-zinc-800">
+      <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">{label}</p>
+      <p className="text-sm font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+        {formatNumber(Number(payload[0].value))} resultados
+      </p>
+    </div>
+  );
+}
 
 export function BarChart({ data, layout = "vertical", height = 400, colorByValue = false, className = "", onBarClick }: BarChartProps) {
   const isVertical = layout === "vertical";
@@ -52,9 +65,9 @@ export function BarChart({ data, layout = "vertical", height = 400, colorByValue
         <RechartsBarChart
           data={data}
           layout={isVertical ? "vertical" : "horizontal"}
-          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+          margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+          <CartesianGrid vertical={false} stroke="var(--color-zinc-200, #e4e4e7)" strokeDasharray="3 3" opacity={0.5} />
           {isVertical ? (
             <>
               <XAxis type="number" domain={[0, 100]} />
@@ -62,16 +75,26 @@ export function BarChart({ data, layout = "vertical", height = 400, colorByValue
             </>
           ) : (
             <>
-              <XAxis dataKey="label" />
+              <XAxis
+                dataKey="label"
+                interval={0}
+                tick={{ fontSize: 11 }}
+                tickLine={false}
+                axisLine={false}
+              />
               <YAxis
                 domain={[0, "auto"]}
                 tickFormatter={(v: number) => formatNumber(v)}
+                tick={{ fontSize: 11 }}
+                tickLine={false}
+                axisLine={false}
+                width={45}
               />
             </>
           )}
           <Tooltip
-            formatter={(value) => [formatNumber(Number(value)), "Resultados"]}
-            cursor={clickable ? { fill: "var(--accent-muted, rgba(99,102,241,0.12))" } : undefined}
+            content={<CustomTooltip />}
+            cursor={false}
           />
           <Bar
             dataKey="value"
