@@ -92,7 +92,7 @@ interface FilterBarProps {
 
 export function FilterBar({ filters, onChange }: FilterBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [newFilterId, setNewFilterId] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const [filterOptions, setFilterOptions] = useState<{ sections: string[]; organizations: string[] }>({ sections: [], organizations: [] });
 
@@ -124,7 +124,7 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
       value: "",
     };
     onChange([...filters, newFilter]);
-    setEditingId(newFilter.id);
+    setNewFilterId(newFilter.id);
     setMenuOpen(false);
   }
 
@@ -134,25 +134,19 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
 
   function removeFilter(id: string) {
     onChange(filters.filter((f) => f.id !== id));
-    if (editingId === id) setEditingId(null);
   }
 
   function commitFilter(id: string) {
     const filter = filters.find((f) => f.id === id);
     if (!filter) return;
-    // Si el filtro está vacío, eliminarlo (dateRange y ref usan campos propios)
     if (filter.type === "dateRange") {
-      setEditingId(null);
+      // dateRange siempre se mantiene
     } else if (filter.type === "ref") {
       if (!filter.refYear && !filter.refIssue && !filter.refDisposition) {
         removeFilter(id);
-      } else {
-        setEditingId(null);
       }
     } else if (!filter.value.trim()) {
       removeFilter(id);
-    } else {
-      setEditingId(null);
     }
   }
 
@@ -198,11 +192,10 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
         <FilterChip
           key={filter.id}
           filter={filter}
-          editing={editingId === filter.id}
+          initiallyActive={newFilterId === filter.id}
           filterOptions={filterOptions}
-          onEdit={() => setEditingId(filter.id)}
+          onClearNew={() => { if (newFilterId === filter.id) setNewFilterId(null); }}
           onCommit={() => commitFilter(filter.id)}
-          onStopEditing={() => setEditingId(null)}
           onUpdate={(patch) => updateFilter(filter.id, patch)}
           onRemove={() => removeFilter(filter.id)}
           onToggleMode={() => toggleMode(filter.id)}
@@ -227,31 +220,40 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
 
 interface FilterChipProps {
   filter: ActiveFilter;
-  editing: boolean;
+  initiallyActive: boolean;
   filterOptions: { sections: string[]; organizations: string[] };
-  onEdit: () => void;
+  onClearNew: () => void;
   onCommit: () => void;
-  onStopEditing: () => void;
   onUpdate: (patch: Partial<ActiveFilter>) => void;
   onRemove: () => void;
   onToggleMode: () => void;
 }
 
-function FilterChip({ filter, editing, filterOptions, onEdit, onCommit, onStopEditing, onUpdate, onRemove, onToggleMode }: FilterChipProps) {
+function FilterChip({ filter, initiallyActive, filterOptions, onClearNew, onCommit, onUpdate, onRemove, onToggleMode }: FilterChipProps) {
   const chipRef = useRef<HTMLDivElement>(null);
-  const [focused, setFocused] = useState(false);
+  const blurTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [active, setActive] = useState(initiallyActive);
 
-  // Cierra edición al hacer clic fuera del chip
+  // Marca como consumido el flag de "recién creado"
   useEffect(() => {
-    if (!editing) return;
-    function handleClick(e: MouseEvent) {
-      if (chipRef.current && !chipRef.current.contains(e.target as Node)) {
+    if (initiallyActive) onClearNew();
+  }, [initiallyActive, onClearNew]);
+
+  function handleFocus() {
+    clearTimeout(blurTimeout.current);
+    setActive(true);
+  }
+
+  function handleBlur() {
+    blurTimeout.current = setTimeout(() => {
+      if (!chipRef.current?.contains(document.activeElement)) {
+        setActive(false);
         onCommit();
       }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [editing, onCommit]);
+    }, 0);
+  }
+
+  useEffect(() => () => clearTimeout(blurTimeout.current), []);
 
   const borderColor = filter.mode === "include"
     ? "border-emerald-300 dark:border-emerald-700"
@@ -260,12 +262,12 @@ function FilterChip({ filter, editing, filterOptions, onEdit, onCommit, onStopEd
   return (
     <div
       ref={chipRef}
-      onFocus={() => setFocused(true)}
-      onBlur={(e) => { if (!chipRef.current?.contains(e.relatedTarget as Node)) setFocused(false); }}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
       className={`inline-flex items-center gap-1 rounded-lg border bg-white px-1.5 py-1 text-sm text-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 ${borderColor}`}
     >
-      {/* Selector incluir/excluir (visible con foco) */}
-      <div className={`flex items-center gap-0.5 overflow-hidden transition-all duration-150 ${focused || editing ? "max-w-40 opacity-100" : "max-w-0 opacity-0"}`}>
+      {/* Selector incluir/excluir (visible cuando el chip está activo) */}
+      <div className={`flex items-center gap-0.5 overflow-hidden transition-all duration-150 ${active ? "max-w-40 opacity-100" : "max-w-0 opacity-0"}`}>
         <button
           type="button"
           onClick={() => { if (filter.mode !== "include") onToggleMode(); }}
@@ -293,13 +295,13 @@ function FilterChip({ filter, editing, filterOptions, onEdit, onCommit, onStopEd
       {/* Etiqueta del tipo */}
       <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">{TYPE_LABELS[filter.type]}:</span>
 
-      {/* Valor (editable o solo lectura) */}
-      {editing ? (
-        <FilterEditor filter={filter} filterOptions={filterOptions} onUpdate={onUpdate} onCommit={onCommit} onStopEditing={onStopEditing} />
+      {/* Valor: editor cuando activo, solo lectura cuando inactivo */}
+      {active ? (
+        <FilterEditor filter={filter} filterOptions={filterOptions} onUpdate={onUpdate} onCommit={onCommit} />
       ) : (
         <button
           type="button"
-          onClick={onEdit}
+          onClick={() => setActive(true)}
           className="max-w-48 truncate text-sm font-medium"
           title={displayValue(filter)}
         >
@@ -329,13 +331,11 @@ function FilterEditor({
   filterOptions,
   onUpdate,
   onCommit,
-  onStopEditing,
 }: {
   filter: ActiveFilter;
   filterOptions: { sections: string[]; organizations: string[] };
   onUpdate: (patch: Partial<ActiveFilter>) => void;
   onCommit: () => void;
-  onStopEditing: () => void;
 }) {
   if (filter.type === "dateRange") {
     return (
@@ -377,7 +377,7 @@ function FilterEditor({
         placeholder={placeholder}
         onChange={(value) => onUpdate({ value })}
         onCommit={onCommit}
-        onSelect={(value) => { onUpdate({ value }); onStopEditing(); }}
+        onSelect={(value) => { onUpdate({ value }); }}
       />
     );
   }
@@ -389,8 +389,9 @@ function FilterEditor({
       value={filter.value}
       onChange={(e) => onUpdate({ value: e.target.value })}
       onKeyDown={(e) => {
-        if (e.key === "Enter") onCommit();
-        if (e.key === "Escape") onCommit();
+        if (e.key === "Enter" || e.key === "Escape") {
+          (e.target as HTMLElement).blur();
+        }
       }}
       placeholder={placeholder}
       className="w-36 rounded border-0 bg-transparent px-1 py-0 text-sm font-medium placeholder:text-current placeholder:opacity-40 focus:outline-none focus:ring-0"

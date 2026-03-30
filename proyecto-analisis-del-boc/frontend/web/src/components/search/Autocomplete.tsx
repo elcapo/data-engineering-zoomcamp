@@ -34,11 +34,13 @@ export function Autocomplete({ value, options, placeholder, onChange, onCommit, 
   function select(option: string) {
     setOpen(false);
     onSelect(option);
+    // Desenfoca el input para que el chip se desactive
+    inputRef.current?.blur();
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (!showDropdown) {
-      if (e.key === "Enter" || e.key === "Escape") onCommit();
+      if (e.key === "Enter" || e.key === "Escape") inputRef.current?.blur();
       return;
     }
 
@@ -54,15 +56,14 @@ export function Autocomplete({ value, options, placeholder, onChange, onCommit, 
       case "Enter":
         e.preventDefault();
         if (activeIndex >= 0 && filtered[activeIndex]) {
-          setOpen(false);
-          onSelect(filtered[activeIndex]);
+          select(filtered[activeIndex]);
         } else {
-          onCommit();
+          inputRef.current?.blur();
         }
         break;
       case "Escape":
         e.preventDefault();
-        onCommit();
+        inputRef.current?.blur();
         break;
     }
   }
