@@ -26,7 +26,7 @@ export function MobileMenu() {
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-full border-b border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95">
+        <div className="absolute left-0 right-0 top-full border-b border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
           <Nav vertical onNavigate={() => setOpen(false)} />
         </div>
       )}

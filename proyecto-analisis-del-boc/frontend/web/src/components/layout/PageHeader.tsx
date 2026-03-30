@@ -13,7 +13,7 @@ interface PageHeaderProps {
 
 export function PageHeader({ breadcrumbs, title, actions }: PageHeaderProps) {
   return (
-    <div className="sticky top-0 z-10 border-b border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="sticky top-0 z-10 border-b border-zinc-200 bg-white px-6 py-4 dark:border-zinc-700 dark:bg-zinc-900">
       {breadcrumbs && breadcrumbs.length > 0 && (
         <nav aria-label="Migas" className="mb-1 flex items-center gap-1 text-sm text-zinc-400 dark:text-zinc-500">
           {breadcrumbs.map((crumb, i) => (

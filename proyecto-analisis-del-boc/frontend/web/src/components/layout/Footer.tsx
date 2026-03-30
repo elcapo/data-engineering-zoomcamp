@@ -20,7 +20,7 @@ export function Footer() {
   const searchHref = useMemo(buildSearchHref, []);
 
   return (
-    <footer className="mt-auto border-t border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950">
+    <footer className="mt-auto border-t border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
       <div className="mx-auto max-w-7xl px-4 py-8">
         <div className="flex flex-col gap-6 sm:flex-row sm:justify-between">
           <div className="max-w-md">

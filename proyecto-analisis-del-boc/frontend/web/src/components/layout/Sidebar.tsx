@@ -84,7 +84,7 @@ export function Sidebar({ collapsed, onToggleCollapse, onNavigate }: SidebarProp
 
   return (
     <aside
-      className={`flex h-full flex-col border-r border-zinc-200 bg-white transition-[width] duration-200 dark:border-zinc-800 dark:bg-zinc-950 ${
+      className={`flex h-full flex-col border-r border-zinc-200 bg-white transition-[width] duration-200 dark:border-zinc-800 dark:bg-zinc-900 ${
         collapsed ? "w-[60px]" : "w-[280px]"
       }`}
     >
@@ -94,7 +94,10 @@ export function Sidebar({ collapsed, onToggleCollapse, onNavigate }: SidebarProp
           {collapsed ? (
             <Image src="/bocana-logo.svg" alt="bocana" width={36} height={36} className="shrink-0" />
           ) : (
-            <Image src="/bocana-logo-wording.svg" alt="bocana" width={193} height={55} className="shrink-0" priority />
+            <>
+              <Image src="/bocana-logo-wording.svg" alt="bocana" width={193} height={55} className="shrink-0 dark:hidden" priority />
+              <Image src="/bocana-logo-wording-dark.svg" alt="bocana" width={193} height={55} className="hidden shrink-0 dark:block" priority />
+            </>
           )}
         </Link>
       </div>
