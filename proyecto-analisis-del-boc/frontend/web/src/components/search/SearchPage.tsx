@@ -124,7 +124,7 @@ export function SearchPage() {
   const hasFilters = activeFilters.length > 0;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6">
+    <div className="px-4 py-6 sm:px-6 lg:px-8">
       <FilterBar filters={activeFilters} onChange={setActiveFilters} />
 
       <div className="mt-8">
@@ -157,7 +157,7 @@ export function SearchPage() {
                 <p className="mb-4 text-lg font-medium text-zinc-900 dark:text-zinc-100">
                   {result.total.toLocaleString("es-ES")} {result.total === 1 ? "resultado" : "resultados"}
                 </p>
-                <div className="flex flex-col gap-4">
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                   {result.results.map((d) => (
                     <DispositionCard key={`${d.year}-${d.issue}-${d.number}`} disposition={d} />
                   ))}
