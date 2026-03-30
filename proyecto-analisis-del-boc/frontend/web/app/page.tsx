@@ -12,7 +12,7 @@ export default async function Home() {
     <>
       <PageHeader title="Inicio" />
 
-      <div className="mx-auto max-w-7xl px-6 py-8">
+      <div className="px-4 py-8 sm:px-6 lg:px-8">
         {/* Hero con barra de búsqueda */}
         <section className="mb-10 rounded-lg bg-white p-6 shadow-sm dark:bg-zinc-800 sm:p-8">
           <h2 className="mb-2 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">

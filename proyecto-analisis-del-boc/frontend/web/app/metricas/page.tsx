@@ -8,8 +8,8 @@ import { DispositionSection } from "@/components/metrics/DispositionSection";
 import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
-  title: "Métricas — BOC Canarias Web",
-  description: "Métricas de cobertura del corpus histórico del Boletín Oficial de Canarias: descarga y extracción por año.",
+  title: "Cobertura — BOC Canarias Web",
+  description: "Cobertura del corpus histórico del Boletín Oficial de Canarias: descarga y extracción por año.",
 };
 
 export default async function MetricasPage() {
@@ -29,10 +29,10 @@ export default async function MetricasPage() {
     <>
       <PageHeader
         breadcrumbs={[{ label: "Inicio", href: "/" }]}
-        title="Métricas de cobertura"
+        title="Cobertura"
       />
 
-      <div className="mx-auto max-w-7xl px-6 py-8">
+      <div className="px-4 py-8 sm:px-6 lg:px-8">
         <p className="mb-8 text-zinc-600 dark:text-zinc-400">
           Porcentaje del corpus histórico del BOC disponible en la base de datos.
           Consulta la{" "}

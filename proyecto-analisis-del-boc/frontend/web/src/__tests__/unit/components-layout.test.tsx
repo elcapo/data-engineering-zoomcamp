@@ -30,7 +30,7 @@ describe("Sidebar", () => {
     render(<Sidebar collapsed={false} onToggleCollapse={noop} />);
     expect(screen.getByText("Inicio").closest("a")).toHaveAttribute("href", "/");
     expect(screen.getByText("Buscar").closest("a")).toHaveAttribute("href", "/buscar");
-    expect(screen.getByText("Métricas").closest("a")).toHaveAttribute("href", "/metricas");
+    expect(screen.getByText("Cobertura").closest("a")).toHaveAttribute("href", "/metricas");
   });
 
   it("renderiza los enlaces informativos", () => {
@@ -63,8 +63,8 @@ describe("Sidebar", () => {
 
 describe("PageHeader", () => {
   it("renderiza el título", () => {
-    render(<PageHeader title="Métricas" />);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Métricas");
+    render(<PageHeader title="Cobertura" />);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Cobertura");
   });
 
   it("renderiza migas de pan con enlaces", () => {
@@ -72,13 +72,13 @@ describe("PageHeader", () => {
       <PageHeader
         breadcrumbs={[
           { label: "Inicio", href: "/" },
-          { label: "Métricas" },
+          { label: "Cobertura" },
         ]}
-        title="Métricas de cobertura"
+        title="Cobertura"
       />
     );
     expect(screen.getByText("Inicio")).toHaveAttribute("href", "/");
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Métricas de cobertura");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Cobertura");
   });
 
   it("renderiza acciones opcionales", () => {

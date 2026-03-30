@@ -4,6 +4,55 @@ import { useEffect, useRef, useState } from "react";
 import type { ActiveFilter, FilterType, FilterMode } from "@/types/domain";
 import { DateRangePicker } from "./DateRangePicker";
 
+// ── Iconos ───────────────────────────────────────────────────────────────
+
+function SearchIcon({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+    </svg>
+  );
+}
+
+function TermIcon({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.2 48.2 0 005.887-.47c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+    </svg>
+  );
+}
+
+function SectionIcon({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+    </svg>
+  );
+}
+
+function OrgIcon({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+    </svg>
+  );
+}
+
+function CalendarIcon({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+    </svg>
+  );
+}
+
+const FILTER_ICONS: Record<FilterType, React.ReactNode> = {
+  term: <TermIcon />,
+  section: <SectionIcon />,
+  org: <OrgIcon />,
+  dateRange: <CalendarIcon />,
+};
+
 // ── Constantes ───────────────────────────────────────────────────────────
 
 const FILTER_OPTIONS: { type: FilterType; label: string }[] = [
@@ -18,16 +67,6 @@ const TYPE_LABELS: Record<FilterType, string> = {
   section: "Sección",
   org: "Organismo",
   dateRange: "Fechas",
-};
-
-const MODE_COLORS: Record<FilterMode, string> = {
-  include: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200",
-  exclude: "bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-200",
-};
-
-const MODE_BORDER: Record<FilterMode, string> = {
-  include: "border-emerald-200 dark:border-emerald-800",
-  exclude: "border-red-200 dark:border-red-800",
 };
 
 // ── Props ────────────────────────────────────────────────────────────────
@@ -103,9 +142,7 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
           onClick={() => setMenuOpen(!menuOpen)}
           className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
         >
-          <svg className="size-4" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-          </svg>
+          <SearchIcon />
           Añadir filtro
         </button>
 
@@ -116,8 +153,9 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
                 <button
                   type="button"
                   onClick={() => addFilter(opt.type, "include")}
-                  className="flex-1 px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                  className="flex flex-1 items-center gap-2 px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
                 >
+                  {FILTER_ICONS[opt.type]}
                   {opt.label}
                 </button>
               </div>
@@ -168,6 +206,7 @@ interface FilterChipProps {
 
 function FilterChip({ filter, editing, onEdit, onCommit, onUpdate, onRemove, onToggleMode }: FilterChipProps) {
   const chipRef = useRef<HTMLDivElement>(null);
+  const [focused, setFocused] = useState(false);
 
   // Cierra edición al hacer clic fuera del chip
   useEffect(() => {
@@ -181,23 +220,45 @@ function FilterChip({ filter, editing, onEdit, onCommit, onUpdate, onRemove, onT
     return () => document.removeEventListener("mousedown", handleClick);
   }, [editing, onCommit]);
 
+  const borderColor = filter.mode === "include"
+    ? "border-emerald-300 dark:border-emerald-700"
+    : "border-red-300 dark:border-red-700";
+
   return (
     <div
       ref={chipRef}
-      className={`inline-flex items-center gap-1 rounded-lg border px-1.5 py-1 text-sm ${MODE_BORDER[filter.mode]} ${MODE_COLORS[filter.mode]}`}
+      onFocus={() => setFocused(true)}
+      onBlur={(e) => { if (!chipRef.current?.contains(e.relatedTarget as Node)) setFocused(false); }}
+      className={`inline-flex items-center gap-1 rounded-lg border bg-white px-1.5 py-1 text-sm text-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 ${borderColor}`}
     >
-      {/* Toggle incluir/excluir */}
-      <button
-        type="button"
-        onClick={onToggleMode}
-        title={filter.mode === "include" ? "Cambiar a Excluir" : "Cambiar a Incluir"}
-        className="rounded px-1 py-0.5 text-xs font-semibold opacity-80 transition-opacity hover:opacity-100"
-      >
-        {filter.mode === "include" ? "+" : "\u2212"}
-      </button>
+      {/* Selector incluir/excluir (visible con foco) */}
+      <div className={`flex items-center gap-0.5 overflow-hidden transition-all duration-150 ${focused || editing ? "max-w-40 opacity-100" : "max-w-0 opacity-0"}`}>
+        <button
+          type="button"
+          onClick={() => { if (filter.mode !== "include") onToggleMode(); }}
+          className={`rounded px-1.5 py-0.5 text-xs font-semibold transition-colors ${
+            filter.mode === "include"
+              ? "bg-emerald-500 text-white dark:bg-emerald-600"
+              : "text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/30"
+          }`}
+        >
+          Incluir
+        </button>
+        <button
+          type="button"
+          onClick={() => { if (filter.mode !== "exclude") onToggleMode(); }}
+          className={`rounded px-1.5 py-0.5 text-xs font-semibold transition-colors ${
+            filter.mode === "exclude"
+              ? "bg-red-500 text-white dark:bg-red-600"
+              : "text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
+          }`}
+        >
+          Excluir
+        </button>
+      </div>
 
       {/* Etiqueta del tipo */}
-      <span className="text-xs font-medium opacity-70">{TYPE_LABELS[filter.type]}:</span>
+      <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">{TYPE_LABELS[filter.type]}:</span>
 
       {/* Valor (editable o solo lectura) */}
       {editing ? (

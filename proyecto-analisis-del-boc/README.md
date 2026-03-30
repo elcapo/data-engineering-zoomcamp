@@ -12,8 +12,8 @@
 * [Organización de flujos en Kestra](learning-in-public/03-organizacion-de-los-flujos-en-kestra.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444345316444700672-4g2e))
 * [Extracciones con Python](learning-in-public/04-extracciones-con-python.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444352760390660096-9QgV))
 * [Almacenamiento y carga con DLT](learning-in-public/05-almacenamiento-y-carga-con-dlt.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444360324092350464-yJIo))
-* [Búsquedas en Postgres](learning-in-public/06-busquedas-en-postgresql.md)
-* [Infraestructura con Docker](learning-in-public/07-infraestructura-con-docker.md)
+* [Búsquedas en Postgres](learning-in-public/06-busquedas-en-postgresql.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444368092744339456-24Cq))
+* [Infraestructura con Docker](learning-in-public/07-infraestructura-con-docker.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_te-queda-alguna-duda-activity-7444375427764146176-Ir8k))
 * [Página de cobertura](learning-in-public/08-pagina-de-cobertura.md)
 
 ---

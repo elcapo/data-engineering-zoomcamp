@@ -5,7 +5,7 @@ interface MarkdownPageProps {
 
 export function MarkdownPage({ title, html }: MarkdownPageProps) {
   return (
-    <article className="mx-auto max-w-3xl px-6 py-8">
+    <article className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-zinc-800 sm:p-8">
         {title && (
           <h1 className="mb-8 text-3xl font-bold text-zinc-900 dark:text-zinc-100">{title}</h1>

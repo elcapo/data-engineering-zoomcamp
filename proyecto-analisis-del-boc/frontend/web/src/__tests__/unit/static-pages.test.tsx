@@ -56,7 +56,7 @@ describe("Páginas estáticas — renderizado con MarkdownPage", () => {
     const page = await readMarkdownPage("metodologia");
     render(<MarkdownPage html={page!.html} />);
 
-    const link = screen.getByRole("link", { name: /métricas/i });
+    const link = screen.getByRole("link", { name: /cobertura/i });
     expect(link).toHaveAttribute("href", "/metricas");
   });
 

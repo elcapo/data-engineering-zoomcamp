@@ -4,10 +4,13 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-  --accent: #4f46e5;
-  --accent-light: #6366f1;
-  --accent-muted: #4f46e520;
+  --foreground: #241f31;
+  --accent: #1a5fb4;
+  --accent-light: #3584e4;
+  --accent-muted: #1a5fb418;
+  --gold: #f5c211;
+  --gold-light: #f8e45c;
+  --gold-muted: #f5c21118;
 }
 
 @theme inline {
@@ -16,7 +19,10 @@
   --color-accent: var(--accent);
   --color-accent-light: var(--accent-light);
   --color-accent-muted: var(--accent-muted);
-  --font-sans: var(--font-geist-sans);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-muted: var(--gold-muted);
+  --font-sans: var(--font-public-sans);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -24,18 +30,24 @@
   :root:not(.light) {
     --background: #0a0a0a;
     --foreground: #ededed;
-    --accent: #6366f1;
-    --accent-light: #818cf8;
-    --accent-muted: #6366f120;
+    --accent: #3584e4;
+    --accent-light: #99c1f1;
+    --accent-muted: #3584e420;
+    --gold: #f6d32d;
+    --gold-light: #f9f06b;
+    --gold-muted: #f6d32d20;
   }
 }
 
 :root.dark {
   --background: #0a0a0a;
   --foreground: #ededed;
-  --accent: #6366f1;
-  --accent-light: #818cf8;
-  --accent-muted: #6366f120;
+  --accent: #3584e4;
+  --accent-light: #99c1f1;
+  --accent-muted: #3584e420;
+  --gold: #f6d32d;
+  --gold-light: #f9f06b;
+  --gold-muted: #f6d32d20;
 }
 
 html {
@@ -45,6 +57,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
+  font-weight: 100;
 }
 
 @keyframes grow-bar {

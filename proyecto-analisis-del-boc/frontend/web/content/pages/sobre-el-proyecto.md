@@ -20,7 +20,7 @@ Aquí puedes hacer búsquedas de texto completo con operadores booleanos, combin
 
 - **Acceso abierto.** Toda la información publicada en el BOC es pública. Este proyecto simplemente facilita su consulta.
 - **Independencia.** No tenemos vinculación con el Gobierno de Canarias ni con ningún organismo público. Es una iniciativa personal y desinteresada.
-- **Transparencia.** El código fuente es abierto y las [métricas de cobertura](/metricas) son públicas: puedes comprobar en todo momento qué parte del archivo histórico está disponible y qué queda por procesar.
+- **Transparencia.** El código fuente es abierto y las [cobertura](/metricas) son públicas: puedes comprobar en todo momento qué parte del archivo histórico está disponible y qué queda por procesar.
 
 ## Cómo se construyó
 

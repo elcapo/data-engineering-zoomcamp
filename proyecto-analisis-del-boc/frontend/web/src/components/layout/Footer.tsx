@@ -3,7 +3,7 @@ import Link from "next/link";
 const navLinks = [
   { href: "/", label: "Inicio" },
   { href: "/buscar", label: "Buscar" },
-  { href: "/metricas", label: "Métricas" },
+  { href: "/metricas", label: "Cobertura" },
   { href: "/metodologia", label: "Metodología" },
 ] as const;
 

@@ -23,7 +23,7 @@ El proceso está diseñado para respetar los tiempos de respuesta del servidor o
 
 El archivo digital del BOC abarca desde **1980** hasta la actualidad. Esta plataforma aspira a indexar la totalidad de ese corpus histórico.
 
-En la página de [métricas](/metricas) puedes consultar en tiempo real qué porcentaje del archivo está disponible en nuestra base de datos, desglosado por año y por boletín. Así puedes saber exactamente qué períodos están completos y cuáles están aún en proceso.
+En la página de [cobertura](/metricas) puedes consultar en tiempo real qué porcentaje del archivo está disponible en nuestra base de datos, desglosado por año y por boletín. Así puedes saber exactamente qué períodos están completos y cuáles están aún en proceso.
 
 ## Limitaciones que debes conocer
 

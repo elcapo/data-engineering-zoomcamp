@@ -31,8 +31,8 @@ function barFill(value: number): string {
   return "#f97316"; // orange-500
 }
 
-const ACCENT = "#6366f1"; // indigo-500 — matches --accent-light
-const ACCENT_HOVER = "#818cf8"; // indigo-400
+const ACCENT = "#1a5fb4"; // logo blue — matches --accent
+const ACCENT_HOVER = "#3584e4"; // logo blue light — matches --accent-light
 
 export function BarChart({ data, layout = "vertical", height = 400, colorByValue = false, className = "", onBarClick }: BarChartProps) {
   const isVertical = layout === "vertical";
