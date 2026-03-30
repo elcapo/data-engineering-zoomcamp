@@ -8,7 +8,7 @@ services:
       - "traefik.http.routers.boc-web.entrypoints=websecure"
       - "traefik.http.routers.boc-web.tls.certresolver=letsencrypt"
       - "traefik.http.services.boc-web.loadbalancer.server.port=3000"
-
+      - "traefik.http.routers.boc-web.tls.certresolver=tlssolver"
 networks:
   traefik:
     external: true
