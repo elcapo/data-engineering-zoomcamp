@@ -17,6 +17,7 @@
 * [Página de cobertura](learning-in-public/08-pagina-de-cobertura.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444383057111048193-AWn3))
 * [SQL dentro de la imagen Docker](learning-in-public/09-sql-dentro-de-la-imagen-docker.md)
 * [Del HTML a las búsquedas](learning-in-public/10-del-html-a-las-busquedas.md)
+* [Cuando el PDF es la única fuente](learning-in-public/11-cuando-el-pdf-es-la-unica-fuente.md)
 
 ---
 
