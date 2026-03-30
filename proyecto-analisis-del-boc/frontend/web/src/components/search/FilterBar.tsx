@@ -176,7 +176,7 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
         </button>
 
         {menuOpen && (
-          <div className="absolute left-0 top-full z-50 mt-1 w-52 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+          <div className="absolute left-0 top-full z-50 mt-1 w-62 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
             {FILTER_OPTIONS.map((opt) => (
               <div key={opt.type} className="flex">
                 <button
