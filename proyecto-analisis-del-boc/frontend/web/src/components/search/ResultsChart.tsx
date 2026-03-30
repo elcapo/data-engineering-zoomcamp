@@ -20,16 +20,20 @@ interface ResultsFacetsProps {
  * Un click aplica el filtro correspondiente y relanza la búsqueda.
  */
 export function ResultsFacets({ facets, onYearClick, onSectionClick, onOrgClick }: ResultsFacetsProps) {
-  const hasYear = facets.byYear.length > 1;
+  const hasYear = facets.byYear.length > 0;
   const hasSection = facets.bySection.length > 0;
   const hasOrg = facets.byOrg.length > 0;
 
   if (!hasYear && !hasSection && !hasOrg) return null;
 
-  // Años ordenados de más reciente a más antiguo (izquierda → derecha)
-  const yearData = [...facets.byYear]
-    .sort((a, b) => parseInt(b.label, 10) - parseInt(a.label, 10))
-    .map((b) => ({ label: b.label, value: b.count }));
+  // Rango fijo desde el año actual hasta 1980, rellenando con 0 los años sin datos
+  const FIRST_YEAR = 1980;
+  const currentYear = new Date().getFullYear();
+  const countsByYear = new Map(facets.byYear.map((b) => [b.label, b.count]));
+  const yearData: { label: string; value: number }[] = [];
+  for (let y = currentYear; y >= FIRST_YEAR; y--) {
+    yearData.push({ label: String(y), value: countsByYear.get(String(y)) ?? 0 });
+  }
 
   return (
     <div className="flex flex-col gap-6">
