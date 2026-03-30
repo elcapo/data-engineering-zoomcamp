@@ -1,4 +1,4 @@
-import type { ActiveFilter, SearchFilters, DateRangeFilter } from "@/types/domain";
+import type { ActiveFilter, SearchFilters, DateRangeFilter, RefFilter } from "@/types/domain";
 import { buildTsquery, activeFiltersToTerms } from "@/lib/search/query-builder";
 
 /**
@@ -80,6 +80,10 @@ export function parseSearchParams(params: Record<string, string | string[] | und
     }
   }
 
+  // Refs (año/boletín/disposición): include_ref_year_0, include_ref_issue_0, include_ref_number_0 ...
+  parseRefParams(params, "include", filters, id);
+  parseRefParams(params, "exclude", filters, id);
+
   return {
     filters,
     cursor: asString(params.cursor),
@@ -101,6 +105,8 @@ export function buildSearchUrl(activeFilters: ActiveFilter[], cursor?: string | 
   // Serializa cada filtro
   let dateIncludeIdx = 0;
   let dateExcludeIdx = 0;
+  let refIncludeIdx = 0;
+  let refExcludeIdx = 0;
 
   for (const f of activeFilters) {
     switch (f.type) {
@@ -124,6 +130,14 @@ export function buildSearchUrl(activeFilters: ActiveFilter[], cursor?: string | 
         const idx = f.mode === "include" ? dateIncludeIdx++ : dateExcludeIdx++;
         if (f.from) params.set(`${prefix}_from_${idx}`, f.from);
         if (f.to) params.set(`${prefix}_to_${idx}`, f.to);
+        break;
+      }
+      case "ref": {
+        const prefix = f.mode === "include" ? "include" : "exclude";
+        const idx = f.mode === "include" ? refIncludeIdx++ : refExcludeIdx++;
+        if (f.refYear) params.set(`${prefix}_ref_year_${idx}`, f.refYear);
+        if (f.refIssue) params.set(`${prefix}_ref_issue_${idx}`, f.refIssue);
+        if (f.refDisposition) params.set(`${prefix}_ref_number_${idx}`, f.refDisposition);
         break;
       }
     }
@@ -167,6 +181,23 @@ export function activeFiltersToSearchFilters(activeFilters: ActiveFilter[]): Sea
     .map((f) => ({ from: f.from, to: f.to }));
   if (includeDates.length > 0) sf.dateRanges = includeDates;
   if (excludeDates.length > 0) sf.excludeDateRanges = excludeDates;
+
+  // Refs (año/boletín/disposición)
+  const toRef = (f: ActiveFilter): RefFilter => {
+    const ref: RefFilter = {};
+    if (f.refYear) ref.year = parseInt(f.refYear, 10);
+    if (f.refIssue) ref.issue = parseInt(f.refIssue, 10);
+    if (f.refDisposition) ref.number = parseInt(f.refDisposition, 10);
+    return ref;
+  };
+  const includeRefs = activeFilters
+    .filter((f) => f.type === "ref" && f.mode === "include" && (f.refYear || f.refIssue || f.refDisposition))
+    .map(toRef);
+  const excludeRefs = activeFilters
+    .filter((f) => f.type === "ref" && f.mode === "exclude" && (f.refYear || f.refIssue || f.refDisposition))
+    .map(toRef);
+  if (includeRefs.length > 0) sf.refs = includeRefs;
+  if (excludeRefs.length > 0) sf.excludeRefs = excludeRefs;
 
   return sf;
 }
@@ -219,4 +250,27 @@ function parseDateRangeParams(
 
 function hasPrefixedDateParams(params: Record<string, string | string[] | undefined>): boolean {
   return !!(params.include_from_0 || params.include_to_0 || params.exclude_from_0 || params.exclude_to_0);
+}
+
+function parseRefParams(
+  params: Record<string, string | string[] | undefined>,
+  mode: "include" | "exclude",
+  filters: ActiveFilter[],
+  id: () => string,
+) {
+  for (let i = 0; i < 10; i++) {
+    const year = asString(params[`${mode}_ref_year_${i}`]);
+    const issue = asString(params[`${mode}_ref_issue_${i}`]);
+    const number = asString(params[`${mode}_ref_number_${i}`]);
+    if (!year && !issue && !number) break;
+    filters.push({
+      id: id(),
+      type: "ref",
+      mode,
+      value: "",
+      refYear: year,
+      refIssue: issue,
+      refDisposition: number,
+    });
+  }
 }

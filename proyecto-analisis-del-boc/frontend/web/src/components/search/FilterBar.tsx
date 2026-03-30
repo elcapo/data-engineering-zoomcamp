@@ -47,11 +47,20 @@ function CalendarIcon({ className = "size-4" }: { className?: string }) {
   );
 }
 
+function HashIcon({ className = "size-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
+    </svg>
+  );
+}
+
 const FILTER_ICONS: Record<FilterType, React.ReactNode> = {
   term: <TermIcon />,
   section: <SectionIcon />,
   org: <OrgIcon />,
   dateRange: <CalendarIcon />,
+  ref: <HashIcon />,
 };
 
 // ── Constantes ───────────────────────────────────────────────────────────
@@ -61,6 +70,7 @@ const FILTER_OPTIONS: { type: FilterType; label: string }[] = [
   { type: "section", label: "Sección" },
   { type: "org", label: "Organismo" },
   { type: "dateRange", label: "Rango de fechas" },
+  { type: "ref", label: "Año, boletín y disposición" },
 ];
 
 const TYPE_LABELS: Record<FilterType, string> = {
@@ -68,6 +78,7 @@ const TYPE_LABELS: Record<FilterType, string> = {
   section: "Sección",
   org: "Organismo",
   dateRange: "Fechas",
+  ref: "Ref.",
 };
 
 // ── Props ────────────────────────────────────────────────────────────────
@@ -129,8 +140,16 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
   function commitFilter(id: string) {
     const filter = filters.find((f) => f.id === id);
     if (!filter) return;
-    // Si el filtro está vacío (no dateRange), eliminarlo
-    if (filter.type !== "dateRange" && !filter.value.trim()) {
+    // Si el filtro está vacío, eliminarlo (dateRange y ref usan campos propios)
+    if (filter.type === "dateRange") {
+      setEditingId(null);
+    } else if (filter.type === "ref") {
+      if (!filter.refYear && !filter.refIssue && !filter.refDisposition) {
+        removeFilter(id);
+      } else {
+        setEditingId(null);
+      }
+    } else if (!filter.value.trim()) {
       removeFilter(id);
     } else {
       setEditingId(null);
@@ -329,11 +348,24 @@ function FilterEditor({
     );
   }
 
+  if (filter.type === "ref") {
+    return (
+      <RefEditor
+        refYear={filter.refYear}
+        refIssue={filter.refIssue}
+        refDisposition={filter.refDisposition}
+        onChange={(patch) => onUpdate(patch)}
+        onCommit={onCommit}
+      />
+    );
+  }
+
   const placeholder = {
     term: "Ej: convocatoria",
     section: "Ej: I",
     org: "Ej: Consejería de Educación",
     dateRange: "",
+    ref: "",
   }[filter.type];
 
   if (filter.type === "section" || filter.type === "org") {
@@ -366,6 +398,63 @@ function FilterEditor({
   );
 }
 
+// ── Editor de referencia (año/boletín/disposición) ──────────────────
+
+function RefEditor({
+  refYear,
+  refIssue,
+  refDisposition,
+  onChange,
+  onCommit,
+}: {
+  refYear?: string;
+  refIssue?: string;
+  refDisposition?: string;
+  onChange: (patch: Partial<ActiveFilter>) => void;
+  onCommit: () => void;
+}) {
+  function handleKey(e: React.KeyboardEvent) {
+    if (e.key === "Enter" || e.key === "Escape") onCommit();
+  }
+  const inputClass =
+    "w-16 rounded border-0 bg-transparent px-1 py-0 text-sm font-medium tabular-nums placeholder:text-current placeholder:opacity-40 focus:outline-none focus:ring-0";
+
+  return (
+    <div className="flex items-center gap-1">
+      <input
+        type="text"
+        inputMode="numeric"
+        autoFocus
+        value={refYear ?? ""}
+        onChange={(e) => onChange({ refYear: e.target.value.replace(/\D/g, "") || undefined })}
+        onKeyDown={handleKey}
+        placeholder="Año"
+        className={inputClass}
+      />
+      <span className="text-xs text-zinc-400">/</span>
+      <input
+        type="text"
+        inputMode="numeric"
+        value={refIssue ?? ""}
+        onChange={(e) => onChange({ refIssue: e.target.value.replace(/\D/g, "") || undefined })}
+        onKeyDown={handleKey}
+        placeholder="Bol."
+        className={inputClass}
+      />
+      <span className="text-xs text-zinc-400">/</span>
+      <input
+        type="text"
+        inputMode="numeric"
+        value={refDisposition ?? ""}
+        onChange={(e) => onChange({ refDisposition: e.target.value.replace(/\D/g, "") || undefined })}
+        onKeyDown={handleKey}
+        placeholder="Disp."
+        className={inputClass}
+      />
+    </div>
+  );
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────
 
 function displayValue(filter: ActiveFilter): string {
@@ -374,6 +463,10 @@ function displayValue(filter: ActiveFilter): string {
     if (filter.from) parts.push(formatDisplayDate(filter.from));
     if (filter.to) parts.push(formatDisplayDate(filter.to));
     return parts.join(" \u2013 ");
+  }
+  if (filter.type === "ref") {
+    const parts = [filter.refYear || "*", filter.refIssue || "*", filter.refDisposition || "*"];
+    return parts.join("/");
   }
   return filter.value;
 }

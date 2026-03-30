@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DispositionRepository } from "@/lib/db/repositories/dispositions";
-import type { SearchFilters, DateRangeFilter } from "@/types/domain";
+import type { SearchFilters, DateRangeFilter, RefFilter } from "@/types/domain";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -41,6 +41,10 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  // Refs (año/boletín/disposición)
+  filters.refs = parseRefParams(searchParams, "include");
+  filters.excludeRefs = parseRefParams(searchParams, "exclude");
+
   const cursor = searchParams.get("cursor") ?? undefined;
   const rawLimit = parseInt(searchParams.get("limit") ?? "", 10);
   const limit = Math.min(Math.max(Number.isNaN(rawLimit) ? 20 : rawLimit, 1), 100);
@@ -69,4 +73,20 @@ function parseDateRangeParams(params: URLSearchParams, mode: string): DateRangeF
     ranges.push({ from, to });
   }
   return ranges.length > 0 ? ranges : undefined;
+}
+
+function parseRefParams(params: URLSearchParams, mode: string): RefFilter[] | undefined {
+  const refs: RefFilter[] = [];
+  for (let i = 0; i < 10; i++) {
+    const year = params.get(`${mode}_ref_year_${i}`);
+    const issue = params.get(`${mode}_ref_issue_${i}`);
+    const number = params.get(`${mode}_ref_number_${i}`);
+    if (!year && !issue && !number) break;
+    const ref: RefFilter = {};
+    if (year) ref.year = parseInt(year, 10);
+    if (issue) ref.issue = parseInt(issue, 10);
+    if (number) ref.number = parseInt(number, 10);
+    refs.push(ref);
+  }
+  return refs.length > 0 ? refs : undefined;
 }

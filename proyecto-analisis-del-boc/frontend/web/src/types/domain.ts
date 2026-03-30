@@ -33,6 +33,12 @@ export interface Disposition {
   excerpt?: string; // fragmento con coincidencias resaltadas (búsquedas)
 }
 
+export interface RefFilter {
+  year?: number;
+  issue?: number;
+  number?: number;
+}
+
 export interface SearchFilters {
   q?: string;
   section?: string[];
@@ -41,6 +47,8 @@ export interface SearchFilters {
   excludeOrg?: string[];
   dateRanges?: DateRangeFilter[];
   excludeDateRanges?: DateRangeFilter[];
+  refs?: RefFilter[];
+  excludeRefs?: RefFilter[];
 }
 
 export interface DateRangeFilter {
@@ -50,16 +58,19 @@ export interface DateRangeFilter {
 
 // ── Filtros activos (UI) ─────────────────────────────────────────────────
 
-export type FilterType = "term" | "section" | "org" | "dateRange";
+export type FilterType = "term" | "section" | "org" | "dateRange" | "ref";
 export type FilterMode = "include" | "exclude";
 
 export interface ActiveFilter {
   id: string;
   type: FilterType;
   mode: FilterMode;
-  value: string;     // texto para term/section/org, "" para dateRange
+  value: string;     // texto para term/section/org, "" para dateRange/ref
   from?: string;     // solo dateRange, YYYY-MM-DD
   to?: string;       // solo dateRange, YYYY-MM-DD
+  refYear?: string;         // solo ref
+  refIssue?: string;        // solo ref
+  refDisposition?: string;  // solo ref
 }
 
 export interface SearchCursor {

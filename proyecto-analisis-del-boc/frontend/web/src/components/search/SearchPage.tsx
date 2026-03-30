@@ -29,9 +29,11 @@ export function SearchPage() {
   const fetchResults = useCallback(async (filters: ActiveFilter[], cursor?: string | null) => {
     const sf = activeFiltersToSearchFilters(filters);
     // No buscar si no hay filtros con valor
-    const hasValue = filters.some((f) =>
-      f.type === "dateRange" ? (f.from || f.to) : f.value.trim()
-    );
+    const hasValue = filters.some((f) => {
+      if (f.type === "dateRange") return f.from || f.to;
+      if (f.type === "ref") return f.refYear || f.refIssue || f.refDisposition;
+      return f.value.trim();
+    });
     if (!hasValue) {
       setResult(null);
       return;
@@ -53,6 +55,20 @@ export function SearchPage() {
       sf.excludeDateRanges.forEach((dr, i) => {
         if (dr.from) params.set(`exclude_from_${i}`, dr.from);
         if (dr.to) params.set(`exclude_to_${i}`, dr.to);
+      });
+    }
+    if (sf.refs) {
+      sf.refs.forEach((r, i) => {
+        if (r.year != null) params.set(`include_ref_year_${i}`, String(r.year));
+        if (r.issue != null) params.set(`include_ref_issue_${i}`, String(r.issue));
+        if (r.number != null) params.set(`include_ref_number_${i}`, String(r.number));
+      });
+    }
+    if (sf.excludeRefs) {
+      sf.excludeRefs.forEach((r, i) => {
+        if (r.year != null) params.set(`exclude_ref_year_${i}`, String(r.year));
+        if (r.issue != null) params.set(`exclude_ref_issue_${i}`, String(r.issue));
+        if (r.number != null) params.set(`exclude_ref_number_${i}`, String(r.number));
       });
     }
     if (cursor) params.set("cursor", cursor);
@@ -111,12 +127,13 @@ export function SearchPage() {
     fetchResults(activeFilters, cursor);
   }
 
-  function handleFacetClick(patch: Partial<Pick<ActiveFilter, "type" | "value">>) {
+  function handleFacetClick(patch: Partial<Pick<ActiveFilter, "type" | "value" | "refYear">>) {
     const newFilter: ActiveFilter = {
       id: crypto.randomUUID(),
       type: patch.type!,
       mode: "include",
       value: patch.value ?? "",
+      refYear: patch.refYear,
     };
     const next = [...activeFilters, newFilter];
     setActiveFilters(next);
@@ -159,7 +176,7 @@ export function SearchPage() {
                   <div className="mb-6">
                     <ResultsFacets
                       facets={result.facets}
-                      onYearClick={() => {}}
+                      onYearClick={(year) => handleFacetClick({ type: "ref", refYear: String(year) })}
                       onSectionClick={(section) => handleFacetClick({ type: "section", value: section })}
                       onOrgClick={(org) => handleFacetClick({ type: "org", value: org })}
                     />

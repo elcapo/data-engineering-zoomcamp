@@ -1,6 +1,6 @@
 import { Prisma } from "../../../../app/generated/prisma/client";
 import { prisma } from "../prisma";
-import { Disposition, SearchFacets, SearchFilters, SearchResult } from "@/types/domain";
+import { Disposition, RefFilter, SearchFacets, SearchFilters, SearchResult } from "@/types/domain";
 import { buildTsqueryFromString } from "@/lib/search/query-builder";
 
 const DEFAULT_LIMIT = 20;
@@ -87,6 +87,23 @@ export const DispositionRepository = {
         }
       }
     }
+
+    // Refs (año/boletín/disposición): include (OR entre refs) / exclude (AND NOT)
+    if (filters.refs?.length) {
+      const refConditions = filters.refs.map((r) => buildRefCondition(r)).filter(Boolean) as Prisma.Sql[];
+      if (refConditions.length === 1) {
+        conditions.push(refConditions[0]);
+      } else if (refConditions.length > 1) {
+        conditions.push(Prisma.sql`(${Prisma.join(refConditions, " OR ")})`);
+      }
+    }
+    if (filters.excludeRefs?.length) {
+      for (const r of filters.excludeRefs) {
+        const cond = buildRefCondition(r);
+        if (cond) conditions.push(Prisma.sql`NOT (${cond})`);
+      }
+    }
+
     if (cursorParsed) {
       // El ORDER BY es todo DESC, así que "siguiente página" = tupla menor
       conditions.push(
@@ -306,4 +323,13 @@ function parseCursor(cursor: string): { year: number; issue: number; number: str
 
 function formatCursor(year: number, issue: number, number: string): string {
   return `${year}-${String(issue).padStart(3, "0")}-${number}`;
+}
+
+function buildRefCondition(ref: RefFilter): Prisma.Sql | null {
+  const parts: Prisma.Sql[] = [];
+  if (ref.year != null) parts.push(Prisma.sql`i.year = ${BigInt(ref.year)}`);
+  if (ref.issue != null) parts.push(Prisma.sql`i.issue = ${BigInt(ref.issue)}`);
+  if (ref.number != null) parts.push(Prisma.sql`id.disposition = ${BigInt(ref.number)}`);
+  if (parts.length === 0) return null;
+  return parts.length === 1 ? parts[0] : Prisma.sql`(${Prisma.join(parts, " AND ")})`;
 }
