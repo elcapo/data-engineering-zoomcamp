@@ -1,6 +1,6 @@
 # Análisis del Boletín Oficial de Canarias (BOC)
 
-Proyecto de análisis de datos del Boletín Oficial de Canarias utilizando Kestra para la orquestación de flujos de trabajo, DLT para la carga de datos en una base de datos relacional estructurada, spaCy para el análisis de los textos y Metabase para su visualización.
+Proyecto de análisis de datos del Boletín Oficial de Canarias utilizando Kestra para la orquestación de flujos de trabajo, DLT para la carga de datos en una base de datos relacional estructurada y una web desarrollada en Next.js para la visualización de datos.
 
 ## Contexto
 
@@ -40,5 +40,4 @@ Para facilitar el consumo de la información procesada, se crearán paneles de c
 | Descarga y extracción de artículos del BOC | Kestra |
 | Lago de datos y versionado de documentos | MiniIO |
 | Almacenamiento estructurado | DLT |
-| Transformación y modelado de datos | spaCy |
-| Visualización y consulta de datos | Metabase |
+| Visualización y consulta de datos | Next.js |
