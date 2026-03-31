@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { ArchiveCompletion, ArchiveDetail } from "@/types/domain";
 import { Card } from "@/components/ui/Card";
 import { ChevronIcon } from "@/components/ui/ChevronIcon";
+import { formatNumber } from "@/lib/format";
 
 function formatDate(iso: string | null): string {
   if (!iso) return "—";
@@ -21,6 +22,13 @@ export function ArchiveSection({ summary, details }: ArchiveSectionProps) {
   return (
     <section className="mb-12">
       <h2 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">Años</h2>
+
+      <p className="mb-3 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <span className="font-mono tabular-nums">{summary.downloadedPercentage.toFixed(1)}%</span> descargado
+        <span className="ml-2 text-sm font-normal text-zinc-500 dark:text-zinc-400">
+          ({formatNumber(summary.downloadedYears)} de {formatNumber(summary.totalYears)} años)
+        </span>
+      </p>
 
       <Card>
         <div className="mb-3 text-sm text-zinc-500 dark:text-zinc-400">
