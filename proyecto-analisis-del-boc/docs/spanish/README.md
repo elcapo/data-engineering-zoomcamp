@@ -15,12 +15,12 @@
 * [Búsquedas en Postgres](learning-in-public/06-busquedas-en-postgresql.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444368092744339456-24Cq))
 * [Infraestructura con Docker](learning-in-public/07-infraestructura-con-docker.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_te-queda-alguna-duda-activity-7444375427764146176-Ir8k))
 * [Página de cobertura](learning-in-public/08-pagina-de-cobertura.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444383057111048193-AWn3))
-* [SQL dentro de la imagen Docker](learning-in-public/09-sql-dentro-de-la-imagen-docker.md)
-* [Del HTML a las búsquedas](learning-in-public/10-del-html-a-las-busquedas.md)
-* [Cuando el PDF es la única fuente](learning-in-public/11-cuando-el-pdf-es-la-unica-fuente.md)
-* [Tests en un proyecto de datos](learning-in-public/12-tests-en-un-proyecto-de-datos.md)
-* [Claude Code como acelerador](learning-in-public/13-claude-code-como-acelerador.md)
-* [Reproducibilidad de entornos](learning-in-public/14-reproducibilidad-de-entornos.md)
+* [SQL dentro de la imagen Docker](learning-in-public/09-sql-dentro-de-la-imagen-docker.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444715133974577152-KOXw))
+* [Del HTML a las búsquedas](learning-in-public/10-del-html-a-las-busquedas.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444730729713827840-G-iw))
+* [Cuando el PDF es la única fuente](learning-in-public/11-cuando-el-pdf-es-la-unica-fuente.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444722704835821568-ZxUR))
+* [Tests en un proyecto de datos](learning-in-public/12-tests-en-un-proyecto-de-datos.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444737813083807745-KPCb))
+* [Claude Code como acelerador](learning-in-public/13-claude-code-como-acelerador.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444745407387144193-Uo2u))
+* [Reproducibilidad de entornos](learning-in-public/14-reproducibilidad-de-entornos.md) (posteado en [Linkedin](https://www.linkedin.com/posts/carlos-capote-perez-andreu_dataengineering-aprendeenpaeqblico-datatalksclub-activity-7444752898892353536-WsPX))
 
 ---
 
