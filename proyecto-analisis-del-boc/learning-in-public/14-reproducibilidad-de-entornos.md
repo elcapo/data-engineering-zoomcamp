@@ -1,6 +1,6 @@
 En el artículo sobre infraestructura con Docker conté que los mismos ficheros Compose sirven para levantar el proyecto tanto en local como en producción. Pero tener el mismo entorno no resuelve un problema práctico: cómo mover el estado de un sitio a otro.
 
-Mi proyecto descarga y procesa más de cuarenta años de boletines oficiales. Eso no se hace en una tarde. Las primeras descargas las lancé en mi portátil, donde estaba desarrollando y probando los flujos por primera vez. Cuando los flujos ya funcionaban y llegó el momento de pasar a producción, tenía dos opciones: volver a ejecutar todo desde cero en la instancia en la nube, o llevarme el trabajo ya hecho.
+El proyecto descarga y procesa más de cuarenta años de boletines oficiales. Eso no se hace en una tarde. Las primeras descargas las lancé en mi portátil, donde estaba desarrollando y probando los flujos por primera vez. Cuando los flujos ya funcionaban y llegó el momento de pasar a producción, tenía dos opciones: volver a ejecutar todo desde cero en la instancia en la nube, o llevarme el trabajo ya hecho.
 
 Así que escribí dos scripts: backup.sh y restore.sh. Cada uno recibe flags para elegir qué componentes respaldar o restaurar: la base de datos del BOC, la base de datos de Kestra, los buckets de MinIO y el almacenamiento interno de Kestra. Sin flags, se procesa todo. El backup genera un directorio con marca de tiempo y el restore pide confirmación antes de cada paso para evitar sobrescrituras accidentales.
 
