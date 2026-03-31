@@ -47,32 +47,34 @@ export default async function MetricasPage() {
           <div className="grid gap-4 sm:grid-cols-3">
             <MetricKPI
               label="Años"
-              value={archiveSummary.downloadedPercentage}
+              processed={archiveSummary.downloadedYears}
+              total={archiveSummary.totalYears}
             />
             <MetricKPI
               label="Boletines"
-              value={bulletinSummary.percentage}
+              processed={bulletinSummary.processed}
+              total={bulletinSummary.total}
             />
             <MetricKPI
               label="Disposiciones"
-              value={dispositionSummary.percentage}
+              processed={dispositionSummary.processed}
+              total={dispositionSummary.total}
+              processedLabel="procesadas"
             />
           </div>
         </section>
 
         {/* Archivo */}
-        <ArchiveSection summary={archiveSummary} years={yearOverviews} />
+        <ArchiveSection years={yearOverviews} />
 
         {/* Boletines */}
         <BulletinSection
-          summary={bulletinSummary}
           recent={recentBulletins}
           oldest={oldestBulletins}
         />
 
         {/* Disposiciones */}
         <DispositionSection
-          summary={dispositionSummary}
           recent={recentDispositions}
           oldest={oldestDispositions}
         />

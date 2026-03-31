@@ -1,97 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { PieChart, Pie, Sector, Tooltip, ResponsiveContainer } from "recharts";
-import type { PieSectorDataItem } from "recharts";
-import type { DispositionSummary, ProcessedDisposition } from "@/types/domain";
-import { formatNumber } from "@/lib/format";
+import type { ProcessedDisposition } from "@/types/domain";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
 }
 
-const COLORS = {
-  processed: "var(--color-accent)",
-  pending: "#a1a1aa", // zinc-400
-};
-
-function renderActiveShape(props: PieSectorDataItem) {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent } = props;
-
-  return (
-    <g>
-      <text x={cx} y={(cy ?? 0) - 8} textAnchor="middle" fill="currentColor" className="text-sm font-medium">
-        {payload?.name}
-      </text>
-      <text x={cx} y={(cy ?? 0) + 14} textAnchor="middle" fill="currentColor" className="text-xl font-bold">
-        {`${((percent ?? 0) * 100).toFixed(1)}%`}
-      </text>
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={innerRadius}
-        outerRadius={outerRadius}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={fill}
-      />
-      <Sector
-        cx={cx}
-        cy={cy}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        innerRadius={(outerRadius ?? 0) + 4}
-        outerRadius={(outerRadius ?? 0) + 8}
-        fill={fill}
-      />
-    </g>
-  );
-}
-
 interface DispositionSectionProps {
-  summary: DispositionSummary;
   recent: ProcessedDisposition[];
   oldest: ProcessedDisposition[];
 }
 
-export function DispositionSection({ summary, recent, oldest }: DispositionSectionProps) {
-  const chartData = [
-    { name: "Procesadas", value: summary.processed, fill: COLORS.processed },
-    { name: "Sin procesar", value: summary.total - summary.processed, fill: COLORS.pending },
-  ];
-
+export function DispositionSection({ recent, oldest }: DispositionSectionProps) {
   return (
     <section className="mb-12">
       <h2 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">Disposiciones</h2>
 
-      <p className="mb-6 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-        <span className="font-mono tabular-nums">{summary.percentage.toFixed(1)}%</span> procesado
-        <span className="ml-2 text-sm font-normal text-zinc-500 dark:text-zinc-400">
-          ({formatNumber(summary.processed)} de {formatNumber(summary.total)} disposiciones)
-        </span>
-      </p>
-
-      {/* Pie chart */}
-      <div className="mb-8 flex justify-center">
-        <div className="h-[280px] w-full max-w-[360px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                activeShape={renderActiveShape}
-                data={chartData}
-                cx="50%"
-                cy="50%"
-                innerRadius="55%"
-                outerRadius="75%"
-                dataKey="value"
-              />
-              <Tooltip content={() => null} defaultIndex={0} />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Tables */}
       <div className="grid gap-6 lg:grid-cols-2">
         <DispositionTable
           title="Últimas procesadas"
