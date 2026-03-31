@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { MetricsRepository } from "@/lib/db/repositories/metrics";
 import { MetricKPI } from "@/components/metrics/MetricKPI";
 import { ArchiveSection } from "@/components/metrics/ArchiveSection";
@@ -15,12 +14,22 @@ export const metadata: Metadata = {
 };
 
 export default async function MetricasPage() {
-  const [report, archiveSummary, archiveDetails, yearCompletion, issueCompletion] = await Promise.all([
+  const [
+    report,
+    archiveSummary,
+    archiveDetails,
+    yearCompletion,
+    dispositionSummary,
+    recentDispositions,
+    oldestDispositions,
+  ] = await Promise.all([
     MetricsRepository.getDataQualityReport(),
     MetricsRepository.getArchiveCompletion(),
     MetricsRepository.getArchiveDetails(),
     MetricsRepository.getYearCompletion(),
-    MetricsRepository.getIssueCompletion(),
+    MetricsRepository.getDispositionSummary(),
+    MetricsRepository.getRecentProcessedDispositions(),
+    MetricsRepository.getOldestProcessedDispositions(),
   ]);
 
   const extractedYearsPercentage = report.downloads.years.percentage;
@@ -28,10 +37,6 @@ export default async function MetricasPage() {
   const totalIssues = report.downloads.issues.reduce((s, r) => s + r.total, 0);
   const extractedIssues = report.downloads.issues.reduce((s, r) => s + r.done, 0);
   const extractedIssuePercentage = report.downloads.issues.length > 0 ? extractedIssues / totalIssues * 100 : 0;
-
-  const totalDispositions = issueCompletion.reduce((s, i) => s + i.totalDocuments, 0);
-  const extractedDispositions = issueCompletion.reduce((s, i) => s + i.extractedDocuments, 0);
-  const extractedDispositionPercentage = totalDispositions > 0 ? (extractedDispositions / totalDispositions) * 100 : 0;
 
   return (
     <>
@@ -54,7 +59,7 @@ export default async function MetricasPage() {
             />
             <MetricKPI
               label="Disposiciones"
-              value={extractedDispositionPercentage}
+              value={dispositionSummary.percentage}
             />
           </div>
         </section>
@@ -66,7 +71,11 @@ export default async function MetricasPage() {
         <BulletinSection years={yearCompletion} />
 
         {/* Disposiciones */}
-        <DispositionSection issues={issueCompletion} />
+        <DispositionSection
+          summary={dispositionSummary}
+          recent={recentDispositions}
+          oldest={oldestDispositions}
+        />
       </div>
     </>
   );

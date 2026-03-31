@@ -4,8 +4,7 @@ import {
   DataQualityReport, IssueBreakdown, YearBreakdown,
   ArchiveCompletion, ArchiveDetail,
   YearCompletion, YearDetail,
-  IssueCompletion, IssueDetail,
-  PaginatedResult,
+  DispositionSummary, ProcessedDisposition,
 } from "@/types/domain";
 
 // Tipos de fila para cada vista de boc_log
@@ -90,27 +89,19 @@ type YearDetailRow = {
   extracted_at: Date | null;
 };
 
-type IssueCompletionRow = {
-  year: bigint;
-  issue: bigint;
-  downloaded_at: Date | null;
-  total_documents: bigint;
-  downloaded_documents: bigint;
-  download_percentage: Prisma.Decimal;
-  extracted_documents: bigint;
-  extracted_percentage: Prisma.Decimal;
+type DispositionSummaryRow = {
+  total: bigint;
+  processed: bigint;
+  percentage: Prisma.Decimal;
 };
 
-type IssueDetailRow = {
+type ProcessedDispositionRow = {
   year: bigint;
   issue: bigint;
   disposition: bigint;
-  object_key: string | null;
-  downloaded_at: Date | null;
-  extracted_at: Date | null;
+  title: string;
+  processed_at: Date;
 };
-
-type CountRow = { count: bigint };
 
 export const MetricsRepository = {
   async getDataQualityReport(): Promise<DataQualityReport> {
@@ -265,67 +256,66 @@ export const MetricsRepository = {
     }));
   },
 
-  async getIssueCompletion(): Promise<IssueCompletion[]> {
+  async getDispositionSummary(): Promise<DispositionSummary> {
     const rows = await prisma.$queryRaw(Prisma.sql`
       SELECT
-        dd.year, dd.issue, l.downloaded_at,
-        dd.total_documents, dd.downloaded_documents,
-        dd.percentage AS download_percentage,
-        COALESCE(ed.extracted, 0) AS extracted_documents,
-        COALESCE(ed.percentage, 0.0) AS extracted_percentage
+        dd.total_documents AS total,
+        dd.downloaded_documents AS processed,
+        dd.percentage
       FROM boc_log.metric_download_documents AS dd
-      LEFT JOIN boc_log.metric_extraction_documents AS ed ON dd.year = ed.year AND dd.issue = ed.issue
-      LEFT JOIN boc_log.download_log AS l ON l.year = dd.year AND l.issue = dd.issue AND l.entity_type = 'issue'
-      ORDER BY dd.year DESC, dd.issue DESC
-    `) as IssueCompletionRow[];
+    `) as DispositionSummaryRow[];
+    const total = rows.reduce((s, r) => s + Number(r.total), 0);
+    const processed = rows.reduce((s, r) => s + Number(r.processed), 0);
+    return {
+      total,
+      processed,
+      percentage: total > 0 ? (processed / total) * 100 : 0,
+    };
+  },
+
+  async getRecentProcessedDispositions(limit = 5): Promise<ProcessedDisposition[]> {
+    const rows = await prisma.$queryRaw(Prisma.sql`
+      SELECT
+        dl.year, dl.issue, dl.disposition,
+        COALESCE(id.summary, '') AS title,
+        dl.downloaded_at AS processed_at
+      FROM boc_log.download_log AS dl
+      JOIN boc_dataset.issue AS i ON i.year = dl.year AND i.issue = dl.issue
+      JOIN boc_dataset.issue__dispositions AS id
+        ON id._dlt_root_id = i._dlt_id AND id.disposition = dl.disposition
+      WHERE dl.entity_type = 'document' AND dl.downloaded_at IS NOT NULL
+      ORDER BY dl.downloaded_at DESC
+      LIMIT ${limit}
+    `) as ProcessedDispositionRow[];
     return rows.map((r) => ({
       year: Number(r.year),
       issue: Number(r.issue),
-      totalDocuments: Number(r.total_documents),
-      downloadedDocuments: Number(r.downloaded_documents),
-      downloadPercentage: Number(r.download_percentage),
-      extractedDocuments: Number(r.extracted_documents),
-      extractedPercentage: Number(r.extracted_percentage),
-      downloadedAt: r.downloaded_at?.toISOString() ?? null,
+      disposition: Number(r.disposition),
+      title: r.title,
+      processedAt: r.processed_at.toISOString(),
     }));
   },
 
-  async getIssueDetails(year: number, issue: number, page = 1, pageSize = 50): Promise<PaginatedResult<IssueDetail>> {
-    const offset = (page - 1) * pageSize;
-    const [countRows, rows] = await Promise.all([
-      prisma.$queryRaw(Prisma.sql`
-        SELECT COUNT(*)::bigint AS count
-        FROM boc_dataset.issue__dispositions AS d
-        JOIN boc_dataset.issue AS i ON i._dlt_id = d._dlt_parent_id
-        WHERE i.year = ${BigInt(year)} AND i.issue = ${BigInt(issue)}
-      `) as Promise<CountRow[]>,
-      prisma.$queryRaw(Prisma.sql`
-        SELECT
-          i.year, i.issue, d.disposition,
-          dl.object_key, dl.downloaded_at, el.extracted_at
-        FROM boc_dataset.issue__dispositions AS d
-        JOIN boc_dataset.issue AS i ON i._dlt_id = d._dlt_parent_id
-        LEFT JOIN boc_log.download_log AS dl ON dl.entity_type = 'document' AND dl.year = i.year AND dl.issue = i.issue AND dl.disposition = d.disposition
-        LEFT JOIN boc_log.extraction_log AS el ON el.entity_type = 'document' AND el.year = i.year AND el.issue = i.issue AND el.disposition = d.disposition
-        WHERE i.year = ${BigInt(year)} AND i.issue = ${BigInt(issue)}
-        ORDER BY d.disposition DESC
-        LIMIT ${pageSize} OFFSET ${offset}
-      `) as Promise<IssueDetailRow[]>,
-    ]);
-    const total = Number(countRows[0].count);
-    return {
-      data: rows.map((r) => ({
-        year: Number(r.year),
-        issue: Number(r.issue),
-        disposition: Number(r.disposition),
-        objectKey: r.object_key,
-        downloadedAt: r.downloaded_at?.toISOString() ?? null,
-        extractedAt: r.extracted_at?.toISOString() ?? null,
-      })),
-      total,
-      page,
-      pageSize,
-      totalPages: Math.ceil(total / pageSize),
-    };
+  async getOldestProcessedDispositions(limit = 5): Promise<ProcessedDisposition[]> {
+    const rows = await prisma.$queryRaw(Prisma.sql`
+      SELECT
+        dl.year, dl.issue, dl.disposition,
+        COALESCE(id.summary, '') AS title,
+        dl.downloaded_at AS processed_at
+      FROM boc_log.download_log AS dl
+      JOIN boc_dataset.issue AS i ON i.year = dl.year AND i.issue = dl.issue
+      JOIN boc_dataset.issue__dispositions AS id
+        ON id._dlt_root_id = i._dlt_id AND id.disposition = dl.disposition
+      WHERE dl.entity_type = 'document' AND dl.downloaded_at IS NOT NULL
+      ORDER BY dl.downloaded_at ASC
+      LIMIT ${limit}
+    `) as ProcessedDispositionRow[];
+    return rows.map((r) => ({
+      year: Number(r.year),
+      issue: Number(r.issue),
+      disposition: Number(r.disposition),
+      title: r.title,
+      processedAt: r.processed_at.toISOString(),
+    }));
   },
 };

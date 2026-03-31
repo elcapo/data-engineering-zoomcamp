@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { ArchiveSection } from "@/components/metrics/ArchiveSection";
 import { BulletinSection } from "@/components/metrics/BulletinSection";
 import { DispositionSection } from "@/components/metrics/DispositionSection";
-import type { ArchiveCompletion, ArchiveDetail, YearCompletion, IssueCompletion } from "@/types/domain";
+import type { ArchiveCompletion, ArchiveDetail, YearCompletion, DispositionSummary, ProcessedDisposition } from "@/types/domain";
 
 // ── Fixtures ────────────────────────────────────────────────────────────
 
@@ -27,10 +27,20 @@ const yearCompletion: YearCompletion[] = [
   { year: 2023, totalIssues: 260, downloadedIssues: 130, downloadPercentage: 50.0, extractedIssues: 100, extractedPercentage: 38.5, downloadedAt: "2025-03-10T10:00:00.000Z" },
 ];
 
-const issueCompletion: IssueCompletion[] = [
-  { year: 2024, issue: 1, totalDocuments: 20, downloadedDocuments: 18, downloadPercentage: 90, extractedDocuments: 15, extractedPercentage: 75, downloadedAt: "2025-03-15T10:00:00.000Z" },
-  { year: 2024, issue: 2, totalDocuments: 15, downloadedDocuments: 15, downloadPercentage: 100, extractedDocuments: 15, extractedPercentage: 100, downloadedAt: "2025-03-14T10:00:00.000Z" },
-  { year: 2023, issue: 1, totalDocuments: 22, downloadedDocuments: 10, downloadPercentage: 45.5, extractedDocuments: 5, extractedPercentage: 22.7, downloadedAt: "2025-03-10T10:00:00.000Z" },
+const dispositionSummary: DispositionSummary = {
+  total: 225000,
+  processed: 180000,
+  percentage: 80.0,
+};
+
+const recentDispositions: ProcessedDisposition[] = [
+  { year: 2024, issue: 255, disposition: 3, title: "Decreto 123/2024 de subvenciones", processedAt: "2025-03-15T10:00:00.000Z" },
+  { year: 2024, issue: 254, disposition: 1, title: "Orden de convocatoria", processedAt: "2025-03-14T10:00:00.000Z" },
+];
+
+const oldestDispositions: ProcessedDisposition[] = [
+  { year: 2001, issue: 1, disposition: 1, title: "Decreto 1/2001", processedAt: "2024-01-10T10:00:00.000Z" },
+  { year: 2001, issue: 2, disposition: 1, title: "", processedAt: "2024-01-10T12:00:00.000Z" },
 ];
 
 // ── ArchiveSection ──────────────────────────────────────────────────────
@@ -131,85 +141,48 @@ describe("BulletinSection", () => {
 
 // ── DispositionSection ──────────────────────────────────────────────────
 
+// Mock recharts to avoid SVG rendering issues in JSDOM
+vi.mock("recharts", () => ({
+  PieChart: ({ children }: { children: React.ReactNode }) => <div data-testid="pie-chart">{children}</div>,
+  Pie: () => null,
+  Sector: () => null,
+  Tooltip: () => null,
+  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 describe("DispositionSection", () => {
-  beforeEach(() => {
-    vi.restoreAllMocks();
+  it("muestra el resumen con porcentaje y totales", () => {
+    render(<DispositionSection summary={dispositionSummary} recent={recentDispositions} oldest={oldestDispositions} />);
+    expect(screen.getByText("80.0%")).toBeInTheDocument();
+    expect(screen.getByText(/180\.000/)).toBeInTheDocument();
+    expect(screen.getByText(/225\.000/)).toBeInTheDocument();
   });
 
-  it("agrupa por año y muestra totales acumulados", () => {
-    render(<DispositionSection issues={issueCompletion} />);
-    // Year 2024: 20+15 = 35 total documents
-    expect(screen.getByText("35")).toBeInTheDocument();
-    // Year 2023: 22 total documents
-    expect(screen.getByText("22")).toBeInTheDocument();
+  it("renderiza el pie chart", () => {
+    render(<DispositionSection summary={dispositionSummary} recent={recentDispositions} oldest={oldestDispositions} />);
+    expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
   });
 
-  it("muestra ambos años", () => {
-    render(<DispositionSection issues={issueCompletion} />);
-    expect(screen.getByText("2024")).toBeInTheDocument();
-    expect(screen.getByText("2023")).toBeInTheDocument();
+  it("muestra las tablas de disposiciones recientes y antiguas", () => {
+    render(<DispositionSection summary={dispositionSummary} recent={recentDispositions} oldest={oldestDispositions} />);
+    expect(screen.getByText("Últimas procesadas")).toBeInTheDocument();
+    expect(screen.getByText("Primeras procesadas")).toBeInTheDocument();
   });
 
-  it("expande un año para ver sus boletines", async () => {
-    const user = userEvent.setup();
-    render(<DispositionSection issues={issueCompletion} />);
-
-    // Inicialmente no se ven los boletines individuales
-    expect(screen.queryByText(/N.º 1/)).not.toBeInTheDocument();
-
-    await user.click(screen.getByText("2024"));
-    expect(screen.getByText(/N.º 1/)).toBeInTheDocument();
-    expect(screen.getByText(/N.º 2/)).toBeInTheDocument();
+  it("muestra los títulos de disposiciones con enlaces", () => {
+    render(<DispositionSection summary={dispositionSummary} recent={recentDispositions} oldest={oldestDispositions} />);
+    const link = screen.getByText("Decreto 123/2024 de subvenciones");
+    expect(link.closest("a")).toHaveAttribute("href", "/disposicion/2024/255/3");
   });
 
-  it("colapsa un año al hacer clic de nuevo", async () => {
-    const user = userEvent.setup();
-    render(<DispositionSection issues={issueCompletion} />);
-
-    await user.click(screen.getByText("2024"));
-    expect(screen.getByText(/N.º 1/)).toBeInTheDocument();
-
-    await user.click(screen.getByText("2024"));
-    expect(screen.queryByText(/N.º 1/)).not.toBeInTheDocument();
+  it("muestra fallback para disposiciones sin título", () => {
+    render(<DispositionSection summary={dispositionSummary} recent={recentDispositions} oldest={oldestDispositions} />);
+    expect(screen.getByText("Disp. 1")).toBeInTheDocument();
   });
 
-  it("carga detalles de disposiciones por API al expandir un boletín", async () => {
-    const user = userEvent.setup();
-    const fakePaginated = {
-      data: [{ year: 2024, issue: 1, disposition: 1, objectKey: null, downloadedAt: "2025-01-01T00:00:00.000Z", extractedAt: null }],
-      total: 1, page: 1, pageSize: 50, totalPages: 1,
-    };
-    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify(fakePaginated)));
-
-    render(<DispositionSection issues={issueCompletion} />);
-
-    // Expandir año 2024
-    await user.click(screen.getByText("2024"));
-    // Expandir boletín N.º 1
-    await user.click(screen.getByText(/N.º 1/));
-
-    await waitFor(() => {
-      expect(globalThis.fetch).toHaveBeenCalledWith("/api/metrics/issue-details?year=2024&issue=1&page=1&pageSize=50");
-    });
-  });
-
-  it("muestra paginación cuando hay más de una página", async () => {
-    const user = userEvent.setup();
-    const fakePaginated = {
-      data: Array.from({ length: 50 }, (_, i) => ({
-        year: 2024, issue: 1, disposition: i + 1, objectKey: null, downloadedAt: null, extractedAt: null,
-      })),
-      total: 120, page: 1, pageSize: 50, totalPages: 3,
-    };
-    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify(fakePaginated)));
-
-    render(<DispositionSection issues={issueCompletion} />);
-    await user.click(screen.getByText("2024"));
-    await user.click(screen.getByText(/N.º 1/));
-
-    await waitFor(() => {
-      expect(screen.getByText(/Página 1 de 3/)).toBeInTheDocument();
-      expect(screen.getByText(/120 disp\./)).toBeInTheDocument();
-    });
+  it("muestra enlaces a boletines", () => {
+    render(<DispositionSection summary={dispositionSummary} recent={recentDispositions} oldest={oldestDispositions} />);
+    const bulletinLinks = screen.getAllByText("2024/255");
+    expect(bulletinLinks[0].closest("a")).toHaveAttribute("href", "/boletin/2024/255");
   });
 });

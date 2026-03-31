@@ -166,30 +166,16 @@ export interface YearDetail {
   extractedAt: string | null;
 }
 
-export interface IssueCompletion {
-  year: number;
-  issue: number;
-  totalDocuments: number;
-  downloadedDocuments: number;
-  downloadPercentage: number;
-  extractedDocuments: number;
-  extractedPercentage: number;
-  downloadedAt: string | null;
+export interface DispositionSummary {
+  total: number;
+  processed: number;
+  percentage: number;
 }
 
-export interface IssueDetail {
+export interface ProcessedDisposition {
   year: number;
   issue: number;
   disposition: number;
-  objectKey: string | null;
-  downloadedAt: string | null;
-  extractedAt: string | null;
-}
-
-export interface PaginatedResult<T> {
-  data: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+  title: string;
+  processedAt: string;
 }
