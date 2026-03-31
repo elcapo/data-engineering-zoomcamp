@@ -212,3 +212,63 @@ class TestInlineLinks:
         # Links should appear as Markdown syntax, not as raw <a> tags
         assert "<a " not in result_2026_003
         assert "</a>" not in result_2026_003
+
+
+# ---------------------------------------------------------------------------
+# PDA format (2025)
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="module")
+def result_2025(html_2025):
+    return parse(html_2025)
+
+
+class TestFrontmatter2025:
+    def test_year(self, result_2025):
+        assert "year: 2025" in result_2025
+
+    def test_issue(self, result_2025):
+        assert "issue: 68" in result_2025
+
+    def test_number(self, result_2025):
+        assert "number: 1352" in result_2025
+
+    def test_section(self, result_2025):
+        assert "III. Otras Resoluciones" in result_2025
+
+    def test_no_subsection(self, result_2025):
+        assert "subsection:" not in result_2025
+
+    def test_organization(self, result_2025):
+        assert "Consejería de Economía, Industria, Comercio y Autónomos" in result_2025
+
+    def test_pdf_url(self, result_2025):
+        assert "https://sede.gobiernodecanarias.org/boc/boc-a-2025-068-1352.pdf" in result_2025
+
+    def test_no_meta_date(self, result_2025):
+        # PDA pages have no META tags, so date is absent
+        assert "date:" not in result_2025
+
+    def test_no_meta_entity(self, result_2025):
+        assert "entity:" not in result_2025
+
+    def test_no_identifier(self, result_2025):
+        assert "identifier:" not in result_2025
+
+
+class TestTitle2025:
+    def test_title_is_h1(self, result_2025):
+        assert "# Dirección General de Promoción y Diversificación Económica" in result_2025
+
+
+class TestBody2025:
+    def test_starts_with_first_paragraph(self, result_2025):
+        assert "ANTECEDENTES" in result_2025
+
+    def test_no_html_tags(self, result_2025):
+        assert "<p" not in result_2025
+        assert "<img" not in result_2025
+
+    def test_pdf_link_not_in_body(self, result_2025):
+        assert "Descargar en formato pdf" not in result_2025

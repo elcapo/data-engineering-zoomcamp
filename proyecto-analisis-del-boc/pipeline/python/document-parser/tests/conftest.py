@@ -33,3 +33,13 @@ def html_2026_003_path() -> Path:
 @pytest.fixture(scope="session")
 def html_2026_003(html_2026_003_path: Path) -> str:
     return html_2026_003_path.read_text(encoding="utf-8")
+
+
+@pytest.fixture(scope="session")
+def html_2025_path() -> Path:
+    return EXAMPLES / "2025-068-1352.html"
+
+
+@pytest.fixture(scope="session")
+def html_2025(html_2025_path: Path) -> str:
+    return html_2025_path.read_text(encoding="utf-8")

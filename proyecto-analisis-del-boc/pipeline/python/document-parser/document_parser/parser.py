@@ -7,6 +7,15 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 _BASE_URL = "https://www.gobiernodecanarias.org"
 
 
+def _find_content(soup: BeautifulSoup) -> Tag | None:
+    """Find the main content container across all known formats.
+
+    Modern/historical pages use ``div.conten``; PDA pages use
+    ``div.bloq_contenido``.
+    """
+    return soup.find("div", class_="conten") or soup.find("div", class_="bloq_contenido")
+
+
 def parse(html: str) -> str:
     """Parse a BOC document HTML page and return it as clean Markdown.
 
@@ -163,7 +172,7 @@ def _extract_section_info(
     The heading uses " - " as separator. Two parts → (section, None, org).
     Three or more parts → (section, subsection, org).
     """
-    conten = soup.find("div", class_="conten")
+    conten = _find_content(soup)
     if not conten:
         return None, None, None
 
@@ -178,6 +187,13 @@ def _extract_section_info(
         return parts[0], parts[1], parts[-1]
     if len(parts) == 2:
         return parts[0], None, parts[1]
+
+    # PDA format: <h4> holds the section, <h5> holds the organization.
+    h4 = conten.find("h4")
+    if h4:
+        section = " ".join(h4.get_text().split())
+        return section, None, parts[0]
+
     return parts[0], None, None
 
 
@@ -190,7 +206,7 @@ def _extract_title(soup: BeautifulSoup) -> tuple[str | None, str | None]:
     Returns:
         (number, title) e.g. ("1", "ORDEN de 22 de diciembre de 2025…").
     """
-    conten = soup.find("div", class_="conten")
+    conten = _find_content(soup)
     if not conten:
         return None, None
 
@@ -231,7 +247,7 @@ def _extract_document_links(
     Returns:
         (identifier, pdf_url, signature_url)
     """
-    conten = soup.find("div", class_="conten")
+    conten = _find_content(soup)
     if not conten:
         return None, None, None
 
@@ -277,7 +293,7 @@ def _extract_body(soup: BeautifulSoup) -> str:
     within paragraphs are preserved as line breaks. Navigation and
     metadata paragraphs are skipped.
     """
-    conten = soup.find("div", class_="conten")
+    conten = _find_content(soup)
     if not conten:
         return ""
 
