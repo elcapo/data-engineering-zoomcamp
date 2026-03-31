@@ -6,6 +6,8 @@ import { DispositionRepository } from "@/lib/db/repositories/dispositions";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Badge } from "@/components/ui/Badge";
 import { OrgIcon } from "@/components/ui/OrgIcon";
+import { SectionIcon } from "@/components/ui/SectionIcon";
+import { formatNumber } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -53,6 +55,15 @@ export default async function BoletinPage({ params }: PageProps) {
     bySection.set(key, list);
   }
 
+  // Count by organization
+  const orgCounts = new Map<string, number>();
+  for (const d of dispositions) {
+    const key = d.organization || "Sin organismo";
+    orgCounts.set(key, (orgCounts.get(key) ?? 0) + 1);
+  }
+  const orgEntries = Array.from(orgCounts.entries())
+    .sort((a, b) => b[1] - a[1]);
+
   return (
     <>
       <PageHeader
@@ -60,24 +71,17 @@ export default async function BoletinPage({ params }: PageProps) {
           { label: "Inicio", href: "/" },
           { label: String(bulletin.year), href: `/ano/${bulletin.year}` },
         ]}
-        title={`BOC N\u00ba ${bulletin.issue}/${bulletin.year}`}
+        title={`Boletín ${bulletin.year}/${String(bulletin.issue).padStart(3, "0")}`}
       />
 
       <div className="px-4 py-8 sm:px-6 lg:px-8">
-        {/* Bulletin header */}
+        {/* 1. Date + external links */}
         <header className="mb-8">
           {bulletin.date && (
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">{bulletin.date}</p>
+            <p className="mb-3 text-zinc-600 dark:text-zinc-400">{bulletin.date}</p>
           )}
 
-          <div className="mt-3 flex flex-wrap items-center gap-3">
-            <Badge variant="accent">{bulletin.dispositionCount} disposiciones</Badge>
-            {bulletin.sectionCounts.map((sc) => (
-              <Badge key={sc.section}>{sc.section} ({sc.count})</Badge>
-            ))}
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3">
             {bulletin.url && (
               <a
                 href={bulletin.url}
@@ -103,7 +107,7 @@ export default async function BoletinPage({ params }: PageProps) {
           </div>
         </header>
 
-        {/* Dispositions grouped by section */}
+        {/* 2. Dispositions grouped by section */}
         {dispositions.length === 0 ? (
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-6 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800/50 dark:text-zinc-400">
             No hay disposiciones registradas para este bolet\u00edn.
@@ -111,35 +115,35 @@ export default async function BoletinPage({ params }: PageProps) {
         ) : (
           <div className="space-y-8">
             {Array.from(bySection.entries()).map(([section, items]) => (
-              <section key={section}>
-                <h2 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                  {section}
-                  <span className="ml-2 text-sm font-normal text-zinc-400">({items.length})</span>
+              <section key={section} id={`seccion-${encodeURIComponent(section)}`}>
+                <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                  <SectionIcon className="size-5 text-zinc-400 dark:text-zinc-500" />
+                  <Link
+                    href={`/buscar?include_section=${encodeURIComponent(section)}`}
+                    className="hover:text-accent hover:underline underline-offset-4 dark:hover:text-accent-light"
+                  >
+                    {section}
+                  </Link>
                 </h2>
                 <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
                   {items.map((d) => (
                     <li key={d.number}>
                       <Link
                         href={`/disposicion/${d.year}/${d.issue}/${d.number}`}
-                        className="group flex h-full flex-col rounded-lg border border-zinc-200 p-4 transition-colors hover:border-accent/30 dark:border-zinc-700 dark:hover:border-accent/30"
+                        className="group flex h-full flex-col rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-accent/30 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-accent/30"
                       >
-                        <div className="flex items-start justify-between gap-3">
-                          <h3 className="font-medium text-zinc-900 group-hover:text-accent dark:text-zinc-100 dark:group-hover:text-accent-light">
-                            {d.title || "Sin t\u00edtulo"}
-                          </h3>
-                          <span className="shrink-0 text-sm text-zinc-400 dark:text-zinc-500">
-                            #{d.number}
-                          </span>
-                        </div>
+                        <h3 className="font-medium text-zinc-900 group-hover:text-accent dark:text-zinc-100 dark:group-hover:text-accent-light">
+                          {d.title || "Sin t\u00edtulo"}
+                        </h3>
                         {d.organization && (
                           <p className="mt-1 flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
                             <OrgIcon className="size-3.5 shrink-0" />
                             {d.organization}
                           </p>
                         )}
-                        <div className="mt-auto flex flex-wrap gap-x-4 pt-2 text-sm text-zinc-500 dark:text-zinc-400">
-                          {d.date && <span>{d.date}</span>}
-                          {d.identifier && <span>{d.identifier}</span>}
+                        <div className="mt-auto flex items-end justify-between gap-2 pt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                          <span>{d.date || ""}</span>
+                          <span className="shrink-0">BOC {d.year}/{String(d.issue).padStart(3, "0")}/{d.number}</span>
                         </div>
                       </Link>
                     </li>
@@ -147,6 +151,46 @@ export default async function BoletinPage({ params }: PageProps) {
                 </ul>
               </section>
             ))}
+          </div>
+        )}
+
+        {/* Facet columns: Secciones + Organismos */}
+        {dispositions.length > 0 && (
+          <div className="mt-8 grid gap-6 sm:grid-cols-2">
+            <div>
+              <h3 className="mb-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">Secciones</h3>
+              <div className="flex flex-col gap-2">
+                {Array.from(bySection.entries()).map(([section, items]) => (
+                  <a
+                    key={section}
+                    href={`#seccion-${encodeURIComponent(section)}`}
+                    className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-left transition-colors hover:border-accent/30 hover:bg-accent-muted/30 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-accent/30 dark:hover:bg-accent-muted/10"
+                  >
+                    <span className="text-sm text-zinc-800 dark:text-zinc-200">{section}</span>
+                    <span className="ml-3 shrink-0 rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium tabular-nums text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                      {formatNumber(items.length)}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="mb-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">Organismos</h3>
+              <div className="flex flex-col gap-2">
+                {orgEntries.map(([org, count]) => (
+                  <Link
+                    key={org}
+                    href={`/buscar?include_org=${encodeURIComponent(org)}`}
+                    className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-left transition-colors hover:border-accent/30 hover:bg-accent-muted/30 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-accent/30 dark:hover:bg-accent-muted/10"
+                  >
+                    <span className="text-sm text-zinc-800 dark:text-zinc-200">{org}</span>
+                    <span className="ml-3 shrink-0 rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium tabular-nums text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                      {formatNumber(count)}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
