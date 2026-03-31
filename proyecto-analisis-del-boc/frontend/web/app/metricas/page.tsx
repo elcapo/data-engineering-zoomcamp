@@ -23,8 +23,6 @@ export default async function MetricasPage() {
     MetricsRepository.getIssueCompletion(),
   ]);
 
-  const totalYears = report.downloads.years.total;
-  const extractedYears = report.downloads.years.downloaded;
   const extractedYearsPercentage = report.downloads.years.percentage;
 
   const totalIssues = report.downloads.issues.reduce((s, r) => s + r.total, 0);
@@ -49,17 +47,14 @@ export default async function MetricasPage() {
             <MetricKPI
               label="Años"
               value={extractedYearsPercentage}
-              detail={`${extractedYears.toLocaleString("es-ES")} de ${totalYears.toLocaleString("es-ES")}`}
             />
             <MetricKPI
               label="Boletines"
               value={extractedIssuePercentage}
-              detail={`${extractedIssues.toLocaleString("es-ES")} de ${totalIssues.toLocaleString("es-ES")}`}
             />
             <MetricKPI
               label="Disposiciones"
               value={extractedDispositionPercentage}
-              detail={`${extractedDispositions.toLocaleString("es-ES")} de ${totalDispositions.toLocaleString("es-ES")}`}
             />
           </div>
         </section>

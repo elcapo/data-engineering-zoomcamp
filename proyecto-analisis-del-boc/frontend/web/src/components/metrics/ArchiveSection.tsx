@@ -20,7 +20,7 @@ export function ArchiveSection({ summary, details }: ArchiveSectionProps) {
 
   return (
     <section className="mb-12">
-      <h2 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">Archivo</h2>
+      <h2 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">Años</h2>
 
       <Card>
         <div className="mb-3 text-sm text-zinc-500 dark:text-zinc-400">
