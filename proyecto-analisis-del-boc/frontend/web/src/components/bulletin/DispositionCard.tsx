@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Disposition } from "@/types/domain";
 import { Card } from "@/components/ui/Card";
 import { SectionBreadcrumb } from "./SectionBreadcrumb";
@@ -8,6 +9,7 @@ interface DispositionCardProps {
 
 export function DispositionCard({ disposition }: DispositionCardProps) {
   const officialUrl = disposition.htmlUrl;
+  const detailUrl = `/disposicion/${disposition.year}/${disposition.issue}/${disposition.number}`;
 
   return (
     <Card as="article" className="flex flex-col gap-2 transition-colors duration-200 hover:border-accent/30">
@@ -18,17 +20,11 @@ export function DispositionCard({ disposition }: DispositionCardProps) {
         linkable
       />
 
-      {officialUrl ? (
-        <a href={officialUrl} target="_blank" rel="noopener noreferrer" className="group">
-          <h3 className="font-semibold text-zinc-900 group-hover:text-accent dark:text-zinc-100 dark:group-hover:text-accent-light">
-            {disposition.title || "Sin título"}
-          </h3>
-        </a>
-      ) : (
-        <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
+      <Link href={detailUrl} className="group">
+        <h3 className="font-semibold text-zinc-900 group-hover:text-accent dark:text-zinc-100 dark:group-hover:text-accent-light">
           {disposition.title || "Sin título"}
         </h3>
-      )}
+      </Link>
 
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
         {disposition.date && <span>{disposition.date}</span>}
@@ -44,14 +40,20 @@ export function DispositionCard({ disposition }: DispositionCardProps) {
       )}
 
       <div className="mt-auto flex gap-3 pt-1 text-sm">
+        <Link
+          href={detailUrl}
+          className="font-medium text-accent hover:underline underline-offset-4 dark:text-accent-light"
+        >
+          Ver detalle
+        </Link>
         {officialUrl && (
           <a
             href={officialUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-accent hover:underline underline-offset-4 dark:text-accent-light"
+            className="text-zinc-500 hover:underline underline-offset-4 dark:text-zinc-400"
           >
-            Ver disposición
+            Sede oficial
           </a>
         )}
         {disposition.pdfUrl && (

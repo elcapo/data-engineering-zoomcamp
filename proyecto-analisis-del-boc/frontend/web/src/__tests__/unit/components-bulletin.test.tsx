@@ -88,17 +88,23 @@ describe("DispositionCard", () => {
     expect(screen.getByText("Consejería de Educación")).toBeInTheDocument();
   });
 
-  it("enlaza al HTML oficial del Gobierno de Canarias", () => {
+  it("enlaza a la página de detalle", () => {
     render(<DispositionCard disposition={disposition} />);
-    const link = screen.getByText("Ver disposición");
+    const link = screen.getByText("Ver detalle");
+    expect(link).toHaveAttribute("href", "/disposicion/2024/100/3");
+  });
+
+  it("enlaza a la sede oficial del Gobierno de Canarias", () => {
+    render(<DispositionCard disposition={disposition} />);
+    const link = screen.getByText("Sede oficial");
     expect(link).toHaveAttribute("href", "https://sede.gobiernodecanarias.org/boc/boc-a-2024-100-3.xsign");
     expect(link).toHaveAttribute("target", "_blank");
   });
 
-  it("no muestra 'Ver disposición' si no hay htmlUrl", () => {
+  it("no muestra 'Sede oficial' si no hay htmlUrl", () => {
     const { htmlUrl: _, ...withoutHtml } = disposition;
     render(<DispositionCard disposition={withoutHtml} />);
-    expect(screen.queryByText("Ver disposición")).not.toBeInTheDocument();
+    expect(screen.queryByText("Sede oficial")).not.toBeInTheDocument();
   });
 
   it("renderiza excerpt con HTML (mark)", () => {
