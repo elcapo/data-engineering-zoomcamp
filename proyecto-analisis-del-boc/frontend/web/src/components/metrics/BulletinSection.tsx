@@ -7,6 +7,10 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
 }
 
+function formatTime(iso: string): string {
+  return new Date(iso).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+}
+
 interface BulletinSectionProps {
   recent: ProcessedBulletin[];
   oldest: ProcessedBulletin[];
@@ -51,7 +55,7 @@ function BulletinTable({ title, bulletins }: { title: string; bulletins: Process
                   </Link>
                 </td>
                 <td className="px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
-                  {formatDate(b.processedAt)}
+                  {formatDate(b.processedAt)} <span className="text-zinc-400 dark:text-zinc-500">{formatTime(b.processedAt)}</span>
                 </td>
               </tr>
             ))}

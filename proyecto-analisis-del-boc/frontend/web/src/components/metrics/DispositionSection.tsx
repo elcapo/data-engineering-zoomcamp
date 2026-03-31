@@ -7,6 +7,10 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
 }
 
+function formatTime(iso: string): string {
+  return new Date(iso).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+}
+
 interface DispositionSectionProps {
   recent: ProcessedDisposition[];
   oldest: ProcessedDisposition[];
@@ -60,13 +64,13 @@ function DispositionTable({ title, dispositions }: { title: string; dispositions
                 <td className="px-4 py-2.5">
                   <Link
                     href={`/boletin/${d.year}/${d.issue}`}
-                    className="font-mono tabular-nums text-zinc-600 transition-colors hover:text-accent dark:text-zinc-400 dark:hover:text-accent-light"
+                    className="font-mono tabular-nums text-accent transition-colors hover:text-accent-light dark:text-accent-light dark:hover:text-accent"
                   >
                     {d.year}/{String(d.issue).padStart(3, "0")}
                   </Link>
                 </td>
                 <td className="px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
-                  {formatDate(d.processedAt)}
+                  {formatDate(d.processedAt)} <span className="text-zinc-400 dark:text-zinc-500">{formatTime(d.processedAt)}</span>
                 </td>
               </tr>
             ))}
