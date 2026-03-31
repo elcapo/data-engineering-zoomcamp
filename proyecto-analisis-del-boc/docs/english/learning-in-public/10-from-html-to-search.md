@@ -1,0 +1,13 @@
+In previous articles I've been describing the project's pieces separately: the flows, the parsers, the database, the frontend. In this one I want to talk about the journey a piece of data takes from being HTML on the Boletín Oficial de Canarias (BOC) website to someone finding it by typing a search query.
+
+The starting point is HTML — but not a single page, rather hundreds of thousands, published over more than forty years, with at least three different formats. The HTML from 1982 looks nothing like that from 2009, and neither looks like the current one. Each format organizes sections, issuing bodies, and links differently. The first challenge, before extracting anything, is knowing what data you're dealing with.
+
+To solve this, each parser implements a detection method that examines the HTML and decides whether it can process it. The system tries them in sequence until one responds affirmatively. This design allows adding support for a new format without touching the existing ones: you write a parser, register it, and the system incorporates it into the detection flow. Once the format is detected, the parser extracts the bulletin's structure: sections, subsections, issuing bodies, and individual dispositions with their links to the full text and PDF.
+
+The second step is extracting the document itself. Each disposition has its own HTML page that the parser converts into text with structured data: year, bulletin, date, issuing body, section, identifier, and links to the PDF and electronic signature. What was an unstructured web page becomes a record with clean fields and a normalized text body.
+
+All of this arrives at PostgreSQL, where something fundamental happens. When loading each document, the database automatically generates a full-text search column using the Spanish language configuration. PostgreSQL applies stemming (reducing words to their root), removes stop words, and builds an inverted index over the document's title and body. Two indexes allow searching across more than 200,000 documents in milliseconds.
+
+On the frontend, when a user types a search query, the text is transformed into an expression. Typing "convocatoria beca" becomes something that finds any document containing words that start with those terms. The system also supports exclusions, filters by section, issuing body, date range, and exact bulletin reference. All these conditions are combined into a single SQL query that also generates excerpts with highlighted terms and calculates facets by year, section, and issuing body.
+
+#DataEngineering #LearningInPublic #DataTalksClub #PostgreSQL #FullTextSearch #Python #OpenData #CanaryIslands
