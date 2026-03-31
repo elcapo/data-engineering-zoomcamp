@@ -1,4 +1,4 @@
-# Bocana: Full-Text Search and Analysis of the Boletín Oficial de Canarias
+# Full-Text Search and Real-Time Analysis Project
 
 The [Boletín Oficial de Canarias](https://www.gobiernodecanarias.org/boc/) (BOC) is the official gazette of the Canary Islands (Spain). It publishes thousands of dispositions every year: regulations, grants, public calls, resolutions, and announcements that directly affect citizens, businesses, lawyers, and journalists across the archipelago.
 
@@ -24,27 +24,13 @@ The live site is available at **[bocana.org](https://bocana.org)**.
 
 ## Architecture Overview
 
-The project has two major blocks deployed on two virtual machines connected by an internal network:
+The project has two major blocks deployed on two virtual machines (VM) connected by an internal network:
 
 1. **Data pipeline** (VM 1): Kestra orchestrates the hierarchical download of the BOC archive. Raw HTML documents are stored compressed in MinIO as a data lake. Python parsers extract text and metadata, and DLT loads the structured data into PostgreSQL.
 
 2. **Web frontend** (VM 2): A Next.js application with Prisma connects directly to PostgreSQL. It offers full-text search, browsing by year and bulletin, and data quality dashboards.
 
-```mermaid
-graph TD
-    BOC["BOC Official Website"]
-    K["Kestra\n(orchestrator)"]
-    M["MinIO\n(data lake)"]
-    P["Python\n(parsers)"]
-    PG["PostgreSQL\n(warehouse)"]
-    NJ["Next.js\n(frontend)"]
-
-    BOC -->|"HTML / PDF"| K
-    K -->|"raw files"| M
-    M -->|"stored files"| P
-    P -->|"DLT"| PG
-    PG -->|"Prisma"| NJ
-```
+![Architecture overview](./resources/charts/architecture-overview.png)
 
 ## Technologies Used
 
@@ -70,7 +56,7 @@ graph TD
 
 The BOC archive has a four-level hierarchy: **years → bulletins → dispositions → full text**. Each level must be scanned to discover what exists in the next one, making a simple "download everything at once" approach impossible.
 
-### Flow Organization
+### Flow Organization (Batches with Trackers)
 
 The 19 Kestra flows (defined in [`pipeline/flows/`](../../pipeline/flows/)) are organized into four categories:
 
@@ -165,7 +151,7 @@ These metrics are powered by six SQL views (defined in [`pipeline/sql/prepare/`]
 
 ### Infrastructure as Code
 
-All infrastructure is defined in Docker Compose files. The pipeline stack ([`pipeline/docker-compose.yml`](../../pipeline/docker-compose.yml)) runs Kestra, MinIO, and PostgreSQL. The frontend stack ([`frontend/postgres/docker-compose.yml`](../../frontend/postgres/docker-compose.yml) + [`frontend/web/docker-compose.yml`](../../frontend/web/docker-compose.yml)) runs PostgreSQL and Next.js.
+All infrastructure is defined in Docker Compose files. The [pipeline stack](../../pipeline/docker-compose.yml) runs Kestra, MinIO, and PostgreSQL. The frontend stack runs [PostgreSQL]((../../frontend/postgres/docker-compose.yml)) and [Next.js]((../../frontend/web/docker-compose.yml)).
 
 The same files work for both local development and production. Environment-specific differences (port exposure, Traefik reverse proxy) are handled through complementary compose files.
 

@@ -1,0 +1,9 @@
+flowchart LR
+    BOC["BOC Official Website"] -- HTML / PDF --> K["Kestra<br>(orchestrator)"]
+    K -- raw files --> M["MinIO<br>(data lake)"]
+    M -- stored files --> P["Python<br>(parsers)"]
+    P -- DLT --> PG["PostgreSQL<br>(warehouse)"]
+    PG -- Prisma --> NJ["Next.js<br>(frontend)"]
+
+    style BOC fill:#BBDEFB
+    style NJ fill:#BBDEFB
