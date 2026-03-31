@@ -1,72 +1,57 @@
 import Link from "next/link";
 import { Disposition } from "@/types/domain";
 import { Card } from "@/components/ui/Card";
-import { SectionBreadcrumb } from "./SectionBreadcrumb";
 
 interface DispositionCardProps {
   disposition: Disposition;
 }
 
 export function DispositionCard({ disposition }: DispositionCardProps) {
-  const officialUrl = disposition.htmlUrl;
   const detailUrl = `/disposicion/${disposition.year}/${disposition.issue}/${disposition.number}`;
+  const code = `BOC ${disposition.year}/${String(disposition.issue).padStart(3, "0")}/${disposition.number}`;
 
   return (
-    <Card as="article" className="flex flex-col gap-2 transition-colors duration-200 hover:border-accent/30">
-      <SectionBreadcrumb
-        section={disposition.section}
-        subsection={disposition.subsection}
-        organization={disposition.organization}
-        linkable
-      />
+    <Card as="article" className="!p-0 flex flex-col">
+      {/* Upper block: clickable link to disposition detail */}
+      <Link href={detailUrl} className="group flex flex-1 flex-col gap-2 rounded-t-xl p-6 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-700/50">
+        <span className="self-end font-mono text-xs tabular-nums text-zinc-400 dark:text-zinc-500">
+          {code}
+        </span>
 
-      <Link href={detailUrl} className="group">
         <h3 className="font-semibold text-zinc-900 group-hover:text-accent dark:text-zinc-100 dark:group-hover:text-accent-light">
           {disposition.title || "Sin título"}
         </h3>
+
+        <span className="text-sm text-zinc-500 dark:text-zinc-400">
+          {disposition.organization}
+        </span>
       </Link>
 
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
-        {disposition.date && <span>{disposition.date}</span>}
-        <span>BOC N&ordm; {disposition.issue}/{disposition.year}</span>
-        {disposition.identifier && <span>{disposition.identifier}</span>}
-      </div>
-
-      {disposition.excerpt && (
-        <p
-          className="line-clamp-3 text-sm text-zinc-600 dark:text-zinc-300 [&_mark]:bg-yellow-200 [&_mark]:dark:bg-yellow-800"
-          dangerouslySetInnerHTML={{ __html: disposition.excerpt }}
-        />
+      {/* Footer: external links */}
+      {(disposition.htmlUrl || disposition.pdfUrl) && (
+        <div className="flex gap-4 border-t border-zinc-200 px-6 py-3 dark:border-zinc-700">
+          {disposition.htmlUrl && (
+            <a
+              href={disposition.htmlUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-zinc-500 hover:underline underline-offset-4 dark:text-zinc-400"
+            >
+              BOC oficial
+            </a>
+          )}
+          {disposition.pdfUrl && (
+            <a
+              href={disposition.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-zinc-500 hover:underline underline-offset-4 dark:text-zinc-400"
+            >
+              PDF oficial
+            </a>
+          )}
+        </div>
       )}
-
-      <div className="mt-auto flex gap-3 pt-1 text-sm">
-        <Link
-          href={detailUrl}
-          className="font-medium text-accent hover:underline underline-offset-4 dark:text-accent-light"
-        >
-          Ver detalle
-        </Link>
-        {officialUrl && (
-          <a
-            href={officialUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-zinc-500 hover:underline underline-offset-4 dark:text-zinc-400"
-          >
-            Sede oficial
-          </a>
-        )}
-        {disposition.pdfUrl && (
-          <a
-            href={disposition.pdfUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-zinc-500 hover:underline underline-offset-4 dark:text-zinc-400"
-          >
-            PDF oficial
-          </a>
-        )}
-      </div>
     </Card>
   );
 }

@@ -82,36 +82,38 @@ describe("BulletinCard", () => {
 });
 
 describe("DispositionCard", () => {
-  it("muestra título y breadcrumb", () => {
+  it("muestra título, identificador y organización", () => {
     render(<DispositionCard disposition={disposition} />);
     expect(screen.getByText("Convocatoria de becas")).toBeInTheDocument();
-    expect(screen.getByText("I")).toBeInTheDocument();
+    expect(screen.getByText("BOC 2024/100/3")).toBeInTheDocument();
     expect(screen.getByText("Consejería de Educación")).toBeInTheDocument();
   });
 
-  it("enlaza a la página de detalle", () => {
+  it("el bloque superior enlaza a la página de detalle", () => {
     render(<DispositionCard disposition={disposition} />);
-    const link = screen.getByText("Ver detalle");
+    const link = screen.getByText("Convocatoria de becas").closest("a");
     expect(link).toHaveAttribute("href", "/disposicion/2024/100/3");
   });
 
-  it("enlaza a la sede oficial del Gobierno de Canarias", () => {
+  it("incluye enlace al BOC oficial en el pie", () => {
     render(<DispositionCard disposition={disposition} />);
-    const link = screen.getByText("Sede oficial");
+    const link = screen.getByText("BOC oficial");
     expect(link).toHaveAttribute("href", "https://sede.gobiernodecanarias.org/boc/boc-a-2024-100-3.xsign");
     expect(link).toHaveAttribute("target", "_blank");
   });
 
-  it("no muestra 'Sede oficial' si no hay htmlUrl", () => {
-    const { htmlUrl: _, ...withoutHtml } = disposition;
-    render(<DispositionCard disposition={withoutHtml} />);
-    expect(screen.queryByText("Sede oficial")).not.toBeInTheDocument();
+  it("incluye enlace al PDF en el pie", () => {
+    render(<DispositionCard disposition={disposition} />);
+    const link = screen.getByText("PDF oficial");
+    expect(link).toHaveAttribute("href", "https://boc.example.com/pdf/3");
+    expect(link).toHaveAttribute("target", "_blank");
   });
 
-  it("renderiza excerpt con HTML (mark)", () => {
-    render(<DispositionCard disposition={disposition} />);
-    const el = screen.getByText((_, node) => node?.textContent === "Se convoca beca para estudiantes");
-    expect(el?.innerHTML).toContain("<mark>");
+  it("no muestra pie si no hay enlaces externos", () => {
+    const withoutLinks = { ...disposition, htmlUrl: undefined, pdfUrl: "" };
+    render(<DispositionCard disposition={withoutLinks} />);
+    expect(screen.queryByText("BOC oficial")).not.toBeInTheDocument();
+    expect(screen.queryByText("PDF oficial")).not.toBeInTheDocument();
   });
 });
 

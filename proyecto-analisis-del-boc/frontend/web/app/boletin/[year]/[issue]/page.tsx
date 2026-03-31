@@ -4,8 +4,8 @@ import Link from "next/link";
 import { BulletinRepository } from "@/lib/db/repositories/bulletins";
 import { DispositionRepository } from "@/lib/db/repositories/dispositions";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { DispositionCard } from "@/components/bulletin/DispositionCard";
 import { Badge } from "@/components/ui/Badge";
-import { OrgIcon } from "@/components/ui/OrgIcon";
 import { SectionIcon } from "@/components/ui/SectionIcon";
 import { formatNumber } from "@/lib/format";
 
@@ -128,24 +128,7 @@ export default async function BoletinPage({ params }: PageProps) {
                 <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
                   {items.map((d) => (
                     <li key={d.number}>
-                      <Link
-                        href={`/disposicion/${d.year}/${d.issue}/${d.number}`}
-                        className="group flex h-full flex-col rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-accent/30 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-accent/30"
-                      >
-                        <h3 className="font-medium text-zinc-900 group-hover:text-accent dark:text-zinc-100 dark:group-hover:text-accent-light">
-                          {d.title || "Sin t\u00edtulo"}
-                        </h3>
-                        {d.organization && (
-                          <p className="mt-2 mb-4 flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400">
-                            <OrgIcon className="size-3.5 shrink-0" />
-                            {d.organization}
-                          </p>
-                        )}
-                        <div className="mt-auto flex items-end justify-between gap-2 pt-2 text-sm text-zinc-500 dark:text-zinc-400">
-                          <span>{d.date || ""}</span>
-                          <span className="shrink-0">BOC {d.year}/{String(d.issue).padStart(3, "0")}/{d.number}</span>
-                        </div>
-                      </Link>
+                      <DispositionCard disposition={d} />
                     </li>
                   ))}
                 </ul>
