@@ -52,7 +52,7 @@ describe("ArchiveSection", () => {
 
   it("muestra la fecha de última descarga", () => {
     render(<ArchiveSection summary={archiveSummary} details={archiveDetails} />);
-    expect(screen.getByText(/15 mar 2025/)).toBeInTheDocument();
+    expect(screen.getByText(/15 de marzo de 2025/)).toBeInTheDocument();
   });
 
   it("el detalle está oculto inicialmente", () => {

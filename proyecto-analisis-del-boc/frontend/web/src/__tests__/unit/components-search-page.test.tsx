@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import { SearchPage } from "@/components/search/SearchPage";
 
 // Mock next/navigation
@@ -18,6 +18,17 @@ vi.mock("next/link", () => ({
     <a href={href} {...props}>{children}</a>
   ),
 }));
+
+// Mock recharts ResponsiveContainer (jsdom has no layout engine)
+vi.mock("recharts", async () => {
+  const actual = await vi.importActual<typeof import("recharts")>("recharts");
+  return {
+    ...actual,
+    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
+      <div style={{ width: 500, height: 300 }}>{children}</div>
+    ),
+  };
+});
 
 // Mock fetch
 const mockFetch = vi.fn();
@@ -42,14 +53,21 @@ beforeEach(() => {
   mockPush.mockReset();
   mockReplace.mockReset();
   mockFetch.mockReset();
-  mockFetch.mockResolvedValue({ ok: true, json: () => Promise.resolve(fakeResult) });
+  mockFetch.mockImplementation((url: string) => {
+    if (url === "/api/filters") {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ sections: [], organizations: [] }) });
+    }
+    return Promise.resolve({ ok: true, json: () => Promise.resolve(fakeResult) });
+  });
   mockSearchParams = new URLSearchParams();
 });
 
 describe("SearchPage", () => {
-  it("muestra mensaje inicial cuando no hay parámetros", () => {
+  it("muestra mensaje inicial cuando no hay parámetros", async () => {
     render(<SearchPage />);
     expect(screen.getByText(/Busca en el BOC/)).toBeInTheDocument();
+    // Let FilterBar's /api/filters fetch settle to avoid act() warning
+    await act(async () => {});
   });
 
   it("hace fetch y muestra resultados cuando hay parámetros en la URL", async () => {
@@ -95,12 +113,13 @@ describe("SearchPage", () => {
     });
   });
 
-  it("reconstruye términos include/exclude desde la URL", () => {
+  it("reconstruye términos include/exclude desde la URL", async () => {
     mockSearchParams = new URLSearchParams("include=beca&include=ayuda&exclude=universidad");
     render(<SearchPage />);
     // Los valores aparecen como botones dentro de los chips
     expect(screen.getByTitle("beca")).toBeInTheDocument();
     expect(screen.getByTitle("ayuda")).toBeInTheDocument();
     expect(screen.getByTitle("universidad")).toBeInTheDocument();
+    await act(async () => {});
   });
 });

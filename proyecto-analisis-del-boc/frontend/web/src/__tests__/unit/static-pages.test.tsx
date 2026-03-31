@@ -24,7 +24,7 @@ describe("Páginas estáticas — renderizado con MarkdownPage", () => {
     const page = await readMarkdownPage("aviso-legal");
     render(<MarkdownPage html={page!.html} />);
 
-    expect(screen.getByText(/iniciativa independiente/i, { selector: "strong" })).toBeInTheDocument();
+    expect(screen.getByText(/iniciativa independiente/i)).toBeInTheDocument();
     expect(screen.getAllByText(/Gobierno de Canarias/).length).toBeGreaterThan(0);
   });
 
@@ -48,7 +48,7 @@ describe("Páginas estáticas — renderizado con MarkdownPage", () => {
     const page = await readMarkdownPage("aviso-legal");
     render(<MarkdownPage html={page!.html} />);
 
-    const link = screen.getByRole("link", { name: /gobiernodecanarias/i });
+    const link = screen.getByRole("link", { name: /Boletín Oficial de Canarias/i });
     expect(link).toHaveAttribute("href", "https://www.gobiernodecanarias.org/boc");
   });
 

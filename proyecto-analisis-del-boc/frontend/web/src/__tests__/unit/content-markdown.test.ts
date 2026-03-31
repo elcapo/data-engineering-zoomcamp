@@ -22,14 +22,14 @@ describe("readMarkdownPage", () => {
     expect(page).not.toBeNull();
     expect(page!.title).toBe("Metodología y Fuentes");
     expect(page!.html).toContain("<ol>");
-    expect(page!.html).toContain("<strong>Descarga de índices.</strong>");
+    expect(page!.html).toContain("<strong>Descarga de índices</strong>");
   });
 
   it("lee sobre-el-proyecto.md", async () => {
     const page = await readMarkdownPage("sobre-el-proyecto");
     expect(page).not.toBeNull();
-    expect(page!.title).toBe("Sobre el Proyecto");
-    expect(page!.html).toContain("BOC Canarias Web");
+    expect(page!.title).toBe("Sobre el proyecto");
+    expect(page!.html).toContain("bocana");
   });
 
   it("devuelve null para un slug inexistente", async () => {
@@ -66,14 +66,12 @@ describe("readSectionsConfig", () => {
     const first = config.sections[0];
     expect(first.type).toBe("latest-bulletins");
     expect(first.title).toBe("Últimos boletines");
-    expect(first.limit).toBe(5);
+    expect(first.limit).toBe(12);
   });
 
-  it("la segunda sección es editorial con source", () => {
+  it("solo hay una sección configurada", () => {
     const config = readSectionsConfig();
-    const second = config.sections[1];
-    expect(second.type).toBe("editorial");
-    expect(second.source).toBe("featured");
+    expect(config.sections.length).toBe(1);
   });
 });
 

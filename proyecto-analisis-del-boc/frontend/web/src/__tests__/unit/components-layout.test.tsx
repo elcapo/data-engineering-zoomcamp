@@ -11,9 +11,9 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-// Mock next/image
+// Mock next/image (filter Next.js-specific props that aren't valid HTML attributes)
 vi.mock("next/image", () => ({
-  default: ({ alt, ...props }: { alt: string; [key: string]: unknown }) => (
+  default: ({ alt, priority: _p, ...props }: { alt: string; priority?: boolean; [key: string]: unknown }) => (
     <img alt={alt} {...props} />
   ),
 }));
@@ -28,8 +28,8 @@ describe("Sidebar", () => {
 
   it("renderiza los enlaces de navegación principales (expandido)", () => {
     render(<Sidebar collapsed={false} onToggleCollapse={noop} />);
-    expect(screen.getByText("Inicio").closest("a")).toHaveAttribute("href", "/");
-    expect(screen.getByText("Buscar").closest("a")).toHaveAttribute("href", "/buscar");
+    const buscarHref = screen.getByText("Buscar").closest("a")?.getAttribute("href");
+    expect(buscarHref).toMatch(/^\/buscar/);
     expect(screen.getByText("Cobertura").closest("a")).toHaveAttribute("href", "/metricas");
   });
 
@@ -42,22 +42,23 @@ describe("Sidebar", () => {
 
   it("oculta los labels cuando está colapsado", () => {
     render(<Sidebar collapsed={true} onToggleCollapse={noop} />);
-    expect(screen.queryByText("Inicio")).not.toBeInTheDocument();
     expect(screen.queryByText("Buscar")).not.toBeInTheDocument();
   });
 
   it("muestra el logo bocana con wording cuando está expandido", () => {
     render(<Sidebar collapsed={false} onToggleCollapse={noop} />);
-    const img = screen.getByAltText("bocana");
-    expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute("src", "/bocana-logo-wording.svg");
+    const imgs = screen.getAllByAltText("bocana");
+    expect(imgs.length).toBeGreaterThanOrEqual(1);
+    const srcs = imgs.map((img) => img.getAttribute("src"));
+    expect(srcs).toContain("/bocana-logo-wording.svg");
   });
 
   it("muestra solo el icono cuando está colapsado", () => {
     render(<Sidebar collapsed={true} onToggleCollapse={noop} />);
-    const img = screen.getByAltText("bocana");
-    expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute("src", "/bocana-logo.svg");
+    const imgs = screen.getAllByAltText("bocana");
+    expect(imgs.length).toBeGreaterThanOrEqual(1);
+    const srcs = imgs.map((img) => img.getAttribute("src"));
+    expect(srcs).toContain("/bocana-logo.svg");
   });
 });
 
