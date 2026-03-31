@@ -20,6 +20,7 @@
 * [Cuando el PDF es la única fuente](learning-in-public/11-cuando-el-pdf-es-la-unica-fuente.md)
 * [Tests en un proyecto de datos](learning-in-public/12-tests-en-un-proyecto-de-datos.md)
 * [Claude Code como acelerador](learning-in-public/13-claude-code-como-acelerador.md)
+* [Reproducibilidad de entornos](learning-in-public/14-reproducibilidad-de-entornos.md)
 
 ---
 
