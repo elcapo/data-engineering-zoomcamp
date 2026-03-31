@@ -191,7 +191,7 @@ En cuanto al proyecto, dispones de dos intentos con fechas límite diferentes.
 
 | **Entregable** | **Fecha límite** |
 | --- | --- |
-| Proyecto: **Primer intento** | 31 de marzo de 2026 |
+| Proyecto: **[Primer intento](./proyecto-analisis-del-boc/docs/english/README.md)** | 31 de marzo de 2026 |
 | Proyecto: **Segundo intento** | 21 de abril de 2026 |
 
 ## Aprendizaje en público
