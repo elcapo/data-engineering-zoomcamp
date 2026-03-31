@@ -48,7 +48,7 @@ export default async function MetricasPage() {
           <div className="grid gap-4 sm:grid-cols-3">
             <MetricKPI
               label="Años"
-              value={extractedYearsPercentage.toLocaleString("es-ES")}
+              value={extractedYearsPercentage}
               detail={`${extractedYears.toLocaleString("es-ES")} de ${totalYears.toLocaleString("es-ES")}`}
             />
             <MetricKPI
