@@ -15,28 +15,24 @@ export const metadata: Metadata = {
 
 export default async function MetricasPage() {
   const [
-    report,
     archiveSummary,
     archiveDetails,
-    yearCompletion,
+    bulletinSummary,
+    recentBulletins,
+    oldestBulletins,
     dispositionSummary,
     recentDispositions,
     oldestDispositions,
   ] = await Promise.all([
-    MetricsRepository.getDataQualityReport(),
     MetricsRepository.getArchiveCompletion(),
     MetricsRepository.getArchiveDetails(),
-    MetricsRepository.getYearCompletion(),
+    MetricsRepository.getBulletinSummary(),
+    MetricsRepository.getRecentProcessedBulletins(),
+    MetricsRepository.getOldestProcessedBulletins(),
     MetricsRepository.getDispositionSummary(),
     MetricsRepository.getRecentProcessedDispositions(),
     MetricsRepository.getOldestProcessedDispositions(),
   ]);
-
-  const extractedYearsPercentage = report.downloads.years.percentage;
-
-  const totalIssues = report.downloads.issues.reduce((s, r) => s + r.total, 0);
-  const extractedIssues = report.downloads.issues.reduce((s, r) => s + r.done, 0);
-  const extractedIssuePercentage = report.downloads.issues.length > 0 ? extractedIssues / totalIssues * 100 : 0;
 
   return (
     <>
@@ -51,11 +47,11 @@ export default async function MetricasPage() {
           <div className="grid gap-4 sm:grid-cols-3">
             <MetricKPI
               label="Años"
-              value={extractedYearsPercentage}
+              value={archiveSummary.downloadedPercentage}
             />
             <MetricKPI
               label="Boletines"
-              value={extractedIssuePercentage}
+              value={bulletinSummary.percentage}
             />
             <MetricKPI
               label="Disposiciones"
@@ -68,7 +64,11 @@ export default async function MetricasPage() {
         <ArchiveSection summary={archiveSummary} details={archiveDetails} />
 
         {/* Boletines */}
-        <BulletinSection years={yearCompletion} />
+        <BulletinSection
+          summary={bulletinSummary}
+          recent={recentBulletins}
+          oldest={oldestBulletins}
+        />
 
         {/* Disposiciones */}
         <DispositionSection

@@ -147,23 +147,16 @@ export interface ArchiveDetail {
   extractedAt: string | null;
 }
 
-export interface YearCompletion {
-  year: number;
-  totalIssues: number;
-  downloadedIssues: number;
-  downloadPercentage: number;
-  extractedIssues: number;
-  extractedPercentage: number;
-  downloadedAt: string | null;
+export interface BulletinSummary {
+  total: number;
+  processed: number;
+  percentage: number;
 }
 
-export interface YearDetail {
+export interface ProcessedBulletin {
   year: number;
   issue: number;
-  url: string | null;
-  objectKey: string | null;
-  downloadedAt: string | null;
-  extractedAt: string | null;
+  processedAt: string;
 }
 
 export interface DispositionSummary {

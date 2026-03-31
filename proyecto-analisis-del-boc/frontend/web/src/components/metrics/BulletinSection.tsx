@@ -1,148 +1,141 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import type { YearCompletion, YearDetail } from "@/types/domain";
-import { MetricBar } from "@/components/ui/MetricBar";
+import Link from "next/link";
+import { PieChart, Pie, Sector, Tooltip, ResponsiveContainer } from "recharts";
+import type { PieSectorDataItem } from "recharts";
+import type { BulletinSummary, ProcessedBulletin } from "@/types/domain";
 import { formatNumber } from "@/lib/format";
-import { ChevronIcon } from "@/components/ui/ChevronIcon";
 
-function formatDate(iso: string | null): string {
-  if (!iso) return "—";
+function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
 }
 
-interface BulletinSectionProps {
-  years: YearCompletion[];
+const COLORS = {
+  processed: "var(--color-accent)",
+  pending: "#a1a1aa",
+};
+
+function renderActiveShape(props: PieSectorDataItem) {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent } = props;
+
+  return (
+    <g>
+      <text x={cx} y={(cy ?? 0) - 8} textAnchor="middle" fill="currentColor" className="text-sm font-medium">
+        {payload?.name}
+      </text>
+      <text x={cx} y={(cy ?? 0) + 14} textAnchor="middle" fill="currentColor" className="text-xl font-bold">
+        {`${((percent ?? 0) * 100).toFixed(1)}%`}
+      </text>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+      <Sector
+        cx={cx}
+        cy={cy}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        innerRadius={(outerRadius ?? 0) + 4}
+        outerRadius={(outerRadius ?? 0) + 8}
+        fill={fill}
+      />
+    </g>
+  );
 }
 
-export function BulletinSection({ years }: BulletinSectionProps) {
-  const [expanded, setExpanded] = useState<number | null>(null);
-  const [details, setDetails] = useState<Map<number, YearDetail[]>>(new Map());
-  const [loading, setLoading] = useState<number | null>(null);
+interface BulletinSectionProps {
+  summary: BulletinSummary;
+  recent: ProcessedBulletin[];
+  oldest: ProcessedBulletin[];
+}
 
-  const summary = useMemo(() => {
-    const totalIssues = years.reduce((s, y) => s + y.totalIssues, 0);
-    const downloadedIssues = years.reduce((s, y) => s + y.downloadedIssues, 0);
-    const pct = totalIssues > 0 ? (downloadedIssues / totalIssues) * 100 : 0;
-    return { totalIssues, downloadedIssues, pct };
-  }, [years]);
-
-  async function toggle(year: number) {
-    if (expanded === year) {
-      setExpanded(null);
-      return;
-    }
-    setExpanded(year);
-    if (!details.has(year)) {
-      setLoading(year);
-      try {
-        const res = await fetch(`/api/metrics/year-details?year=${year}`);
-        const data: YearDetail[] = await res.json();
-        setDetails((prev) => new Map(prev).set(year, data));
-      } finally {
-        setLoading(null);
-      }
-    }
-  }
+export function BulletinSection({ summary, recent, oldest }: BulletinSectionProps) {
+  const chartData = [
+    { name: "Procesados", value: summary.processed, fill: COLORS.processed },
+    { name: "Sin procesar", value: summary.total - summary.processed, fill: COLORS.pending },
+  ];
 
   return (
     <section className="mb-12">
       <h2 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">Boletines</h2>
 
-      <p className="mb-3 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-        <span className="font-mono tabular-nums">{summary.pct.toFixed(1)}%</span> descargado
+      <p className="mb-6 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <span className="font-mono tabular-nums">{summary.percentage.toFixed(1)}%</span> procesado
         <span className="ml-2 text-sm font-normal text-zinc-500 dark:text-zinc-400">
-          ({formatNumber(summary.downloadedIssues)} de {formatNumber(summary.totalIssues)} boletines)
+          ({formatNumber(summary.processed)} de {formatNumber(summary.total)} boletines)
         </span>
       </p>
 
-      <p className="mb-3 text-sm text-zinc-500 dark:text-zinc-400">
-        Haz clic en un año para ver el detalle por boletín.
-      </p>
-
-      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-800">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50/50 text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800/30 dark:text-zinc-400">
-                <th className="px-4 py-2.5 font-medium">Año</th>
-                <th className="px-4 py-2.5 font-medium">Últ. descarga</th>
-                <th className="px-4 py-2.5 font-medium text-right">Total</th>
-                <th className="px-4 py-2.5 font-medium text-right">Descargados</th>
-                <th className="px-4 py-2.5 font-medium text-right">Extraídos</th>
-                <th className="px-4 py-2.5 font-medium" style={{ minWidth: 120 }}>Progreso</th>
-              </tr>
-            </thead>
-            {years.map((y) => (
-              <tbody key={y.year}>
-                  <tr
-                    className="cursor-pointer border-b border-zinc-100 transition-colors duration-100 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-800/50"
-                    onClick={() => toggle(y.year)}
-                  >
-                    <td className="px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-100">
-                      <span className="flex items-center gap-1.5">
-                        <ChevronIcon expanded={expanded === y.year} />
-                        <span className="font-mono tabular-nums">{y.year}</span>
-                      </span>
-                    </td>
-                    <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400">{formatDate(y.downloadedAt)}</td>
-                    <td className="px-4 py-2.5 text-right font-mono tabular-nums">{y.totalIssues}</td>
-                    <td className="px-4 py-2.5 text-right font-mono tabular-nums text-accent dark:text-accent-light">{y.downloadedIssues}</td>
-                    <td className="px-4 py-2.5 text-right font-mono tabular-nums text-emerald-600 dark:text-emerald-400">{y.extractedIssues}</td>
-                    <td className="px-4 py-2.5">
-                      <MetricBar percentage={y.downloadPercentage} />
-                    </td>
-                  </tr>
-
-                  {expanded === y.year && (
-                    <tr>
-                      <td colSpan={6} className="px-4 pb-3 pt-1">
-                        {loading === y.year ? (
-                          <div className="flex items-center gap-2 py-3 pl-6 text-xs text-zinc-400">
-                            <div className="size-3 animate-spin rounded-full border-2 border-zinc-300 border-t-accent" />
-                            Cargando...
-                          </div>
-                        ) : (
-                          <div className="ml-2 border-l-2 border-accent/40 pl-4">
-                            <table className="w-full text-xs">
-                              <thead>
-                                <tr className="text-zinc-500 dark:text-zinc-400">
-                                  <th className="pb-1.5 pr-3 text-left font-medium">N.&ordm;</th>
-                                  <th className="pb-1.5 pr-3 text-left font-medium">Descargado</th>
-                                  <th className="pb-1.5 text-left font-medium">Extraído</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {(details.get(y.year) ?? []).map((d) => (
-                                  <tr key={d.issue} className="border-b border-zinc-50 transition-colors duration-100 dark:border-zinc-800/50">
-                                    <td className="py-1.5 pr-3 font-mono tabular-nums text-zinc-700 dark:text-zinc-300">{d.issue}</td>
-                                    <td className="py-1.5 pr-3">
-                                      {d.downloadedAt
-                                        ? <span className="text-accent dark:text-accent-light">{formatDate(d.downloadedAt)}</span>
-                                        : <span className="text-zinc-400">—</span>}
-                                    </td>
-                                    <td className="py-1.5">
-                                      {d.extractedAt
-                                        ? <span className="text-emerald-600 dark:text-emerald-400">{formatDate(d.extractedAt)}</span>
-                                        : <span className="text-zinc-400">—</span>}
-                                    </td>
-                                  </tr>
-                                ))}
-                                {(details.get(y.year) ?? []).length === 0 && (
-                                  <tr><td colSpan={3} className="py-1.5 text-zinc-400">Sin detalle</td></tr>
-                                )}
-                              </tbody>
-                            </table>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  )}
-              </tbody>
-            ))}
-          </table>
+      {/* Pie chart */}
+      <div className="mb-8 flex justify-center">
+        <div className="h-[280px] w-full max-w-[360px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                activeShape={renderActiveShape}
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                innerRadius="55%"
+                outerRadius="75%"
+                dataKey="value"
+              />
+              <Tooltip content={() => null} defaultIndex={0} />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
       </div>
+
+      {/* Tables */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <BulletinTable title="Últimos procesados" bulletins={recent} />
+        <BulletinTable title="Primeros procesados" bulletins={oldest} />
+      </div>
     </section>
+  );
+}
+
+function BulletinTable({ title, bulletins }: { title: string; bulletins: ProcessedBulletin[] }) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-800">
+      <h3 className="border-b border-zinc-200 bg-zinc-50/50 px-4 py-2.5 text-sm font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800/30 dark:text-zinc-300">
+        {title}
+      </h3>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr className="border-b border-zinc-200 text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+              <th className="px-4 py-2 font-medium">Boletín</th>
+              <th className="px-4 py-2 font-medium">Procesado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bulletins.map((b) => (
+              <tr key={`${b.year}-${b.issue}`} className="border-b border-zinc-100 transition-colors duration-100 last:border-b-0 dark:border-zinc-800">
+                <td className="px-4 py-2.5">
+                  <Link
+                    href={`/boletin/${b.year}/${b.issue}`}
+                    className="font-mono tabular-nums text-accent transition-colors hover:text-accent-light dark:text-accent-light dark:hover:text-accent"
+                  >
+                    {b.year}/{String(b.issue).padStart(3, "0")}
+                  </Link>
+                </td>
+                <td className="px-4 py-2.5 text-zinc-500 dark:text-zinc-400">
+                  {formatDate(b.processedAt)}
+                </td>
+              </tr>
+            ))}
+            {bulletins.length === 0 && (
+              <tr><td colSpan={2} className="px-4 py-3 text-zinc-400">Sin datos</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }

@@ -1,10 +1,30 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
 import { ArchiveSection } from "@/components/metrics/ArchiveSection";
 import { BulletinSection } from "@/components/metrics/BulletinSection";
 import { DispositionSection } from "@/components/metrics/DispositionSection";
-import type { ArchiveCompletion, ArchiveDetail, YearCompletion, DispositionSummary, ProcessedDisposition } from "@/types/domain";
+import type {
+  ArchiveCompletion, ArchiveDetail,
+  BulletinSummary, ProcessedBulletin,
+  DispositionSummary, ProcessedDisposition,
+} from "@/types/domain";
+import userEvent from "@testing-library/user-event";
+
+// Mock next/link
+vi.mock("next/link", () => ({
+  default: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
+    <a href={href} {...props}>{children}</a>
+  ),
+}));
+
+// Mock recharts to avoid SVG rendering issues in JSDOM
+vi.mock("recharts", () => ({
+  PieChart: ({ children }: { children: React.ReactNode }) => <div data-testid="pie-chart">{children}</div>,
+  Pie: () => null,
+  Sector: () => null,
+  Tooltip: () => null,
+  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
 
 // ── Fixtures ────────────────────────────────────────────────────────────
 
@@ -22,9 +42,20 @@ const archiveDetails: ArchiveDetail[] = [
   { year: 2023, absoluteLink: "/2023", objectKey: null, downloadedAt: null, extractedAt: null },
 ];
 
-const yearCompletion: YearCompletion[] = [
-  { year: 2024, totalIssues: 255, downloadedIssues: 250, downloadPercentage: 98.0, extractedIssues: 240, extractedPercentage: 94.1, downloadedAt: "2025-03-15T10:00:00.000Z" },
-  { year: 2023, totalIssues: 260, downloadedIssues: 130, downloadPercentage: 50.0, extractedIssues: 100, extractedPercentage: 38.5, downloadedAt: "2025-03-10T10:00:00.000Z" },
+const bulletinSummary: BulletinSummary = {
+  total: 6500,
+  processed: 5200,
+  percentage: 80.0,
+};
+
+const recentBulletins: ProcessedBulletin[] = [
+  { year: 2024, issue: 255, processedAt: "2025-03-15T10:00:00.000Z" },
+  { year: 2024, issue: 254, processedAt: "2025-03-14T10:00:00.000Z" },
+];
+
+const oldestBulletins: ProcessedBulletin[] = [
+  { year: 2001, issue: 1, processedAt: "2024-01-10T10:00:00.000Z" },
+  { year: 2001, issue: 2, processedAt: "2024-01-10T12:00:00.000Z" },
 ];
 
 const dispositionSummary: DispositionSummary = {
@@ -95,60 +126,32 @@ describe("ArchiveSection", () => {
 // ── BulletinSection ─────────────────────────────────────────────────────
 
 describe("BulletinSection", () => {
-  beforeEach(() => {
-    vi.restoreAllMocks();
+  it("muestra el resumen con porcentaje y totales", () => {
+    render(<BulletinSection summary={bulletinSummary} recent={recentBulletins} oldest={oldestBulletins} />);
+    expect(screen.getByText("80.0%")).toBeInTheDocument();
+    expect(screen.getByText(/5\.200/)).toBeInTheDocument();
+    expect(screen.getByText(/6\.500/)).toBeInTheDocument();
   });
 
-  it("renderiza todos los años con sus totales", () => {
-    render(<BulletinSection years={yearCompletion} />);
-    expect(screen.getByText("2024")).toBeInTheDocument();
-    expect(screen.getByText("2023")).toBeInTheDocument();
-    expect(screen.getByText("255")).toBeInTheDocument();
-    expect(screen.getByText("250")).toBeInTheDocument();
-    expect(screen.getByText("240")).toBeInTheDocument();
+  it("renderiza el pie chart", () => {
+    render(<BulletinSection summary={bulletinSummary} recent={recentBulletins} oldest={oldestBulletins} />);
+    expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
   });
 
-  it("carga detalles por API al expandir un año", async () => {
-    const user = userEvent.setup();
-    const fakeDetails = [
-      { year: 2024, issue: 1, url: "/1", objectKey: null, downloadedAt: "2025-01-01T00:00:00.000Z", extractedAt: null },
-    ];
-    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify(fakeDetails)));
-
-    render(<BulletinSection years={yearCompletion} />);
-    await user.click(screen.getByText("2024"));
-
-    await waitFor(() => {
-      expect(globalThis.fetch).toHaveBeenCalledWith("/api/metrics/year-details?year=2024");
-    });
+  it("muestra las tablas de boletines recientes y antiguos", () => {
+    render(<BulletinSection summary={bulletinSummary} recent={recentBulletins} oldest={oldestBulletins} />);
+    expect(screen.getByText("Últimos procesados")).toBeInTheDocument();
+    expect(screen.getByText("Primeros procesados")).toBeInTheDocument();
   });
 
-  it("colapsa al hacer clic de nuevo", async () => {
-    const user = userEvent.setup();
-    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify([])));
-
-    render(<BulletinSection years={yearCompletion} />);
-    await user.click(screen.getByText("2024"));
-
-    await waitFor(() => {
-      expect(screen.getByText("Sin detalle")).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByText("2024"));
-    expect(screen.queryByText("Sin detalle")).not.toBeInTheDocument();
+  it("muestra el código de boletín con enlace", () => {
+    render(<BulletinSection summary={bulletinSummary} recent={recentBulletins} oldest={oldestBulletins} />);
+    const link = screen.getByText("2024/255");
+    expect(link.closest("a")).toHaveAttribute("href", "/boletin/2024/255");
   });
 });
 
 // ── DispositionSection ──────────────────────────────────────────────────
-
-// Mock recharts to avoid SVG rendering issues in JSDOM
-vi.mock("recharts", () => ({
-  PieChart: ({ children }: { children: React.ReactNode }) => <div data-testid="pie-chart">{children}</div>,
-  Pie: () => null,
-  Sector: () => null,
-  Tooltip: () => null,
-  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-}));
 
 describe("DispositionSection", () => {
   it("muestra el resumen con porcentaje y totales", () => {

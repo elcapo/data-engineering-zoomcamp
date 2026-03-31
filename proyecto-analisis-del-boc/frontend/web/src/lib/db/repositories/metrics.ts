@@ -3,7 +3,7 @@ import { prisma } from "../prisma";
 import {
   DataQualityReport, IssueBreakdown, YearBreakdown,
   ArchiveCompletion, ArchiveDetail,
-  YearCompletion, YearDetail,
+  BulletinSummary, ProcessedBulletin,
   DispositionSummary, ProcessedDisposition,
 } from "@/types/domain";
 
@@ -70,23 +70,16 @@ type ArchiveDetailRow = {
   extracted_at: Date | null;
 };
 
-type YearCompletionRow = {
-  year: bigint;
-  total_issues: bigint;
-  downloaded_issues: bigint;
-  download_percentage: Prisma.Decimal;
-  extracted_issues: bigint;
-  extracted_percentage: Prisma.Decimal;
-  downloaded_at: Date | null;
+type BulletinSummaryRow = {
+  total: bigint;
+  processed: bigint;
+  percentage: Prisma.Decimal;
 };
 
-type YearDetailRow = {
+type ProcessedBulletinRow = {
   year: bigint;
   issue: bigint;
-  url: string | null;
-  object_key: string | null;
-  downloaded_at: Date | null;
-  extracted_at: Date | null;
+  processed_at: Date;
 };
 
 type DispositionSummaryRow = {
@@ -210,48 +203,50 @@ export const MetricsRepository = {
     }));
   },
 
-  async getYearCompletion(): Promise<YearCompletion[]> {
+  async getBulletinSummary(): Promise<BulletinSummary> {
     const rows = await prisma.$queryRaw(Prisma.sql`
       SELECT
-        di.year, di.total_issues, di.downloaded_issues,
-        di.percentage AS download_percentage,
-        COALESCE(ei.extracted, 0) AS extracted_issues,
-        COALESCE(ei.percentage, 0.0) AS extracted_percentage,
-        l.downloaded_at
+        di.total_issues AS total,
+        di.downloaded_issues AS processed,
+        di.percentage
       FROM boc_log.metric_download_issues AS di
-      LEFT JOIN boc_log.metric_extraction_issues AS ei ON di.year = ei.year
-      LEFT JOIN boc_log.download_log AS l ON l.entity_type = 'year' AND l.year = di.year
-      ORDER BY di.year DESC
-    `) as YearCompletionRow[];
-    return rows.map((r) => ({
-      year: Number(r.year),
-      totalIssues: Number(r.total_issues),
-      downloadedIssues: Number(r.downloaded_issues),
-      downloadPercentage: Number(r.download_percentage),
-      extractedIssues: Number(r.extracted_issues),
-      extractedPercentage: Number(r.extracted_percentage),
-      downloadedAt: r.downloaded_at?.toISOString() ?? null,
-    }));
+    `) as BulletinSummaryRow[];
+    const total = rows.reduce((s, r) => s + Number(r.total), 0);
+    const processed = rows.reduce((s, r) => s + Number(r.processed), 0);
+    return {
+      total,
+      processed,
+      percentage: total > 0 ? (processed / total) * 100 : 0,
+    };
   },
 
-  async getYearDetails(year: number): Promise<YearDetail[]> {
+  async getRecentProcessedBulletins(limit = 5): Promise<ProcessedBulletin[]> {
     const rows = await prisma.$queryRaw(Prisma.sql`
-      SELECT
-        y.year, y.issue, y.url,
-        dl.object_key, dl.downloaded_at, el.extracted_at
-      FROM boc_dataset.year AS y
-      LEFT JOIN boc_log.download_log AS dl ON dl.entity_type = 'issue' AND dl.year = y.year AND dl.issue = y.issue
-      LEFT JOIN boc_log.extraction_log AS el ON el.entity_type = 'issue' AND el.year = y.year AND el.issue = y.issue
-      WHERE y.year = ${year}
-      ORDER BY y.issue DESC
-    `) as YearDetailRow[];
+      SELECT year, issue, downloaded_at AS processed_at
+      FROM boc_log.download_log
+      WHERE entity_type = 'issue' AND downloaded_at IS NOT NULL
+      ORDER BY downloaded_at DESC
+      LIMIT ${limit}
+    `) as ProcessedBulletinRow[];
     return rows.map((r) => ({
       year: Number(r.year),
       issue: Number(r.issue),
-      url: r.url,
-      objectKey: r.object_key,
-      downloadedAt: r.downloaded_at?.toISOString() ?? null,
-      extractedAt: r.extracted_at?.toISOString() ?? null,
+      processedAt: r.processed_at.toISOString(),
+    }));
+  },
+
+  async getOldestProcessedBulletins(limit = 5): Promise<ProcessedBulletin[]> {
+    const rows = await prisma.$queryRaw(Prisma.sql`
+      SELECT year, issue, downloaded_at AS processed_at
+      FROM boc_log.download_log
+      WHERE entity_type = 'issue' AND downloaded_at IS NOT NULL
+      ORDER BY downloaded_at ASC
+      LIMIT ${limit}
+    `) as ProcessedBulletinRow[];
+    return rows.map((r) => ({
+      year: Number(r.year),
+      issue: Number(r.issue),
+      processedAt: r.processed_at.toISOString(),
     }));
   },
 
