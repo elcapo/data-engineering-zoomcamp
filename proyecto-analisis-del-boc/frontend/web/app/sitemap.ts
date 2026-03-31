@@ -8,14 +8,16 @@ const BASE_URL = process.env.SITE_URL ?? "https://bocana.org";
  * y un sitemap por cada año para las disposiciones.
  */
 export async function generateSitemaps() {
-  const years = await SitemapRepository.getYears();
+  try {
+    const years = await SitemapRepository.getYears();
 
-  // id 0 = estáticas + años + boletines
-  // id N = disposiciones del año N
-  return [
-    { id: 0 },
-    ...years.map((y) => ({ id: y.year })),
-  ];
+    // id 0 = estáticas + años + boletines
+    // id N = disposiciones del año N
+    return [{ id: 0 }, ...years.map((y) => ({ id: y.year }))];
+  } catch {
+    // Durante docker build no hay acceso a la DB; devolver solo el sitemap estático
+    return [{ id: 0 }];
+  }
 }
 
 export default async function sitemap({
@@ -23,10 +25,14 @@ export default async function sitemap({
 }: {
   id: number;
 }): Promise<MetadataRoute.Sitemap> {
-  if (id === 0) {
-    return await buildStaticAndBulletinsSitemap();
+  try {
+    if (id === 0) {
+      return await buildStaticAndBulletinsSitemap();
+    }
+    return await buildDispositionsSitemap(id);
+  } catch {
+    return [];
   }
-  return await buildDispositionsSitemap(id);
 }
 
 async function buildStaticAndBulletinsSitemap(): Promise<MetadataRoute.Sitemap> {
