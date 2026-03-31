@@ -136,7 +136,7 @@ export default async function BoletinPage({ params }: PageProps) {
                           {d.title || "Sin t\u00edtulo"}
                         </h3>
                         {d.organization && (
-                          <p className="mt-1 flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
+                          <p className="mt-2 mb-4 flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400">
                             <OrgIcon className="size-3.5 shrink-0" />
                             {d.organization}
                           </p>
