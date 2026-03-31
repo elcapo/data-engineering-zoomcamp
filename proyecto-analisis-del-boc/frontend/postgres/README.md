@@ -5,8 +5,8 @@
 To start using this container, start by cloning the repository:
 
 ```bash
-git clone https://github.com/estudio-hawara/postgresql-for-docker.git
-cd postgresql-for-docker
+git clone https://github.com/elcapo/data-engineering-zoomcamp/
+cd data-engineering-zoomcamp/proyecto-analisis-del-boc/frontend/postgres
 ```
 
 ## Configure
