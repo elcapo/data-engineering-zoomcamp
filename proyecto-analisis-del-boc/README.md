@@ -18,6 +18,8 @@
 * [SQL dentro de la imagen Docker](learning-in-public/09-sql-dentro-de-la-imagen-docker.md)
 * [Del HTML a las búsquedas](learning-in-public/10-del-html-a-las-busquedas.md)
 * [Cuando el PDF es la única fuente](learning-in-public/11-cuando-el-pdf-es-la-unica-fuente.md)
+* [Tests en un proyecto de datos](learning-in-public/12-tests-en-un-proyecto-de-datos.md)
+* [Claude Code como acelerador](learning-in-public/13-claude-code-como-acelerador.md)
 
 ---
 
