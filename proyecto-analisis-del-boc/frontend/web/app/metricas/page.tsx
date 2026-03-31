@@ -23,9 +23,17 @@ export default async function MetricasPage() {
     MetricsRepository.getIssueCompletion(),
   ]);
 
+  const totalYears = report.downloads.years.total;
+  const extractedYears = report.downloads.years.downloaded;
+  const extractedYearsPercentage = report.downloads.years.percentage;
+
+  const totalIssues = report.downloads.issues.reduce((s, r) => s + r.total, 0);
+  const extractedIssues = report.downloads.issues.reduce((s, r) => s + r.done, 0);
+  const extractedIssuePercentage = report.downloads.issues.length > 0 ? extractedIssues / totalIssues * 100 : 0;
+
   const totalDispositions = issueCompletion.reduce((s, i) => s + i.totalDocuments, 0);
   const extractedDispositions = issueCompletion.reduce((s, i) => s + i.extractedDocuments, 0);
-  const extractedPct = totalDispositions > 0 ? (extractedDispositions / totalDispositions) * 100 : 0;
+  const extractedDispositionPercentage = totalDispositions > 0 ? (extractedDispositions / totalDispositions) * 100 : 0;
 
   return (
     <>
@@ -40,24 +48,18 @@ export default async function MetricasPage() {
           <div className="grid gap-4 sm:grid-cols-3">
             <MetricKPI
               label="Años"
-              value={report.downloads.years.percentage}
-              detail={`${report.downloads.years.downloaded} de ${report.downloads.years.total}`}
+              value={extractedYearsPercentage.toLocaleString("es-ES")}
+              detail={`${extractedYears.toLocaleString("es-ES")} de ${totalYears.toLocaleString("es-ES")}`}
             />
             <MetricKPI
               label="Boletines"
-              value={
-                report.downloads.issues.length > 0
-                  ? report.downloads.issues.reduce((s, r) => s + r.done, 0) /
-                      report.downloads.issues.reduce((s, r) => s + r.total, 0) *
-                      100
-                  : 0
-              }
-              detail={`${report.downloads.issues.reduce((s, r) => s + r.done, 0)} de ${report.downloads.issues.reduce((s, r) => s + r.total, 0)}`}
+              value={extractedIssuePercentage}
+              detail={`${extractedIssues.toLocaleString("es-ES")} de ${totalIssues.toLocaleString("es-ES")}`}
             />
             <MetricKPI
               label="Disposiciones"
-              value={extractedPct}
-              detail={`${extractedDispositions.toLocaleString("es-ES")} de ${totalDispositions.toLocaleString("es-ES")} disposiciones`}
+              value={extractedDispositionPercentage}
+              detail={`${extractedDispositions.toLocaleString("es-ES")} de ${totalDispositions.toLocaleString("es-ES")}`}
             />
           </div>
         </section>
