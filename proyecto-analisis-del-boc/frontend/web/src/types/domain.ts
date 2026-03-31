@@ -176,6 +176,5 @@ export interface ProcessedDisposition {
   year: number;
   issue: number;
   disposition: number;
-  title: string;
   processedAt: string;
 }

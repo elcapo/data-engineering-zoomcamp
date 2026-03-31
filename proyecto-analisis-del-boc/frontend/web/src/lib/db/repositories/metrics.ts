@@ -99,7 +99,6 @@ type ProcessedDispositionRow = {
   year: bigint;
   issue: bigint;
   disposition: bigint;
-  title: string;
   processed_at: Date;
 };
 
@@ -275,46 +274,32 @@ export const MetricsRepository = {
 
   async getRecentProcessedDispositions(limit = 5): Promise<ProcessedDisposition[]> {
     const rows = await prisma.$queryRaw(Prisma.sql`
-      SELECT
-        dl.year, dl.issue, dl.disposition,
-        COALESCE(id.summary, '') AS title,
-        dl.downloaded_at AS processed_at
-      FROM boc_log.download_log AS dl
-      JOIN boc_dataset.issue AS i ON i.year = dl.year AND i.issue = dl.issue
-      JOIN boc_dataset.issue__dispositions AS id
-        ON id._dlt_root_id = i._dlt_id AND id.disposition = dl.disposition
-      WHERE dl.entity_type = 'document' AND dl.downloaded_at IS NOT NULL
-      ORDER BY dl.downloaded_at DESC
+      SELECT year, issue, disposition, downloaded_at AS processed_at
+      FROM boc_log.download_log
+      WHERE entity_type = 'document' AND downloaded_at IS NOT NULL
+      ORDER BY downloaded_at DESC
       LIMIT ${limit}
     `) as ProcessedDispositionRow[];
     return rows.map((r) => ({
       year: Number(r.year),
       issue: Number(r.issue),
       disposition: Number(r.disposition),
-      title: r.title,
       processedAt: r.processed_at.toISOString(),
     }));
   },
 
   async getOldestProcessedDispositions(limit = 5): Promise<ProcessedDisposition[]> {
     const rows = await prisma.$queryRaw(Prisma.sql`
-      SELECT
-        dl.year, dl.issue, dl.disposition,
-        COALESCE(id.summary, '') AS title,
-        dl.downloaded_at AS processed_at
-      FROM boc_log.download_log AS dl
-      JOIN boc_dataset.issue AS i ON i.year = dl.year AND i.issue = dl.issue
-      JOIN boc_dataset.issue__dispositions AS id
-        ON id._dlt_root_id = i._dlt_id AND id.disposition = dl.disposition
-      WHERE dl.entity_type = 'document' AND dl.downloaded_at IS NOT NULL
-      ORDER BY dl.downloaded_at ASC
+      SELECT year, issue, disposition, downloaded_at AS processed_at
+      FROM boc_log.download_log
+      WHERE entity_type = 'document' AND downloaded_at IS NOT NULL
+      ORDER BY downloaded_at ASC
       LIMIT ${limit}
     `) as ProcessedDispositionRow[];
     return rows.map((r) => ({
       year: Number(r.year),
       issue: Number(r.issue),
       disposition: Number(r.disposition),
-      title: r.title,
       processedAt: r.processed_at.toISOString(),
     }));
   },

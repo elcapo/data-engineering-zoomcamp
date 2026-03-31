@@ -129,7 +129,7 @@ function DispositionTable({ title, dispositions }: { title: string; dispositions
                     href={`/disposicion/${d.year}/${d.issue}/${d.disposition}`}
                     className="text-accent transition-colors hover:text-accent-light dark:text-accent-light dark:hover:text-accent"
                   >
-                    <span className="line-clamp-1">{d.title || `Disp. ${d.disposition}`}</span>
+                    <span className="font-mono tabular-nums">{d.year}/{String(d.issue).padStart(3, "0")}/{d.disposition}</span>
                   </Link>
                 </td>
                 <td className="px-4 py-2.5">
@@ -137,7 +137,7 @@ function DispositionTable({ title, dispositions }: { title: string; dispositions
                     href={`/boletin/${d.year}/${d.issue}`}
                     className="font-mono tabular-nums text-zinc-600 transition-colors hover:text-accent dark:text-zinc-400 dark:hover:text-accent-light"
                   >
-                    {d.year}/{d.issue}
+                    {d.year}/{String(d.issue).padStart(3, "0")}
                   </Link>
                 </td>
                 <td className="px-4 py-2.5 text-zinc-500 dark:text-zinc-400">

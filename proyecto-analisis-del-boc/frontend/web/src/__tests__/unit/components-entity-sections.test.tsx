@@ -34,13 +34,13 @@ const dispositionSummary: DispositionSummary = {
 };
 
 const recentDispositions: ProcessedDisposition[] = [
-  { year: 2024, issue: 255, disposition: 3, title: "Decreto 123/2024 de subvenciones", processedAt: "2025-03-15T10:00:00.000Z" },
-  { year: 2024, issue: 254, disposition: 1, title: "Orden de convocatoria", processedAt: "2025-03-14T10:00:00.000Z" },
+  { year: 2024, issue: 255, disposition: 3, processedAt: "2025-03-15T10:00:00.000Z" },
+  { year: 2024, issue: 254, disposition: 1, processedAt: "2025-03-14T10:00:00.000Z" },
 ];
 
 const oldestDispositions: ProcessedDisposition[] = [
-  { year: 2001, issue: 1, disposition: 1, title: "Decreto 1/2001", processedAt: "2024-01-10T10:00:00.000Z" },
-  { year: 2001, issue: 2, disposition: 1, title: "", processedAt: "2024-01-10T12:00:00.000Z" },
+  { year: 2001, issue: 1, disposition: 1, processedAt: "2024-01-10T10:00:00.000Z" },
+  { year: 2001, issue: 2, disposition: 1, processedAt: "2024-01-10T12:00:00.000Z" },
 ];
 
 // ── ArchiveSection ──────────────────────────────────────────────────────
@@ -169,15 +169,10 @@ describe("DispositionSection", () => {
     expect(screen.getByText("Primeras procesadas")).toBeInTheDocument();
   });
 
-  it("muestra los títulos de disposiciones con enlaces", () => {
+  it("muestra el código de disposición con enlace", () => {
     render(<DispositionSection summary={dispositionSummary} recent={recentDispositions} oldest={oldestDispositions} />);
-    const link = screen.getByText("Decreto 123/2024 de subvenciones");
+    const link = screen.getByText("2024/255/3");
     expect(link.closest("a")).toHaveAttribute("href", "/disposicion/2024/255/3");
-  });
-
-  it("muestra fallback para disposiciones sin título", () => {
-    render(<DispositionSection summary={dispositionSummary} recent={recentDispositions} oldest={oldestDispositions} />);
-    expect(screen.getByText("Disp. 1")).toBeInTheDocument();
   });
 
   it("muestra enlaces a boletines", () => {
