@@ -243,7 +243,21 @@ Crear los componentes según `SPEC.md §6`, en este orden de dependencias:
 
 ---
 
-## Fase 11 — SEO y Sitemap
+## Fase 11 — Página de Boletín (`/boletin/[year]/[issue]`)
+
+- SSR para indexación SEO
+- Muestra el listado de disposiciones de cada boletín
+
+---
+
+## Fase 12 — Página de Año (`/año/[year]`)
+
+- SSR para indexación SEO
+- Muestra el listado de boletines de cada año
+
+---
+
+## Fase 13 — SEO y Sitemap
 
 - `generateMetadata` en todas las páginas dinámicas
 - `next-sitemap` configurado para incluir boletines y disposiciones, excluir `/buscar`
