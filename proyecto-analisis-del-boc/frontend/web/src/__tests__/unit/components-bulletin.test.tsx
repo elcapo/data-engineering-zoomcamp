@@ -73,9 +73,15 @@ describe("BulletinCard", () => {
     expect(screen.getByText(/II \(10\)/)).toBeInTheDocument();
   });
 
+  it("enlaza a la página de detalle del boletín", () => {
+    render(<BulletinCard bulletin={bulletin} />);
+    const link = screen.getByText("Ver disposiciones");
+    expect(link).toHaveAttribute("href", "/boletin/2024/100");
+  });
+
   it("incluye enlace al BOC oficial", () => {
     render(<BulletinCard bulletin={bulletin} />);
-    const link = screen.getByText("Ver en BOC oficial");
+    const link = screen.getByText("BOC oficial");
     expect(link).toHaveAttribute("href", "https://boc.example.com/100");
   });
 });

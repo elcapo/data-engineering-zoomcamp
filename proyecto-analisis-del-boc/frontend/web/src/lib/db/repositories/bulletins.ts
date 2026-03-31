@@ -20,6 +20,23 @@ export const BulletinRepository = {
   },
 
   /**
+   * Devuelve todos los boletines de un año, ordenados por número de boletín descendente.
+   */
+  async findByYear(year: number): Promise<Bulletin[]> {
+    const issues = await prisma.issue.findMany({
+      where: { year: BigInt(year) },
+      orderBy: [{ issue: "desc" }],
+      include: {
+        dispositions: {
+          select: { section: true },
+        },
+      },
+    });
+
+    return issues.map(tobulletin);
+  },
+
+  /**
    * Devuelve un boletín concreto con el detalle completo de sus disposiciones por sección.
    */
   async findByYearAndIssue(year: number, issue: number): Promise<Bulletin | null> {

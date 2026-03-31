@@ -235,6 +235,32 @@ export const DispositionRepository = {
 
     return rows.length > 0 ? toDisposition(rows[0]) : null;
   },
+
+  /**
+   * Devuelve todas las disposiciones de un boletín concreto, ordenadas por número.
+   */
+  async findByBulletin(
+    year: number,
+    issue: number
+  ): Promise<Disposition[]> {
+    const rows = await prisma.$queryRaw<DocumentRow[]>`
+      SELECT
+        i.year, i.issue, id.disposition AS number,
+        COALESCE(d.section, id.section) AS section,
+        COALESCE(d.subsection, id.subsection) AS subsection,
+        COALESCE(d.organization, id.organization) AS organization,
+        COALESCE(d.title, id.summary) AS title, d.date,
+        COALESCE(d.identifier, id.identifier) AS identifier,
+        COALESCE(d.pdf, id.pdf) AS pdf,
+        d.body,
+        id.html AS html_url
+      ${FROM_WITH_JOIN}
+      WHERE i.year = ${BigInt(year)} AND i.issue = ${BigInt(issue)}
+      ORDER BY id.disposition ASC
+    `;
+
+    return rows.map(toDisposition);
+  },
 };
 
 // ── facets ────────────────────────────────────────────────────────────────

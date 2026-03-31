@@ -128,7 +128,7 @@ export default async function DisposicionPage({ params }: PageProps) {
         {/* Back link */}
         <nav className="mt-8 border-t border-zinc-200 pt-6 dark:border-zinc-700">
           <Link
-            href={`/buscar?include_ref_year=${disposition.year}&include_ref_issue=${disposition.issue}`}
+            href={`/boletin/${disposition.year}/${disposition.issue}`}
             className="text-sm font-medium text-accent hover:underline underline-offset-4 dark:text-accent-light"
           >
             &larr; Ver todas las disposiciones del BOC N&ordm; {disposition.issue}/{disposition.year}
