@@ -116,31 +116,29 @@ export default async function BoletinPage({ params }: PageProps) {
                   {section}
                   <span className="ml-2 text-sm font-normal text-zinc-400">({items.length})</span>
                 </h2>
-                <ul className="space-y-3">
+                <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
                   {items.map((d) => (
                     <li key={d.number}>
                       <Link
                         href={`/disposicion/${d.year}/${d.issue}/${d.number}`}
-                        className="group block rounded-lg border border-zinc-200 p-4 transition-colors hover:border-accent/30 dark:border-zinc-700 dark:hover:border-accent/30"
+                        className="group flex h-full flex-col rounded-lg border border-zinc-200 p-4 transition-colors hover:border-accent/30 dark:border-zinc-700 dark:hover:border-accent/30"
                       >
                         <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0 flex-1">
-                            <SectionBreadcrumb
-                              section={d.section}
-                              subsection={d.subsection}
-                              organization={d.organization}
-                            />
-                            <h3 className="mt-1 font-medium text-zinc-900 group-hover:text-accent dark:text-zinc-100 dark:group-hover:text-accent-light">
-                              {d.title || "Sin t\u00edtulo"}
-                            </h3>
-                            <div className="mt-1 flex flex-wrap gap-x-4 text-sm text-zinc-500 dark:text-zinc-400">
-                              {d.date && <span>{d.date}</span>}
-                              {d.identifier && <span>{d.identifier}</span>}
-                            </div>
-                          </div>
+                          <SectionBreadcrumb
+                            section={d.section}
+                            subsection={d.subsection}
+                            organization={d.organization}
+                          />
                           <span className="shrink-0 text-sm text-zinc-400 dark:text-zinc-500">
                             #{d.number}
                           </span>
+                        </div>
+                        <h3 className="mt-1 font-medium text-zinc-900 group-hover:text-accent dark:text-zinc-100 dark:group-hover:text-accent-light">
+                          {d.title || "Sin t\u00edtulo"}
+                        </h3>
+                        <div className="mt-auto flex flex-wrap gap-x-4 pt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                          {d.date && <span>{d.date}</span>}
+                          {d.identifier && <span>{d.identifier}</span>}
                         </div>
                       </Link>
                     </li>
