@@ -52,6 +52,14 @@ export function listPageSlugs(): string[] {
     .map((f) => f.replace(/\.md$/, ""));
 }
 
+/**
+ * Convierte un string Markdown a HTML (sin leer fichero).
+ */
+export async function renderMarkdown(markdown: string): Promise<string> {
+  const result = await remark().use(remarkHtml, { sanitize: false }).process(markdown);
+  return result.toString();
+}
+
 // ── Artículos destacados (editorial) ──────────────────────────────────────
 
 export interface FeaturedArticle {
