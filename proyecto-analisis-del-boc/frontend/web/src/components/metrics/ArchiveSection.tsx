@@ -1,94 +1,134 @@
 "use client";
 
-import { useState } from "react";
-import type { ArchiveCompletion, ArchiveDetail } from "@/types/domain";
-import { Card } from "@/components/ui/Card";
-import { ChevronIcon } from "@/components/ui/ChevronIcon";
+import Link from "next/link";
+import { PieChart, Pie, Sector, Tooltip, ResponsiveContainer } from "recharts";
+import type { PieSectorDataItem } from "recharts";
+import type { ArchiveCompletion, YearOverview } from "@/types/domain";
 import { formatNumber } from "@/lib/format";
+import { MetricBar } from "@/components/ui/MetricBar";
 
-function formatDate(iso: string | null): string {
-  if (!iso) return "—";
-  return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+const COLORS = {
+  processed: "var(--color-accent)",
+  pending: "#a1a1aa",
+};
+
+function renderActiveShape(props: PieSectorDataItem) {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent } = props;
+
+  return (
+    <g>
+      <text x={cx} y={(cy ?? 0) - 8} textAnchor="middle" fill="currentColor" className="text-sm font-medium">
+        {payload?.name}
+      </text>
+      <text x={cx} y={(cy ?? 0) + 14} textAnchor="middle" fill="currentColor" className="text-xl font-bold">
+        {`${((percent ?? 0) * 100).toFixed(1)}%`}
+      </text>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+      <Sector
+        cx={cx}
+        cy={cy}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        innerRadius={(outerRadius ?? 0) + 4}
+        outerRadius={(outerRadius ?? 0) + 8}
+        fill={fill}
+      />
+    </g>
+  );
 }
 
 interface ArchiveSectionProps {
   summary: ArchiveCompletion;
-  details: ArchiveDetail[];
+  years: YearOverview[];
 }
 
-export function ArchiveSection({ summary, details }: ArchiveSectionProps) {
-  const [showDetail, setShowDetail] = useState(false);
+export function ArchiveSection({ summary, years }: ArchiveSectionProps) {
+  const chartData = [
+    { name: "Procesados", value: summary.downloadedYears, fill: COLORS.processed },
+    { name: "Sin procesar", value: summary.totalYears - summary.downloadedYears, fill: COLORS.pending },
+  ];
 
   return (
     <section className="mb-12">
       <h2 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">Años</h2>
 
-      <p className="mb-3 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-        <span className="font-mono tabular-nums">{summary.downloadedPercentage.toFixed(1)}%</span> descargado
+      <p className="mb-6 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <span className="font-mono tabular-nums">{summary.downloadedPercentage.toFixed(1)}%</span> procesado
         <span className="ml-2 text-sm font-normal text-zinc-500 dark:text-zinc-400">
           ({formatNumber(summary.downloadedYears)} de {formatNumber(summary.totalYears)} años)
         </span>
       </p>
 
-      <Card>
-        <div className="mb-3 text-sm text-zinc-500 dark:text-zinc-400">
-          Última descarga: <span className="font-medium text-zinc-700 dark:text-zinc-300">{formatDate(summary.downloadedAt)}</span>
+      {/* Pie chart */}
+      <div className="mb-8 flex justify-center">
+        <div className="h-[280px] w-full max-w-[360px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                activeShape={renderActiveShape}
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                innerRadius="55%"
+                outerRadius="75%"
+                dataKey="value"
+              />
+              <Tooltip content={() => null} defaultIndex={0} />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
+      </div>
 
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div>
-            <span className="block text-3xl font-bold tracking-tight tabular-nums font-mono text-zinc-900 dark:text-zinc-100">{summary.totalYears}</span>
-            <span className="text-sm text-zinc-500 dark:text-zinc-400">años publicados</span>
-          </div>
-          <div>
-            <span className="block text-3xl font-bold tracking-tight tabular-nums font-mono text-accent dark:text-accent-light">{summary.downloadedYears}</span>
-            <span className="text-sm text-zinc-500 dark:text-zinc-400">años descargados</span>
-          </div>
-          <div>
-            <span className="block text-3xl font-bold tracking-tight tabular-nums font-mono text-emerald-600 dark:text-emerald-400">{summary.extractedYears}</span>
-            <span className="text-sm text-zinc-500 dark:text-zinc-400">años extraídos</span>
-          </div>
-        </div>
-
-        <button
-          onClick={() => setShowDetail(!showDetail)}
-          className="mt-4 flex items-center gap-1 text-sm font-medium text-accent transition-colors duration-150 hover:text-accent-light dark:text-accent-light dark:hover:text-accent"
-        >
-          <ChevronIcon expanded={showDetail} />
-          {showDetail ? "Ocultar detalle" : "Ver detalle por año"}
-        </button>
-
-        {showDetail && (
-          <div className="mt-3 overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-zinc-200 bg-zinc-50/50 text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800/30 dark:text-zinc-400">
-                  <th className="px-4 py-2.5 font-medium">Año</th>
-                  <th className="px-4 py-2.5 font-medium">Descargado</th>
-                  <th className="px-4 py-2.5 font-medium">Extraído</th>
+      {/* Year breakdown table */}
+      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-800">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="border-b border-zinc-200 bg-zinc-50/50 text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800/30 dark:text-zinc-400">
+                <th className="px-4 py-2.5 font-medium">Año</th>
+                <th className="px-4 py-2.5 font-medium text-right">Boletines publicados</th>
+                <th className="px-4 py-2.5 font-medium text-right">Boletines procesados</th>
+                <th className="px-4 py-2.5 font-medium" style={{ minWidth: 100 }}></th>
+                <th className="px-4 py-2.5 font-medium text-right">Disposiciones publicadas</th>
+                <th className="px-4 py-2.5 font-medium text-right">Disposiciones procesadas</th>
+                <th className="px-4 py-2.5 font-medium" style={{ minWidth: 100 }}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {years.map((y) => (
+                <tr key={y.year} className="border-b border-zinc-100 transition-colors duration-100 last:border-b-0 even:bg-zinc-50/30 dark:border-zinc-800 dark:even:bg-zinc-800/20">
+                  <td className="px-4 py-2.5">
+                    <Link
+                      href={`/ano/${y.year}`}
+                      className="font-mono tabular-nums font-medium text-accent transition-colors hover:text-accent-light dark:text-accent-light dark:hover:text-accent"
+                    >
+                      {y.year}
+                    </Link>
+                  </td>
+                  <td className="px-4 py-2.5 text-right font-mono tabular-nums">{formatNumber(y.totalBulletins)}</td>
+                  <td className="px-4 py-2.5 text-right font-mono tabular-nums">{formatNumber(y.processedBulletins)}</td>
+                  <td className="px-4 py-2.5" title={`${y.bulletinPercentage.toFixed(1)}%`}>
+                    <MetricBar percentage={y.bulletinPercentage} />
+                  </td>
+                  <td className="px-4 py-2.5 text-right font-mono tabular-nums">{formatNumber(y.totalDispositions)}</td>
+                  <td className="px-4 py-2.5 text-right font-mono tabular-nums">{formatNumber(y.processedDispositions)}</td>
+                  <td className="px-4 py-2.5" title={`${y.dispositionPercentage.toFixed(1)}%`}>
+                    <MetricBar percentage={y.dispositionPercentage} />
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {details.map((d) => (
-                  <tr key={d.year} className="border-b border-zinc-100 transition-colors duration-100 even:bg-zinc-50/50 dark:border-zinc-800 dark:even:bg-zinc-800/20">
-                    <td className="px-4 py-2.5 font-mono tabular-nums font-medium text-zinc-900 dark:text-zinc-100">{d.year}</td>
-                    <td className="px-4 py-2.5">
-                      {d.downloadedAt
-                        ? <span className="text-accent dark:text-accent-light">{formatDate(d.downloadedAt)}</span>
-                        : <span className="text-zinc-400">—</span>}
-                    </td>
-                    <td className="px-4 py-2.5">
-                      {d.extractedAt
-                        ? <span className="text-emerald-600 dark:text-emerald-400">{formatDate(d.extractedAt)}</span>
-                        : <span className="text-zinc-400">—</span>}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </Card>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
   );
 }

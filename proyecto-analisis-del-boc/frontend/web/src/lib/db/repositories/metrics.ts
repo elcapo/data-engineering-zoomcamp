@@ -2,7 +2,7 @@ import { Prisma } from "../../../../app/generated/prisma/client";
 import { prisma } from "../prisma";
 import {
   DataQualityReport, IssueBreakdown, YearBreakdown,
-  ArchiveCompletion, ArchiveDetail,
+  ArchiveCompletion, YearOverview,
   BulletinSummary, ProcessedBulletin,
   DispositionSummary, ProcessedDisposition,
 } from "@/types/domain";
@@ -62,12 +62,14 @@ type ArchiveCompletionRow = {
   extracted_percentage: Prisma.Decimal;
 };
 
-type ArchiveDetailRow = {
+type YearOverviewRow = {
   year: bigint;
-  absolute_link: string | null;
-  object_key: string | null;
-  downloaded_at: Date | null;
-  extracted_at: Date | null;
+  total_bulletins: bigint;
+  processed_bulletins: bigint;
+  bulletin_percentage: Prisma.Decimal;
+  total_dispositions: bigint;
+  processed_dispositions: bigint;
+  disposition_percentage: Prisma.Decimal;
 };
 
 type BulletinSummaryRow = {
@@ -184,22 +186,37 @@ export const MetricsRepository = {
     };
   },
 
-  async getArchiveDetails(): Promise<ArchiveDetail[]> {
+  async getYearOverviews(): Promise<YearOverview[]> {
     const rows = await prisma.$queryRaw(Prisma.sql`
       SELECT
-        a.year, a.absolute_link,
-        dl.object_key, dl.downloaded_at, el.extracted_at
-      FROM boc_dataset.archive AS a
-      LEFT JOIN boc_log.download_log AS dl ON dl.entity_type = 'year' AND dl.year = a.year
-      LEFT JOIN boc_log.extraction_log AS el ON el.entity_type = 'year' AND el.year = a.year
-      ORDER BY a.year DESC
-    `) as ArchiveDetailRow[];
+        di.year,
+        di.total_issues AS total_bulletins,
+        di.downloaded_issues AS processed_bulletins,
+        di.percentage AS bulletin_percentage,
+        COALESCE(dd.total_documents, 0) AS total_dispositions,
+        COALESCE(dd.downloaded_documents, 0) AS processed_dispositions,
+        COALESCE(dd.doc_percentage, 0) AS disposition_percentage
+      FROM boc_log.metric_download_issues AS di
+      LEFT JOIN (
+        SELECT year,
+          SUM(total_documents) AS total_documents,
+          SUM(downloaded_documents) AS downloaded_documents,
+          CASE WHEN SUM(total_documents) > 0
+            THEN SUM(downloaded_documents)::numeric / SUM(total_documents) * 100
+            ELSE 0 END AS doc_percentage
+        FROM boc_log.metric_download_documents
+        GROUP BY year
+      ) AS dd ON dd.year = di.year
+      ORDER BY di.year DESC
+    `) as YearOverviewRow[];
     return rows.map((r) => ({
       year: Number(r.year),
-      absoluteLink: r.absolute_link,
-      objectKey: r.object_key,
-      downloadedAt: r.downloaded_at?.toISOString() ?? null,
-      extractedAt: r.extracted_at?.toISOString() ?? null,
+      totalBulletins: Number(r.total_bulletins),
+      processedBulletins: Number(r.processed_bulletins),
+      bulletinPercentage: Number(r.bulletin_percentage),
+      totalDispositions: Number(r.total_dispositions),
+      processedDispositions: Number(r.processed_dispositions),
+      dispositionPercentage: Number(r.disposition_percentage),
     }));
   },
 
@@ -240,7 +257,7 @@ export const MetricsRepository = {
       SELECT year, issue, downloaded_at AS processed_at
       FROM boc_log.download_log
       WHERE entity_type = 'issue' AND downloaded_at IS NOT NULL
-      ORDER BY downloaded_at ASC
+      ORDER BY year ASC, issue ASC
       LIMIT ${limit}
     `) as ProcessedBulletinRow[];
     return rows.map((r) => ({
@@ -272,7 +289,7 @@ export const MetricsRepository = {
       SELECT year, issue, disposition, downloaded_at AS processed_at
       FROM boc_log.download_log
       WHERE entity_type = 'document' AND downloaded_at IS NOT NULL
-      ORDER BY downloaded_at DESC
+      ORDER BY year DESC, issue DESC
       LIMIT ${limit}
     `) as ProcessedDispositionRow[];
     return rows.map((r) => ({
@@ -288,7 +305,7 @@ export const MetricsRepository = {
       SELECT year, issue, disposition, downloaded_at AS processed_at
       FROM boc_log.download_log
       WHERE entity_type = 'document' AND downloaded_at IS NOT NULL
-      ORDER BY downloaded_at ASC
+      ORDER BY year ASC, issue ASC, disposition ASC
       LIMIT ${limit}
     `) as ProcessedDispositionRow[];
     return rows.map((r) => ({

@@ -139,12 +139,14 @@ export interface ArchiveCompletion {
   downloadedAt: string | null;
 }
 
-export interface ArchiveDetail {
+export interface YearOverview {
   year: number;
-  absoluteLink: string | null;
-  objectKey: string | null;
-  downloadedAt: string | null;
-  extractedAt: string | null;
+  totalBulletins: number;
+  processedBulletins: number;
+  bulletinPercentage: number;
+  totalDispositions: number;
+  processedDispositions: number;
+  dispositionPercentage: number;
 }
 
 export interface BulletinSummary {

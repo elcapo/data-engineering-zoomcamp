@@ -4,11 +4,10 @@ import { ArchiveSection } from "@/components/metrics/ArchiveSection";
 import { BulletinSection } from "@/components/metrics/BulletinSection";
 import { DispositionSection } from "@/components/metrics/DispositionSection";
 import type {
-  ArchiveCompletion, ArchiveDetail,
+  ArchiveCompletion, YearOverview,
   BulletinSummary, ProcessedBulletin,
   DispositionSummary, ProcessedDisposition,
 } from "@/types/domain";
-import userEvent from "@testing-library/user-event";
 
 // Mock next/link
 vi.mock("next/link", () => ({
@@ -37,9 +36,9 @@ const archiveSummary: ArchiveCompletion = {
   downloadedAt: "2025-03-15T10:00:00.000Z",
 };
 
-const archiveDetails: ArchiveDetail[] = [
-  { year: 2024, absoluteLink: "/2024", objectKey: "k1", downloadedAt: "2025-03-15T10:00:00.000Z", extractedAt: "2025-03-16T10:00:00.000Z" },
-  { year: 2023, absoluteLink: "/2023", objectKey: null, downloadedAt: null, extractedAt: null },
+const yearOverviews: YearOverview[] = [
+  { year: 2024, totalBulletins: 255, processedBulletins: 250, bulletinPercentage: 98.0, totalDispositions: 5000, processedDispositions: 4500, dispositionPercentage: 90.0 },
+  { year: 2023, totalBulletins: 260, processedBulletins: 130, bulletinPercentage: 50.0, totalDispositions: 5200, processedDispositions: 2600, dispositionPercentage: 50.0 },
 ];
 
 const bulletinSummary: BulletinSummary = {
@@ -77,49 +76,35 @@ const oldestDispositions: ProcessedDisposition[] = [
 // ── ArchiveSection ──────────────────────────────────────────────────────
 
 describe("ArchiveSection", () => {
-  it("muestra los conteos del resumen", () => {
-    render(<ArchiveSection summary={archiveSummary} details={archiveDetails} />);
-    expect(screen.getByText("45")).toBeInTheDocument();
-    expect(screen.getByText("40")).toBeInTheDocument();
-    expect(screen.getByText("35")).toBeInTheDocument();
+  it("muestra el resumen con porcentaje y totales", () => {
+    render(<ArchiveSection summary={archiveSummary} years={yearOverviews} />);
+    expect(screen.getByText("88.9%")).toBeInTheDocument();
+    expect(screen.getByText(/40/)).toBeInTheDocument();
+    expect(screen.getByText(/45/)).toBeInTheDocument();
   });
 
-  it("muestra las etiquetas descriptivas", () => {
-    render(<ArchiveSection summary={archiveSummary} details={archiveDetails} />);
-    expect(screen.getByText("años publicados")).toBeInTheDocument();
-    expect(screen.getByText("años descargados")).toBeInTheDocument();
-    expect(screen.getByText("años extraídos")).toBeInTheDocument();
+  it("renderiza el pie chart", () => {
+    render(<ArchiveSection summary={archiveSummary} years={yearOverviews} />);
+    expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
   });
 
-  it("muestra la fecha de última descarga", () => {
-    render(<ArchiveSection summary={archiveSummary} details={archiveDetails} />);
-    expect(screen.getByText(/15 de marzo de 2025/)).toBeInTheDocument();
-  });
-
-  it("el detalle está oculto inicialmente", () => {
-    render(<ArchiveSection summary={archiveSummary} details={archiveDetails} />);
-    expect(screen.queryByText("2024")).not.toBeInTheDocument();
-  });
-
-  it("muestra el detalle al hacer clic", async () => {
-    const user = userEvent.setup();
-    render(<ArchiveSection summary={archiveSummary} details={archiveDetails} />);
-
-    await user.click(screen.getByText(/Ver detalle por año/));
-
+  it("muestra la tabla con todos los años", () => {
+    render(<ArchiveSection summary={archiveSummary} years={yearOverviews} />);
     expect(screen.getByText("2024")).toBeInTheDocument();
     expect(screen.getByText("2023")).toBeInTheDocument();
   });
 
-  it("oculta el detalle al hacer clic de nuevo", async () => {
-    const user = userEvent.setup();
-    render(<ArchiveSection summary={archiveSummary} details={archiveDetails} />);
+  it("muestra conteos de boletines y disposiciones por año", () => {
+    render(<ArchiveSection summary={archiveSummary} years={yearOverviews} />);
+    // 2024: 250 processed bulletins, 4.500 processed dispositions
+    expect(screen.getByText("250")).toBeInTheDocument();
+    expect(screen.getByText("4.500")).toBeInTheDocument();
+  });
 
-    await user.click(screen.getByText(/Ver detalle por año/));
-    expect(screen.getByText("2024")).toBeInTheDocument();
-
-    await user.click(screen.getByText(/Ocultar detalle/));
-    expect(screen.queryByText("2024")).not.toBeInTheDocument();
+  it("enlaza cada año a su página", () => {
+    render(<ArchiveSection summary={archiveSummary} years={yearOverviews} />);
+    const link = screen.getByText("2024");
+    expect(link.closest("a")).toHaveAttribute("href", "/ano/2024");
   });
 });
 

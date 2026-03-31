@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default async function MetricasPage() {
   const [
     archiveSummary,
-    archiveDetails,
+    yearOverviews,
     bulletinSummary,
     recentBulletins,
     oldestBulletins,
@@ -25,7 +25,7 @@ export default async function MetricasPage() {
     oldestDispositions,
   ] = await Promise.all([
     MetricsRepository.getArchiveCompletion(),
-    MetricsRepository.getArchiveDetails(),
+    MetricsRepository.getYearOverviews(),
     MetricsRepository.getBulletinSummary(),
     MetricsRepository.getRecentProcessedBulletins(),
     MetricsRepository.getOldestProcessedBulletins(),
@@ -61,7 +61,7 @@ export default async function MetricasPage() {
         </section>
 
         {/* Archivo */}
-        <ArchiveSection summary={archiveSummary} details={archiveDetails} />
+        <ArchiveSection summary={archiveSummary} years={yearOverviews} />
 
         {/* Boletines */}
         <BulletinSection
