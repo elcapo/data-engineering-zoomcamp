@@ -20,7 +20,7 @@ El Boletín Oficial de Canarias publica en archivos (PDF y HTML) sin ofrecer nin
 Como proyecto nos proponemos implementar un flujo de datos cuya ingestión de datos consiste en la descarga sin procesar de cada uno de los boletines en un cierto rango de fechas. Aunque el objetivo no será necesariamente cubrir todos los artículos publicados desde los inicios del boletín en 1980, el proyecto se organizará de forma que se puedan realizar rellenos históricos de forma sencilla.
 
 > [!NOTE]
-> Hay una página con documentación específica sobre las [fuentes de datos](pipeline/docs/fuentes-de-datos/README.md) que incluye un detalle sobre cómo se ha implementado cada uno de los flujos de ingestión.
+> Hay una página con documentación específica sobre las [fuentes de datos](../../pipeline/docs/fuentes-de-datos/README.md) que incluye un detalle sobre cómo se ha implementado cada uno de los flujos de ingestión.
 
 ### Transformación
 
