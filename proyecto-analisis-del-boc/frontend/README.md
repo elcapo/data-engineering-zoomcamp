@@ -1,13 +1,6 @@
 # BOC Canarias Web — Especificación Técnica
 
-> **Versión:** 0.1 — borrador inicial
-> **Fecha:** 2026-03-25
-> **Proyecto:** Iniciativa independiente de acceso abierto al Boletín Oficial de Canarias
-> **Repositorio pipeline:** `../pipeline`
-
----
-
-## 1. Visión del Proyecto
+## Visión del Proyecto
 
 El BOC Canarias Web es una interfaz moderna e independiente para consultar el Boletín Oficial de Canarias (BOC). El proyecto nace para ofrecer herramientas de búsqueda y navegación que no existen en la web oficial: búsqueda de texto completo con operadores booleanos, filtros combinados, métricas de cobertura y un punto de entrada editorial curado.
 
@@ -18,9 +11,7 @@ El BOC Canarias Web es una interfaz moderna e independiente para consultar el Bo
 - Iniciativa independiente: la autoría de los contenidos publicados pertenece al Gobierno de Canarias; este proyecto es un servicio de consulta derivado.
 - Interfaces modulares que permitan evolucionar el contenido sin cambios de código.
 
----
-
-## 2. Stack Tecnológico
+## Stack Tecnológico
 
 | Capa | Tecnología |
 |---|---|
@@ -33,11 +24,9 @@ El BOC Canarias Web es una interfaz moderna e independiente para consultar el Bo
 | Gráficas | Recharts o Visx |
 | Despliegue | Docker / compatible con Traefik (siguiendo patrón del directorio `postgres/`) |
 
----
+## Arquitectura
 
-## 3. Arquitectura
-
-### 3.1 Capas
+### Capas
 
 ```
 ┌─────────────────────────────────────────┐
@@ -64,7 +53,7 @@ El BOC Canarias Web es una interfaz moderna e independiente para consultar el Bo
             PostgreSQL (boc_dataset + boc_log)
 ```
 
-### 3.2 Principio de desacoplamiento
+### Principio de desacoplamiento
 
 La web **no usa los nombres de tabla del pipeline directamente** en el código de UI. Los repositorios mapean el esquema de BD a entidades de dominio propias:
 
@@ -76,7 +65,7 @@ La web **no usa los nombres de tabla del pipeline directamente** en el código d
 
 Si el pipeline cambia su esquema, solo hay que actualizar los repositorios.
 
-### 3.3 Gestión de Contenidos Estáticos
+### Gestión de Contenidos Estáticos
 
 Los contenidos editoriales (artículos destacados, bloques de la home, aviso legal, metodología) se almacenan en `content/` como ficheros Markdown con frontmatter YAML:
 
@@ -93,11 +82,9 @@ content/
 
 Next.js lee estos ficheros en tiempo de build (SSG) o en tiempo de servidor. No se necesita CMS externo.
 
----
+## Modelo de Dominio Web
 
-## 4. Modelo de Dominio Web
-
-### 4.1 `Bulletin` (Boletín)
+### `Bulletin` (Boletín)
 
 ```typescript
 interface Bulletin {
@@ -111,7 +98,7 @@ interface Bulletin {
 }
 ```
 
-### 4.2 `Disposition` (Disposición)
+### `Disposition` (Disposición)
 
 ```typescript
 interface Disposition {
@@ -131,7 +118,7 @@ interface Disposition {
 }
 ```
 
-### 4.3 `DataQualityReport` (Métricas)
+### `DataQualityReport` (Métricas)
 
 ```typescript
 interface DataQualityReport {
@@ -148,11 +135,9 @@ interface DataQualityReport {
 }
 ```
 
----
+## Páginas
 
-## 5. Páginas
-
-### 5.1 Página de Inicio (`/`)
+### Página de Inicio (`/`)
 
 **Propósito:** punto de entrada editorial. Combina contenido curado manualmente con un resumen automático de los boletines más recientes.
 
@@ -184,9 +169,7 @@ interface DataQualityReport {
 - `<EditorialCard>` — artículo curado con título, extracto y enlace.
 - `<SearchBar>` — barra de búsqueda rápida que redirige a `/buscar`.
 
----
-
-### 5.2 Búsqueda (`/buscar`)
+### Búsqueda (`/buscar`)
 
 **Propósito:** encontrar disposiciones usando texto libre y filtros combinados.
 
@@ -263,9 +246,7 @@ Parámetros:
   limit     number   por defecto 20
 ```
 
----
-
-### 5.3 Métricas de Completitud (`/metricas`)
+### Métricas de Completitud (`/metricas`)
 
 **Propósito:** mostrar de forma transparente qué porcentaje del corpus histórico del BOC está disponible en la base de datos.
 
@@ -291,9 +272,7 @@ Parámetros:
 
 **Nota:** la página es pública pero orientada a usuarios técnicos o interesados en la metodología. Debe incluir un enlace a `/metodologia`.
 
----
-
-### 5.4 Metodología y Fuentes (`/metodologia`)
+### Metodología y Fuentes (`/metodologia`)
 
 **Propósito:** explicar de dónde vienen los datos, cómo se procesan y cuáles son sus limitaciones.
 
@@ -306,9 +285,7 @@ Parámetros:
 4. Licencia y atribución
 5. Contacto / Repositorio
 
----
-
-### 5.5 Páginas Estáticas
+### Páginas Estáticas
 
 | Ruta | Fichero fuente | Descripción |
 |---|---|---|
@@ -318,9 +295,7 @@ Parámetros:
 
 Todas se renderizan con SSG en tiempo de build y no requieren acceso a BD.
 
----
-
-## 6. Componentes Reutilizables
+## Componentes Reutilizables
 
 | Componente | Descripción |
 |---|---|
@@ -337,11 +312,9 @@ Todas se renderizan con SSG en tiempo de build y no requieren acceso a BD.
 | `<MarkdownPage>` | Renderizador de página desde fichero Markdown |
 | `<SectionBreadcrumb>` | Sección > Subsección > Organización |
 
----
+## Borradores de Contenido Editorial
 
-## 7. Borradores de Contenido Editorial
-
-### 7.1 Aviso Legal (`content/pages/aviso-legal.md`)
+### Aviso Legal (`content/pages/aviso-legal.md`)
 
 ```markdown
 ---
@@ -354,8 +327,8 @@ Los textos publicados en el Boletín Oficial de Canarias (BOC) son de autoría
 del Gobierno de Canarias y sus organismos. De acuerdo con las condiciones
 establecidas por el propio Gobierno de Canarias:
 
-> "Se autoriza su reproducción siempre que se cite la fuente, salvo que se
-> indique lo contrario."
+> Se autoriza su reproducción siempre que se cite la fuente, salvo que se
+> indique lo contrario.
 
 Este proyecto reproduce, indexa y facilita el acceso a dichos textos con la
 correspondiente cita de la fuente oficial: **Boletín Oficial de Canarias,
@@ -389,9 +362,7 @@ de los contenidos aquí publicados.
 Para cualquier consulta, error o sugerencia: [formulario / email por definir].
 ```
 
----
-
-### 7.2 Metodología y Fuentes (`content/pages/metodologia.md`)
+### Metodología y Fuentes (`content/pages/metodologia.md`)
 
 ```markdown
 ---
@@ -454,9 +425,7 @@ Para reportar errores en los datos o en la extracción, o para sugerencias:
 [formulario / email por definir].
 ```
 
----
-
-## 8. Consideraciones de SEO
+## Consideraciones de SEO
 
 - Las páginas de disposiciones individuales (`/disposicion/[year]/[issue]/[number]`) son SSR para permitir indexación.
 - `<title>` y `<meta description>` se generan dinámicamente desde el título y extracto de cada disposición.
@@ -465,7 +434,7 @@ Para reportar errores en los datos o en la extracción, o para sugerencias:
 
 ---
 
-## 9. Estructura de Directorios del Proyecto
+## Estructura de Directorios del Proyecto
 
 ```
 frontend/
@@ -515,17 +484,3 @@ frontend/
 ├── public/
 └── postgres/                       ← Config PostgreSQL existente (no modificar)
 ```
-
----
-
-## 10. Decisiones Pendientes
-
-| # | Decisión | Opciones | Prioridad |
-|---|---|---|---|
-| 1 | Librería de gráficas | Recharts vs Visx vs Chart.js | Media |
-| 2 | Licencia del código fuente | MIT vs Apache 2.0 | Baja |
-| 3 | URL/email de contacto | — | Baja |
-| 4 | Nombre del proyecto / marca | "BOC Canarias", "BocSearch", otro | Alta |
-| 5 | Página de detalle de disposición | ¿Existe como ruta propia? | Media |
-| 6 | Idioma(s) | Solo castellano de momento | — |
-| 7 | Paleta de colores concreta | A definir con diseño | Media |
