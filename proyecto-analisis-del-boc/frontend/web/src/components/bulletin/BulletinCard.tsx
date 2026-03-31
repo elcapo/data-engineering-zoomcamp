@@ -9,51 +9,39 @@ interface BulletinCardProps {
 
 export function BulletinCard({ bulletin }: BulletinCardProps) {
   const detailUrl = `/boletin/${bulletin.year}/${bulletin.issue}`;
+  const paddedIssue = String(bulletin.issue).padStart(3, "0");
 
   return (
-    <Card as="article" className="flex flex-col gap-3">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <Link href={detailUrl} className="group">
+    <Card as="article" className="!p-0 flex flex-col">
+      {/* Upper block: clickable link to bulletin detail */}
+      <Link href={detailUrl} className="group flex flex-1 flex-col gap-3 rounded-t-xl p-6 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-700/50">
+        <div className="flex items-start justify-between gap-2">
+          <div>
             <h3 className="font-semibold text-zinc-900 group-hover:text-accent dark:text-zinc-100 dark:group-hover:text-accent-light">
-              BOC N&ordm; {bulletin.issue}
+              Boletín {bulletin.year}/{paddedIssue}
             </h3>
-          </Link>
-          {bulletin.date && (
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">{bulletin.date}</p>
-          )}
+            {bulletin.date && (
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">{bulletin.date}</p>
+            )}
+          </div>
+          <Badge variant="accent">{bulletin.dispositionCount} disposiciones</Badge>
         </div>
-        <Badge variant="accent">{bulletin.dispositionCount} disp.</Badge>
-      </div>
 
-      {bulletin.sectionCounts.length > 0 && (
-        <ul className="flex flex-wrap gap-1.5">
-          {bulletin.sectionCounts.map((sc) => (
-            <li key={sc.section}>
-              <Badge>{sc.section} ({sc.count})</Badge>
-            </li>
-          ))}
-        </ul>
-      )}
+      </Link>
 
-      <div className="mt-auto flex gap-3 pt-1 text-sm">
-        <Link
-          href={detailUrl}
-          className="font-medium text-accent hover:underline underline-offset-4 dark:text-accent-light"
-        >
-          Ver disposiciones
-        </Link>
-        {bulletin.url && (
+      {/* Footer: external links only */}
+      {bulletin.url && (
+        <div className="border-t border-zinc-200 px-6 py-3 dark:border-zinc-700">
           <a
             href={bulletin.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-zinc-500 hover:underline underline-offset-4 dark:text-zinc-400"
+            className="text-sm text-zinc-500 hover:underline underline-offset-4 dark:text-zinc-400"
           >
             BOC oficial
           </a>
-        )}
-      </div>
+        </div>
+      )}
     </Card>
   );
 }

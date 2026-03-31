@@ -56,33 +56,28 @@ describe("SectionBreadcrumb", () => {
 });
 
 describe("BulletinCard", () => {
-  it("muestra número del boletín y fecha", () => {
+  it("muestra título del boletín y fecha", () => {
     render(<BulletinCard bulletin={bulletin} />);
-    expect(screen.getByText(/BOC Nº 100/)).toBeInTheDocument();
+    expect(screen.getByText(/Boletín 2024\/100/)).toBeInTheDocument();
     expect(screen.getByText("1 de enero de 2024")).toBeInTheDocument();
   });
 
   it("muestra conteo de disposiciones", () => {
     render(<BulletinCard bulletin={bulletin} />);
-    expect(screen.getByText("15 disp.")).toBeInTheDocument();
+    expect(screen.getByText("15 disposiciones")).toBeInTheDocument();
   });
 
-  it("muestra secciones con conteo", () => {
+  it("el bloque superior enlaza a la página de detalle del boletín", () => {
     render(<BulletinCard bulletin={bulletin} />);
-    expect(screen.getByText(/I \(5\)/)).toBeInTheDocument();
-    expect(screen.getByText(/II \(10\)/)).toBeInTheDocument();
-  });
-
-  it("enlaza a la página de detalle del boletín", () => {
-    render(<BulletinCard bulletin={bulletin} />);
-    const link = screen.getByText("Ver disposiciones");
+    const link = screen.getByText(/Boletín 2024\/100/).closest("a");
     expect(link).toHaveAttribute("href", "/boletin/2024/100");
   });
 
-  it("incluye enlace al BOC oficial", () => {
+  it("incluye enlace al BOC oficial en el pie", () => {
     render(<BulletinCard bulletin={bulletin} />);
     const link = screen.getByText("BOC oficial");
     expect(link).toHaveAttribute("href", "https://boc.example.com/100");
+    expect(link).toHaveAttribute("target", "_blank");
   });
 });
 
