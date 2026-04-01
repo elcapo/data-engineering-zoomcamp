@@ -1,6 +1,6 @@
 ---
 title: Aviso Legal
-description: Información sobre autoría, derechos de reproducción, responsabilidad y condiciones de uso de BOC Canarias Web.
+description: Información sobre autoría, derechos de reproducción, responsabilidad y condiciones de uso de Bocana.
 ---
 
 ## Autoría de los contenidos

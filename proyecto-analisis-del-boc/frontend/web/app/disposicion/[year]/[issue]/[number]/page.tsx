@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     : `Disposición ${disposition.number} del BOC N\u00ba ${disposition.issue}/${disposition.year}`;
 
   return {
-    title: `${title} — BOC Canarias Web`,
+    title: `${title} — Bocana`,
     description,
   };
 }

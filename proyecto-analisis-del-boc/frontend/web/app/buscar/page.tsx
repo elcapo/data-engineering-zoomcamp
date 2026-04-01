@@ -5,7 +5,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
-  title: "Buscar — BOC Canarias Web",
+  title: "Buscar — Bocana",
   description: "Búsqueda avanzada en el Boletín Oficial de Canarias con texto completo, filtros combinados y operadores booleanos.",
 };
 

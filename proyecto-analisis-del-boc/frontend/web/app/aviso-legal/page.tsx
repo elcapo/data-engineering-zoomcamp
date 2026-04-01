@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   if (!page) return {};
 
   return {
-    title: `${page.title} — BOC Canarias Web`,
+    title: `${page.title} — Bocana`,
     description: page.description,
   };
 }

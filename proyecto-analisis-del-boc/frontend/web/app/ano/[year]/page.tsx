@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!data) return {};
 
   return {
-    title: `Boletines de ${data.year} — BOC Canarias Web`,
+    title: `Boletines de ${data.year} — Bocana`,
     description: `Listado de los ${data.bulletins.length} boletines del Bolet\u00edn Oficial de Canarias publicados en ${data.year}.`,
   };
 }

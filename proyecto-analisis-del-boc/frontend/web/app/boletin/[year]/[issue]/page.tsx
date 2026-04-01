@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const { bulletin } = data;
   return {
-    title: `BOC N\u00ba ${bulletin.issue}/${bulletin.year} — BOC Canarias Web`,
+    title: `BOC N\u00ba ${bulletin.issue}/${bulletin.year} — Bocana`,
     description: `Listado de las ${bulletin.dispositionCount} disposiciones del Bolet\u00edn Oficial de Canarias N\u00ba ${bulletin.issue} del a\u00f1o ${bulletin.year}.`,
   };
 }

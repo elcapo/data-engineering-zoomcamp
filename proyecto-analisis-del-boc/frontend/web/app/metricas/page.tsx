@@ -9,7 +9,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Cobertura — BOC Canarias Web",
+  title: "Cobertura — Bocana",
   description: "Cobertura del corpus histórico del Boletín Oficial de Canarias: descarga y extracción por año.",
 };
 

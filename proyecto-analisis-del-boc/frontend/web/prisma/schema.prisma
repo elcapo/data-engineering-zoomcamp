@@ -1,4 +1,4 @@
-// Prisma schema — BOC Canarias Web
+// Prisma schema — Bocana
 // Mapea las tablas del pipeline (boc_dataset) y las vistas de métricas (boc_log)
 // como cliente de solo lectura. Este proyecto no gestiona migraciones.
 

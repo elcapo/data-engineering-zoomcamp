@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BOC Canarias Web",
-  description: "Consulta del Boletín Oficial de Canarias: búsqueda de texto completo, filtros y cobertura del corpus.",
+  title: "Bocana",
+  description: "Consulta del Boletín Oficial de Canarias: búsqueda de texto completo, filtros flexibles y estadísticas.",
 };
 
 export default function RootLayout({

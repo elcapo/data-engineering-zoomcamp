@@ -1,4 +1,4 @@
-# BOC Canarias Web
+# Bocana
 
 Interfaz de consulta del Boletín Oficial de Canarias (BOC). Ofrece búsqueda de texto completo con operadores booleanos, filtros combinados, métricas de cobertura y navegación por el archivo histórico desde 1980.
 

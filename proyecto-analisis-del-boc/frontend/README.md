@@ -1,8 +1,8 @@
-# BOC Canarias Web — Especificación Técnica
+# Bocana — Especificación Técnica
 
 ## Visión del Proyecto
 
-El BOC Canarias Web es una interfaz moderna e independiente para consultar el Boletín Oficial de Canarias (BOC). El proyecto nace para ofrecer herramientas de búsqueda y navegación que no existen en la web oficial: búsqueda de texto completo con operadores booleanos, filtros combinados, métricas de cobertura y un punto de entrada editorial curado.
+Bocana es una interfaz moderna e independiente para consultar el Boletín Oficial de Canarias (BOC). El proyecto nace para ofrecer herramientas de búsqueda y navegación que no existen en la web oficial: búsqueda de texto completo con operadores booleanos, filtros combinados, métricas de cobertura y un punto de entrada editorial curado.
 
 **Audiencia principal:** abogados, ciudadanía que busca convocatorias públicas, periodistas e investigadores.
 
@@ -336,7 +336,7 @@ Gobierno de Canarias** ([www.gobiernodecanarias.org/boc](https://www.gobiernodec
 
 ## Sobre Este Servicio
 
-BOC Canarias Web es una **iniciativa independiente** no vinculada al Gobierno
+Bocana es una **iniciativa independiente** no vinculada al Gobierno
 de Canarias ni a ningún organismo público. El servicio se ofrece con fines
 informativos y de acceso a la información pública.
 
