@@ -1,57 +1,9 @@
 import { Prisma } from "../../../../app/generated/prisma/client";
 import { prisma } from "../prisma";
 import {
-  DataQualityReport, IssueBreakdown, YearBreakdown,
   ArchiveCompletion, YearOverview,
-  BulletinSummary, ProcessedBulletin,
-  DispositionSummary, ProcessedDisposition,
+  ProcessedBulletin, ProcessedDisposition,
 } from "@/types/domain";
-
-// Tipos de fila para cada vista de boc_log
-
-type DownloadYearsRow = {
-  total_years: bigint;
-  downloaded_years: bigint;
-  percentage: Prisma.Decimal;
-};
-
-type DownloadIssuesRow = {
-  year: bigint;
-  total_issues: bigint;
-  downloaded_issues: bigint;
-  percentage: Prisma.Decimal;
-};
-
-type DownloadDocumentsRow = {
-  year: bigint;
-  issue: bigint;
-  total_documents: bigint;
-  downloaded_documents: bigint;
-  percentage: Prisma.Decimal;
-};
-
-type ExtractionYearsRow = {
-  total_downloaded: bigint;
-  extracted: bigint;
-  percentage: Prisma.Decimal;
-};
-
-type ExtractionIssuesRow = {
-  year: number;
-  total_downloaded: bigint;
-  extracted: bigint;
-  percentage: Prisma.Decimal;
-};
-
-type ExtractionDocumentsRow = {
-  year: number;
-  issue: number;
-  total_downloaded: bigint;
-  extracted: bigint;
-  percentage: Prisma.Decimal;
-};
-
-// Tipos para las nuevas consultas por entidad
 
 type ArchiveCompletionRow = {
   total_years: bigint;
@@ -72,22 +24,10 @@ type YearOverviewRow = {
   disposition_percentage: Prisma.Decimal;
 };
 
-type BulletinSummaryRow = {
-  total: bigint;
-  processed: bigint;
-  percentage: Prisma.Decimal;
-};
-
 type ProcessedBulletinRow = {
   year: bigint;
   issue: bigint;
   processed_at: Date;
-};
-
-type DispositionSummaryRow = {
-  total: bigint;
-  processed: bigint;
-  percentage: Prisma.Decimal;
 };
 
 type ProcessedDispositionRow = {
@@ -98,70 +38,6 @@ type ProcessedDispositionRow = {
 };
 
 export const MetricsRepository = {
-  async getDataQualityReport(): Promise<DataQualityReport> {
-    const [
-      downloadYears,
-      downloadIssues,
-      downloadDocuments,
-      extractionYears,
-      extractionIssues,
-      extractionDocuments,
-    ] = await Promise.all([
-      prisma.$queryRaw(Prisma.sql`SELECT * FROM boc_log.metric_download_years`) as Promise<DownloadYearsRow[]>,
-      prisma.$queryRaw(Prisma.sql`SELECT * FROM boc_log.metric_download_issues ORDER BY year`) as Promise<DownloadIssuesRow[]>,
-      prisma.$queryRaw(Prisma.sql`SELECT * FROM boc_log.metric_download_documents ORDER BY year, issue`) as Promise<DownloadDocumentsRow[]>,
-      prisma.$queryRaw(Prisma.sql`SELECT * FROM boc_log.metric_extraction_years`) as Promise<ExtractionYearsRow[]>,
-      prisma.$queryRaw(Prisma.sql`SELECT * FROM boc_log.metric_extraction_issues ORDER BY year`) as Promise<ExtractionIssuesRow[]>,
-      prisma.$queryRaw(Prisma.sql`SELECT * FROM boc_log.metric_extraction_documents ORDER BY year, issue`) as Promise<ExtractionDocumentsRow[]>,
-    ]);
-
-    const dy = downloadYears[0];
-    const ey = extractionYears[0];
-
-    return {
-      downloads: {
-        years: {
-          total: Number(dy.total_years),
-          downloaded: Number(dy.downloaded_years),
-          percentage: Number(dy.percentage),
-        },
-        issues: downloadIssues.map((r): YearBreakdown => ({
-          year: Number(r.year),
-          total: Number(r.total_issues),
-          done: Number(r.downloaded_issues),
-          percentage: Number(r.percentage),
-        })),
-        documents: downloadDocuments.map((r): IssueBreakdown => ({
-          year: Number(r.year),
-          issue: Number(r.issue),
-          total: Number(r.total_documents),
-          done: Number(r.downloaded_documents),
-          percentage: Number(r.percentage),
-        })),
-      },
-      extractions: {
-        years: {
-          total: Number(ey.total_downloaded),
-          extracted: Number(ey.extracted),
-          percentage: Number(ey.percentage),
-        },
-        issues: extractionIssues.map((r): YearBreakdown => ({
-          year: Number(r.year),
-          total: Number(r.total_downloaded),
-          done: Number(r.extracted),
-          percentage: Number(r.percentage),
-        })),
-        documents: extractionDocuments.map((r): IssueBreakdown => ({
-          year: Number(r.year),
-          issue: Number(r.issue),
-          total: Number(r.total_downloaded),
-          done: Number(r.extracted),
-          percentage: Number(r.percentage),
-        })),
-      },
-    };
-  },
-
   async getArchiveCompletion(): Promise<ArchiveCompletion> {
     const rows = await prisma.$queryRaw(Prisma.sql`
       SELECT
@@ -220,99 +96,54 @@ export const MetricsRepository = {
     }));
   },
 
-  async getBulletinSummary(): Promise<BulletinSummary> {
+  async getProcessedBulletins(limit = 5): Promise<{ recentBulletins: ProcessedBulletin[]; oldestBulletins: ProcessedBulletin[] }> {
     const rows = await prisma.$queryRaw(Prisma.sql`
-      SELECT
-        di.total_issues AS total,
-        di.downloaded_issues AS processed,
-        di.percentage
-      FROM boc_log.metric_download_issues AS di
-    `) as BulletinSummaryRow[];
-    const total = rows.reduce((s, r) => s + Number(r.total), 0);
-    const processed = rows.reduce((s, r) => s + Number(r.processed), 0);
-    return {
-      total,
-      processed,
-      percentage: total > 0 ? (processed / total) * 100 : 0,
-    };
-  },
-
-  async getRecentProcessedBulletins(limit = 5): Promise<ProcessedBulletin[]> {
-    const rows = await prisma.$queryRaw(Prisma.sql`
-      SELECT year, issue, downloaded_at AS processed_at
-      FROM boc_log.download_log
-      WHERE entity_type = 'issue' AND downloaded_at IS NOT NULL
-      ORDER BY year DESC, issue DESC
-      LIMIT ${limit}
-    `) as ProcessedBulletinRow[];
-    return rows.map((r) => ({
+      (SELECT year, issue, downloaded_at AS processed_at, 'recent' AS _group
+       FROM boc_log.download_log
+       WHERE entity_type = 'issue' AND downloaded_at IS NOT NULL
+       ORDER BY year DESC, issue DESC
+       LIMIT ${limit})
+      UNION ALL
+      (SELECT year, issue, downloaded_at AS processed_at, 'oldest' AS _group
+       FROM boc_log.download_log
+       WHERE entity_type = 'issue' AND downloaded_at IS NOT NULL
+       ORDER BY year ASC, issue ASC
+       LIMIT ${limit})
+    `) as (ProcessedBulletinRow & { _group: string })[];
+    const toItem = (r: ProcessedBulletinRow) => ({
       year: Number(r.year),
       issue: Number(r.issue),
       processedAt: r.processed_at.toISOString(),
-    }));
-  },
-
-  async getOldestProcessedBulletins(limit = 5): Promise<ProcessedBulletin[]> {
-    const rows = await prisma.$queryRaw(Prisma.sql`
-      SELECT year, issue, downloaded_at AS processed_at
-      FROM boc_log.download_log
-      WHERE entity_type = 'issue' AND downloaded_at IS NOT NULL
-      ORDER BY year ASC, issue ASC
-      LIMIT ${limit}
-    `) as ProcessedBulletinRow[];
-    return rows.map((r) => ({
-      year: Number(r.year),
-      issue: Number(r.issue),
-      processedAt: r.processed_at.toISOString(),
-    }));
-  },
-
-  async getDispositionSummary(): Promise<DispositionSummary> {
-    const rows = await prisma.$queryRaw(Prisma.sql`
-      SELECT
-        dd.total_documents AS total,
-        dd.downloaded_documents AS processed,
-        dd.percentage
-      FROM boc_log.metric_download_documents AS dd
-    `) as DispositionSummaryRow[];
-    const total = rows.reduce((s, r) => s + Number(r.total), 0);
-    const processed = rows.reduce((s, r) => s + Number(r.processed), 0);
+    });
     return {
-      total,
-      processed,
-      percentage: total > 0 ? (processed / total) * 100 : 0,
+      recentBulletins: rows.filter((r) => r._group === "recent").map(toItem),
+      oldestBulletins: rows.filter((r) => r._group === "oldest").map(toItem),
     };
   },
 
-  async getRecentProcessedDispositions(limit = 5): Promise<ProcessedDisposition[]> {
+  async getProcessedDispositions(limit = 5): Promise<{ recentDispositions: ProcessedDisposition[]; oldestDispositions: ProcessedDisposition[] }> {
     const rows = await prisma.$queryRaw(Prisma.sql`
-      SELECT year, issue, disposition, downloaded_at AS processed_at
-      FROM boc_log.download_log
-      WHERE entity_type = 'document' AND downloaded_at IS NOT NULL
-      ORDER BY year DESC, issue DESC
-      LIMIT ${limit}
-    `) as ProcessedDispositionRow[];
-    return rows.map((r) => ({
+      (SELECT year, issue, disposition, downloaded_at AS processed_at, 'recent' AS _group
+       FROM boc_log.download_log
+       WHERE entity_type = 'document' AND downloaded_at IS NOT NULL
+       ORDER BY year DESC, issue DESC
+       LIMIT ${limit})
+      UNION ALL
+      (SELECT year, issue, disposition, downloaded_at AS processed_at, 'oldest' AS _group
+       FROM boc_log.download_log
+       WHERE entity_type = 'document' AND downloaded_at IS NOT NULL
+       ORDER BY year ASC, issue ASC, disposition ASC
+       LIMIT ${limit})
+    `) as (ProcessedDispositionRow & { _group: string })[];
+    const toItem = (r: ProcessedDispositionRow) => ({
       year: Number(r.year),
       issue: Number(r.issue),
       disposition: Number(r.disposition),
       processedAt: r.processed_at.toISOString(),
-    }));
-  },
-
-  async getOldestProcessedDispositions(limit = 5): Promise<ProcessedDisposition[]> {
-    const rows = await prisma.$queryRaw(Prisma.sql`
-      SELECT year, issue, disposition, downloaded_at AS processed_at
-      FROM boc_log.download_log
-      WHERE entity_type = 'document' AND downloaded_at IS NOT NULL
-      ORDER BY year ASC, issue ASC, disposition ASC
-      LIMIT ${limit}
-    `) as ProcessedDispositionRow[];
-    return rows.map((r) => ({
-      year: Number(r.year),
-      issue: Number(r.issue),
-      disposition: Number(r.disposition),
-      processedAt: r.processed_at.toISOString(),
-    }));
+    });
+    return {
+      recentDispositions: rows.filter((r) => r._group === "recent").map(toItem),
+      oldestDispositions: rows.filter((r) => r._group === "oldest").map(toItem),
+    };
   },
 };

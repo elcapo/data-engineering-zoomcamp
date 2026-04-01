@@ -6,7 +6,7 @@ import { BulletinSection } from "@/components/metrics/BulletinSection";
 import { DispositionSection } from "@/components/metrics/DispositionSection";
 import { PageHeader } from "@/components/layout/PageHeader";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Cobertura — BOC Canarias Web",
@@ -17,22 +17,30 @@ export default async function MetricasPage() {
   const [
     archiveSummary,
     yearOverviews,
-    bulletinSummary,
-    recentBulletins,
-    oldestBulletins,
-    dispositionSummary,
-    recentDispositions,
-    oldestDispositions,
+    { recentBulletins, oldestBulletins },
+    { recentDispositions, oldestDispositions },
   ] = await Promise.all([
     MetricsRepository.getArchiveCompletion(),
     MetricsRepository.getYearOverviews(),
-    MetricsRepository.getBulletinSummary(),
-    MetricsRepository.getRecentProcessedBulletins(),
-    MetricsRepository.getOldestProcessedBulletins(),
-    MetricsRepository.getDispositionSummary(),
-    MetricsRepository.getRecentProcessedDispositions(),
-    MetricsRepository.getOldestProcessedDispositions(),
+    MetricsRepository.getProcessedBulletins(),
+    MetricsRepository.getProcessedDispositions(),
   ]);
+
+  const bulletinSummary = yearOverviews.reduce(
+    (acc, y) => ({
+      total: acc.total + y.totalBulletins,
+      processed: acc.processed + y.processedBulletins,
+    }),
+    { total: 0, processed: 0 },
+  );
+
+  const dispositionSummary = yearOverviews.reduce(
+    (acc, y) => ({
+      total: acc.total + y.totalDispositions,
+      processed: acc.processed + y.processedDispositions,
+    }),
+    { total: 0, processed: 0 },
+  );
 
   return (
     <>

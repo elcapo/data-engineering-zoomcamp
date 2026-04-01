@@ -100,36 +100,6 @@ export interface SearchResult {
 
 // ── Métricas ──────────────────────────────────────────────────────────────
 
-export interface YearBreakdown {
-  year: number;
-  total: number;
-  done: number;
-  percentage: number;
-}
-
-export interface IssueBreakdown {
-  year: number;
-  issue: number;
-  total: number;
-  done: number;
-  percentage: number;
-}
-
-export interface DataQualityReport {
-  downloads: {
-    years: { total: number; downloaded: number; percentage: number };
-    issues: YearBreakdown[];
-    documents: IssueBreakdown[];
-  };
-  extractions: {
-    years: { total: number; extracted: number; percentage: number };
-    issues: YearBreakdown[];
-    documents: IssueBreakdown[];
-  };
-}
-
-// ── Métricas por entidad ──────────────────────────────────────────────────
-
 export interface ArchiveCompletion {
   totalYears: number;
   downloadedYears: number;
@@ -149,22 +119,10 @@ export interface YearOverview {
   dispositionPercentage: number;
 }
 
-export interface BulletinSummary {
-  total: number;
-  processed: number;
-  percentage: number;
-}
-
 export interface ProcessedBulletin {
   year: number;
   issue: number;
   processedAt: string;
-}
-
-export interface DispositionSummary {
-  total: number;
-  processed: number;
-  percentage: number;
 }
 
 export interface ProcessedDisposition {
