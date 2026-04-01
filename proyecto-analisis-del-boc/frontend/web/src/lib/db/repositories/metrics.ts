@@ -242,7 +242,7 @@ export const MetricsRepository = {
       SELECT year, issue, downloaded_at AS processed_at
       FROM boc_log.download_log
       WHERE entity_type = 'issue' AND downloaded_at IS NOT NULL
-      ORDER BY downloaded_at DESC
+      ORDER BY year DESC, issue DESC
       LIMIT ${limit}
     `) as ProcessedBulletinRow[];
     return rows.map((r) => ({
