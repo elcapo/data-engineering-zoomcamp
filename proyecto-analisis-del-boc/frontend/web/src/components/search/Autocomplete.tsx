@@ -34,8 +34,6 @@ export function Autocomplete({ value, options, placeholder, onChange, onCommit, 
   function select(option: string) {
     setOpen(false);
     onSelect(option);
-    // Desenfoca el input para que el chip se desactive
-    inputRef.current?.blur();
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
