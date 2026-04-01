@@ -41,6 +41,7 @@ tasks:
       files = [
           "refresh_sections.sql",
           "refresh_organizations.sql",
+          "normalize_sections.sql",
       ]
 
       with conn.cursor() as cur:
