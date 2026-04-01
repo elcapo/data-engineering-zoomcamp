@@ -203,15 +203,11 @@ export function activeFiltersToSearchFilters(activeFilters: ActiveFilter[]): Sea
 }
 
 /**
- * Genera la URL de búsqueda por defecto: últimos 7 días.
+ * Genera la URL de búsqueda por defecto: año actual.
  */
 export function buildSearchHref(): string {
-  const today = new Date();
-  const weekAgo = new Date(today);
-  weekAgo.setDate(today.getDate() - 7);
-  const to = today.toISOString().slice(0, 10);
-  const from = weekAgo.toISOString().slice(0, 10);
-  return `/buscar?include_from_0=${from}&include_to_0=${to}`;
+  const year = new Date().getFullYear();
+  return `/buscar?include_ref_year_0=${year}`;
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────
