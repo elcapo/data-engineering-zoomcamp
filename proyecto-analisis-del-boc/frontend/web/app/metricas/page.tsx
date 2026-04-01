@@ -6,7 +6,7 @@ import { BulletinSection } from "@/components/metrics/BulletinSection";
 import { DispositionSection } from "@/components/metrics/DispositionSection";
 import { PageHeader } from "@/components/layout/PageHeader";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Cobertura — BOC Canarias Web",
