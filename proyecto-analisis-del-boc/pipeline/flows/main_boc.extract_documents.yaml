@@ -114,6 +114,7 @@ tasks:
       POSTGRES_DB: "{{ envs.postgres_data_db }}"
       POSTGRES_USER: "{{ envs.postgres_data_user }}"
       POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+      DISPOSITION: "{{ inputs.disposition }}"
     script: |
       import os
       import yaml
@@ -144,6 +145,7 @@ tasks:
           "year":         frontmatter.get("year"),
           "issue":        frontmatter.get("issue"),
           "number":       frontmatter.get("number"),
+          "disposition":  os.environ["DISPOSITION"],
           "document":     frontmatter.get("document"),
           "date":         frontmatter.get("date"),
           "entity":       frontmatter.get("entity"),
@@ -257,4 +259,3 @@ tasks:
           )
 
       conn.close()
-      print(f"Logged: {os.environ['OBJECT_KEY']}")
