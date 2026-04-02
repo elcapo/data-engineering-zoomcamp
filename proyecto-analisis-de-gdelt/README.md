@@ -1,0 +1,137 @@
+# Real-Time GDELT Event Stream Analysis
+
+A fully local, reproducible pipeline for ingesting, processing, and visualizing global events from the [GDELT Project](https://www.gdeltproject.org/) in near real-time. Everything runs in Docker — no cloud accounts required.
+
+## What is GDELT?
+
+The **Global Database of Events, Language and Tone** (GDELT) monitors news media worldwide and extracts structured data about global events, people, organizations, themes, and sentiment. GDELT 2.0 publishes three datasets as CSV files every **15 minutes**:
+
+| Dataset     | Description |
+|-------------|-------------|
+| **Events**  | Who did what to whom, where, and when. Includes actor codes, event types ([CAMEO taxonomy](http://data.gdeltproject.org/documentation/CAMEO.Manual.1.1b3.pdf)), geographic coordinates, and a Goldstein conflict/cooperation scale. |
+| **Mentions** | Every news article that references an event, with publication timestamps. Tracks how stories spread through global media over time. |
+| **GKG** (Global Knowledge Graph) | Entities, themes, emotions, and counts extracted from articles. Connects people, organizations, locations, and topics. |
+
+Data source: `http://data.gdeltproject.org/gdeltv2/lastupdate.txt` (updated every 15 minutes, lists the latest CSV files for all three tables).
+
+## Architecture
+
+![Architecture](./resources/charts/architecture.png)
+
+### Components
+
+| Component | Technology | Role |
+|-----------|-----------|------|
+| **Producer** | Python | Polls GDELT every 15 min, downloads CSV files, parses them, and publishes records to Redpanda topics. |
+| **Broker** | Redpanda | Kafka-compatible message broker. Receives raw events and serves them to Flink. Lightweight, single-binary, no JVM. |
+| **Stream processor** | Apache Flink | Consumes events from Redpanda, applies windowed aggregations (event counts by country, conflict trends, actor analysis), and writes results to PostgreSQL. |
+| **Storage** | PostgreSQL | Stores both raw events and pre-aggregated metrics for Grafana to query. |
+| **Dashboard** | Grafana | Visualizes global event trends, conflict hotspots, top actors, and media attention in near real-time. |
+
+### Redpanda Topics
+
+| Topic | Content |
+|-------|---------|
+| `gdelt.events` | Parsed event records (actor codes, event type, location, tone). |
+| `gdelt.mentions` | Article mentions with timestamps and source metadata. |
+| `gdelt.gkg` | GKG records: themes, persons, organizations, tone, locations. |
+
+## Dashboard Panels
+
+- **Global Event Map**: Geolocated events plotted on a world map, colored by Goldstein scale (conflict ↔ cooperation).
+- **Event Volume**: Time-series of events per 15-minute window, broken down by event root code.
+- **Conflict Trend**: Rolling average of the Goldstein scale by country or region.
+- **Top Actors**: Bar chart of most active actors in the current time window.
+- **Media Attention**: Number of mentions over time for selected events, showing how stories propagate.
+- **Tone Analysis**: Average tone by country or theme from the GKG data.
+
+## Project Structure
+
+- **docker-compose.yml**: Definition of all the services with default values
+- **producer/**: Data ingest and publication
+    - **Dockerfile**
+    - **pyproject.toml**: Python dependencies (requests, kafka-python-ng)
+    - **main.py**: Orchestration of the download and publication
+    - **gdelt.py**: Download and parsing logic
+- **flink/**: Data processing
+    - **Dockerfile**
+    - **jobs/**: Aggregation tasks
+        - **event_aggregations.py**: Counding and trends
+        - **gkg_aggregations.py**: Theme and tone analysis
+- **sql/**: Database
+    - **init.sql**: PostgreSQL scheme (raw and aggregated tables)
+- **grafana/**: Visualization
+    - **provisioning/**: Datasource and dashboards
+    - **Dockerfile**
+- **README.md**: Project
+
+## Tech Stack
+
+| Tool | Version | Why |
+|------|---------|-----|
+| **Python** | 3.12 | Producer scripts and Flink jobs. |
+| **Redpanda** | Latest | Kafka API-compatible broker, zero-JVM, trivial Docker setup. |
+| **Apache Flink** | 1.20 | Windowed stream processing with exactly-once semantics. |
+| **PostgreSQL** | 16 | Reliable, widely available relational storage. |
+| **Grafana** | Latest | Dashboards with native PostgreSQL support and geo-map panels. |
+| **Docker / Compose** |  | Single `docker compose up` to run everything. |
+
+### Python Dependencies (kept minimal)
+
+| Package | Purpose |
+|---------|---------|
+| `requests` | Download GDELT CSV files over HTTP. |
+| `kafka-python-ng` | Produce messages to Redpanda (Kafka protocol). |
+| `apache-flink` | Write Flink stream processing jobs in Python (PyFlink). |
+
+## Getting Started
+
+### Prerequisites
+
+- Docker and Docker Compose
+
+### Run
+
+```bash
+git clone https://github.com/elcapo/data-engineering-zoomcamp/
+cd data-engineering-zoomcamp/proyecto-analisis-de-gdelt
+docker compose up -d
+```
+
+This starts all services:
+
+| Service | Port (by default) |
+|---------|------|
+| Redpanda Console | `localhost:8080` |
+| Redpanda Broker (Kafka API) | `localhost:9092` |
+| Flink Web UI | `localhost:8081` |
+| PostgreSQL | `localhost:5432` |
+| Grafana | `localhost:3000` (admin/admin) |
+
+The producer begins polling GDELT immediately. After the first 15-minute cycle, data flows through:
+
+1. Redpanda
+2. Flink
+3. PostgreSQL
+4. Grafana
+
+### Verify
+
+```bash
+# Check that topics have data
+docker compose exec redpanda rpk topic consume gdelt.events --num 1
+
+# Check PostgreSQL
+docker compose exec postgres psql -U gdelt -c "SELECT count(*) FROM events;"
+
+# Open Grafana
+open http://localhost:3000
+```
+
+## GDELT Data Reference
+
+- **GDELT 2.0 Event Codebook**: http://data.gdeltproject.org/documentation/GDELT-Event_Codebook-V2.0.pdf
+- **GKG Codebook**: http://data.gdeltproject.org/documentation/GDELT-Global_Knowledge_Graph_Codebook-V2.1.pdf
+- **CAMEO Event Codes**: http://data.gdeltproject.org/documentation/CAMEO.Manual.1.1b3.pdf
+- **Last update file (entry point)**: http://data.gdeltproject.org/gdeltv2/lastupdate.txt
+- **Master file list**: http://data.gdeltproject.org/gdeltv2/masterfilelist.txt
