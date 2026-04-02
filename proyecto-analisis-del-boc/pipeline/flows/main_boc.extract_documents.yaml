@@ -145,7 +145,7 @@ tasks:
           "year":         frontmatter.get("year"),
           "issue":        frontmatter.get("issue"),
           "number":       frontmatter.get("number"),
-          "disposition":  os.environ["DISPOSITION"],
+          "disposition":  int(os.environ["DISPOSITION"]),
           "document":     frontmatter.get("document"),
           "date":         frontmatter.get("date"),
           "entity":       frontmatter.get("entity"),
