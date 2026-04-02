@@ -65,25 +65,25 @@ export const MetricsRepository = {
   async getYearOverviews(): Promise<YearOverview[]> {
     const rows = await prisma.$queryRaw(Prisma.sql`
       SELECT
-        di.year,
-        di.total_issues AS total_bulletins,
-        di.downloaded_issues AS processed_bulletins,
-        di.percentage AS bulletin_percentage,
-        COALESCE(dd.total_documents, 0) AS total_dispositions,
-        COALESCE(dd.downloaded_documents, 0) AS processed_dispositions,
-        COALESCE(dd.doc_percentage, 0) AS disposition_percentage
-      FROM boc_log.metric_download_issues AS di
+        ei.year,
+        ei.total_downloaded AS total_bulletins,
+        ei.extracted AS processed_bulletins,
+        ei.percentage AS bulletin_percentage,
+        COALESCE(ed.total_documents, 0) AS total_dispositions,
+        COALESCE(ed.extracted_documents, 0) AS processed_dispositions,
+        COALESCE(ed.doc_percentage, 0) AS disposition_percentage
+      FROM boc_log.metric_extraction_issues AS ei
       LEFT JOIN (
         SELECT year,
-          SUM(total_documents) AS total_documents,
-          SUM(downloaded_documents) AS downloaded_documents,
-          CASE WHEN SUM(total_documents) > 0
-            THEN SUM(downloaded_documents)::numeric / SUM(total_documents) * 100
+          SUM(total_downloaded) AS total_documents,
+          SUM(extracted) AS extracted_documents,
+          CASE WHEN SUM(total_downloaded) > 0
+            THEN SUM(extracted)::numeric / SUM(total_downloaded) * 100
             ELSE 0 END AS doc_percentage
-        FROM boc_log.metric_download_documents
+        FROM boc_log.metric_extraction_documents
         GROUP BY year
-      ) AS dd ON dd.year = di.year
-      ORDER BY di.year DESC
+      ) AS ed ON ed.year = ei.year
+      ORDER BY ei.year DESC
     `) as YearOverviewRow[];
     return rows.map((r) => ({
       year: Number(r.year),
@@ -98,15 +98,15 @@ export const MetricsRepository = {
 
   async getProcessedBulletins(limit = 5): Promise<{ recentBulletins: ProcessedBulletin[]; oldestBulletins: ProcessedBulletin[] }> {
     const rows = await prisma.$queryRaw(Prisma.sql`
-      (SELECT year, issue, downloaded_at AS processed_at, 'recent' AS _group
-       FROM boc_log.download_log
-       WHERE entity_type = 'issue' AND downloaded_at IS NOT NULL
+      (SELECT year, issue, extracted_at AS processed_at, 'recent' AS _group
+       FROM boc_log.extraction_log
+       WHERE entity_type = 'issue' AND extracted_at IS NOT NULL
        ORDER BY year DESC, issue DESC
        LIMIT ${limit})
       UNION ALL
-      (SELECT year, issue, downloaded_at AS processed_at, 'oldest' AS _group
-       FROM boc_log.download_log
-       WHERE entity_type = 'issue' AND downloaded_at IS NOT NULL
+      (SELECT year, issue, extracted_at AS processed_at, 'oldest' AS _group
+       FROM boc_log.extraction_log
+       WHERE entity_type = 'issue' AND extracted_at IS NOT NULL
        ORDER BY year ASC, issue ASC
        LIMIT ${limit})
     `) as (ProcessedBulletinRow & { _group: string })[];
@@ -123,15 +123,15 @@ export const MetricsRepository = {
 
   async getProcessedDispositions(limit = 5): Promise<{ recentDispositions: ProcessedDisposition[]; oldestDispositions: ProcessedDisposition[] }> {
     const rows = await prisma.$queryRaw(Prisma.sql`
-      (SELECT year, issue, disposition, downloaded_at AS processed_at, 'recent' AS _group
-       FROM boc_log.download_log
-       WHERE entity_type = 'document' AND downloaded_at IS NOT NULL
-       ORDER BY year DESC, issue DESC
+      (SELECT year, issue, disposition, extracted_at AS processed_at, 'recent' AS _group
+       FROM boc_log.extraction_log
+       WHERE entity_type = 'document' AND extracted_at IS NOT NULL
+       ORDER BY year DESC, issue DESC, disposition DESC
        LIMIT ${limit})
       UNION ALL
-      (SELECT year, issue, disposition, downloaded_at AS processed_at, 'oldest' AS _group
-       FROM boc_log.download_log
-       WHERE entity_type = 'document' AND downloaded_at IS NOT NULL
+      (SELECT year, issue, disposition, extracted_at AS processed_at, 'oldest' AS _group
+       FROM boc_log.extraction_log
+       WHERE entity_type = 'document' AND extracted_at IS NOT NULL
        ORDER BY year ASC, issue ASC, disposition ASC
        LIMIT ${limit})
     `) as (ProcessedDispositionRow & { _group: string })[];
