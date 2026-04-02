@@ -46,8 +46,3 @@ triggers:
     type: io.kestra.plugin.core.trigger.Schedule
     description: Once a day
     cron: "0 0 * * *"
-
-  - id: minute_schedule
-    type: io.kestra.plugin.core.trigger.Schedule
-    description: Once a minute
-    cron: "*/1 * * * *"
