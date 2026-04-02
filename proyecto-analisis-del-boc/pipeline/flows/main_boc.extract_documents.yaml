@@ -141,11 +141,13 @@ tasks:
           title = lines[0][2:].strip()
           body = lines[2].strip() if len(lines) > 2 else ""
 
+      disposition = int(os.environ["DISPOSITION"])
+
       record = {
           "year":         frontmatter.get("year"),
           "issue":        frontmatter.get("issue"),
-          "number":       frontmatter.get("number"),
-          "disposition":  int(os.environ["DISPOSITION"]),
+          "number":       frontmatter.get("number") or disposition,
+          "disposition":  disposition,
           "document":     frontmatter.get("document"),
           "date":         frontmatter.get("date"),
           "entity":       frontmatter.get("entity"),
@@ -167,6 +169,7 @@ tasks:
               "year": {"data_type": "bigint"},
               "issue": {"data_type": "bigint"},
               "number": {"data_type": "bigint"},
+              "disposition": {"data_type": "bigint"},
           },
       )
       def document_data():
