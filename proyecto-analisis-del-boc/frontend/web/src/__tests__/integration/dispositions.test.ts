@@ -31,7 +31,7 @@ describe("DispositionRepository.search — sin filtros", () => {
     for (const d of results) {
       expect(d.year).toBeGreaterThan(1979);
       expect(d.issue).toBeGreaterThan(0);
-      expect(d.number).toBeTruthy();
+      expect(d.disposition).toBeTruthy();
     }
   });
 
@@ -102,9 +102,9 @@ describe("DispositionRepository.search — paginación por cursor", () => {
     if (!page1.nextCursor) return; // No hay suficientes datos para paginar
 
     const page2 = await DispositionRepository.search({}, page1.nextCursor, 5);
-    const ids1 = new Set(page1.results.map((d) => `${d.year}-${d.issue}-${d.number}`));
+    const ids1 = new Set(page1.results.map((d) => `${d.year}-${d.issue}-${d.disposition}`));
     for (const d of page2.results) {
-      expect(ids1.has(`${d.year}-${d.issue}-${d.number}`)).toBe(false);
+      expect(ids1.has(`${d.year}-${d.issue}-${d.disposition}`)).toBe(false);
     }
   });
 });
@@ -124,12 +124,12 @@ describe("DispositionRepository.findByIdentifier", () => {
     const found = await DispositionRepository.findByIdentifier(
       ref.year,
       ref.issue,
-      ref.number
+      ref.disposition
     );
     expect(found).not.toBeNull();
     expect(found!.year).toBe(ref.year);
     expect(found!.issue).toBe(ref.issue);
-    expect(found!.number).toBe(ref.number);
+    expect(found!.disposition).toBe(ref.disposition);
   });
 
   it("devuelve null para identificador inexistente", async () => {

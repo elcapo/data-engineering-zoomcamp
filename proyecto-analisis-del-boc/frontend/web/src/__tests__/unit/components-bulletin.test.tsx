@@ -30,7 +30,7 @@ const bulletin: Bulletin = {
 const disposition: Disposition = {
   year: 2024,
   issue: 100,
-  number: "3",
+  disposition: "3",
   section: "I",
   subsection: "Disposiciones generales",
   organization: "Consejería de Educación",

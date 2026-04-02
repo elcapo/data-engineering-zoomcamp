@@ -188,7 +188,7 @@ export function SearchPage() {
                 </p>
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
                   {result.results.map((d) => (
-                    <DispositionCard key={`${d.year}-${d.issue}-${d.number}`} disposition={d} />
+                    <DispositionCard key={`${d.year}-${d.issue}-${d.disposition}`} disposition={d} />
                   ))}
                 </div>
               </>

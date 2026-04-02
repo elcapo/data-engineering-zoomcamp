@@ -71,7 +71,7 @@ async function buildDispositionsSitemap(
   const dispositions = await SitemapRepository.getDispositionsByYear(year);
 
   return dispositions.map((d) => ({
-    url: `${BASE_URL}/disposicion/${d.year}/${d.issue}/${d.number}`,
+    url: `${BASE_URL}/disposicion/${d.year}/${d.issue}/${d.disposition}`,
     changeFrequency: "yearly" as const,
     priority: 0.5,
   }));

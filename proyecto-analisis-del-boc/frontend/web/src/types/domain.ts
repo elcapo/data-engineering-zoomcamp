@@ -20,7 +20,7 @@ export interface SectionCount {
 export interface Disposition {
   year: number;
   issue: number;
-  number: string;
+  disposition: string;
   section: string;
   subsection?: string;
   organization: string;
@@ -76,7 +76,7 @@ export interface ActiveFilter {
 export interface SearchCursor {
   year: number;
   issue: number;
-  number: string;
+  disposition: string;
 }
 
 export interface FacetBucket {

@@ -13,7 +13,7 @@ export interface SitemapBulletin {
 export interface SitemapDisposition {
   year: number;
   issue: number;
-  number: string;
+  disposition: string;
 }
 
 export const SitemapRepository = {
@@ -33,7 +33,7 @@ export const SitemapRepository = {
     return rows.map((r) => ({ year: Number(r.year), issue: Number(r.issue) }));
   },
 
-  /** Todas las disposiciones (year + issue + number), paginadas por año. */
+  /** Todas las disposiciones (year + issue + disposition), paginadas por año. */
   async getDispositionsByYear(year: number): Promise<SitemapDisposition[]> {
     const rows = await prisma.$queryRaw<{ year: bigint; issue: bigint; disposition: bigint }[]>`
       SELECT i.year, i.issue, id.disposition
@@ -45,7 +45,7 @@ export const SitemapRepository = {
     return rows.map((r) => ({
       year: Number(r.year),
       issue: Number(r.issue),
-      number: String(r.disposition),
+      disposition: String(r.disposition),
     }));
   },
 

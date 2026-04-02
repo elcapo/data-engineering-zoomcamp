@@ -12,7 +12,7 @@ const FROM_WITH_JOIN = Prisma.sql`
   JOIN boc_dataset.issue i ON id._dlt_root_id = i._dlt_id
   LEFT JOIN boc_dataset.document d
     ON d.year = i.year AND d.issue = i.issue
-    AND CAST(d.number AS bigint) = id.disposition`;
+    AND d.disposition = id.disposition`;
 
 export const DispositionRepository = {
   /**
@@ -107,7 +107,7 @@ export const DispositionRepository = {
     if (cursorParsed) {
       // El ORDER BY es todo DESC, así que "siguiente página" = tupla menor
       conditions.push(
-        Prisma.sql`(i.year, i.issue, id.disposition) < (${cursorParsed.year}, ${cursorParsed.issue}, ${parseInt(cursorParsed.number, 10)})`
+        Prisma.sql`(i.year, i.issue, id.disposition) < (${cursorParsed.year}, ${cursorParsed.issue}, ${parseInt(cursorParsed.disposition, 10)})`
       );
     }
 
@@ -136,7 +136,7 @@ export const DispositionRepository = {
       if (filters.excludeOrg?.length) debugParts.push(`org NOT ILIKE ${JSON.stringify(filters.excludeOrg)}`);
       if (filters.dateRanges?.length) debugParts.push(`dateRanges: ${JSON.stringify(filters.dateRanges)}`);
       if (filters.excludeDateRanges?.length) debugParts.push(`excludeDateRanges: ${JSON.stringify(filters.excludeDateRanges)}`);
-      if (cursorParsed) debugParts.push(`cursor < (${cursorParsed.year}, ${cursorParsed.issue}, '${cursorParsed.number}')`);
+      if (cursorParsed) debugParts.push(`cursor < (${cursorParsed.year}, ${cursorParsed.issue}, '${cursorParsed.disposition}')`);
       const debugWhere = debugParts.length > 0 ? `WHERE ${debugParts.join(" AND ")}` : "";
       console.log(`[dispositions.search] ${debugWhere} LIMIT ${limit + 1}`);
     }
@@ -144,7 +144,7 @@ export const DispositionRepository = {
     type Row = {
       year: bigint;
       issue: bigint;
-      number: bigint | string;
+      disposition: bigint | string;
       section: string | null;
       subsection: string | null;
       organization: string | null;
@@ -160,7 +160,7 @@ export const DispositionRepository = {
 
     const rows = await prisma.$queryRaw<Row[]>`
       SELECT DISTINCT ON (i.year, i.issue, id.disposition)
-        i.year, i.issue, id.disposition AS number,
+        i.year, i.issue, id.disposition,
         COALESCE(d.section, id.section) AS section,
         COALESCE(d.subsection, id.subsection) AS subsection,
         COALESCE(d.organization, id.organization) AS organization,
@@ -203,7 +203,7 @@ export const DispositionRepository = {
       results,
       total: Number(countResult[0].count),
       nextCursor:
-        hasMore && last ? formatCursor(last.year, last.issue, last.number) : null,
+        hasMore && last ? formatCursor(last.year, last.issue, last.disposition) : null,
       prevCursor: cursor ?? null,
       facets,
     };
@@ -215,11 +215,11 @@ export const DispositionRepository = {
   async findByIdentifier(
     year: number,
     issue: number,
-    number: string
+    disposition: string
   ): Promise<Disposition | null> {
     const rows = await prisma.$queryRaw<DocumentRow[]>`
       SELECT
-        i.year, i.issue, id.disposition AS number,
+        i.year, i.issue, id.disposition,
         COALESCE(d.section, id.section) AS section,
         COALESCE(d.subsection, id.subsection) AS subsection,
         COALESCE(d.organization, id.organization) AS organization,
@@ -229,7 +229,7 @@ export const DispositionRepository = {
         d.body,
         id.html AS html_url
       ${FROM_WITH_JOIN}
-      WHERE i.year = ${BigInt(year)} AND i.issue = ${BigInt(issue)} AND id.disposition = ${BigInt(parseInt(number, 10))}
+      WHERE i.year = ${BigInt(year)} AND i.issue = ${BigInt(issue)} AND id.disposition = ${BigInt(parseInt(disposition, 10))}
       LIMIT 1
     `;
 
@@ -245,7 +245,7 @@ export const DispositionRepository = {
   ): Promise<Disposition[]> {
     const rows = await prisma.$queryRaw<DocumentRow[]>`
       SELECT
-        i.year, i.issue, id.disposition AS number,
+        i.year, i.issue, id.disposition,
         COALESCE(d.section, id.section) AS section,
         COALESCE(d.subsection, id.subsection) AS subsection,
         COALESCE(d.organization, id.organization) AS organization,
@@ -304,7 +304,7 @@ async function computeFacets(where: Prisma.Sql): Promise<SearchFacets> {
 type DocumentRow = {
   year: bigint;
   issue: bigint;
-  number: bigint | string;
+  disposition: bigint | string;
   section?: string | null;
   subsection?: string | null;
   organization?: string | null;
@@ -321,7 +321,7 @@ function toDisposition(row: DocumentRow): Disposition {
   return {
     year: Number(row.year),
     issue: Number(row.issue),
-    number: String(row.number),
+    disposition: String(row.disposition),
     section: row.section ?? "",
     subsection: row.subsection ?? undefined,
     organization: row.organization ?? "",
@@ -335,19 +335,19 @@ function toDisposition(row: DocumentRow): Disposition {
   };
 }
 
-function parseCursor(cursor: string): { year: number; issue: number; number: string } | null {
+function parseCursor(cursor: string): { year: number; issue: number; disposition: string } | null {
   const parts = cursor.split("-");
   if (parts.length < 3) return null;
   const [year, issue, ...rest] = parts;
   return {
     year: parseInt(year, 10),
     issue: parseInt(issue, 10),
-    number: rest.join("-"),
+    disposition: rest.join("-"),
   };
 }
 
-function formatCursor(year: number, issue: number, number: string): string {
-  return `${year}-${String(issue).padStart(3, "0")}-${number}`;
+function formatCursor(year: number, issue: number, disposition: string): string {
+  return `${year}-${String(issue).padStart(3, "0")}-${disposition}`;
 }
 
 function buildRefCondition(ref: RefFilter): Prisma.Sql | null {

@@ -127,7 +127,7 @@ export default async function BoletinPage({ params }: PageProps) {
                 </h2>
                 <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
                   {items.map((d) => (
-                    <li key={d.number}>
+                    <li key={d.disposition}>
                       <DispositionCard disposition={d} />
                     </li>
                   ))}

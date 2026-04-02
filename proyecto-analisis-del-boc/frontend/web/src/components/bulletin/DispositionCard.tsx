@@ -7,8 +7,8 @@ interface DispositionCardProps {
 }
 
 export function DispositionCard({ disposition }: DispositionCardProps) {
-  const detailUrl = `/disposicion/${disposition.year}/${disposition.issue}/${disposition.number}`;
-  const code = `BOC ${disposition.year}/${String(disposition.issue).padStart(3, "0")}/${disposition.number}`;
+  const detailUrl = `/disposicion/${disposition.year}/${disposition.issue}/${disposition.disposition}`;
+  const code = `BOC ${disposition.year}/${String(disposition.issue).padStart(3, "0")}/${disposition.disposition}`;
 
   return (
     <Card as="article" className="!p-0 flex flex-col">

@@ -9,15 +9,15 @@ import { SectionBreadcrumb } from "@/components/bulletin/SectionBreadcrumb";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
-  params: Promise<{ year: string; issue: string; number: string }>;
+  params: Promise<{ year: string; issue: string; disposition: string }>;
 }
 
 async function getDisposition(params: PageProps["params"]) {
-  const { year, issue, number } = await params;
+  const { year, issue, disposition } = await params;
   const y = parseInt(year, 10);
   const i = parseInt(issue, 10);
   if (isNaN(y) || isNaN(i)) return null;
-  return DispositionRepository.findByIdentifier(y, i, number);
+  return DispositionRepository.findByIdentifier(y, i, disposition);
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const title = disposition.title || "Disposición";
   const description = disposition.body
     ? disposition.body.slice(0, 160).replace(/\s+/g, " ").trim() + "..."
-    : `Disposición ${disposition.number} del BOC N\u00ba ${disposition.issue}/${disposition.year}`;
+    : `Disposición ${disposition.disposition} del BOC N\u00ba ${disposition.issue}/${disposition.year}`;
 
   return {
     title: `${title} — Bocana`,
@@ -40,7 +40,7 @@ export default async function DisposicionPage({ params }: PageProps) {
   if (!disposition) notFound();
 
   const paddedIssue = String(disposition.issue).padStart(3, "0");
-  const bocId = `BOC-${disposition.year}/${paddedIssue}/${disposition.number}`;
+  const bocId = `BOC-${disposition.year}/${paddedIssue}/${disposition.disposition}`;
 
   const bodyHtml = disposition.body
     ? await renderMarkdown(disposition.body)
@@ -54,7 +54,7 @@ export default async function DisposicionPage({ params }: PageProps) {
           { label: String(disposition.year), href: `/ano/${disposition.year}` },
           { label: paddedIssue, href: `/boletin/${disposition.year}/${disposition.issue}` },
         ]}
-        title={`Disposición ${disposition.year}/${paddedIssue}/${disposition.number}`}
+        title={`Disposición ${disposition.year}/${paddedIssue}/${disposition.disposition}`}
       />
 
       <article className="px-4 py-8 sm:px-6 lg:px-8">
