@@ -98,16 +98,18 @@ export const MetricsRepository = {
 
   async getProcessedBulletins(limit = 5): Promise<{ recentBulletins: ProcessedBulletin[]; oldestBulletins: ProcessedBulletin[] }> {
     const rows = await prisma.$queryRaw(Prisma.sql`
-      (SELECT year, issue, extracted_at AS processed_at, 'recent' AS _group
-       FROM boc_log.extraction_log
-       WHERE entity_type = 'issue' AND extracted_at IS NOT NULL
-       ORDER BY year DESC, issue DESC
+      (SELECT l.year, l.issue, e.extracted_at AS processed_at, 'recent' AS _group
+       FROM boc_log.download_log AS l
+       JOIN boc_log.extraction_log AS e ON e.entity_type = l.entity_type AND e.year = l.year AND e.issue = l.issue
+       WHERE l.entity_type = 'issue' AND e.extracted_at IS NOT NULL
+       ORDER BY l.year DESC, l.issue DESC
        LIMIT ${limit})
       UNION ALL
-      (SELECT year, issue, extracted_at AS processed_at, 'oldest' AS _group
-       FROM boc_log.extraction_log
-       WHERE entity_type = 'issue' AND extracted_at IS NOT NULL
-       ORDER BY year ASC, issue ASC
+      (SELECT l.year, l.issue, e.extracted_at AS processed_at, 'oldest' AS _group
+       FROM boc_log.download_log AS l
+       JOIN boc_log.extraction_log AS e ON e.entity_type = l.entity_type AND e.year = l.year AND e.issue = l.issue
+       WHERE l.entity_type = 'issue' AND e.extracted_at IS NOT NULL
+       ORDER BY l.year ASC, l.issue ASC
        LIMIT ${limit})
     `) as (ProcessedBulletinRow & { _group: string })[];
     const toItem = (r: ProcessedBulletinRow) => ({
@@ -123,16 +125,18 @@ export const MetricsRepository = {
 
   async getProcessedDispositions(limit = 5): Promise<{ recentDispositions: ProcessedDisposition[]; oldestDispositions: ProcessedDisposition[] }> {
     const rows = await prisma.$queryRaw(Prisma.sql`
-      (SELECT year, issue, disposition, extracted_at AS processed_at, 'recent' AS _group
-       FROM boc_log.extraction_log
-       WHERE entity_type = 'document' AND extracted_at IS NOT NULL
-       ORDER BY year DESC, issue DESC, disposition DESC
+      (SELECT l.year, l.issue, l.disposition, e.extracted_at AS processed_at, 'recent' AS _group
+       FROM boc_log.download_log AS l
+       JOIN boc_log.extraction_log AS e ON e.entity_type = l.entity_type AND e.year = l.year AND e.issue = l.issue AND e.disposition = l.disposition
+       WHERE l.entity_type = 'document' AND e.extracted_at IS NOT NULL
+       ORDER BY l.year DESC, l.issue DESC, l.disposition DESC
        LIMIT ${limit})
       UNION ALL
-      (SELECT year, issue, disposition, extracted_at AS processed_at, 'oldest' AS _group
-       FROM boc_log.extraction_log
-       WHERE entity_type = 'document' AND extracted_at IS NOT NULL
-       ORDER BY year ASC, issue ASC, disposition ASC
+      (SELECT l.year, l.issue, l.disposition, e.extracted_at AS processed_at, 'oldest' AS _group
+       FROM boc_log.download_log AS l
+       JOIN boc_log.extraction_log AS e ON e.entity_type = l.entity_type AND e.year = l.year AND e.issue = l.issue AND e.disposition = l.disposition
+       WHERE l.entity_type = 'document' AND e.extracted_at IS NOT NULL
+       ORDER BY l.year ASC, l.issue ASC, l.disposition ASC
        LIMIT ${limit})
     `) as (ProcessedDispositionRow & { _group: string })[];
     const toItem = (r: ProcessedDispositionRow) => ({
