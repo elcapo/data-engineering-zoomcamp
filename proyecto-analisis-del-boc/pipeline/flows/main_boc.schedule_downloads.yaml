@@ -5,37 +5,33 @@ description: |
 
   This flow is triggered daily at midnight. It always re-downloads the top-level archive page (the list of all years) and then re-downloads the issue index for the current year with **overwrite: true** so it picks up any new boletines published during the day. Because each download_years call has **extract** enabled by default, the year index is also re-extracted automatically.
 
-  Backfill runs are not supported: if the trigger date does not match the current year the flow exits as CANCELED.
-
-  Steps:
-    1. **download_archive**: re-downloads and re-extracts `archive/archive.html.gz`.
-    2. **if_not_current_year**: cancels the execution if the trigger date is from a past year.
-    3. **download_current_year**: calls **download_years** for the current year with overwrite enabled.
-
-variables:
-  is_not_current_year: "{{ trigger.date | date('yyyy') != now() | date('yyyy') }}"
-
 tasks:
+  - id: cron_active
+    type: io.kestra.plugin.core.kv.Get
+    key: cron_active
+    namespace: boc
+    errorOnMissing: true
+
+  - id: if_cron_non_active
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ not outputs.cron_active.value }}"
+    then:
+      - id: exit
+        type: io.kestra.plugin.core.execution.Exit
+        state: SUCCESS
+        description: "Skipping execution as the cron is disabled"
+
   - id: download_archive
     type: io.kestra.plugin.core.flow.Subflow
     namespace: boc
     flowId: download_archive
-
-  - id: if_not_current_year
-    type: io.kestra.plugin.core.flow.If
-    condition: "{{ render(vars.is_not_current_year) }}"
-    then:
-      - id: exit
-        type: io.kestra.plugin.core.execution.Exit
-        state: CANCELED
-        description: "Backfills are not supported for this job"
 
   - id: download_current_year
     type: io.kestra.plugin.core.flow.Subflow
     namespace: boc
     flowId: download_years
     inputs:
-      year: "{{ trigger.date | date('yyyy') }}"
+      year: "{{ date('yyyy') }}"
       overwrite: true
 
   - id: call_refresh_catalogs
@@ -50,3 +46,8 @@ triggers:
     type: io.kestra.plugin.core.trigger.Schedule
     description: Once a day
     cron: "0 0 * * *"
+
+  - id: minute_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    description: Once a minute
+    cron: "*/1 * * * *"

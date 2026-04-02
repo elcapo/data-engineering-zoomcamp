@@ -1,0 +1,11 @@
+id: prepare_flows
+namespace: boc
+description: |
+  Prepare this Kestra instance for executing flows of the `boc` namespace.
+
+tasks:
+  - id: activate_cron
+    type: io.kestra.plugin.core.kv.Set
+    key: cron_active
+    kvType: BOOLEAN
+    value: true
