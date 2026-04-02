@@ -55,7 +55,7 @@ export default async function MetricasPage() {
           <div className="grid gap-4 sm:grid-cols-3">
             <MetricKPI
               label="Años"
-              processed={archiveSummary.downloadedYears}
+              processed={archiveSummary.extractedYears}
               total={archiveSummary.totalYears}
             />
             <MetricKPI
