@@ -31,7 +31,7 @@ tasks:
 
   - id: iterate_issues
     type: io.kestra.plugin.core.flow.ForEach
-    values: "{{ range(inputs.from_year, inputs.to_year) }}"
+    values: "{{ range(inputs.from_year, inputs.to_year) | reverse }}"
     tasks:
     - id: call_download_years
       type: io.kestra.plugin.core.flow.Subflow

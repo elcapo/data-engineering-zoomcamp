@@ -39,7 +39,7 @@ inputs:
 tasks:
   - id: iterate_documents
     type: io.kestra.plugin.core.flow.ForEach
-    values: "{{ range(inputs.from_document, inputs.to_document) }}"
+    values: "{{ range(inputs.from_document, inputs.to_document) | reverse }}"
     tasks:
       - id: call_download_documents
         type: io.kestra.plugin.core.flow.Subflow
