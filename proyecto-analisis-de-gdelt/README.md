@@ -1,6 +1,6 @@
 # Real-Time GDELT Event Stream Analysis
 
-A fully local, reproducible pipeline for ingesting, processing, and visualizing global events from the [GDELT Project](https://www.gdeltproject.org/) in near real-time. Everything runs in Docker — no cloud accounts required.
+A fully local and reproducible pipeline for ingesting, processing, and visualizing global events from the [GDELT Project](https://www.gdeltproject.org/) in near real-time. Everything runs in Docker, so no cloud accounts required.
 
 ## What is GDELT?
 
@@ -12,7 +12,17 @@ The **Global Database of Events, Language and Tone** (GDELT) monitors news media
 | **Mentions** | Every news article that references an event, with publication timestamps. Tracks how stories spread through global media over time. |
 | **GKG** (Global Knowledge Graph) | Entities, themes, emotions, and counts extracted from articles. Connects people, organizations, locations, and topics. |
 
-Data source: `http://data.gdeltproject.org/gdeltv2/lastupdate.txt` (updated every 15 minutes, lists the latest CSV files for all three tables).
+The data source is updated every 15 minutes, lists the latest CSV files for all three tables:
+
+- http://data.gdeltproject.org/gdeltv2/lastupdate.txt
+
+The file looks like this:
+
+```csv
+48976 ebf5fad8ed2e59f211b27e9e785be8ff http://data.gdeltproject.org/gdeltv2/20260403100000.export.CSV.zip
+66555 c349f402d4aea4827c6e51e228286385 http://data.gdeltproject.org/gdeltv2/20260403100000.mentions.CSV.zip
+3311301 561211ce6b0abb5fac76988fff540acb http://data.gdeltproject.org/gdeltv2/20260403100000.gkg.csv.zip
+```
 
 ## Architecture
 
