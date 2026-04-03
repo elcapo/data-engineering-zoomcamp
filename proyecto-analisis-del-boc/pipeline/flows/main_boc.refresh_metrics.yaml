@@ -1,0 +1,53 @@
+id: refresh_metrics
+namespace: boc
+description: |
+  Materialise the coverage metrics used by the frontend into the
+  **boc_metrics** schema.
+
+  Each run truncates and repopulates the four tables so the data
+  reflects the current state of the download and extraction logs.
+
+  This flow is safe to run at any time and should be scheduled after
+  extraction flows complete.
+
+tasks:
+  - id: refresh
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import os
+      from pathlib import Path
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+
+      sql_dir = Path("/app/sql/refresh_metrics")
+
+      files = [
+          "archive_completion.sql",
+          "year_overview.sql",
+          "processed_bulletins.sql",
+          "processed_dispositions.sql",
+      ]
+
+      with conn.cursor() as cur:
+          for f in files:
+              cur.execute((sql_dir / f).read_text())
+              print(f"  {f}: {cur.rowcount} rows")
+
+      conn.commit()
+      conn.close()

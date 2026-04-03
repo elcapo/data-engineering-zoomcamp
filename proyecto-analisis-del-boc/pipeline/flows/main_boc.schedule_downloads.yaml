@@ -41,6 +41,13 @@ tasks:
     wait: true
     transmitFailed: true
 
+  - id: call_refresh_metrics
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: boc
+    flowId: refresh_metrics
+    wait: true
+    transmitFailed: true
+
 triggers:
   - id: daily_schedule
     type: io.kestra.plugin.core.trigger.Schedule

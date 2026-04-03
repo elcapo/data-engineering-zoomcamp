@@ -31,6 +31,13 @@ tasks:
     inputs:
       limit: 5
 
+  - id: call_refresh_metrics
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: boc
+    flowId: refresh_metrics
+    wait: true
+    transmitFailed: true
+
 triggers:
   - id: every_10_minutes_schedule
     type: io.kestra.plugin.core.trigger.Schedule

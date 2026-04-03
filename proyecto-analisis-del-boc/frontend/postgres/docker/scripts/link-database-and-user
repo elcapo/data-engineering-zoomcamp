@@ -24,5 +24,11 @@ psql -q -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
 	GRANT ALL PRIVILEGES ON DATABASE $DATABASE TO $USER;
 EOSQL
 
+# Since PostgreSQL 15 GRANT ALL ON DATABASE no longer includes CREATE.
+# Grant it explicitly so the user can create schemas.
+psql -q -v ON_ERROR_STOP=1 --username postgres -d $DATABASE <<-EOSQL
+	GRANT CREATE ON DATABASE $DATABASE TO $USER;
+EOSQL
+
 echo "The database $DATABASE was linked with the user $USER." \
  | grep --color "^\|$DATABASE\|$USER"

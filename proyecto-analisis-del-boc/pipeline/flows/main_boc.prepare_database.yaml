@@ -42,10 +42,15 @@ tasks:
       files = [
           "schema_boc_dataset.sql",
           "schema_boc_log.sql",
+          "schema_boc_metrics.sql",
           "table_download_log.sql",
           "table_extraction_log.sql",
           "table_sections.sql",
           "table_organizations.sql",
+          "table_archive_completion.sql",
+          "table_year_overview.sql",
+          "table_processed_bulletins.sql",
+          "table_processed_dispositions.sql",
       ]
 
       with conn.cursor() as cur:
