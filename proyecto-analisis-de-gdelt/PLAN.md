@@ -6,7 +6,7 @@ The project has a complete README specification and architecture diagram but zer
 
 ## Phase 1: Infrastructure Foundation
 
-**Goal**: Database schema + docker-compose with base services running.
+**Goal**: Database schema + docker-compose with base services running, including Kestra as orchestrator.
 
 ### 1.1 `sql/init.sql`
 
@@ -21,26 +21,39 @@ Define all services:
 
 | Service | Image | Ports |
 |---------|-------|-------|
-| redpanda | `redpandadata/redpanda:latest` | 9092 |
-| redpanda-console | `redpandadata/console:latest` | 8080 |
-| postgres | `postgres:16` | 5432 |
+| kestra | `kestra/kestra:v1.3` | 8082 |
+| redpanda | `redpandadata/redpanda:v25.3` | 9092 |
+| redpanda-console | `redpandadata/console:v3.7.0` | 8080 |
+| postgres | `postgres:18` | 5432 |
 | flink-jobmanager | `build: ./flink` | 8081 |
 | flink-taskmanager | `build: ./flink` | - |
 | producer | `build: ./producer` | - |
-| grafana | `build: ./grafana` | 3000 |
+| grafana | `grafana/grafana:12.4` | 3000 |
 
 Key config:
+- Kestra: mount `kestra/flows/` to load flow definitions; uses its own internal database (H2 by default); expose port 8082
 - Redpanda: `--smp 1 --memory 512M --overprovisioned`, advertise as `redpanda:9092`
 - Topic creation via `rpk topic create gdelt.events gdelt.mentions gdelt.gkg` in an init service
 - PostgreSQL: user=gdelt, password=gdelt, db=gdelt, mount `sql/init.sql` to `/docker-entrypoint-initdb.d/`
-- Healthchecks on redpanda (`rpk cluster health`) and postgres (`pg_isready`)
-- Service dependency chain: redpanda -> producer, flink; postgres -> flink, grafana
+- Healthchecks on redpanda (`rpk cluster health`), postgres (`pg_isready`), and kestra (HTTP)
+- Service dependency chain: redpanda -> kestra; kestra -> producer; postgres -> flink, grafana
 
-**Verify**: `docker compose up -d redpanda redpanda-console postgres` - services start, Redpanda Console at :8080, psql connects.
+**Verify**: `docker compose up -d kestra redpanda redpanda-console postgres` - services start, Kestra UI at :8082, Redpanda Console at :8080, psql connects.
 
-## Phase 2: Python Producer
+## Phase 2: Kestra Orchestration + Python Producer
 
-**Goal**: Poll GDELT, parse CSVs, publish JSON records to Redpanda.
+**Goal**: Kestra triggers the producer every 15 minutes. The producer downloads GDELT CSVs and publishes JSON records to Redpanda.
+
+### 2.0 `kestra/flows/gdelt_ingest.yml`
+
+Kestra flow definition:
+- **id**: `gdelt-ingest`, **namespace**: `gdelt`
+- **triggers**: `schedule` with cron `*/15 * * * *` (every 15 minutes)
+- **tasks**: Single `docker` task that runs the producer container
+  - Mount the Docker socket or use Kestra's `io.kestra.plugin.scripts.python.Script` task to execute the producer
+  - Pass Redpanda broker address as environment variable
+  - The producer runs once (no internal loop), processes the latest GDELT update, then exits
+- **retry**: Kestra-level retry with maxAttempt=3 and exponential backoff (replaces producer-internal retry)
 
 ### Files to create
 
@@ -52,13 +65,12 @@ Key config:
   - `parse_events(csv_text)` - Tab-split, extract columns by index (0,1,5,6,7,15,16,17,26,28,30,31,32,34,52,53,56,57,59,60), return list of dicts
   - `parse_mentions(csv_text)` - Indices 0,1,2,4,13
   - `parse_gkg(csv_text)` - Indices 0,1,3,4,7,9,10,15; parse tone subfield (7 comma-separated floats)
-- `producer/main.py` - Orchestration:
+- `producer/main.py` - Single-run execution (no polling loop; Kestra handles scheduling):
   - Init KafkaProducer with JSON serializer
-  - Poll every 60s, track last processed URL timestamp to avoid reprocessing
+  - Fetch the latest GDELT update, download and parse CSVs
   - Publish to `gdelt.events`, `gdelt.mentions`, `gdelt.gkg` topics
   - Use GlobalEventID/GKG RecordID as Kafka key
-  - Retry HTTP with exponential backoff (3 attempts)
-  - Log record counts per cycle
+  - Log record counts and exit with code 0 on success, non-zero on failure (Kestra uses exit code for retry decisions)
 
 ### GDELT parsing notes
 
@@ -68,7 +80,7 @@ Key config:
 - GKG themes: semicolon-delimited
 - GKG tone: `tone,pos,neg,polarity,activity,selfgroup,wordcount`
 
-**Verify**: `docker compose up -d redpanda producer` then `rpk topic consume gdelt.events --num 5`
+**Verify**: `docker compose up -d kestra redpanda` then trigger the flow manually from Kestra UI at :8082 and check `rpk topic consume gdelt.events --num 5`
 
 ## Phase 3: Flink Stream Processing
 
@@ -117,7 +129,7 @@ Add a `flink-job-submitter` one-off service in docker-compose.
 
 ### Files to create
 
-- `grafana/Dockerfile` - Copy provisioning/ into image
+- `grafana/Dockerfile` - Based on `grafana/grafana:12.4.0` (not `grafana-oss`, deprecated from 12.4.0 onwards). Copy provisioning/ into image
 - `grafana/provisioning/datasources/postgres.yml` - PostgreSQL connection (host=postgres, db=gdelt, sslmode=disable)
 - `grafana/provisioning/dashboards/dashboard.yml` - File provider pointing to provisioning dir
 - `grafana/provisioning/dashboards/gdelt.json` - Dashboard with 6 panels:
@@ -136,9 +148,10 @@ Add a `flink-job-submitter` one-off service in docker-compose.
 ## Phase 5: Integration Test & Polish
 
 1. Full `docker compose up -d` - all services start cleanly
-2. Wait ~20 minutes for first data cycle
-3. Verify end-to-end: GDELT -> Redpanda topics -> Flink RUNNING -> PostgreSQL rows -> Grafana panels
-4. Polish:
+2. Verify Kestra UI at :8082 shows the `gdelt-ingest` flow with a 15-min schedule
+3. Wait ~20 minutes for first scheduled execution
+4. Verify end-to-end: Kestra triggers -> Producer -> Redpanda topics -> Flink RUNNING -> PostgreSQL rows -> Grafana panels
+5. Polish:
    - Producer deduplication (track last URL in file volume)
    - Flink: `ignore-parse-errors` on Kafka sources
    - Redpanda topic retention: 24h
@@ -156,5 +169,5 @@ Add a `flink-job-submitter` one-off service in docker-compose.
 ## Build Order
 
 ```
-sql/init.sql -> docker-compose.yml (infra) -> producer/ -> flink/ -> grafana/ -> integration test
+sql/init.sql -> docker-compose.yml (infra) -> producer/ -> kestra/flows/ -> flink/ -> grafana/ -> integration test
 ```

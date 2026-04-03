@@ -32,7 +32,8 @@ The file looks like this:
 
 | Component | Technology | Role |
 |-----------|-----------|------|
-| **Producer** | Python | Polls GDELT every 15 min, downloads CSV files, parses them, and publishes records to Redpanda topics. |
+| **Orchestrator** | Kestra | Triggers the producer every 15 minutes via a scheduled flow. Provides observability, retry logic, and execution history through its web UI. |
+| **Producer** | Python | Downloads the latest GDELT CSV files, parses them, and publishes records to Redpanda topics. Executed as a Kestra task. |
 | **Broker** | Redpanda | Kafka-compatible message broker. Receives raw events and serves them to Flink. Lightweight, single-binary, no JVM. |
 | **Stream processor** | Apache Flink | Consumes events from Redpanda, applies windowed aggregations (event counts by country, conflict trends, actor analysis), and writes results to PostgreSQL. |
 | **Storage** | PostgreSQL | Stores both raw events and pre-aggregated metrics for Grafana to query. |
@@ -58,6 +59,9 @@ The file looks like this:
 ## Project Structure
 
 - **docker-compose.yml**: Definition of all the services with default values
+- **kestra/**: Orchestration
+    - **flows/**: YAML flow definitions
+        - **gdelt_ingest.yml**: Scheduled flow that triggers the producer every 15 minutes
 - **producer/**: Data ingest and publication
     - **Dockerfile**
     - **pyproject.toml**: Python dependencies (requests, kafka-python-ng)
@@ -79,11 +83,12 @@ The file looks like this:
 
 | Tool | Version | Why |
 |------|---------|-----|
+| **Kestra** | 1.3 | Workflow orchestrator with scheduling, retries, and a built-in UI. Triggers the producer on a 15-minute cron. |
 | **Python** | 3.12 | Producer scripts and Flink jobs. |
-| **Redpanda** | Latest | Kafka API-compatible broker, zero-JVM, trivial Docker setup. |
+| **Redpanda** | 25.3 | Kafka API-compatible broker, zero-JVM, trivial Docker setup. |
 | **Apache Flink** | 1.20 | Windowed stream processing with exactly-once semantics. |
-| **PostgreSQL** | 16 | Reliable, widely available relational storage. |
-| **Grafana** | Latest | Dashboards with native PostgreSQL support and geo-map panels. |
+| **PostgreSQL** | 18.3 | Reliable, widely available relational storage. |
+| **Grafana** | 12.4 | Dashboards with native PostgreSQL support and geo-map panels. |
 | **Docker / Compose** |  | Single `docker compose up` to run everything. |
 
 ### Python Dependencies (kept minimal)
@@ -112,18 +117,20 @@ This starts all services:
 
 | Service | Port (by default) |
 |---------|------|
+| Kestra UI | `localhost:8082` |
 | Redpanda Console | `localhost:8080` |
 | Redpanda Broker (Kafka API) | `localhost:9092` |
 | Flink Web UI | `localhost:8081` |
 | PostgreSQL | `localhost:5432` |
 | Grafana | `localhost:3000` (admin/admin) |
 
-The producer begins polling GDELT immediately. After the first 15-minute cycle, data flows through:
+Kestra triggers the producer every 15 minutes. After the first execution, data flows through:
 
-1. Redpanda
-2. Flink
-3. PostgreSQL
-4. Grafana
+1. Kestra (orchestration)
+2. Redpanda
+3. Flink
+4. PostgreSQL
+5. Grafana
 
 ### Verify
 
