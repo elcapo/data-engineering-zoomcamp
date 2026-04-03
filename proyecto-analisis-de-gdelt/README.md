@@ -89,6 +89,7 @@ The file looks like this:
 | **Apache Flink** | 1.20 | Windowed stream processing with exactly-once semantics. |
 | **PostgreSQL** | 18.3 | Reliable, widely available relational storage. |
 | **Grafana** | 12.4 | Dashboards with native PostgreSQL support and geo-map panels. |
+| **uv** | latest | Fast Python package manager. Used to install producer dependencies at build time. |
 | **Docker / Compose** |  | Single `docker compose up` to run everything. |
 
 ### Python Dependencies (kept minimal)
@@ -119,10 +120,10 @@ cp env.example .env
 ```bash
 git clone https://github.com/elcapo/data-engineering-zoomcamp/
 cd data-engineering-zoomcamp/proyecto-analisis-de-gdelt
-docker compose up -d
+docker compose up -d --build
 ```
 
-This starts all services:
+This builds all images and starts all services:
 
 | Service | Port (by default) |
 |---------|------|
@@ -133,7 +134,13 @@ This starts all services:
 | PostgreSQL | `localhost:5432` |
 | Grafana | `localhost:3000` (admin/admin) |
 
-Kestra triggers the producer every 15 minutes. After the first execution, data flows through:
+Kestra triggers the producer every 15 minutes. To run the first ingestion immediately without waiting for the schedule:
+
+```bash
+docker compose run --rm producer
+```
+
+After the first execution, data flows through:
 
 1. Kestra (orchestration)
 2. Redpanda
