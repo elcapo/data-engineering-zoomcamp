@@ -6,3 +6,8 @@ dependencies = [
     "requests>=2.32",
     "kafka-python-ng>=2.2",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]

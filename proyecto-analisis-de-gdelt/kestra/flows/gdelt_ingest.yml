@@ -9,10 +9,12 @@ triggers:
 tasks:
   - id: ingest
     type: io.kestra.plugin.scripts.python.Commands
-    runner: DOCKER
-    docker:
-      image: gdelt-producer
+    pythonVersion: "python: 3.12"
+    containerImage: gdelt-producer
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
       networkMode: gdelt-net
+      pullPolicy: NEVER
     env:
       KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
     commands:

@@ -73,12 +73,13 @@ services:
   kestra:
     image: kestra/kestra:v1.3
     command: server standalone
+    user: "root"
     ports:
       - "${KESTRA_PORT:-8082}:8080"
     volumes:
       - ./kestra/flows:/opt/kestra/flows:ro
       - kestra-data:/app/storage
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKER_SOCKET_DIR:-/var/run}/docker.sock:/var/run/docker.sock
     environment:
       KESTRA_CONFIGURATION: |
         kestra:
@@ -92,7 +93,10 @@ services:
             type: memory
           server:
             basic-auth:
-              enabled: false
+              username: ${KESTRA_USER:-admin@kestra.io} # it must be a valid email address
+              password: ${KESTRA_PASSWORD:-Admin1234!}  # it must be at least 8 characters long with uppercase letter and a number
+          tutorial-flows:
+            enabled: false
     depends_on:
       redpanda:
         condition: service_healthy
