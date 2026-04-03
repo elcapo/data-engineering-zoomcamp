@@ -105,6 +105,15 @@ The file looks like this:
 
 - Docker and Docker Compose
 
+### Configuration
+
+All ports, credentials, and tuning knobs are configurable via environment variables with sensible defaults. See [`env.example`](env.example) for the full list. To override any value, copy the file and uncomment what you need:
+
+```bash
+cp env.example .env
+# edit .env as needed
+```
+
 ### Run
 
 ```bash

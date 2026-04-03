@@ -1,0 +1,132 @@
+services:
+
+  # --- Message Broker ---
+
+  redpanda:
+    image: redpandadata/redpanda:v25.3.13
+    command:
+      - redpanda
+      - start
+      - --smp=1
+      - --memory=512M
+      - --overprovisioned
+      - --kafka-addr=internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr=internal://redpanda:9092,external://localhost:${REDPANDA_PORT:-9092}
+    ports:
+      - "${REDPANDA_PORT:-9092}:19092"
+    healthcheck:
+      test: ["CMD", "rpk", "cluster", "health", "--api-urls=redpanda:9644"]
+      interval: 10s
+      retries: 5
+      start_period: 15s
+
+  redpanda-console:
+    image: redpandadata/console:v3.7.0
+    ports:
+      - "${REDPANDA_CONSOLE_PORT:-8080}:8080"
+    environment:
+      KAFKA_BROKERS: redpanda:9092
+    depends_on:
+      redpanda:
+        condition: service_healthy
+
+  redpanda-init:
+    image: redpandadata/redpanda:v25.3.13
+    entrypoint: ["rpk", "topic", "create", "gdelt.events", "gdelt.mentions", "gdelt.gkg", "--brokers", "redpanda:9092", "--partitions", "1", "--replicas", "1"]
+    depends_on:
+      redpanda:
+        condition: service_healthy
+
+  # --- Database ---
+
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-gdelt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gdelt}
+      POSTGRES_DB: ${POSTGRES_DB:-gdelt}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gdelt}"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+
+  # --- Orchestrator ---
+
+  kestra:
+    image: kestra/kestra:v1.3
+    command: server standalone
+    ports:
+      - "${KESTRA_PORT:-8082}:8080"
+    volumes:
+      - ./kestra/flows:/opt/kestra/flows:ro
+      - kestra-data:/app/storage
+    environment:
+      KESTRA_CONFIGURATION: |
+        kestra:
+          repository:
+            type: memory
+          storage:
+            type: local
+            local:
+              base-path: /app/storage
+          queue:
+            type: memory
+          server:
+            basic-auth:
+              enabled: false
+    depends_on:
+      redpanda:
+        condition: service_healthy
+
+  # --- Stream Processing ---
+
+  flink-jobmanager:
+    build: ./flink
+    command: jobmanager
+    ports:
+      - "${FLINK_PORT:-8081}:8081"
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: flink-jobmanager
+    depends_on:
+      redpanda:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  flink-taskmanager:
+    build: ./flink
+    command: taskmanager
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: flink-jobmanager
+        taskmanager.numberOfTaskSlots: ${FLINK_TASK_SLOTS:-4}
+    depends_on:
+      - flink-jobmanager
+
+  # --- Visualization ---
+
+  grafana:
+    image: grafana/grafana:12.4
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  kestra-data:
+  grafana-data:
