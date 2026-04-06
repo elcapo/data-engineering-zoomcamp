@@ -111,6 +111,10 @@ services:
     environment:
       FLINK_PROPERTIES: |
         jobmanager.rpc.address: flink-jobmanager
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      PG_JDBC_URL: jdbc:postgresql://postgres:5432/gdelt
+      POSTGRES_USER: ${POSTGRES_USER:-gdelt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gdelt}
     depends_on:
       redpanda:
         condition: service_healthy
@@ -124,8 +128,27 @@ services:
       FLINK_PROPERTIES: |
         jobmanager.rpc.address: flink-jobmanager
         taskmanager.numberOfTaskSlots: ${FLINK_TASK_SLOTS:-4}
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      PG_JDBC_URL: jdbc:postgresql://postgres:5432/gdelt
+      POSTGRES_USER: ${POSTGRES_USER:-gdelt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gdelt}
     depends_on:
       - flink-jobmanager
+
+  flink-job-submitter:
+    build: ./flink
+    command: /opt/flink/submit-jobs.sh
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: flink-jobmanager
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      PG_JDBC_URL: jdbc:postgresql://postgres:5432/gdelt
+      POSTGRES_USER: ${POSTGRES_USER:-gdelt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gdelt}
+    depends_on:
+      - flink-jobmanager
+      - flink-taskmanager
+    restart: "no"
 
   # --- Visualization ---
 
