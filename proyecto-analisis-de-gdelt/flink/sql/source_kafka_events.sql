@@ -20,7 +20,7 @@ CREATE TABLE kafka_events (
     `date_added`       BIGINT,
     `source_url`       STRING,
     `event_ts` AS TO_TIMESTAMP(CAST(`date_added` AS STRING), 'yyyyMMddHHmmss'),
-    WATERMARK FOR `event_ts` AS `event_ts` - INTERVAL '16' MINUTE
+    WATERMARK FOR `event_ts` AS `event_ts`
 ) WITH (
     'connector'                      = 'kafka',
     'topic'                          = 'gdelt.events',

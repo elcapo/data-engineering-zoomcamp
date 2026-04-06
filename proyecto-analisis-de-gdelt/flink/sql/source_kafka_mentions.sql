@@ -5,7 +5,7 @@ CREATE TABLE kafka_mentions (
     `mention_source`     STRING,
     `mention_doc_tone`   DOUBLE,
     `mention_ts` AS TO_TIMESTAMP(CAST(`mention_time_date` AS STRING), 'yyyyMMddHHmmss'),
-    WATERMARK FOR `mention_ts` AS `mention_ts` - INTERVAL '16' MINUTE
+    WATERMARK FOR `mention_ts` AS `mention_ts`
 ) WITH (
     'connector'                      = 'kafka',
     'topic'                          = 'gdelt.mentions',

@@ -1,11 +1,13 @@
 """Tests for GDELT parsing and type coercion logic."""
 
 import textwrap
+from unittest.mock import MagicMock
 
 import pytest
 
 from gdelt import (
     _coerce,
+    download_and_extract,
     fetch_latest_urls,
     parse_events,
     parse_gkg,
@@ -187,6 +189,63 @@ class TestParseGkg:
         assert r["positive_score"] == pytest.approx(2.0)
         assert r["negative_score"] is None
         assert r["word_count"] is None
+
+
+# --- download_and_extract ---
+
+class TestDownloadAndExtract:
+    def _make_zip_bytes(self, csv_content: str) -> bytes:
+        import io, zipfile
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as zf:
+            zf.writestr("data.csv", csv_content)
+        return buf.getvalue()
+
+    def test_retries_on_404_then_succeeds(self, monkeypatch):
+        zip_bytes = self._make_zip_bytes("col1\tcol2\n")
+        resp_404 = MagicMock(status_code=404)
+        resp_404.raise_for_status.side_effect = Exception("404")
+        resp_200 = MagicMock(status_code=200, content=zip_bytes)
+
+        call_count = 0
+        def fake_get(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            return resp_404 if call_count == 1 else resp_200
+
+        monkeypatch.setattr("gdelt.requests.get", fake_get)
+        monkeypatch.setattr("gdelt.time.sleep", lambda _: None)
+
+        result = download_and_extract("http://example.com/test.zip", retries=3, base_delay=1)
+        assert result == "col1\tcol2\n"
+        assert call_count == 2
+
+    def test_raises_after_all_retries_exhausted(self, monkeypatch):
+        resp_404 = MagicMock(status_code=404)
+        resp_404.raise_for_status.side_effect = Exception("404")
+
+        monkeypatch.setattr("gdelt.requests.get", lambda *a, **kw: resp_404)
+        monkeypatch.setattr("gdelt.time.sleep", lambda _: None)
+
+        with pytest.raises(Exception, match="404"):
+            download_and_extract("http://example.com/test.zip", retries=2, base_delay=1)
+
+    def test_non_404_error_raises_immediately(self, monkeypatch):
+        resp_500 = MagicMock(status_code=500)
+        resp_500.raise_for_status.side_effect = Exception("500")
+
+        call_count = 0
+        def fake_get(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            return resp_500
+
+        monkeypatch.setattr("gdelt.requests.get", fake_get)
+        monkeypatch.setattr("gdelt.time.sleep", lambda _: None)
+
+        with pytest.raises(Exception, match="500"):
+            download_and_extract("http://example.com/test.zip", retries=3, base_delay=1)
+        assert call_count == 1
 
 
 # --- fetch_latest_urls ---

@@ -11,7 +11,7 @@ CREATE TABLE kafka_gkg (
     `negative_score`  DOUBLE,
     `word_count`      INT,
     `gkg_ts` AS TO_TIMESTAMP(CAST(`gkg_date` AS STRING), 'yyyyMMddHHmmss'),
-    WATERMARK FOR `gkg_ts` AS `gkg_ts` - INTERVAL '16' MINUTE
+    WATERMARK FOR `gkg_ts` AS `gkg_ts`
 ) WITH (
     'connector'                      = 'kafka',
     'topic'                          = 'gdelt.gkg',
