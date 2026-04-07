@@ -14,9 +14,9 @@ description: |
     - Output:  `boc-markdown/documents/YEAR/NNN/boc-a-YEAR-NNN-NUMBER.md.gz`
 
   Key fields loaded into **boc_dataset.document**: `year`, `issue`, `number`,
-  `date`, `section`, `organization`, `identifier`, `pdf`, `title`, `body`,
-  `body_tsv` (the same generated tsvector + GIN index used by extract_documents).
-  Fields not present in the PDF (`document`, `entity`, `subsection`,
+  `date`, `entity`, `section`, `organization`, `identifier`, `pdf`, `title`,
+  `body`, `body_tsv` (the same generated tsvector + GIN index used by
+  extract_documents). Fields not present in the PDF (`document`, `subsection`,
   `signature`, `disposition`) are left NULL.
 
   Inputs:
@@ -161,7 +161,7 @@ tasks:
           "disposition":  None,
           "document":     None,
           "date":         frontmatter.get("date"),
-          "entity":       None,
+          "entity":       frontmatter.get("entity"),
           "section":      frontmatter.get("section"),
           "subsection":   None,
           "organization": frontmatter.get("organization"),
@@ -268,7 +268,7 @@ tasks:
               "INSERT INTO boc_log.extraction_log (object_key, entity_type, year, issue, disposition) "
               "VALUES (%s, %s, %s, %s, %s) "
               "ON CONFLICT (object_key) DO UPDATE SET extracted_at = now()",
-              (os.environ["OBJECT_KEY"], "document_pdf",
+              (os.environ["OBJECT_KEY"], "document",
                int(os.environ["YEAR"]), int(os.environ["ISSUE"]), int(os.environ["NUMBER"])),
           )
 

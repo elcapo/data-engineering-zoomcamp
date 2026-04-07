@@ -66,6 +66,12 @@ class TestFrontmatter:
             in result_2019
         )
 
+    def test_entity(self, result_2019):
+        assert (
+            'entity: "Juzgado de Primera Instancia nº 2 de San Bartolomé de Tirajana"'
+            in result_2019
+        )
+
     def test_identifier(self, result_2019):
         assert 'identifier: "BOC-A-2019-229-5624"' in result_2019
 

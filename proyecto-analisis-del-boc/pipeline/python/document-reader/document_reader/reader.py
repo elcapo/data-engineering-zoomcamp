@@ -356,6 +356,8 @@ def _build_markdown(doc: _Document) -> str:
         lines.append(f"number: {doc.number}")
     if doc.date is not None:
         lines.append(f"date: {_yaml_str(doc.date)}")
+    if doc.organization is not None:
+        lines.append(f"entity: {_yaml_str(doc.organization)}")
     if doc.section is not None:
         lines.append(f"section: {_yaml_str(doc.section)}")
     if doc.organization is not None:

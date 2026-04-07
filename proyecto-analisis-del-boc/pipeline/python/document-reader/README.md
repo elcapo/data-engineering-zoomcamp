@@ -38,6 +38,7 @@ year: 2019
 issue: 229
 number: 5624
 date: "2019-11-26"
+entity: "Juzgado de Primera Instancia nº 2 de San Bartolomé de Tirajana"
 section: "IV. Administración de Justicia"
 organization: "Juzgado de Primera Instancia nº 2 de San Bartolomé de Tirajana"
 identifier: "BOC-A-2019-229-5624"
@@ -61,6 +62,7 @@ HACE SABER: que en este Juzgado se ha dictado sentencia en los autos que luego s
 | `issue` | Número del boletín |
 | `number` | Número de la disposición dentro del boletín |
 | `date` | Fecha de publicación (ISO 8601) |
+| `entity` | Organismo emisor (mismo valor que `organization`, replicado por compatibilidad con `document-parser`) |
 | `section` | Sección del boletín (p. ej. "IV. Administración de Justicia") |
 | `organization` | Organismo emisor |
 | `identifier` | Código CVE de la disposición (p. ej. `BOC-A-2019-229-5624`) |
