@@ -1,0 +1,275 @@
+id: extract_documents_from_pdf
+namespace: boc
+description: |
+  Convert a disposition PDF to Markdown, store it in MinIO, and load its
+  structured data into PostgreSQL.
+
+  This is the PDF counterpart of **extract_documents** for dispositions whose
+  HTML version is not available. It uses the **document-reader** CLI tool
+  (instead of document-parser) to read the raw PDF and produce Markdown with
+  YAML frontmatter.
+
+  Storage paths:
+    - Source:  `boc-raw/documents/YEAR/NNN/boc-a-YEAR-NNN-NUMBER.pdf.gz`
+    - Output:  `boc-markdown/documents/YEAR/NNN/boc-a-YEAR-NNN-NUMBER.md.gz`
+
+  Key fields loaded into **boc_dataset.document**: `year`, `issue`, `number`,
+  `date`, `section`, `organization`, `identifier`, `pdf`, `title`, `body`,
+  `body_tsv` (the same generated tsvector + GIN index used by extract_documents).
+  Fields not present in the PDF (`document`, `entity`, `subsection`,
+  `signature`, `disposition`) are left NULL.
+
+  Inputs:
+    - **year**: the year of the boletín.
+    - **issue**: the issue number within that year.
+    - **number**: the global disposition number (CVE number, e.g. 5624 in `boc-a-2019-229-5624`).
+
+  Steps:
+    1. **read**: downloads **documents/YEAR/NNN/boc-a-YEAR-NNN-NUMBER.pdf.gz** from MinIO.
+    2. **decompress**: decompresses the GZIP file.
+    3. **parse**: runs `document-reader` to extract the disposition as **document.md**.
+    4. **compress / publish**: compresses the Markdown and uploads it to `boc-markdown`.
+    5. **load**: parses the frontmatter and body and merges the record into
+       **boc_dataset.document** via dlt (merge on `year` + `issue` + `number`).
+    6. **ensure_fts**: adds `body_tsv` (generated tsvector) and its GIN index if not yet present.
+    7. **log_extraction**: upserts a row in **boc_log.extraction_log** (entity_type = `document_pdf`).
+       The global `number` is stored in the `disposition` column since the table has no
+       dedicated `number` column.
+
+inputs:
+  - id: year
+    type: INT
+    required: true
+    displayName: Year
+
+  - id: issue
+    type: INT
+    required: true
+    displayName: Issue
+
+  - id: number
+    type: INT
+    required: true
+    displayName: Number
+
+variables:
+  issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
+  identifier: "boc-a-{{ inputs.year }}-{{ render(vars.issue_padded) }}-{{ inputs.number }}"
+  raw_path: "documents/{{ inputs.year }}/{{ render(vars.issue_padded) }}/{{ render(vars.identifier) }}.pdf.gz"
+  md_path: "documents/{{ inputs.year }}/{{ render(vars.issue_padded) }}/{{ render(vars.identifier) }}.md.gz"
+
+tasks:
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Extract documents from PDF running for year: {{ inputs.year }}, issue: {{ inputs.issue }} and number: {{ inputs.number }}"
+
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      year: "{{ inputs.year }}"
+      issue: "{{ render(vars.issue_padded) }}"
+      number: "{{ inputs.number }}"
+
+  - id: read
+    type: io.kestra.plugin.minio.Download
+    endpoint: "{{ envs.minio_endpoint }}"
+    accessKeyId: "{{ envs.minio_user }}"
+    secretKeyId: "{{ envs.minio_password }}"
+    bucket: "{{ envs.minio_raw_bucket }}"
+    key: "{{ render(vars.raw_path) }}"
+
+  - id: decompress
+    type: io.kestra.plugin.compress.FileDecompress
+    from: "{{ outputs.read.uri }}"
+    compression: GZIP
+
+  - id: parse
+    type: io.kestra.plugin.scripts.python.Commands
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    inputFiles:
+      document.pdf: "{{ outputs.decompress.uri }}"
+    outputFiles:
+      - document.md
+    commands:
+      - document-reader document.pdf -o document.md
+
+  - id: compress
+    type: io.kestra.plugin.compress.FileCompress
+    from: "{{ outputs.parse.outputFiles['document.md'] }}"
+    compression: GZIP
+
+  - id: publish
+    type: io.kestra.plugin.minio.Upload
+    endpoint: "{{ envs.minio_endpoint }}"
+    accessKeyId: "{{ envs.minio_user }}"
+    secretKeyId: "{{ envs.minio_password }}"
+    bucket: "{{ envs.minio_markdown_bucket }}"
+    from: "{{ outputs.compress.uri }}"
+    key: "{{ render(vars.md_path) }}"
+
+  - id: load
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    inputFiles:
+      document.md: "{{ outputs.parse.outputFiles['document.md'] }}"
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+      YEAR: "{{ inputs.year }}"
+      ISSUE: "{{ inputs.issue }}"
+      NUMBER: "{{ inputs.number }}"
+    script: |
+      import os
+      import yaml
+      import dlt
+
+      host = os.environ["POSTGRES_HOST"]
+      db   = os.environ["POSTGRES_DB"]
+      user = os.environ["POSTGRES_USER"]
+      pwd  = os.environ["POSTGRES_PASSWORD"]
+
+      with open("document.md", encoding="utf-8") as f:
+          content = f.read()
+
+      # Parse YAML frontmatter (content is ---\n<yaml>\n---\n\n<body>)
+      parts = content.split("---\n", 2)
+      frontmatter = yaml.safe_load(parts[1]) if len(parts) == 3 else {}
+      md_body = parts[2].strip() if len(parts) == 3 else content
+
+      # Extract title from the first Markdown heading
+      title = None
+      body = md_body
+      if md_body.startswith("# "):
+          lines = md_body.split("\n", 2)
+          title = lines[0][2:].strip()
+          body = lines[2].strip() if len(lines) > 2 else ""
+
+      record = {
+          "year":         frontmatter.get("year") or int(os.environ["YEAR"]),
+          "issue":        frontmatter.get("issue") or int(os.environ["ISSUE"]),
+          "number":       frontmatter.get("number") or int(os.environ["NUMBER"]),
+          "disposition":  None,
+          "document":     None,
+          "date":         frontmatter.get("date"),
+          "entity":       None,
+          "section":      frontmatter.get("section"),
+          "subsection":   None,
+          "organization": frontmatter.get("organization"),
+          "identifier":   frontmatter.get("identifier"),
+          "pdf":          frontmatter.get("pdf"),
+          "signature":    None,
+          "title":        title,
+          "body":         body,
+      }
+
+      @dlt.resource(
+          name="document",
+          write_disposition="merge",
+          primary_key=["year", "issue", "number"],
+          columns={
+              "year": {"data_type": "bigint"},
+              "issue": {"data_type": "bigint"},
+              "number": {"data_type": "bigint"},
+              "disposition": {"data_type": "bigint"},
+          },
+      )
+      def document_data():
+          yield record
+
+      pipeline = dlt.pipeline(
+          pipeline_name="document",
+          destination=dlt.destinations.postgres(
+              f"postgresql://{user}:{pwd}@{host}:5432/{db}"
+          ),
+          dataset_name="boc_dataset",
+      )
+
+      pipeline.run(document_data)
+
+  - id: ensure_fts
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import os
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+      with conn.cursor() as cur:
+          cur.execute("""
+              ALTER TABLE boc_dataset.document
+                ADD COLUMN IF NOT EXISTS body_tsv tsvector
+                  GENERATED ALWAYS AS (
+                    to_tsvector('spanish',
+                      coalesce(title, '') || ' ' || coalesce(body, '')
+                    )
+                  ) STORED
+          """)
+          cur.execute("""
+              CREATE INDEX IF NOT EXISTS document_body_tsv_idx
+                ON boc_dataset.document USING gin(body_tsv)
+          """)
+      conn.close()
+
+  - id: log_extraction
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+      OBJECT_KEY: "{{ render(vars.raw_path) }}"
+      YEAR: "{{ inputs.year }}"
+      ISSUE: "{{ inputs.issue }}"
+      NUMBER: "{{ inputs.number }}"
+    script: |
+      import os
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+
+      with conn.cursor() as cur:
+          cur.execute(
+              "INSERT INTO boc_log.extraction_log (object_key, entity_type, year, issue, disposition) "
+              "VALUES (%s, %s, %s, %s, %s) "
+              "ON CONFLICT (object_key) DO UPDATE SET extracted_at = now()",
+              (os.environ["OBJECT_KEY"], "document_pdf",
+               int(os.environ["YEAR"]), int(os.environ["ISSUE"]), int(os.environ["NUMBER"])),
+          )
+
+      conn.close()
