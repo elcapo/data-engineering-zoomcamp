@@ -4,9 +4,10 @@ description: |
   Download the PDF of a single BOC disposition and store it in MinIO.
 
   Some dispositions are published only as PDF with no HTML version (or the HTML
-  version is unavailable). This flow fetches the PDF for a specific disposition
-  from the BOC sede (https://sede.gobiernodecanarias.org/boc/boc-a-YEAR-NNN-NUMBER.pdf),
-  compresses it with GZIP, and uploads it to MinIO as
+  version is unavailable). This flow looks up the PDF URL of the requested
+  disposition in **boc_dataset.issue__dispositions** (the BOC sometimes uses a
+  different global number for the PDF than the disposition ordinal of the
+  index), fetches the PDF, compresses it with GZIP, and uploads it to MinIO as
   **documents/YEAR/NNN/boc-a-YEAR-NNN-NUMBER.pdf.gz**.
 
   If the file already exists the download is skipped unless **overwrite** is set.
@@ -16,18 +17,19 @@ description: |
   Inputs:
     - **year**: the year of the boletín.
     - **issue**: the issue number within that year.
-    - **number**: the global disposition number (CVE number, e.g. 5624 in `boc-a-2019-229-5624`).
+    - **disposition**: the disposition ordinal within the boletín index
+      (the same one used by **download_documents** / **download_documents_from_html**).
     - **overwrite**: re-download and overwrite the file even if it already exists. Defaults to false.
     - **extract**: call **extract_documents_from_pdf** after a successful download. Defaults to true.
 
   Steps:
-    1. **lookup_file**: checks whether the compressed file already exists in MinIO.
-    2. **if_not_file_exists**: skips the download if the file exists and overwrite is false.
-    3. **fetch / compress / publish**: downloads, compresses, and uploads the PDF.
-    4. **log_download**: upserts a row in **boc_log.download_log** (entity_type = `document_pdf`).
-       The global `number` is stored in the `disposition` column since the table has no
-       dedicated `number` column.
-    5. **if_extract**: conditionally invokes **extract_documents_from_pdf** for the same year + issue + number.
+    1. **lookup_pdf**: queries **boc_dataset.issue__dispositions** to obtain the
+       PDF URL (and its global `number`) for the requested year/issue/disposition.
+    2. **lookup_file**: checks whether the compressed file already exists in MinIO.
+    3. **if_not_file_exists**: skips the download if the file exists and overwrite is false.
+    4. **fetch / compress / publish**: downloads, compresses, and uploads the PDF.
+    5. **log_download**: upserts a row in **boc_log.download_log** (entity_type = `document`).
+    6. **if_extract**: conditionally invokes **extract_documents_from_pdf** for the same year + issue + disposition.
 
 inputs:
   - id: year
@@ -40,10 +42,10 @@ inputs:
     required: true
     displayName: Issue
 
-  - id: number
+  - id: disposition
     type: INT
     required: true
-    displayName: Number
+    displayName: Disposition
 
   - id: overwrite
     type: BOOL
@@ -57,21 +59,87 @@ inputs:
 
 variables:
   issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
-  identifier: "boc-a-{{ inputs.year }}-{{ render(vars.issue_padded) }}-{{ inputs.number }}"
-  source_url: "https://sede.gobiernodecanarias.org/boc/{{ render(vars.identifier) }}.pdf"
+  disposition_padded: "{{ inputs.disposition < 10 ? '00' ~ inputs.disposition : inputs.disposition < 100 ? '0' ~ inputs.disposition : inputs.disposition }}"
+  identifier: "boc-a-{{ inputs.year }}-{{ render(vars.issue_padded) }}-{{ outputs.lookup_pdf.vars.number }}"
   bucket_path: "documents/{{ inputs.year }}/{{ render(vars.issue_padded) }}/{{ render(vars.identifier) }}.pdf.gz"
 
 tasks:
   - id: log
     type: io.kestra.plugin.core.log.Log
-    message: "Download documents from PDF running for year: {{ inputs.year }}, issue: {{ inputs.issue }} and number: {{ inputs.number }}"
+    message: "Download documents from PDF running for year: {{ inputs.year }}, issue: {{ inputs.issue }} and disposition: {{ inputs.disposition }}"
 
   - id: label
     type: io.kestra.plugin.core.execution.Labels
     labels:
       year: "{{ inputs.year }}"
       issue: "{{ render(vars.issue_padded) }}"
-      number: "{{ inputs.number }}"
+      disposition: "{{ render(vars.disposition_padded) }}"
+
+  - id: lookup_pdf
+    type: io.kestra.plugin.scripts.python.Commands
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+      YEAR: "{{ inputs.year }}"
+      ISSUE: "{{ inputs.issue }}"
+      DISPOSITION: "{{ inputs.disposition }}"
+    beforeCommands:
+      - pip install kestra > /dev/null 2>&1
+    inputFiles:
+      lookup.py: |
+        import os
+        import re
+        import sys
+        import psycopg2
+        from kestra import Kestra
+
+        year = int(os.environ["YEAR"])
+        issue = int(os.environ["ISSUE"])
+        disposition = int(os.environ["DISPOSITION"])
+
+        conn = psycopg2.connect(
+            host=os.environ["POSTGRES_HOST"],
+            dbname=os.environ["POSTGRES_DB"],
+            user=os.environ["POSTGRES_USER"],
+            password=os.environ["POSTGRES_PASSWORD"],
+        )
+
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT d.pdf
+                FROM boc_dataset.issue__dispositions AS d
+                JOIN boc_dataset.issue AS i ON i._dlt_id = d._dlt_parent_id
+                WHERE i.year = %s AND i.issue = %s AND d.disposition = %s
+                LIMIT 1
+                """,
+                (year, issue, disposition),
+            )
+            row = cur.fetchone()
+
+        conn.close()
+
+        if not row or not row[0]:
+            sys.exit(
+                f"No PDF URL found in boc_dataset.issue__dispositions for "
+                f"year={year}, issue={issue}, disposition={disposition}"
+            )
+
+        pdf_url = row[0]
+        match = re.search(r"boc-a-\d+-\d+-(\d+)\.pdf", pdf_url)
+        if not match:
+            sys.exit(f"Could not parse PDF number from URL: {pdf_url}")
+
+        Kestra.outputs({"pdf_url": pdf_url, "number": int(match.group(1))})
+    commands:
+      - python lookup.py
 
   - id: lookup_file
     type: io.kestra.plugin.minio.List
@@ -87,7 +155,7 @@ tasks:
     then:
     - id: fetch
       type: io.kestra.plugin.core.http.Download
-      uri: "{{ render(vars.source_url) }}"
+      uri: "{{ outputs.lookup_pdf.vars.pdf_url }}"
       method: GET
 
     - id: compress
@@ -119,7 +187,7 @@ tasks:
       OBJECT_KEY: "{{ render(vars.bucket_path) }}"
       YEAR: "{{ inputs.year }}"
       ISSUE: "{{ inputs.issue }}"
-      NUMBER: "{{ inputs.number }}"
+      DISPOSITION: "{{ inputs.disposition }}"
     script: |
       import os
       import psycopg2
@@ -138,7 +206,7 @@ tasks:
               "VALUES (%s, %s, %s, %s, %s) "
               "ON CONFLICT (object_key) DO UPDATE SET downloaded_at = now()",
               (os.environ["OBJECT_KEY"], "document",
-               int(os.environ["YEAR"]), int(os.environ["ISSUE"]), int(os.environ["NUMBER"])),
+               int(os.environ["YEAR"]), int(os.environ["ISSUE"]), int(os.environ["DISPOSITION"])),
           )
 
       conn.close()
@@ -154,6 +222,6 @@ tasks:
         inputs:
           year: "{{ inputs.year }}"
           issue: "{{ inputs.issue }}"
-          number: "{{ inputs.number }}"
+          disposition: "{{ inputs.disposition }}"
         wait: true
         transmitFailed: true

@@ -1,74 +1,61 @@
-id: extract_documents_from_pdf
+id: extract_documents_from_html
 namespace: boc
 description: |
-  Convert a disposition PDF to Markdown, store it in MinIO, and load its
-  structured data into PostgreSQL.
+  Convert a disposition HTML to Markdown, store it in MinIO, and load its structured data into PostgreSQL.
 
-  This is the PDF counterpart of **extract_documents_from_html** for
-  dispositions whose HTML version is not available. It uses the
-  **document-reader** CLI tool (instead of document-parser) to read the raw
-  PDF and produce Markdown with YAML frontmatter.
+  This is the HTML extractor for a single BOC disposition. It reads the raw HTML of a single BOC disposition from `boc-raw`, converts it to Markdown with YAML frontmatter using the **document-parser** CLI tool, uploads the result (compressed) to the `boc-markdown` bucket, and loads the structured fields into **boc_dataset.document** via dlt (merge on `year` + `issue` + `number`). After the first load it also ensures the full-text search column (**body_tsv**) and its GIN index exist so that `@@` queries work immediately.
 
-  The BOC sometimes uses a different global number for the PDF than the
-  disposition ordinal of the index, so this flow first looks up the PDF URL
-  (and the global `number` derived from it) in
-  **boc_dataset.issue__dispositions** for the requested year/issue/disposition.
+  If the disposition was published only as PDF (so the HTML file does not
+  exist in `boc-raw`), this flow will fail at the **read** step. The wrapper
+  flow **extract_documents** falls back to **extract_documents_from_pdf**
+  in that case.
 
   Storage paths:
-    - Source:  `boc-raw/documents/YEAR/NNN/boc-a-YEAR-NNN-NUMBER.pdf.gz`
-    - Output:  `boc-markdown/documents/YEAR/NNN/boc-a-YEAR-NNN-NUMBER.md.gz`
+    - Source:  `boc-raw/documents/YEAR/NNN/DDD.html.gz`
+    - Output:  `boc-markdown/documents/YEAR/NNN/DDD.md.gz`
 
-  Key fields loaded into **boc_dataset.document**: `year`, `issue`, `number`,
-  `disposition`, `date`, `entity`, `section`, `organization`, `identifier`,
-  `pdf`, `title`, `body`, `body_tsv` (the same generated tsvector + GIN index
-  used by extract_documents_from_html). Fields not present in the PDF
-  (`document`, `subsection`, `signature`) are left NULL.
+  Key fields loaded into **boc_dataset.document**: `year`, `issue`, `number`, `document`, `date`, `entity`, `section`, `subsection`, `organization`, `identifier`, `pdf`, `signature`, `title`, `body`, `body_tsv` (generated tsvector with GIN index, configuration `spanish`).
 
   Inputs:
-    - **year**: the year of the boletín.
-    - **issue**: the issue number within that year.
-    - **disposition**: the disposition ordinal within the boletín index
-      (the same one used by **extract_documents** / **extract_documents_from_html**).
+    - **year**: the year of the boletín. Defaults to the current year.
+    - **issue**: the issue number within that year. Defaults to 1.
+    - **disposition**: the disposition number within the boletín. Defaults to 1.
 
   Steps:
-    1. **lookup_pdf**: queries **boc_dataset.issue__dispositions** to obtain the
-       PDF URL and the global `number` for the requested year/issue/disposition.
-    2. **read**: downloads **documents/YEAR/NNN/boc-a-YEAR-NNN-NUMBER.pdf.gz** from MinIO.
-    3. **decompress**: decompresses the GZIP file.
-    4. **parse**: runs `document-reader` to extract the disposition as **document.md**.
-    5. **compress / publish**: compresses the Markdown and uploads it to `boc-markdown`.
-    6. **load**: parses the frontmatter and body and merges the record into
-       **boc_dataset.document** via dlt (merge on `year` + `issue` + `number`).
-    7. **ensure_fts**: adds `body_tsv` (generated tsvector) and its GIN index if not yet present.
-    8. **log_extraction**: upserts a row in **boc_log.extraction_log** (entity_type = `document`).
+    1. **read / decompress**: downloads and decompresses the raw HTML from `boc-raw`.
+    2. **parse**: runs `document-parser` to produce **document.md** (Markdown + YAML frontmatter).
+    3. **compress / publish**: compresses the Markdown and uploads it to `boc-markdown`.
+    4. **load**: parses the frontmatter and body, then merges the record into **boc_dataset.document** via dlt.
+    5. **ensure_fts**: adds `body_tsv` (generated tsvector) and its GIN index if not yet present.
+    6. **log_extraction**: upserts a row in **boc_log.extraction_log** (entity_type = `document`).
 
 inputs:
   - id: year
     type: INT
     required: true
     displayName: Year
+    # defaults: "{{ now() | date('yyyy') }}"
 
   - id: issue
     type: INT
-    required: true
     displayName: Issue
+    # defaults: "1"
 
   - id: disposition
     type: INT
-    required: true
     displayName: Disposition
+    # defaults: "1"
 
 variables:
   issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
   disposition_padded: "{{ inputs.disposition < 10 ? '00' ~ inputs.disposition : inputs.disposition < 100 ? '0' ~ inputs.disposition : inputs.disposition }}"
-  identifier: "boc-a-{{ inputs.year }}-{{ render(vars.issue_padded) }}-{{ outputs.lookup_pdf.vars.number }}"
-  raw_path: "documents/{{ inputs.year }}/{{ render(vars.issue_padded) }}/{{ render(vars.identifier) }}.pdf.gz"
-  md_path: "documents/{{ inputs.year }}/{{ render(vars.issue_padded) }}/{{ render(vars.identifier) }}.md.gz"
+  raw_path: "documents/{{ inputs.year }}/{{ render(vars.issue_padded) }}/{{ render(vars.disposition_padded) }}.html.gz"
+  md_path: "documents/{{ inputs.year }}/{{ render(vars.issue_padded) }}/{{ render(vars.disposition_padded) }}.md.gz"
 
 tasks:
   - id: log
     type: io.kestra.plugin.core.log.Log
-    message: "Extract documents from PDF running for year: {{ inputs.year }}, issue: {{ inputs.issue }} and disposition: {{ inputs.disposition }}"
+    message: "Extract documents running for year: {{ inputs.year }}, issue: {{ inputs.issue }} and disposition {{ inputs.disposition }}"
 
   - id: label
     type: io.kestra.plugin.core.execution.Labels
@@ -76,72 +63,6 @@ tasks:
       year: "{{ inputs.year }}"
       issue: "{{ render(vars.issue_padded) }}"
       disposition: "{{ render(vars.disposition_padded) }}"
-
-  - id: lookup_pdf
-    type: io.kestra.plugin.scripts.python.Commands
-    containerImage: boc-python:latest
-    pythonVersion: "python: 3.11"
-    taskRunner:
-      type: io.kestra.plugin.scripts.runner.docker.Docker
-      networkMode: boc-postgres-network
-    env:
-      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
-      POSTGRES_DB: "{{ envs.postgres_data_db }}"
-      POSTGRES_USER: "{{ envs.postgres_data_user }}"
-      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
-      YEAR: "{{ inputs.year }}"
-      ISSUE: "{{ inputs.issue }}"
-      DISPOSITION: "{{ inputs.disposition }}"
-    beforeCommands:
-      - pip install kestra > /dev/null 2>&1
-    inputFiles:
-      lookup.py: |
-        import os
-        import re
-        import sys
-        import psycopg2
-        from kestra import Kestra
-
-        year = int(os.environ["YEAR"])
-        issue = int(os.environ["ISSUE"])
-        disposition = int(os.environ["DISPOSITION"])
-
-        conn = psycopg2.connect(
-            host=os.environ["POSTGRES_HOST"],
-            dbname=os.environ["POSTGRES_DB"],
-            user=os.environ["POSTGRES_USER"],
-            password=os.environ["POSTGRES_PASSWORD"],
-        )
-
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                SELECT d.pdf
-                FROM boc_dataset.issue__dispositions AS d
-                JOIN boc_dataset.issue AS i ON i._dlt_id = d._dlt_parent_id
-                WHERE i.year = %s AND i.issue = %s AND d.disposition = %s
-                LIMIT 1
-                """,
-                (year, issue, disposition),
-            )
-            row = cur.fetchone()
-
-        conn.close()
-
-        if not row or not row[0]:
-            sys.exit(
-                f"No PDF URL found in boc_dataset.issue__dispositions for "
-                f"year={year}, issue={issue}, disposition={disposition}"
-            )
-
-        pdf_url = row[0]
-        match = re.search(r"boc-a-\d+-\d+-(\d+)\.pdf", pdf_url)
-        if not match:
-            sys.exit(f"Could not parse PDF number from URL: {pdf_url}")
-
-        Kestra.outputs({"pdf_url": pdf_url, "number": int(match.group(1))})
-    commands:
-      - python lookup.py
 
   - id: read
     type: io.kestra.plugin.minio.Download
@@ -164,11 +85,11 @@ tasks:
       type: io.kestra.plugin.scripts.runner.docker.Docker
       networkMode: boc-postgres-network
     inputFiles:
-      document.pdf: "{{ outputs.decompress.uri }}"
+      document.html: "{{ outputs.decompress.uri }}"
     outputFiles:
       - document.md
     commands:
-      - document-reader document.pdf -o document.md
+      - document-parser document.html -o document.md
 
   - id: compress
     type: io.kestra.plugin.compress.FileCompress
@@ -198,10 +119,7 @@ tasks:
       POSTGRES_DB: "{{ envs.postgres_data_db }}"
       POSTGRES_USER: "{{ envs.postgres_data_user }}"
       POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
-      YEAR: "{{ inputs.year }}"
-      ISSUE: "{{ inputs.issue }}"
       DISPOSITION: "{{ inputs.disposition }}"
-      NUMBER: "{{ outputs.lookup_pdf.vars.number }}"
     script: |
       import os
       import yaml
@@ -228,20 +146,22 @@ tasks:
           title = lines[0][2:].strip()
           body = lines[2].strip() if len(lines) > 2 else ""
 
+      disposition = int(os.environ["DISPOSITION"])
+
       record = {
-          "year":         frontmatter.get("year") or int(os.environ["YEAR"]),
-          "issue":        frontmatter.get("issue") or int(os.environ["ISSUE"]),
-          "number":       frontmatter.get("number") or int(os.environ["NUMBER"]),
-          "disposition":  int(os.environ["DISPOSITION"]),
-          "document":     None,
+          "year":         frontmatter.get("year"),
+          "issue":        frontmatter.get("issue"),
+          "number":       frontmatter.get("number") or disposition,
+          "disposition":  disposition,
+          "document":     frontmatter.get("document"),
           "date":         frontmatter.get("date"),
           "entity":       frontmatter.get("entity"),
           "section":      frontmatter.get("section"),
-          "subsection":   None,
+          "subsection":   frontmatter.get("subsection"),
           "organization": frontmatter.get("organization"),
           "identifier":   frontmatter.get("identifier"),
           "pdf":          frontmatter.get("pdf"),
-          "signature":    None,
+          "signature":    frontmatter.get("signature"),
           "title":        title,
           "body":         body,
       }

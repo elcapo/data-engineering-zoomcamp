@@ -34,8 +34,12 @@ boc-raw/
 
 | Flujo | Descripción |
 |-------|-------------|
-| `main_boc.download_documents` | Descarga el HTML de cada disposición y lo guarda en `boc-raw` |
-| `main_boc.extract_documents` | Convierte el HTML a Markdown, lo guarda en `boc-markdown` y carga los datos en PostgreSQL |
+| `main_boc.download_documents` | Wrapper que intenta `download_documents_from_html` y, si falla, recurre a `download_documents_from_pdf` |
+| `main_boc.download_documents_from_html` | Descarga el HTML de la disposición desde `gobiernodecanarias.org/boc/...` y lo guarda en `boc-raw` |
+| `main_boc.download_documents_from_pdf` | Busca la URL del PDF en `boc_dataset.issue__dispositions` (el BOC usa a veces números globales distintos para HTML y PDF), descarga el PDF desde `sede.gobiernodecanarias.org/boc/...` y lo guarda en `boc-raw` |
+| `main_boc.extract_documents` | Wrapper que intenta `extract_documents_from_html` y, si falla, recurre a `extract_documents_from_pdf` |
+| `main_boc.extract_documents_from_html` | Convierte el HTML a Markdown con `document-parser`, lo guarda en `boc-markdown` y carga los datos en PostgreSQL |
+| `main_boc.extract_documents_from_pdf` | Convierte el PDF a Markdown con `document-reader`, lo guarda en `boc-markdown` y carga los datos en PostgreSQL |
 
 ## Salida
 
