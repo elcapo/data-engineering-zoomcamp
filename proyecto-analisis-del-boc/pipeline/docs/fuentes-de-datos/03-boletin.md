@@ -32,8 +32,12 @@ boc-raw/
 
 | Flujo | Descripción |
 |-------|-------------|
-| `main_boc.download_issues` | Descarga el HTML de cada boletín y lo guarda en MinIO |
-| `main_boc.extract_issues` | Parsea el HTML y extrae los enlaces a cada disposición |
+| `main_boc.download_issues` | Wrapper que intenta `download_issues_from_html` y, si falla, recurre a `download_issues_from_pdf` |
+| `main_boc.download_issues_from_html` | Descarga el índice HTML del boletín desde `gobiernodecanarias.org/boc/...` y lo guarda en `boc-raw` |
+| `main_boc.download_issues_from_pdf` | Descarga el PDF del boletín (para boletines antiguos publicados sólo en PDF, p. ej. 2002/084 o 2006/071) y lo guarda en `boc-raw` |
+| `main_boc.extract_issues` | Wrapper que intenta `extract_issues_from_html` y, si falla, recurre a `extract_issues_from_pdf` |
+| `main_boc.extract_issues_from_html` | Parsea el HTML con `issue-parser` y carga el listado de disposiciones en PostgreSQL |
+| `main_boc.extract_issues_from_pdf` | Parsea el PDF con `issue-reader` y carga el listado de disposiciones en PostgreSQL |
 
 ## Salida
 

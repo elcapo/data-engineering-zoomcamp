@@ -1,0 +1,211 @@
+id: extract_issues_from_html
+namespace: boc
+description: |
+  Parse the HTML index of a boletín and load its disposition list into PostgreSQL.
+
+  1. Downloads the compressed HTML for a specific boletín from MinIO (**issues/YEAR-NNN.html.gz**).
+  2. Decompresses it, parses it with the **issue-parser** CLI tool to produce a JSON object.
+  3. Loads the data into PostgreSQL via dlt (merge on `year` + `issue`).
+  4. Records the extraction in **boc_log.extraction_log**.
+
+  If the boletín was published only as PDF (so the HTML file does not exist
+  in `boc-raw`), this flow will fail at the **read** step. The wrapper flow
+  **extract_issues** falls back to **extract_issues_from_pdf** in that case.
+
+  dlt populates two tables from the parsed output:
+  - **boc_dataset.issue**: one row per boletín with metadata (`year`, `issue`, `title`, `url`, `summary__url`, `summary__signature`).
+  - **boc_dataset.issue__dispositions**: one row per disposition within the boletín (`section`, `subsection`, `organization`, `summary`, `html`, `pdf`, `signature`, …).
+
+  Inputs:
+    - **year**: the year of the boletín. Defaults to the current year.
+    - **issue**: the issue number within that year. Defaults to 1.
+
+  Steps:
+    1. **read**: downloads **issues/YEAR-NNN.html.gz** from MinIO.
+    2. **decompress**: decompresses the GZIP file.
+    3. **parse**: runs `issue-parser` to extract the boletín data as **issue.json**.
+    4. **load**: uses dlt to merge the record into **boc_dataset.issue** (and its child table).
+    5. **log_extraction**: upserts a row in **boc_log.extraction_log** (entity_type = `issue`).
+
+inputs:
+  - id: year
+    type: INT
+    required: true
+    displayName: Year
+    # defaults: "{{ now() | date('yyyy') }}"
+
+  - id: issue
+    type: INT
+    required: true
+    displayName: Bulletin
+    # defaults: "1"
+
+variables:
+  issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
+  uncompressed_file: "issues/{{ inputs.year }}-{{ render(vars.issue_padded) }}.html"
+  compressed_file: "{{ render(vars.uncompressed_file) }}.gz"
+
+tasks:
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Extract issues running for year: {{ inputs.year }} and issue: {{ inputs.issue }}"
+
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      year: "{{ inputs.year }}"
+      issue: "{{ render(vars.issue_padded) }}"
+
+  - id: read
+    type: io.kestra.plugin.minio.Download
+    endpoint: "{{ envs.minio_endpoint }}"
+    accessKeyId: "{{ envs.minio_user }}"
+    secretKeyId: "{{ envs.minio_password }}"
+    bucket: "{{ envs.minio_raw_bucket }}"
+    key: "{{ render(vars.compressed_file) }}"
+
+  - id: decompress
+    type: io.kestra.plugin.compress.FileDecompress
+    from: "{{ outputs.read.uri }}"
+    compression: GZIP
+
+  - id: parse
+    type: io.kestra.plugin.scripts.python.Commands
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    inputFiles:
+      issue.html: "{{ outputs.decompress.uri }}"
+    outputFiles:
+      - issue.json
+    commands:
+      - issue-parser issue.html -o issue.json
+
+  - id: load
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    inputFiles:
+      issue.json: "{{ outputs.parse.outputFiles['issue.json'] }}"
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+      YEAR: "{{ inputs.year }}"
+      ISSUE: "{{ inputs.issue }}"
+    script: |
+      import json
+      import os
+      import dlt
+
+      host  = os.environ["POSTGRES_HOST"]
+      db    = os.environ["POSTGRES_DB"]
+      user  = os.environ["POSTGRES_USER"]
+      pwd   = os.environ["POSTGRES_PASSWORD"]
+      year  = os.environ["YEAR"]
+      issue = os.environ["ISSUE"]
+
+      with open("issue.json") as f:
+          records = json.load(f)
+
+      @dlt.resource(
+          name="issue",
+          write_disposition="merge",
+          primary_key=["year", "issue"],
+          columns={
+              "year": {"data_type": "bigint"},
+              "issue": {"data_type": "bigint"},
+          },
+      )
+      def issue_data():
+          yield from [records]
+
+      pipeline = dlt.pipeline(
+          pipeline_name=f"issue_{year}_{issue}",
+          destination=dlt.destinations.postgres(
+              f"postgresql://{user}:{pwd}@{host}:5432/{db}"
+          ),
+          dataset_name="boc_dataset",
+      )
+
+      pipeline.run(issue_data)
+
+  - id: ensure_fulltext_search
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import os
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+      with conn.cursor() as cur:
+          cur.execute("""
+              ALTER TABLE boc_dataset.issue__dispositions
+                ADD COLUMN IF NOT EXISTS summary_tsv tsvector
+                  GENERATED ALWAYS AS (
+                    to_tsvector('spanish', coalesce(summary, ''))
+                  ) STORED
+          """)
+          cur.execute("""
+              CREATE INDEX IF NOT EXISTS issue__dispositions_summary_tsv_idx
+                ON boc_dataset.issue__dispositions USING gin(summary_tsv)
+          """)
+      conn.close()
+
+  - id: log_extraction
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+      OBJECT_KEY: "{{ render(vars.compressed_file) }}"
+      YEAR: "{{ inputs.year }}"
+      ISSUE: "{{ inputs.issue }}"
+    script: |
+      import os
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+
+      with conn.cursor() as cur:
+          cur.execute(
+              "INSERT INTO boc_log.extraction_log (object_key, entity_type, year, issue) "
+              "VALUES (%s, %s, %s, %s) "
+              "ON CONFLICT (object_key) DO UPDATE SET extracted_at = now()",
+              (os.environ["OBJECT_KEY"], "issue", int(os.environ["YEAR"]), int(os.environ["ISSUE"])),
+          )
+
+      conn.close()

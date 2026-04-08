@@ -1,39 +1,43 @@
 id: download_issues
 namespace: boc
 description: |
-  Download the disposition index of a boletín and store it in MinIO.
+  Download a single boletín index, preferring the HTML version and falling
+  back to the PDF version when no HTML is available.
 
-  1. Fetches the HTML index page for a specific boletín (issue) from the BOC website (https://www.gobiernodecanarias.org/boc/YEAR/NNN/index.html).
-  2. Compresses it with GZIP.
-  3. Uploads it to MinIO as **issues/YEAR-NNN.html.gz**.
+  Most BOC issues are published with an HTML index, but a few old ones (e.g.
+  2002/084, 2006/071) are PDF-only. This flow tries
+  **download_issues_from_html** first; if it fails (typically because the
+  HTML URL returns 404), it transparently falls back to
+  **download_issues_from_pdf**.
 
-  If the file already exists the download is skipped unless **overwrite** is set. Records the download in **boc_log.download_log** and optionally triggers **extract_issues**.
+  Both subflows internally trigger their corresponding extractor
+  (**extract_issues_from_html** or **extract_issues_from_pdf**) when
+  **extract** is true, so this wrapper does not need to call the extractor
+  itself.
 
   Inputs:
-    - **year**: the year of the boletín. Defaults to the current year.
-    - **issue**: the issue number within that year. Defaults to 1.
-    - **overwrite**: re-download and overwrite the file even if it already exists. Defaults to false.
-    - **extract**: call **extract_issues** after a successful download. Defaults to true.
+    - **year**: the year of the boletín.
+    - **issue**: the issue number within that year.
+    - **overwrite**: re-download even if the file already exists. Defaults to false.
+    - **extract**: trigger the matching extractor after a successful download. Defaults to true.
 
   Steps:
-    1. **lookup_file**: checks whether the compressed file already exists in MinIO.
-    2. **if_file_exists**: exits early (SUCCESS) if the file exists and overwrite is false.
-    3. **fetch / compress / publish**: downloads, compresses, and uploads the HTML.
-    4. **log_download**: upserts a row in **boc_log.download_log** (entity_type = `issue`).
-    5. **if_extract**: conditionally invokes **extract_issues** for the same year + issue.
+    1. **try_html**: invokes **download_issues_from_html** with the given inputs.
+       The Subflow task is configured with `transmitFailed: false` so a failure
+       does not propagate, only the subflow `state` is observed.
+    2. **if_html_failed**: when the HTML subflow ended in `FAILED`, invokes
+       **download_issues_from_pdf** with the same year + issue.
 
 inputs:
   - id: year
     type: INT
     required: true
     displayName: Year
-    # defaults: "{{ now() | date('yyyy') }}"
 
   - id: issue
     type: INT
     required: true
     displayName: Issue
-    # defaults: "1"
 
   - id: overwrite
     type: BOOL
@@ -47,8 +51,6 @@ inputs:
 
 variables:
   issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
-  source_url: "https://www.gobiernodecanarias.org/boc/{{ inputs.year }}/{{ render(vars.issue_padded) }}/index.html"
-  bucket_path: "issues/{{ inputs.year }}-{{ render(vars.issue_padded) }}.html.gz"
 
 tasks:
   - id: log
@@ -61,84 +63,30 @@ tasks:
       year: "{{ inputs.year }}"
       issue: "{{ render(vars.issue_padded) }}"
 
-  - id: lookup_file
-    type: io.kestra.plugin.minio.List
-    endpoint: "{{ envs.minio_endpoint }}"
-    accessKeyId: "{{ envs.minio_user }}"
-    secretKeyId: "{{ envs.minio_password }}"
-    bucket: "{{ envs.minio_raw_bucket }}"
-    prefix: "{{ render(vars.bucket_path) }}"
+  - id: try_html
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: boc
+    flowId: download_issues_from_html
+    inputs:
+      year: "{{ inputs.year }}"
+      issue: "{{ inputs.issue }}"
+      overwrite: "{{ inputs.overwrite }}"
+      extract: "{{ inputs.extract }}"
+    wait: true
+    transmitFailed: false
 
-  - id: if_not_file_exists
+  - id: if_html_failed
     type: io.kestra.plugin.core.flow.If
-    condition: "{{ (outputs.lookup_file.objects | default([])) | length == 0 or inputs.overwrite }}"
+    condition: "{{ outputs.try_html.state == 'FAILED' }}"
     then:
-    - id: fetch
-      type: io.kestra.plugin.core.http.Download
-      uri: "{{ render(vars.source_url) }}"
-      method: GET
-
-    - id: compress
-      type: io.kestra.plugin.compress.FileCompress
-      from: "{{ outputs.fetch.uri }}"
-      compression: GZIP
-
-    - id: publish
-      type: io.kestra.plugin.minio.Upload
-      endpoint: "{{ envs.minio_endpoint }}"
-      accessKeyId: "{{ envs.minio_user }}"
-      secretKeyId: "{{ envs.minio_password }}"
-      bucket: "{{ envs.minio_raw_bucket }}"
-      from: "{{ outputs.compress.uri }}"
-      key: "{{ render(vars.bucket_path) }}"
-
-  - id: log_download
-    type: io.kestra.plugin.scripts.python.Script
-    containerImage: boc-python:latest
-    pythonVersion: "python: 3.11"
-    taskRunner:
-      type: io.kestra.plugin.scripts.runner.docker.Docker
-      networkMode: boc-postgres-network
-    env:
-      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
-      POSTGRES_DB: "{{ envs.postgres_data_db }}"
-      POSTGRES_USER: "{{ envs.postgres_data_user }}"
-      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
-      OBJECT_KEY: "{{ render(vars.bucket_path) }}"
-      YEAR: "{{ inputs.year }}"
-      ISSUE: "{{ inputs.issue }}"
-    script: |
-      import os
-      import psycopg2
-
-      conn = psycopg2.connect(
-          host=os.environ["POSTGRES_HOST"],
-          dbname=os.environ["POSTGRES_DB"],
-          user=os.environ["POSTGRES_USER"],
-          password=os.environ["POSTGRES_PASSWORD"],
-      )
-      conn.autocommit = True
-
-      with conn.cursor() as cur:
-          cur.execute(
-              "INSERT INTO boc_log.download_log (object_key, entity_type, year, issue) "
-              "VALUES (%s, %s, %s, %s) "
-              "ON CONFLICT (object_key) DO UPDATE SET downloaded_at = now()",
-              (os.environ["OBJECT_KEY"], "issue", int(os.environ["YEAR"]), int(os.environ["ISSUE"])),
-          )
-
-      conn.close()
-
-  - id: if_extract
-    type: io.kestra.plugin.core.flow.If
-    condition: "{{ inputs.extract }}"
-    then:
-      - id: call_extract_issues
+      - id: call_pdf
         type: io.kestra.plugin.core.flow.Subflow
         namespace: boc
-        flowId: extract_issues
+        flowId: download_issues_from_pdf
         inputs:
           year: "{{ inputs.year }}"
           issue: "{{ inputs.issue }}"
+          overwrite: "{{ inputs.overwrite }}"
+          extract: "{{ inputs.extract }}"
         wait: true
         transmitFailed: true
