@@ -47,6 +47,26 @@ The file looks like this:
 | `gdelt.mentions` | Article mentions with timestamps and source metadata. |
 | `gdelt.gkg` | GKG records: themes, persons, organizations, tone, locations. |
 
+### PostgreSQL Tables
+
+Raw tables — populated by the `raw_ingest` Flink job, one row per record consumed from Kafka without transformations:
+
+| Table | Content |
+|-------|---------|
+| `events` | Raw GDELT event records mirrored from `gdelt.events`. |
+| `mentions` | Raw article mentions mirrored from `gdelt.mentions`. |
+| `gkg` | Raw GKG records mirrored from `gdelt.gkg`. |
+
+Aggregated tables — populated by the `event_aggregations` and `gkg_aggregations` Flink jobs via tumbling windows:
+
+| Table | Content |
+|-------|---------|
+| `event_counts_by_country` | Event counts and average Goldstein scale per country and event root code, per window. |
+| `conflict_trend` | Rolling average Goldstein scale by country, per window. |
+| `top_actors` | Most active actors by event count, per window. |
+| `media_attention` | Mention counts per event, per window. |
+| `tone_by_theme` | Average tone per GKG theme, per window. |
+
 ## Dashboard Panels
 
 - **Global Event Map**: Geolocated events plotted on a world map, colored by Goldstein scale (conflict ↔ cooperation).
@@ -59,24 +79,11 @@ The file looks like this:
 ## Project Structure
 
 - **docker-compose.yml**: Definition of all the services with default values
-- **kestra/**: Orchestration
-    - **flows/**: YAML flow definitions
-        - **gdelt_ingest.yml**: Scheduled flow that triggers the producer every 15 minutes
-- **producer/**: Data ingest and publication
-    - **Dockerfile**
-    - **pyproject.toml**: Python dependencies (requests, kafka-python-ng)
-    - **main.py**: Orchestration of the download and publication
-    - **gdelt.py**: Download and parsing logic
-- **flink/**: Data processing
-    - **Dockerfile**
-    - **jobs/**: Aggregation tasks
-        - **event_aggregations.py**: Counding and trends
-        - **gkg_aggregations.py**: Theme and tone analysis
-- **sql/**: Database
-    - **init.sql**: PostgreSQL scheme (raw and aggregated tables)
-- **grafana/**: Visualization
-    - **provisioning/**: Datasource and dashboards
-    - **Dockerfile**
+- **kestra/**: Orchestration flows
+- **producer/**: Data ingest and publication scripts
+- **flink/**: Data processing jobs
+- **sql/**: Database scheme definitions
+- **grafana/**: Visualization datasources and dashboards
 - **README.md**: Project
 
 ## Tech Stack
