@@ -7,7 +7,29 @@ triggers:
     cron: "*/15 * * * *"
 
 tasks:
-  - id: ingest
+  - id: fetch
+    type: io.kestra.plugin.scripts.python.Commands
+    pythonVersion: "python: 3.12"
+    containerImage: gdelt-producer
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: gdelt-net
+      pullPolicy: NEVER
+    env:
+      OUTPUT_DIR: "."
+    commands:
+      - python /app/download.py
+    outputFiles:
+      - events.csv
+      - mentions.csv
+      - gkg.csv
+    retry:
+      type: exponential
+      maxAttempt: 6
+      interval: PT30S
+      maxInterval: PT5M
+
+  - id: publish
     type: io.kestra.plugin.scripts.python.Commands
     pythonVersion: "python: 3.12"
     containerImage: gdelt-producer
@@ -17,10 +39,14 @@ tasks:
       pullPolicy: NEVER
     env:
       KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      INPUT_DIR: "."
+    inputFiles:
+      events.csv: "{{ outputs.fetch.outputFiles['events.csv'] }}"
+      mentions.csv: "{{ outputs.fetch.outputFiles['mentions.csv'] }}"
+      gkg.csv: "{{ outputs.fetch.outputFiles['gkg.csv'] }}"
     commands:
-      - python /app/main.py
-
-retry:
-  type: constant
-  maxAttempt: 3
-  interval: PT30S
+      - python /app/publish.py
+    retry:
+      type: constant
+      maxAttempt: 2
+      interval: PT15S

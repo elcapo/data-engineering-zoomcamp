@@ -143,10 +143,14 @@ This builds all images and starts all services:
 | pgAdmin | `localhost:5050` (admin@admin.com/admin) |
 | Grafana | `localhost:3000` (admin/admin) |
 
-Kestra triggers the producer every 15 minutes. To run the first ingestion immediately without waiting for the schedule:
+Kestra triggers the producer every 15 minutes. The producer runs as two independent steps: a download phase that fetches the three GDELT CSVs (with aggressive retry against CDN 404s) and a publish phase that only runs once all three files are on disk, so Kafka never receives partial data.
+
+To run the first ingestion immediately without waiting for the schedule:
 
 ```bash
-docker compose run --rm producer
+mkdir -p /tmp/gdelt
+docker compose run --rm -e OUTPUT_DIR=/data -v /tmp/gdelt:/data producer python /app/download.py
+docker compose run --rm -e INPUT_DIR=/data -v /tmp/gdelt:/data producer python /app/publish.py
 ```
 
 After the first execution, data flows through:

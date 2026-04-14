@@ -94,6 +94,11 @@ services:
       - ./kestra/flows:/opt/kestra/flows:ro
       - kestra-data:/app/storage
       - ${DOCKER_SOCKET_DIR:-/var/run}/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/api/v1/configs >/dev/null"]
+      interval: 10s
+      retries: 20
+      start_period: 30s
     environment:
       KESTRA_CONFIGURATION: |
         kestra:
@@ -114,6 +119,24 @@ services:
     depends_on:
       redpanda:
         condition: service_healthy
+
+  kestra-flows-sync:
+    image: kestra/kestra:v1.3
+    entrypoint: ["/bin/sh", "-c"]
+    environment:
+      KESTRA_USER: ${KESTRA_USER:-admin@kestra.io}
+      KESTRA_PASSWORD: ${KESTRA_PASSWORD:-Admin1234!}
+    command:
+      - |
+        /app/kestra flow namespace update gdelt /opt/kestra/flows \
+          --server http://kestra:8080 \
+          --user "$${KESTRA_USER}:$${KESTRA_PASSWORD}"
+    volumes:
+      - ./kestra/flows:/opt/kestra/flows:ro
+    depends_on:
+      kestra:
+        condition: service_healthy
+    restart: "no"
 
   # --- Stream Processing ---
 

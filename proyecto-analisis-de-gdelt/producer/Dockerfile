@@ -8,5 +8,3 @@ COPY pyproject.toml .
 RUN uv pip install --system -r pyproject.toml
 
 COPY *.py .
-
-CMD ["python", "main.py"]

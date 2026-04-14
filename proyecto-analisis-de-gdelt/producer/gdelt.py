@@ -93,12 +93,12 @@ def fetch_latest_urls() -> dict[str, str]:
     return urls
 
 
-def download_and_extract(url: str, retries: int = 4, base_delay: float = 15) -> str:
+def download_and_extract(url: str, retries: int = 6, base_delay: float = 20, max_delay: float = 300) -> str:
     """Download a ZIP file and extract the single CSV inside it.
 
     GDELT updates lastupdate.txt before the files are available on all CDN
-    nodes, so a 404 right after a new update is expected.  Retry with
-    exponential backoff (15 s, 30 s, 60 s, 120 s) to wait for propagation.
+    nodes, so a 404 right after a new update is expected. Retry with
+    exponential backoff capped at max_delay to wait for propagation.
     """
     logger.info("Downloading %s", url)
     for attempt in range(1, retries + 1):
@@ -106,7 +106,7 @@ def download_and_extract(url: str, retries: int = 4, base_delay: float = 15) -> 
         if resp.status_code != 404 or attempt == retries:
             resp.raise_for_status()
             break
-        delay = base_delay * (2 ** (attempt - 1))
+        delay = min(base_delay * (2 ** (attempt - 1)), max_delay)
         logger.warning("Got 404, retrying in %ds (%d/%d)", delay, attempt, retries)
         time.sleep(delay)
     with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
