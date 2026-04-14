@@ -42,6 +42,8 @@ MENTION_COLUMNS = {
     1: "event_time_date",
     2: "mention_time_date",
     4: "mention_source",
+    5: "mention_identifier",
+    6: "sentence_id",
     13: "mention_doc_tone",
 }
 
@@ -51,13 +53,14 @@ GKG_COLUMNS = {
     3: "source_name",
     4: "document_id",
     7: "themes",
-    9: "persons",
-    10: "organizations",
+    11: "persons",
+    13: "organizations",
     15: "tone_raw",
 }
 
 INT_FIELDS = {"global_event_id", "sql_date", "quad_class", "num_mentions",
-              "num_sources", "num_articles", "action_geo_type", "word_count"}
+              "num_sources", "num_articles", "action_geo_type", "word_count",
+              "sentence_id"}
 BIGINT_FIELDS = {"date_added", "event_time_date", "mention_time_date", "gkg_date"}
 FLOAT_FIELDS = {"goldstein_scale", "action_geo_lat", "action_geo_long",
                 "mention_doc_tone", "tone", "positive_score", "negative_score"}

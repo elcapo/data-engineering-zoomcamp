@@ -121,11 +121,13 @@ class TestParseEvents:
 
 class TestParseMentions:
     def test_parses_single_record(self):
-        cols = [""] * 15
+        cols = [""] * 16
         cols[0] = "1234567890"
         cols[1] = "20260403100000"
         cols[2] = "20260403101500"
         cols[4] = "bbc.co.uk"
+        cols[5] = "https://bbc.co.uk/news/123"
+        cols[6] = "4"
         cols[13] = "-3.5"
         line = "\t".join(cols)
 
@@ -136,7 +138,22 @@ class TestParseMentions:
         assert r["event_time_date"] == 20260403100000
         assert r["mention_time_date"] == 20260403101500
         assert r["mention_source"] == "bbc.co.uk"
+        assert r["mention_identifier"] == "https://bbc.co.uk/news/123"
+        assert r["sentence_id"] == 4
         assert r["mention_doc_tone"] == pytest.approx(-3.5)
+
+    def test_empty_identifier_and_sentence_are_none(self):
+        cols = [""] * 16
+        cols[0] = "1"
+        cols[1] = "20260403100000"
+        cols[2] = "20260403101500"
+        cols[4] = "example.com"
+        cols[13] = "0"
+        line = "\t".join(cols)
+
+        r = parse_mentions(line)[0]
+        assert r["mention_identifier"] is None
+        assert r["sentence_id"] is None
 
 
 # --- parse_gkg ---
@@ -149,8 +166,8 @@ class TestParseGkg:
         cols[3] = "bbc.co.uk"
         cols[4] = "http://bbc.co.uk/article"
         cols[7] = "POLITICS;ECONOMY"
-        cols[9] = "John Doe"
-        cols[10] = "United Nations"
+        cols[11] = "John Doe;Jane Roe"
+        cols[13] = "United Nations;NATO"
         cols[15] = "-2.5,3.1,5.6,1.2,0.8,0.3,450"
         line = "\t".join(cols)
 
@@ -159,6 +176,8 @@ class TestParseGkg:
         r = records[0]
         assert r["gkg_record_id"] == "20260403100000-1"
         assert r["themes"] == "POLITICS;ECONOMY"
+        assert r["persons"] == "John Doe;Jane Roe"
+        assert r["organizations"] == "United Nations;NATO"
         assert r["tone"] == pytest.approx(-2.5)
         assert r["positive_score"] == pytest.approx(3.1)
         assert r["negative_score"] == pytest.approx(5.6)

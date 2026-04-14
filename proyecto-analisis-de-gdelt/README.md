@@ -142,6 +142,7 @@ This builds all images and starts all services:
 | PostgreSQL | `localhost:5432` |
 | pgAdmin | `localhost:5050` (admin@admin.com/admin) |
 | Grafana | `localhost:3000` (admin/admin) |
+| Metabase | `localhost:3001` |
 
 Kestra triggers the producer every 15 minutes. The producer runs as two independent steps: a download phase that fetches the three GDELT CSVs (with aggressive retry against CDN 404s) and a publish phase that only runs once all three files are on disk, so Kafka never receives partial data.
 
@@ -172,6 +173,25 @@ docker compose exec postgres psql -U gdelt -c "SELECT count(*) FROM events;"
 
 # Open Grafana
 open http://localhost:3000
+```
+
+### Metabase (experimental)
+
+Metabase runs alongside Grafana for evaluation. It has no provisioning: the first time you open `http://localhost:3001` you complete the onboarding (create admin user) and then add the Postgres connection from the UI:
+
+- Host: `postgres`
+- Port: `5432`
+- Database: `gdelt` (or your `POSTGRES_DB`)
+- Username / password: match `POSTGRES_USER` / `POSTGRES_PASSWORD`
+
+Models, questions, and dashboards are authored in the UI. To version them in this repo, use Metabase's serialization CLI:
+
+```bash
+# Export everything to ./metabase/export/ (host-visible, ready to commit)
+docker compose exec metabase java -jar /app/metabase.jar export /metabase-export
+
+# Import on a fresh instance (after wiping the metabase-data volume)
+docker compose exec metabase java -jar /app/metabase.jar import /metabase-export
 ```
 
 ## GDELT Data Reference

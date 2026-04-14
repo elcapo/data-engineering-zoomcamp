@@ -3,7 +3,10 @@ CREATE TABLE sink_mentions (
     `event_time_date`    BIGINT,
     `mention_time_date`  BIGINT,
     `mention_source`     STRING,
-    `mention_doc_tone`   DOUBLE
+    `mention_identifier` STRING,
+    `sentence_id`        INT,
+    `mention_doc_tone`   DOUBLE,
+    PRIMARY KEY (`global_event_id`, `mention_identifier`, `sentence_id`) NOT ENFORCED
 ) WITH (
     'connector'   = 'jdbc',
     'url'         = '$PG_URL',

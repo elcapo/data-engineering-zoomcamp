@@ -29,7 +29,10 @@ CREATE TABLE mentions (
     event_time_date BIGINT,
     mention_time_date BIGINT,
     mention_source TEXT,
-    mention_doc_tone REAL
+    mention_identifier TEXT,
+    sentence_id INTEGER,
+    mention_doc_tone REAL,
+    PRIMARY KEY (global_event_id, mention_identifier, sentence_id)
 );
 
 CREATE INDEX idx_mentions_event_time ON mentions (event_time_date);
