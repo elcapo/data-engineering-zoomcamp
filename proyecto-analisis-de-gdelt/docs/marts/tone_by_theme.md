@@ -2,25 +2,26 @@
 
 ## Purpose
 
-Hourly average article tone per GDELT theme, derived from the `gkg` stream. Enables thematic sentiment tracking (e.g. how negative is coverage around `ARMEDCONFLICT` this hour?).
+Hourly average article tone per GDELT theme, derived from the `gkg` stream. Enables thematic sentiment tracking — e.g. *how negative is coverage around **ARMEDCONFLICT** this hour?*
 
 ## Schema
 
 | Column | Type | Description |
 |---|---|---|
-| `window_start` | `TIMESTAMP` (PK) | Start of the 1-hour tumbling window. |
-| `window_end` | `TIMESTAMP` | End of the window. |
-| `theme` | `TEXT` (PK) | A single GDELT theme code, obtained by splitting `gkg.themes` on `;`. Examples: `ARMEDCONFLICT`, `WB_2071_COMMON_LAW`, `TAX_WORLDLANGUAGES_CIARA`. |
-| `avg_tone` | `REAL` | Mean `gkg.tone` across all articles tagged with `theme` in the window, in `[-100, 100]`. |
+| `window_start` | **TIMESTAMP** (PK) | Start of the **1-hour** tumbling window. |
+| `window_end` | **TIMESTAMP** | End of the window. |
+| `theme` | **TEXT** (PK) | A single GDELT theme code, obtained by splitting `gkg.themes` on **;**. Examples: **ARMEDCONFLICT**, **WB_2071_COMMON_LAW**, **TAX_WORLDLANGUAGES_CIARA**. |
+| `avg_tone` | **REAL** | Mean `gkg.tone` across all articles tagged with the theme in the window, between **-100** and **100**. |
 
 Primary key: `(window_start, theme)`.
 
 ## Invariants
 
-- Window length: 1 hour, aligned to `:00`.
-- `avg_tone ∈ [-100, 100]`; in practice observed tones are concentrated in `[-30, 30]`.
-- An article tagged with N themes contributes to N rows — themes are not mutually exclusive.
-- Empty theme tokens (trailing `;`) must be filtered upstream before aggregation.
+- Window length: **1 hour** aligned to **:00**
+- In theory, `avg_tone` is bounded between **-100** and **100**
+  - In practice, observed tones are concentrated between **-30** and **30**
+- An article tagged with **N** themes contributes to **N** rows — themes are not mutually exclusive.
+- Empty theme tokens (trailing **;**) must be filtered upstream before aggregation.
 
 ## Sample records
 

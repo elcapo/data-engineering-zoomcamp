@@ -1,14 +1,14 @@
 graph LR
-    subgraph External
+    subgraph Batch
         GDELT["🌐 GDELT Project<br><span style="color: lightgray">(HTTP/CSV every 15 min)</span>"]
+        Producer["🐍 Producer<br><span style="color: lightgray">(Python)</span>"]
     end
 
-    subgraph "Docker Compose"
-        Producer["🐍 Producer<br><span style="color: lightgray">(Python)</span>"]
+    subgraph Streaming
         Redpanda["🐼 Redpanda<br><span style="color: lightgray">(Kafka-compatible broker)</span>"]
         Flink["⚡ Apache Flink<br><span style="color: lightgray">(Stream processing)</span>"]
         Postgres["🐘 PostgreSQL<br><span style="color: lightgray">(Storage)</span>"]
-        Grafana["📊 Grafana<br><span style="color: lightgray">(Dashboards)</span>"]
+        Metabase["📊 Metabase<br><span style="color: lightgray">(Dashboards)</span>"]
     end
 
     GDELT -- "Poll & download<br>CSV files" --> Producer
@@ -19,4 +19,4 @@ graph LR
     Redpanda -- "gdelt.gkg" --> Flink
 
     Flink -- "Raw events +<br>aggregated metrics" --> Postgres
-    Postgres -- "SQL queries" --> Grafana
+    Postgres -- "SQL queries" --> Metabase

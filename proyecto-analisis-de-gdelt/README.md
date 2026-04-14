@@ -26,7 +26,30 @@ The file looks like this:
 
 ## Architecture
 
-![Architecture](./resources/charts/architecture.png)
+```mermaid
+graph LR
+    subgraph Batch
+        GDELT["🌐 GDELT Project<br><span style="color: lightgray">(HTTP/CSV every 15 min)</span>"]
+        Producer["🐍 Producer<br><span style="color: lightgray">(Python)</span>"]
+    end
+
+    subgraph Streaming
+        Redpanda["🐼 Redpanda<br><span style="color: lightgray">(Kafka-compatible broker)</span>"]
+        Flink["⚡ Apache Flink<br><span style="color: lightgray">(Stream processing)</span>"]
+        Postgres["🐘 PostgreSQL<br><span style="color: lightgray">(Storage)</span>"]
+        Metabase["📊 Metabase<br><span style="color: lightgray">(Dashboards)</span>"]
+    end
+
+    GDELT -- "Poll & download<br>CSV files" --> Producer
+    Producer -- "Publish records" --> Redpanda
+
+    Redpanda -- "gdelt.events" --> Flink
+    Redpanda -- "gdelt.mentions" --> Flink
+    Redpanda -- "gdelt.gkg" --> Flink
+
+    Flink -- "Raw events +<br>aggregated metrics" --> Postgres
+    Postgres -- "SQL queries" --> Metabase
+```
 
 ### Components
 

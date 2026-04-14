@@ -8,7 +8,7 @@ One row per article processed by GDELT, with extracted themes, named entities, t
 
 The source GKG file has **27 columns** in a tab-delimited format with no header row. The [producer](../../producer/gdelt.py) projects **8** of them into the local schema below (one of which, `V2Tone`, splits into 4 local columns).
 
-See [`examples/headers/gkg.tsv`](../../examples/headers/GDELT_2.0_gdeltKnowledgeGraph_Column_Labels_Header_Row_Sep2016.tsv) for the full list of available columns.
+See [`docs/examples/headers/gkg.tsv`](../../docs/examples/headers/gkg.tsv) for the full list of available columns.
 
 | idx | GDELT name | Local column |
 |---|---|---|
@@ -43,7 +43,6 @@ The table is indexed by:
 
 ## Invariants and conventions
 
-- `gkg_record_id` begins with `gkg_date` by construction.
 - Multi-valued fields (`themes`, `persons`, `organizations`) are denormalized strings separated by **;**.
 - Despite the **.CSV** extension, GDELT files are tab-delimited.
 

@@ -8,3 +8,5 @@ SELECT
     sentence_id,
     mention_doc_tone
 FROM kafka_mentions_raw
+WHERE mention_identifier IS NOT NULL
+  AND sentence_id IS NOT NULL

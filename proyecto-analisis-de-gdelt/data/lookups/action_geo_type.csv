@@ -1,0 +1,7 @@
+action_geo_type,meaning
+0,No location resolved
+1,Country
+2,US state
+3,US city
+4,World city
+5,World state

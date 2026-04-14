@@ -8,7 +8,7 @@ Each row is a single geopolitical or socio-economic event extracted by GDELT fro
 
 The source events file has **61 columns** in a tab-delimited format with no header row. The [producer](../../producer/gdelt.py) projects **20** of them into the local schema below.
 
-See [`examples/headers/events.csv`](../../examples/headers/events.csv) for the full list of available columns.
+See [`docs/examples/headers/events.csv`](../../docs/examples/headers/events.csv) for the full list of available columns.
 
 Notable columns that are **not** ingested:
 
@@ -50,40 +50,15 @@ The table is indexed by:
 
 ## Categorical reference
 
-### `quad_class`
+Value dictionaries live as CSVs under [`data/lookups/`](../../data/lookups/) and are the authoritative source for joins and dashboards:
 
-| Value | Meaning |
-|---|---|
-| **1** | Verbal Cooperation |
-| **2** | Material Cooperation |
-| **3** | Verbal Conflict |
-| **4** | Material Conflict |
+| Column | Lookup file | Rows |
+|---|---|---|
+| `quad_class` | [`quad_class.csv`](../../data/lookups/quad_class.csv) | **4** |
+| `event_root_code` | [`event_root_code.csv`](../../data/lookups/event_root_code.csv) | **20** |
+| `action_geo_type` | [`action_geo_type.csv`](../../data/lookups/action_geo_type.csv) | **6** |
 
-### `event_root_code`
-
-| Value | CAMEO family |
-|---|---|
-| **01** | Make public statement |
-| **02** | Appeal |
-| **03** | Express intent to cooperate |
-| **04** | Consult |
-| **05** | Engage in diplomatic cooperation |
-| **07** | Provide aid |
-| **08** | Yield |
-| **11** | Disapprove |
-| **17** | Coerce |
-| **19** | Fight |
-
-### `action_geo_type`
-
-| Value | Meaning |
-|---|---|
-| **0** | No location resolved |
-| **1** | Country |
-| **2** | US state |
-| **3** | US city |
-| **4** | World city |
-| **5** | World state |
+A finer CAMEO taxonomy is also available as [`event_base_code.csv`](../../data/lookups/event_base_code.csv) (**149** rows, 3-digit codes grouped by `event_root_code`), even though the column itself is not currently ingested.
 
 ## Invariants and observed ranges
 

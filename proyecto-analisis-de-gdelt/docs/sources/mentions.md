@@ -8,7 +8,7 @@ Every re-citation of an event in a news article monitored by GDELT. A single `gl
 
 The source mentions file has **16 columns** in a tab-delimited format with no header row. The [producer](../../producer/gdelt.py) projects **7** of them into the local schema below.
 
-See [`examples/headers/mentions.tsv`](../../examples/headers/GDELT_2.0_eventMentions_Column_Labels_Header_Row_Sep2016.tsv) for the full list of available columns.
+See [`docs/examples/headers/mentions.tsv`](../../docs/examples/headers/mentions.tsv) for the full list of available columns.
 
 | idx | GDELT name | Local column | Kept? |
 |---|---|---|---|
@@ -27,7 +27,11 @@ See [`examples/headers/mentions.tsv`](../../examples/headers/GDELT_2.0_eventMent
 | 14 | `MentionDocTranslationInfo` | — | No |
 | 15 | `Extras` | — | No |
 
-The natural key of a mention in GDELT combines `GlobalEventID`, `MentionIdentifier` and `SentenceID`, and is enforced locally as the primary key of the `mentions` table.
+The natural key of a mention combines:
+
+- `GlobalEventID`
+- `MentionIdentifier`
+- `SentenceID`
 
 ## Local schema
 
@@ -41,7 +45,13 @@ The natural key of a mention in GDELT combines `GlobalEventID`, `MentionIdentifi
 | `sentence_id` | **INTEGER** (PK) | **1-indexed** position of the sentence within the article where the event was mentioned. |
 | `mention_doc_tone` | **REAL** | Average tone of the article, between **-100** and **100**. Negative means negative sentiment. Observed range in practice is much narrower (see *Invariants*). |
 
-Primary key: `(global_event_id, mention_identifier, sentence_id)`. Enforced at the database level. The Flink JDBC sink declares the same key as **NOT ENFORCED**, which switches the connector to UPSERT mode and makes the ingest idempotent against at-least-once redelivery.
+The primary key is composed by:
+
+- `global_event_id`
+- `mention_identifier`
+- `sentence_id`
+
+The Flink JDBC sink declares the same key as **NOT ENFORCED**, which switches the connector to UPSERT mode.
 
 The table is indexed by:
 
@@ -50,16 +60,8 @@ The table is indexed by:
 
 ## Invariants and observed behavior
 
-- `mention_time_date` ≥ `event_time_date`. GDELT re-emits mentions continuously for up to **~60 days** after the event.
-- **Orphan mentions are expected.** A mention may reference an event whose `export.CSV` was never ingested — typical when the pipeline is started mid-stream, since GDELT keeps re-emitting mentions for old events. No FK is enforced for this reason.
-- **Duplicates are not retained.** The local primary key matches the GDELT natural key, and the Flink JDBC sink runs in UPSERT mode, so repeated delivery of the same mention (Kafka retries, reprocessed `.mentions.CSV` files) collapses to a single row.
-- `mention_doc_tone` is bounded between **-100** and **100** by GDELT. Observed ranges in practice are much narrower, typically between **-30** and **15**.
-
-> **Historical note.** When the ingest only projected `(global_event_id, event_time_date, mention_time_date, mention_source)`, about **56%** of rows were *apparent* duplicates that actually represented different sentences of the same article or different articles on the same domain. They now all land as distinct rows.
-
-## Top sources
-
-One source domain tends to dominate the distribution: **iheart.com** republishes AP and Reuters feeds across hundreds of local radio station subdomains, all normalised to the same `MentionSourceName`, and typically accounts for an order of magnitude more rows than the next source.
+- GDELT reemits mentions continuously for up to **~60 days** after the event.
+- **Orphan mentions are expected.** A mention may reference an event that was never ingested. This is expected when the pipeline is started mid-stream, since GDELT keeps reemitting mentions for old events. No FK is enforced for this reason.
 
 ## Sample record
 
