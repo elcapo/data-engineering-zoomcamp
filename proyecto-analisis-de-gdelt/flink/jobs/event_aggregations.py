@@ -10,7 +10,6 @@ def main():
     cfg = load_config()
     t_env = TableEnvironment.create(EnvironmentSettings.in_streaming_mode())
     t_env.get_config().set("execution.checkpointing.interval", "60s")
-    t_env.get_config().set("table.exec.source.idle-timeout", "5s")
 
     # Kafka sources
 

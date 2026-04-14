@@ -10,8 +10,7 @@ CREATE TABLE kafka_gkg (
     `positive_score`  DOUBLE,
     `negative_score`  DOUBLE,
     `word_count`      INT,
-    `gkg_ts` AS TO_TIMESTAMP(CAST(`gkg_date` AS STRING), 'yyyyMMddHHmmss'),
-    WATERMARK FOR `gkg_ts` AS `gkg_ts`
+    `proc_time` AS PROCTIME()
 ) WITH (
     'connector'                      = 'kafka',
     'topic'                          = 'gdelt.gkg',

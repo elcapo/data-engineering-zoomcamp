@@ -23,7 +23,6 @@ def main():
     cfg = load_config()
     t_env = TableEnvironment.create(EnvironmentSettings.in_streaming_mode())
     t_env.get_config().set("execution.checkpointing.interval", "60s")
-    t_env.get_config().set("table.exec.source.idle-timeout", "5s")
     t_env.create_temporary_function("split_themes", split_themes)
 
     t_env.execute_sql(load_sql("source_kafka_gkg.sql", cfg))

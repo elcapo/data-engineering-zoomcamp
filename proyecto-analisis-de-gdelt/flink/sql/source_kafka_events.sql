@@ -19,8 +19,7 @@ CREATE TABLE kafka_events (
     `action_geo_long`  DOUBLE,
     `date_added`       BIGINT,
     `source_url`       STRING,
-    `event_ts` AS TO_TIMESTAMP(CAST(`date_added` AS STRING), 'yyyyMMddHHmmss'),
-    WATERMARK FOR `event_ts` AS `event_ts`
+    `proc_time` AS PROCTIME()
 ) WITH (
     'connector'                      = 'kafka',
     'topic'                          = 'gdelt.events',
