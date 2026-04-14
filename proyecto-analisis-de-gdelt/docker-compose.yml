@@ -56,6 +56,20 @@ services:
       retries: 5
       start_period: 10s
 
+  pgadmin:
+    image: dpage/pgadmin4:9
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   # --- Producer (triggered by Kestra, not auto-started) ---
 
   producer:
@@ -177,3 +191,4 @@ volumes:
   pgdata:
   kestra-data:
   grafana-data:
+  pgadmin-data:

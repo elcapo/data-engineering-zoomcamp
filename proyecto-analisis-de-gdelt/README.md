@@ -37,6 +37,7 @@ The file looks like this:
 | **Broker** | Redpanda | Kafka-compatible message broker. Receives raw events and serves them to Flink. Lightweight, single-binary, no JVM. |
 | **Stream processor** | Apache Flink | Consumes events from Redpanda, applies windowed aggregations (event counts by country, conflict trends, actor analysis), and writes results to PostgreSQL. |
 | **Storage** | PostgreSQL | Stores both raw events and pre-aggregated metrics for Grafana to query. |
+| **DB admin UI** | pgAdmin | Web UI to inspect the PostgreSQL database, run ad-hoc queries, and browse tables during development. |
 | **Dashboard** | Grafana | Visualizes global event trends, conflict hotspots, top actors, and media attention in near real-time. |
 
 ### Redpanda Topics
@@ -139,6 +140,7 @@ This builds all images and starts all services:
 | Redpanda Broker (Kafka API) | `localhost:9092` |
 | Flink Web UI | `localhost:8081` |
 | PostgreSQL | `localhost:5432` |
+| pgAdmin | `localhost:5050` (admin@admin.com/admin) |
 | Grafana | `localhost:3000` (admin/admin) |
 
 Kestra triggers the producer every 15 minutes. To run the first ingestion immediately without waiting for the schedule:
