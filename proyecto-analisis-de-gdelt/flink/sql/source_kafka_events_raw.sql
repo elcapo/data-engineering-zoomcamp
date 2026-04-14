@@ -1,0 +1,31 @@
+CREATE TABLE kafka_events_raw (
+    `global_event_id`  BIGINT,
+    `sql_date`         INT,
+    `actor1_code`      STRING,
+    `actor1_name`      STRING,
+    `actor1_country`   STRING,
+    `actor2_code`      STRING,
+    `actor2_name`      STRING,
+    `actor2_country`   STRING,
+    `event_root_code`  STRING,
+    `quad_class`       INT,
+    `goldstein_scale`  DOUBLE,
+    `num_mentions`     INT,
+    `num_sources`      INT,
+    `num_articles`     INT,
+    `action_geo_type`  INT,
+    `action_geo_name`  STRING,
+    `action_geo_lat`   DOUBLE,
+    `action_geo_long`  DOUBLE,
+    `date_added`       BIGINT,
+    `source_url`       STRING
+) WITH (
+    'connector'                      = 'kafka',
+    'topic'                          = 'gdelt.events',
+    'properties.bootstrap.servers'   = '$KAFKA_BROKER',
+    'properties.group.id'            = 'flink-raw-ingest',
+    'scan.startup.mode'              = 'earliest-offset',
+    'format'                         = 'json',
+    'json.fail-on-missing-field'     = 'false',
+    'json.ignore-parse-errors'       = 'true'
+)

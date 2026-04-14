@@ -10,6 +10,9 @@ until curl -sf "${JOBMANAGER_URL}/overview" > /dev/null 2>&1; do
 done
 echo "JobManager is ready."
 
+echo "Submitting raw_ingest job..."
+flink run -m flink-jobmanager:8081 -py /opt/flink/jobs/raw_ingest.py -d
+
 echo "Submitting event_aggregations job..."
 flink run -m flink-jobmanager:8081 -py /opt/flink/jobs/event_aggregations.py -d
 

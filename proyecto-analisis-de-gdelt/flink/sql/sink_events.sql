@@ -1,0 +1,30 @@
+CREATE TABLE sink_events (
+    `global_event_id`  BIGINT,
+    `sql_date`         INT,
+    `actor1_code`      STRING,
+    `actor1_name`      STRING,
+    `actor1_country`   STRING,
+    `actor2_code`      STRING,
+    `actor2_name`      STRING,
+    `actor2_country`   STRING,
+    `event_root_code`  STRING,
+    `quad_class`       INT,
+    `goldstein_scale`  DOUBLE,
+    `num_mentions`     INT,
+    `num_sources`      INT,
+    `num_articles`     INT,
+    `action_geo_type`  INT,
+    `action_geo_name`  STRING,
+    `action_geo_lat`   DOUBLE,
+    `action_geo_long`  DOUBLE,
+    `date_added`       BIGINT,
+    `source_url`       STRING,
+    PRIMARY KEY (`global_event_id`) NOT ENFORCED
+) WITH (
+    'connector'   = 'jdbc',
+    'url'         = '$PG_URL',
+    'table-name'  = 'events',
+    'username'    = '$PG_USER',
+    'password'    = '$PG_PASS',
+    'driver'      = 'org.postgresql.Driver'
+)
