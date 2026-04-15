@@ -189,23 +189,6 @@ services:
 
   # --- Visualization ---
 
-  grafana:
-    image: grafana/grafana:12.4
-    ports:
-      - "${GRAFANA_PORT:-3000}:3000"
-    environment:
-      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
-      POSTGRES_USER: ${POSTGRES_USER:-gdelt}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gdelt}
-      POSTGRES_DB: ${POSTGRES_DB:-gdelt}
-    volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning:ro
-      - grafana-data:/var/lib/grafana
-    depends_on:
-      postgres:
-        condition: service_healthy
-
   metabase:
     image: metabase/metabase:v0.59.6.x
     ports:
@@ -227,6 +210,5 @@ networks:
 volumes:
   pgdata:
   kestra-data:
-  grafana-data:
   pgadmin-data:
   metabase-data:

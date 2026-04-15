@@ -59,9 +59,9 @@ graph LR
 | **Producer** | Python | Downloads the latest GDELT CSV files, parses them, and publishes records to Redpanda topics. Executed as a Kestra task. |
 | **Broker** | Redpanda | Kafka-compatible message broker. Receives raw events and serves them to Flink. Lightweight, single-binary, no JVM. |
 | **Stream processor** | Apache Flink | Consumes events from Redpanda, applies windowed aggregations (event counts by country, conflict trends, actor analysis), and writes results to PostgreSQL. |
-| **Storage** | PostgreSQL | Stores both raw events and pre-aggregated metrics for Grafana to query. |
+| **Storage** | PostgreSQL | Stores both raw events and pre-aggregated metrics for Metabase to query. |
 | **DB admin UI** | pgAdmin | Web UI to inspect the PostgreSQL database, run ad-hoc queries, and browse tables during development. |
-| **Dashboard** | Grafana | Visualizes global event trends, conflict hotspots, top actors, and media attention in near real-time. |
+| **Dashboard** | Metabase | Visualizes global event trends, conflict hotspots, top actors, and media attention in near real-time. |
 
 ### Redpanda Topics
 
@@ -107,7 +107,6 @@ Aggregated tables — populated by the `event_aggregations` and `gkg_aggregation
 - **producer/**: Data ingest and publication scripts
 - **flink/**: Data processing jobs
 - **sql/**: Database scheme definitions
-- **grafana/**: Visualization datasources and dashboards
 - **README.md**: Project
 
 ## Tech Stack
@@ -119,7 +118,7 @@ Aggregated tables — populated by the `event_aggregations` and `gkg_aggregation
 | **Redpanda** | 25.3 | Kafka API-compatible broker, zero-JVM, trivial Docker setup. |
 | **Apache Flink** | 1.20 | Windowed stream processing with exactly-once semantics. |
 | **PostgreSQL** | 18.3 | Reliable, widely available relational storage. |
-| **Grafana** | 12.4 | Dashboards with native PostgreSQL support and geo-map panels. |
+| **Metabase** | 0.59 | Dashboards with native PostgreSQL support and a friendly query builder. |
 | **uv** | latest | Fast Python package manager. Used to install producer dependencies at build time. |
 | **Docker / Compose** |  | Single `docker compose up` to run everything. |
 
@@ -164,7 +163,6 @@ This builds all images and starts all services:
 | Flink Web UI | `localhost:8081` |
 | PostgreSQL | `localhost:5432` |
 | pgAdmin | `localhost:5050` (admin@admin.com/admin) |
-| Grafana | `localhost:3000` (admin/admin) |
 | Metabase | `localhost:3001` |
 
 Kestra triggers the producer every 15 minutes. The producer runs as two independent steps: a download phase that fetches the three GDELT CSVs (with aggressive retry against CDN 404s) and a publish phase that only runs once all three files are on disk, so Kafka never receives partial data.
@@ -183,7 +181,7 @@ After the first execution, data flows through:
 2. Redpanda
 3. Flink
 4. PostgreSQL
-5. Grafana
+5. Metabase
 
 ### Verify
 
@@ -194,13 +192,13 @@ docker compose exec redpanda rpk topic consume gdelt.events --num 1
 # Check PostgreSQL
 docker compose exec postgres psql -U gdelt -c "SELECT count(*) FROM events;"
 
-# Open Grafana
-open http://localhost:3000
+# Open Metabase
+open http://localhost:3001
 ```
 
-### Metabase (experimental)
+### Metabase
 
-Metabase runs alongside Grafana for evaluation. It has no provisioning: the first time you open `http://localhost:3001` you complete the onboarding (create admin user) and then add the Postgres connection from the UI:
+Metabase has no provisioning: the first time you open `http://localhost:3001` you complete the onboarding (create admin user) and then add the Postgres connection from the UI:
 
 - Host: `postgres`
 - Port: `5432`
