@@ -1,0 +1,601 @@
+ethnic_code,description
+aar,Afar
+abk,Abkhaz (Abkhazians)
+abr,Aboriginal-Australians (Aborigines)
+ace,Acehnese (Achinese)
+acg,Achang
+ach,Acholi
+ada,Ga (Ga-Adangbe)
+adi,Adivasi
+adj,Adjarians (Adzhars)
+ady,Adyghe (Circasians)
+afa,Black-African (Africans)
+afr,Afrikaners
+ahm,Ahmadis
+ain,Ainu
+aja,Aja
+aka,Akan (Asante)
+aku,Aku (Creoles)
+alb,Albanians
+ale,Aleut
+alg,Algonquian
+alt,Altay (Altai)
+alu,Alur
+amb,Ambonese (Amboinese)
+ame,Americo-Liberians
+amh,Amhara
+anp,Angika speakers
+apa,Apache
+ara,Arab
+arg,Aragonese
+arm,Armenian
+arn,Mapuche
+arp,Arapaho
+arw,Arawak
+asa,Asian
+asm,Assamese
+ast,Asturian
+asy,Assyrian
+ata,Atacamenos
+atg,Argentinians
+ath,Athabaskan
+aus,Australians
+auu,Austrians
+ava,Caucasian Avars (Avars)
+awa,Awadhi
+aym,Aymara
+aze,Azerbaijani (Azeri)
+bad,Baganda
+bai,Bamileke
+bak,Bashkirs
+bal,Baloch (Baluchis)
+bam,Bambara
+ban,Balinese
+baq,Basque
+bar,Bari
+bas,Basoga (Bassa/Duala)
+bda,Rakhine (Buddist Arakanese)
+bej,Beja
+bel,Belarusians (Byelorussians)
+bem,Bemba
+ben,Bengali-Hindu (Bengali)
+ber,Berber
+bey,Beydan (White Moors)
+bho,Bhojpuri
+bih,Bihari
+bii,Bai
+bik,Bicolano
+bin,Edo
+bis,Urban ni-Vanautu
+bke,Bateke
+bkn,Bakongo
+bkw,Bakweri
+bla,Siksikawa
+blg,Blang
+blk,Balkars
+bln,Balanta
+bmr,Bamar (Barman)
+bni,Beni-Shugal-Gumez
+bnt,Bantu
+bny,Banyarwanda
+bod,Bodo
+bol,Bolivia
+bon,Bonan
+bos,Bosniaks
+bou,Buyei
+bra,Brijwasi
+brb,Bariba
+bre,Breton
+brh,Brahui
+brk,Burakumin
+brm,Kurichiya (Hill Barhmins)
+bsh,Bushmen (San)
+bst,Baster
+bsu,Subiya (Basubia)
+bte,Beti-Pahuin (Beti)
+btk,Batak
+bua,Buryat
+bug,Bugis
+bul,Bulgarian
+byn,Bilen
+cab,Cabindan-Mayombe
+cad,Caddo
+cap,Cape Verdean
+car,Kali’na
+cat,Catalan
+ceb,Cebuano
+cha,Chamorro
+chc,Chukchi
+che,Chechen
+chg,Chagatai
+chi,Chinese (Mainland Chinese)
+chk,Chuukese
+chl,Chileans
+chm,Mari
+chn,Chinook
+cho,Choctaw
+chp,Chipewyan
+chr,Cherokee
+cht,Ch’orti’ (Chorti)
+chv,Chuvash
+chw,Chewa
+chy,Cheyenne
+cmc,Cham
+col,Colombian
+cor,Cornish
+cos,Corsican
+cot,Cotiers
+cpe,English-Creole
+cpf,French-Creole
+cpp,Portuguese-Creole
+cre,Cree
+crh,Crimean Tatar
+crp,Creole
+csb,Kashubian
+csr,Costa Ricans
+cus,Cushitic
+cze,Czech
+dai,Dai
+dak,Sioux
+dal,Dalit (Backward classes/castes)
+dam,Damara
+dan,Danes
+dao,Yao (Asia) (Dao)
+dar,Dargwa (Dargins)
+dau,Daur
+day,Dayak
+del,Lenape
+dgr,Dogrib
+din,Dinka
+div,Maldivian
+dje,Djerma-Songhai
+doi,Dogras
+dom,Dominicans
+don,Dong
+dox,Dongxiang
+dra,Dravidian
+dru,Druze
+dsb,Lower Sorbian
+dua,Duala
+dut,Dutch (Flemings)
+dyu,Dyula
+dzo,Ngalop
+eat,East Timorese
+ecu,Ecuadorians
+efi,Efik
+ein,East Indian
+eka,Ekajuk
+eng,English
+esh,Eshira (Bapounou)
+est,Estonian
+eur,Europeans
+eve,Evenks
+ewe,Ewe
+ewo,Ewondo
+fan,Fang (Estuary Fang)
+fao,Faroese
+fat,Fante
+fij,Fijian
+fil,Filipino
+fin,Finns
+fiu,Finno-Ugric
+fon,Fon
+fre,French
+fri,Santals
+frr,Frisians
+fru,Fur
+ful,Fula (Fulani)
+fur,Friulan
+gar,Garifuna (Garifs)
+gay,Gayo
+gba,Gbaya (Baya)
+gel,Gelao (Gelo)
+geo,Georgian
+ger,German
+gia,Gia Rai
+gil,Kiribati
+gin,Gin (Jing)
+gio,Gio
+gla,Gaels
+gle,Irish
+glg,Galician
+glv,Manx
+gon,Gondi
+gor,Gorontalonese (Gorontalos)
+gra,Grassfielders
+grb,Grebo
+gre,Greek
+grn,Guarani
+gsw,Swiss Germans
+gua,Guatemalan
+guj,Gujarati
+gun,Guan
+gwi,Gwich’in
+had,Hadjerai
+hai,Haida
+har,Harari
+hat,Haitian
+hau,Hausa (Hausa-Fulani)
+haw,Hawaiian
+haz,Hazara
+her,Herero
+hgh,Hill Tribes
+hil,Hiligayon
+him,Himachali
+hmn,Hmong
+hmo,Hiri Motu
+hni,Hani
+hoa,Hoa
+hon,Hondurans
+hrt,Haratin (Black Moors)
+hrv,Croats
+hsb,Upper Sorbian
+hui,Hui
+hun,Hungarian
+hup,Hupa
+hut,Hutu
+iba,Iban
+ibo,Igbo
+ice,Icelanders
+idg,Indigenous
+idn,Indian
+iii,Yi
+ijo,Ijaw
+iku,Inuit
+ilo,Ilocono
+ind,Indonesian
+inh,Ingush
+ipk,Inupiat
+ira,Iranian
+iro,Iroquois
+ita,Itallian
+jav,Javanese
+jew,Jewish
+jin,Jino (Jinuo)
+jol,Jola (Diola)
+jpn,Japanese
+kaa,Karakalpak
+kab,Kabyle
+kac,Kachin
+kad,Kadazan
+kak,Kakwa-Nubian
+kal,Kalaallit
+kam,Kamba
+kan,Kannada
+kao,Kaonde
+kar,Karen (Kayin)
+kas,Kashmiri
+kau,Kanuri (Kanouri)
+kav,Kavango
+kaz,Kazakhs
+kbd,Kabarday (Kabardins)
+kby,Kabye (Kabre)
+kch,Karachays (Karachai)
+kha,Khasi
+khi,Khoikhoi
+khk,Khakas
+khm,Khmer (Khmer Loei)
+khu,Khmu
+kik,Kikuyu
+kin,Kinyarwanda Speakers
+kir,Kyrgyz (Kirghis/Kirgiz)
+kis,Kisii
+kmb,North Mbundu
+kno,Kono
+kok,Kokani
+kom,Komi (Komi-Permyaks)
+kon,Kongo (Bakongo)
+kor,Korean
+kos,Kosraean
+kou,Kouyou
+kpe,Kpelle (Guerze)
+krh,Krahn (Guere)
+krl,Karelians
+krm,Karamojong
+kro,Kru
+kru,Kurukh
+kua,Kwanyama
+kum,Kumyks
+kur,Kurd
+kut,Ktunaxa
+lak,Lak (Russia)
+lam,Lamba
+lao,Lao
+lar,Lari
+lav,Latvian
+lba,Limba
+len,Lenca
+lez,Lezgian (Lezgins)
+lgb,Lugbara
+lhu,Lahu
+lii,Li
+lim,Limburgian
+lin,Lingala
+lit,Lithuanian
+lol,Mongo
+lom,Lomwe (Nguru)
+lov,Lovale
+loz,Lozi (Barotse)
+lsu,Lisu
+ltk,Latoka
+ltn,Latinos
+ltz,Luxembourgers
+lua,Luba-Kasai
+lub,Luba-Katanga
+luh,Luhya
+lui,Luiseno
+lul,Lulua
+lun,Lunda
+luo,Luo
+lus,Lusei
+mac,Macedonian
+mad,Madurese (Madura)
+maf,Mafwe
+mag,Magahi
+mah,Marshallese
+mai,Maithili
+mak,Makassarese
+mal,Malayalam
+man,Mandinka (Mandigo/Mandingue)
+mao,Maori
+mar,Marathi
+mas,Maasai
+may,Malays
+mba,Mbandja
+mbe,Mbere (Mbede)
+mbk,M’Baka
+mbo,Mbochi
+mbu,Mbundu-Mestico
+mdf,Mokshas
+mdh,Madhesi
+mdi,Madi
+mdr,Mandar
+men,Mende
+mia,Miao
+mic,Mi’kmaq
+mij,Mijikenda
+min,Minangkabau
+miz,Mizo
+mla,Mulatto
+mld,Mole-Dagbani
+mlg,Malagasy
+mlo,Mulao
+mlt,Maltese
+mnc,Manchu
+mnd,Mande
+mng,Mananja-Nayanja
+mnh,Minahasa
+mni,Manipuri
+mnj,Manjack (Manjaco)
+mnn,Mano
+mno,Lumad
+mns,Mon
+mny,Manyika
+moh,Mohajirs / Mohawk
+mok,Makonde (Makonde-Yao)
+mon,Maonan / Mongol (Mongolians)
+mos,Mossi
+mro,Moro
+msk,Miskito
+mtn,Montenegrins
+mtz,Mestizo
+mun,Munda
+muo,Muong
+mus,Muscogee
+mwl,Mirandese
+mwr,Marwaris
+mya,Mayangnas
+mye,Myene
+myn,Maya
+myv,Mordvins (Mordva)
+nag,Naga
+nah,Nahua
+nai,Native American
+nam,Nama
+nap,Neapolitan
+nau,Nauruan
+nav,Navajo
+nax,Nakhi (Naxi)
+nba,Nuba
+nbl,South Ndebele
+nca,Nicaraguan
+nde,Northern Ndebele
+ndo,Ndonga
+nep,Nepali
+ner,Nuer
+new,Newars
+ngn,Ngbandi
+ngo,Ngoni
+nia,Niasans
+nib,Nibolek
+nir,Niari
+niu,Niuean
+nkm,Nkomi
+nng,Nung
+nog,Nogais
+nor,Norwegians
+nso,Northern Sotho
+nub,Nubian
+nur,Nuristani
+nuu,Nu
+nya,Chewa (Nyanja speakers)
+nyk,Nyakyusa
+nym,Nyamwezi
+nyn,Ankole
+nyo,Nyoro
+nze,New Zealanders
+nzi,Nzema
+oci,Occitanians
+ogo,Ogoni
+oji,Ojibwe
+oki,Okinawan
+ori,Oriya
+orm,Oromo
+oru,Orgunu
+osa,Osage
+oss,Ossetians (Ossetes)
+oto,Otomi
+ova,Ovambo
+paa,Papuan (Papua)
+pac,Pacific Islanders
+pag,Pangasinan
+pal,Palestinian
+pam,Kapampangan
+pan,Punjabi
+pap,Papiamento-Creole
+par,Paraguayan
+pau,Palauan
+per,Persian
+phu,Puthai (Phuthai)
+pnm,Panamanians
+pol,Poles
+pom,Pomaks
+pon,Pehnpeian
+por,Portuguese
+ppl,Papel
+pru,Peruvian
+psh,Pashayi (Pashai)
+pum,Pumi
+pus,Pashtun
+qia,Qiang
+qiz,Qizilbash
+que,Quechua
+raj,Rajasthani
+ran,Pahari Rajput (Rana/Thakuri)
+rap,Rapa Nui
+rar,Cook Islands Maori
+roh,Romansh
+rom,Romani (Roma)
+rum,Romanian
+run,Rundi
+rup,Aromanians
+rus,Russian
+sad,Sandawe
+sag,Sango
+sah,Yakuts
+sal,Salish
+sar,Sara
+sas,Sasak
+sat,Sudanese
+scn,Sicilian
+sco,Scottish (Scots)
+sel,Selkup
+sen,Sena
+she,She
+shl,Shilluk
+shn,Shan
+shy,Shaigiya
+sid,Sidama
+sin,Sinhalese
+sio,Siouan
+sla,Slavic
+slo,Slovaks
+slr,Salar
+slv,Slovenes
+smi,Sami
+smo,Samoans
+sna,Shona (Ndau)
+snd,Sindhi
+snk,Soninke
+som,Somali
+son,Songhai
+sot,Sotho
+spa,Spanish
+srd,Sardinian
+srn,Sranan Tongo
+srp,Serbs
+srr,Serer
+ssw,Swazi
+sui,Sui
+suk,Sukama
+sus,Susu
+swa,Swahili
+swe,Swedes
+swf,Swiss French
+swt,Swiss Italian
+tab,Tabasaran
+tah,Tahitian
+tai,Tai (Tha/Tai-Lu/Tai-Yuan)
+tam,Tamil
+tat,Tatars
+taw,Tawahka
+tay,Tay
+tel,Telugu
+tem,Temne
+ter,Terenan
+tes,Teso
+tet,Tetum
+tgk,Tajik (Pamir Tajiks)
+tgl,Tagalog
+tha,Thai
+tib,Tibetan
+tig,Tigre
+tir,Tigray-Tigrinya (Tigry)
+tiv,Tiv
+tkl,Tokelauan
+tli,Tlingit
+tmh,Tuareg
+tms,Tama
+tog,Tonga (Africa)
+ton,Tonga (Pacific)
+tor,Tooro
+tou,Toubou
+tpi,Tok Pisin
+tra,Transnistrians
+tri,Tripuri
+trn,Ternate
+tsi,Tsimshian
+tsn,Tswana
+tso,Tsonga (Tsonga-Chopi)
+tts,Tutsi (Tutsi-Banyamulenge)
+tuj,Tujia
+tuk,Turkmen
+tum,Tumbuka
+tup,Tupi (Tupi-Guarani)
+tur,Turkish (Turks)
+tuu,Mongour (Tu)
+tvl,Tuvaluans
+twi,Ashanti
+twn,Taiwanese
+tyv,Tuvans (Tuvinians)
+udm,Udmurt
+uig,Uyghur (Uighur)
+ukr,Ukranian
+umb,Southern Mbundu
+urd,Urdu
+uzb,Uzbeks
+vaa,Va (Wa)
+vai,Vai
+ven,Venda
+vie,Vietnamese (Kinh)
+vil,Vili
+vnz,Venezuelan
+vot,Votes
+wak,Wakashan
+wal,Welayta
+war,Waray
+was,Washoe
+wel,Welsh
+wen,Sorbs
+whi,Whites
+wln,Walloons
+wol,Wolof
+xal,Kalmyk
+xho,Xhosa
+xib,Xibe
+xnc,Xinca
+yao,Yao (Africa)
+yap,Yapese
+yor,Yoruba
+ypk,Yupik
+yug,Yugur
+zag,Zaghawa
+zap,Zapotec
+zay,Zaidiyya (Zaydis)
+zen,Zenaga
+zha,Zhuang
+znd,Azande (Azande-Mangbetu)
+zom,Zomi (Chins)
+zul,Zulu
+zun,Zuni
+zza,Zaza

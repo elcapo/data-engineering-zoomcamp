@@ -1,0 +1,20 @@
+religion_code,description,priority
+ATH,Atheism/Agnosticism,named
+BAH,Bahai Faith,named
+BUD,Buddhism,named
+CHR,Christianity,named
+CON,Confucianism,named
+HIN,Hinduism,named
+JAN,Jainism,named
+JEW,Judaism,named
+MOS,Islam,named
+SHN,Shintoism,named
+SIK,Sikhism,named
+TAO,Taoism,named
+ABR,Abrahamic religions,family
+ADR,African diasporic religions,family
+EAR,East Asian religions,family
+INR,Indian religions,family
+IRR,Iranic religions,family
+ITR,Indigenous tribal religions,family
+NRM,new religious movements,movement
