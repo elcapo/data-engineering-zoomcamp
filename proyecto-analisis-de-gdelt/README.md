@@ -30,17 +30,19 @@ The file looks like this:
 graph LR
     subgraph Batch
         GDELT["🌐 GDELT Project<br><span style="color: lightgray">(HTTP/CSV every 15 min)</span>"]
+        Kestra["🎶 Kestra<br><span style="color: lightgray">(Orchestrator)</span>"]
         Producer["🐍 Producer<br><span style="color: lightgray">(Python)</span>"]
     end
 
     subgraph Streaming
         Redpanda["🐼 Redpanda<br><span style="color: lightgray">(Kafka-compatible broker)</span>"]
-        Flink["⚡ Apache Flink<br><span style="color: lightgray">(Stream processing)</span>"]
+        Flink["🐿️ Flink<br><span style="color: lightgray">(Stream processing)</span>"]
         Postgres["🐘 PostgreSQL<br><span style="color: lightgray">(Storage)</span>"]
         Metabase["📊 Metabase<br><span style="color: lightgray">(Dashboards)</span>"]
     end
 
-    GDELT -- "Poll & download<br>CSV files" --> Producer
+    GDELT -- "Publish files" --> Kestra
+    Kestra -- "Trigger process" --> Producer
     Producer -- "Publish records" --> Redpanda
 
     Redpanda -- "gdelt.events" --> Flink
@@ -113,12 +115,12 @@ Aggregated tables — populated by the `event_aggregations` and `gkg_aggregation
 
 | Tool | Version | Why |
 |------|---------|-----|
-| **Kestra** | 1.3 | Workflow orchestrator with scheduling, retries, and a built-in UI. Triggers the producer on a 15-minute cron. |
+| **Kestra** | 1.3.10 | Workflow orchestrator with scheduling, retries, and a built-in UI. Triggers the producer on a 15-minute cron. |
 | **Python** | 3.12 | Producer scripts and Flink jobs. |
-| **Redpanda** | 25.3 | Kafka API-compatible broker, zero-JVM, trivial Docker setup. |
-| **Apache Flink** | 1.20 | Windowed stream processing with exactly-once semantics. |
+| **Redpanda** | 26.1.4 | Kafka API-compatible broker, zero-JVM, trivial Docker setup. |
+| **Apache Flink** | 1.20.3 | Windowed stream processing with exactly-once semantics. |
 | **PostgreSQL** | 18.3 | Reliable, widely available relational storage. |
-| **Metabase** | 0.59 | Dashboards with native PostgreSQL support and a friendly query builder. |
+| **Metabase** | 0.59.6.5 | Dashboards with native PostgreSQL support and a friendly query builder. |
 | **uv** | latest | Fast Python package manager. Used to install producer dependencies at build time. |
 | **Docker / Compose** |  | Single `docker compose up` to run everything. |
 
@@ -157,13 +159,13 @@ This builds all images and starts all services:
 
 | Service | Port (by default) |
 |---------|------|
-| Kestra UI | `localhost:8082` |
-| Redpanda Console | `localhost:8080` |
+| Kestra UI | `localhost:8080` (admin@kestra.io/Admin1234!) |
+| Redpanda Console | `localhost:8081` |
 | Redpanda Broker (Kafka API) | `localhost:9092` |
-| Flink Web UI | `localhost:8081` |
-| PostgreSQL | `localhost:5432` |
-| pgAdmin | `localhost:5050` (admin@admin.com/admin) |
-| Metabase | `localhost:3001` |
+| Flink Web UI | `localhost:8082` |
+| PostgreSQL | `localhost:5432` (gdelt/gdelt) |
+| pgAdmin | `localhost:8083` (admin@admin.com/admin) |
+| Metabase | `localhost:8084` |
 
 Kestra triggers the producer every 15 minutes. The producer runs as two independent steps: a download phase that fetches the three GDELT CSVs (with aggressive retry against CDN 404s) and a publish phase that only runs once all three files are on disk, so Kafka never receives partial data.
 
@@ -193,12 +195,12 @@ docker compose exec redpanda rpk topic consume gdelt.events --num 1
 docker compose exec postgres psql -U gdelt -c "SELECT count(*) FROM events;"
 
 # Open Metabase
-open http://localhost:3001
+open http://localhost:8084
 ```
 
 ### Metabase
 
-Metabase has no provisioning: the first time you open `http://localhost:3001` you complete the onboarding (create admin user) and then add the Postgres connection from the UI:
+Metabase has no provisioning: the first time you open `http://localhost:8084` you complete the onboarding (create admin user) and then add the Postgres connection from the UI:
 
 - Host: `postgres`
 - Port: `5432`
