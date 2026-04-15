@@ -1,0 +1,8 @@
+[project]
+name = "gdelt-dbt"
+version = "0.1.0"
+description = "dbt project for the GDELT pipeline: CAMEO lookup seeds and raw table DDL."
+requires-python = ">=3.12"
+dependencies = [
+    "dbt-postgres>=1.10.0",
+]

@@ -49,7 +49,6 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gdelt}"]
       interval: 10s
@@ -159,6 +158,22 @@ services:
         condition: service_healthy
     restart: "no"
 
+  # --- Schema / Seeds (dbt) ---
+
+  dbt-init:
+    build: ./dbt
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: ${POSTGRES_USER:-gdelt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gdelt}
+      POSTGRES_DB: ${POSTGRES_DB:-gdelt}
+    command: ["seed", "--full-refresh"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
   # --- Stream Processing ---
 
   flink-jobmanager:
@@ -178,6 +193,8 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+      dbt-init:
+        condition: service_completed_successfully
 
   flink-taskmanager:
     build: ./flink

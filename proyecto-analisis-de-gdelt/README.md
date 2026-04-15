@@ -29,14 +29,21 @@ The file looks like this:
 ```mermaid
 graph LR
     subgraph Batch
-        GDELT["🌐 GDELT Project<br><span style="color: lightgray">(HTTP/CSV every 15 min)</span>"]
+        GDELT["🌐 GDELT Project<br><span style="color: lightgray">(Publisher)</span>"]
         Kestra["🎶 Kestra<br><span style="color: lightgray">(Orchestrator)</span>"]
         Producer["🐍 Producer<br><span style="color: lightgray">(Python)</span>"]
+    end
+
+    subgraph Offline
+        dbt["🗂️ dbt<br><span style="color: lightgray">(Data transformations)</span>"]
     end
 
     subgraph Streaming
         Redpanda["🐼 Redpanda<br><span style="color: lightgray">(Kafka-compatible broker)</span>"]
         Flink["🐿️ Flink<br><span style="color: lightgray">(Stream processing)</span>"]
+    end
+
+    subgraph Dashboards
         Postgres["🐘 PostgreSQL<br><span style="color: lightgray">(Storage)</span>"]
         Metabase["📊 Metabase<br><span style="color: lightgray">(Dashboards)</span>"]
     end
@@ -49,7 +56,10 @@ graph LR
     Redpanda -- "gdelt.mentions" --> Flink
     Redpanda -- "gdelt.gkg" --> Flink
 
-    Flink -- "Raw events +<br>aggregated metrics" --> Postgres
+    Flink -- "Raw events and<br>aggregated metrics" --> Postgres
+    dbt -- "Lookup tables" --> Postgres
+    Postgres -- "Data transformations" --> dbt
+
     Postgres -- "SQL queries" --> Metabase
 ```
 
@@ -93,6 +103,15 @@ Aggregated tables — populated by the `event_aggregations` and `gkg_aggregation
 | `media_attention` | Mention counts per event, per window. |
 | `tone_by_theme` | Average tone per GKG theme, per window. |
 
+Lookup tables — populated by dbt seeds (schema `public_lookup`), CAMEO/GDELT reference codebooks:
+
+| Table | Rows | Content |
+|-------|------|---------|
+| `event_root_code` | 20 | Top-level CAMEO event categories (01–20). |
+| `event_base_code` | 149 | 3-digit CAMEO subcategories with `event_root_code` parent. |
+| `quad_class` | 4 | QuadClass cooperation/conflict buckets. |
+| `action_geo_type` | 6 | Geocoding resolution types for event locations. |
+
 ## Dashboard Panels
 
 - **Global Event Map**: Geolocated events plotted on a world map, colored by Goldstein scale (conflict ↔ cooperation).
@@ -108,7 +127,7 @@ Aggregated tables — populated by the `event_aggregations` and `gkg_aggregation
 - **kestra/**: Orchestration flows
 - **producer/**: Data ingest and publication scripts
 - **flink/**: Data processing jobs
-- **sql/**: Database scheme definitions
+- **dbt/**: Database schema (raw + aggregated tables) and CAMEO lookup seeds
 - **README.md**: Project
 
 ## Tech Stack
@@ -121,7 +140,8 @@ Aggregated tables — populated by the `event_aggregations` and `gkg_aggregation
 | **Apache Flink** | 1.20.3 | Windowed stream processing with exactly-once semantics. |
 | **PostgreSQL** | 18.3 | Reliable, widely available relational storage. |
 | **Metabase** | 0.59.6.5 | Dashboards with native PostgreSQL support and a friendly query builder. |
-| **uv** | latest | Fast Python package manager. Used to install producer dependencies at build time. |
+| **dbt** | 1.11 (dbt-postgres 1.10) | Owns the Postgres schema: loads CAMEO lookups as seeds and ensures Flink-target tables exist before stream jobs start. |
+| **uv** | latest | Fast Python package manager. Used to install producer and dbt dependencies at build time. |
 | **Docker / Compose** |  | Single `docker compose up` to run everything. |
 
 ### Python Dependencies (kept minimal)

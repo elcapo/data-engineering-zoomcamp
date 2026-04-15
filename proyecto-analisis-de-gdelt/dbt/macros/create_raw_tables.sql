@@ -1,4 +1,15 @@
-CREATE TABLE events (
+{#
+  Creates the tables populated by Flink (raw ingest + windowed aggregations).
+  dbt does not own these tables as models because they are written by an
+  external process. We just ensure the schema exists before Flink starts.
+  Runs on every `dbt run`/`dbt seed` via the on-run-start hook.
+#}
+
+{% macro create_raw_tables() %}
+
+{% set ddl %}
+
+CREATE TABLE IF NOT EXISTS events (
     global_event_id BIGINT PRIMARY KEY,
     sql_date INTEGER,
     actor1_code TEXT,
@@ -20,11 +31,10 @@ CREATE TABLE events (
     date_added BIGINT,
     source_url TEXT
 );
+CREATE INDEX IF NOT EXISTS idx_events_date_added ON events (date_added);
+CREATE INDEX IF NOT EXISTS idx_events_country ON events (actor1_country);
 
-CREATE INDEX idx_events_date_added ON events (date_added);
-CREATE INDEX idx_events_country ON events (actor1_country);
-
-CREATE TABLE mentions (
+CREATE TABLE IF NOT EXISTS mentions (
     global_event_id BIGINT,
     event_time_date BIGINT,
     mention_time_date BIGINT,
@@ -34,10 +44,9 @@ CREATE TABLE mentions (
     mention_doc_tone REAL,
     PRIMARY KEY (global_event_id, mention_identifier, sentence_id)
 );
+CREATE INDEX IF NOT EXISTS idx_mentions_event_time ON mentions (event_time_date);
 
-CREATE INDEX idx_mentions_event_time ON mentions (event_time_date);
-
-CREATE TABLE gkg (
+CREATE TABLE IF NOT EXISTS gkg (
     gkg_record_id TEXT PRIMARY KEY,
     gkg_date BIGINT,
     source_name TEXT,
@@ -50,12 +59,9 @@ CREATE TABLE gkg (
     negative_score REAL,
     word_count INTEGER
 );
+CREATE INDEX IF NOT EXISTS idx_gkg_date ON gkg (gkg_date);
 
-CREATE INDEX idx_gkg_date ON gkg (gkg_date);
-
--- Aggregated tables (written by Flink windowed jobs)
-
-CREATE TABLE event_counts_by_country (
+CREATE TABLE IF NOT EXISTS event_counts_by_country (
     window_start TIMESTAMP NOT NULL,
     window_end TIMESTAMP NOT NULL,
     country TEXT NOT NULL,
@@ -65,7 +71,7 @@ CREATE TABLE event_counts_by_country (
     PRIMARY KEY (window_start, country, event_root_code)
 );
 
-CREATE TABLE conflict_trend (
+CREATE TABLE IF NOT EXISTS conflict_trend (
     window_start TIMESTAMP NOT NULL,
     window_end TIMESTAMP NOT NULL,
     country TEXT NOT NULL,
@@ -73,7 +79,7 @@ CREATE TABLE conflict_trend (
     PRIMARY KEY (window_start, country)
 );
 
-CREATE TABLE top_actors (
+CREATE TABLE IF NOT EXISTS top_actors (
     window_start TIMESTAMP NOT NULL,
     window_end TIMESTAMP NOT NULL,
     actor_code TEXT NOT NULL,
@@ -81,7 +87,7 @@ CREATE TABLE top_actors (
     PRIMARY KEY (window_start, actor_code)
 );
 
-CREATE TABLE media_attention (
+CREATE TABLE IF NOT EXISTS media_attention (
     window_start TIMESTAMP NOT NULL,
     window_end TIMESTAMP NOT NULL,
     global_event_id BIGINT NOT NULL,
@@ -89,10 +95,17 @@ CREATE TABLE media_attention (
     PRIMARY KEY (window_start, global_event_id)
 );
 
-CREATE TABLE tone_by_theme (
+CREATE TABLE IF NOT EXISTS tone_by_theme (
     window_start TIMESTAMP NOT NULL,
     window_end TIMESTAMP NOT NULL,
     theme TEXT NOT NULL,
     avg_tone REAL,
     PRIMARY KEY (window_start, theme)
 );
+
+{% endset %}
+
+{% do run_query(ddl) %}
+{% do log("Raw tables ensured (events, mentions, gkg, aggregations).", info=true) %}
+
+{% endmacro %}

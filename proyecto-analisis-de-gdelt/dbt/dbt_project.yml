@@ -1,0 +1,37 @@
+name: gdelt
+version: "1.0.0"
+config-version: 2
+
+profile: gdelt
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+on-run-start:
+  - "{{ create_raw_tables() }}"
+
+seeds:
+  gdelt:
+    +schema: lookup
+    event_base_code:
+      +column_types:
+        event_base_code: text
+        event_root_code: text
+        description: text
+    event_root_code:
+      +column_types:
+        event_root_code: text
+        description: text
+    quad_class:
+      +column_types:
+        quad_class: smallint
+        meaning: text
+    action_geo_type:
+      +column_types:
+        action_geo_type: smallint
+        meaning: text

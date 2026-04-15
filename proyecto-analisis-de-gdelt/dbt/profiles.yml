@@ -1,0 +1,12 @@
+gdelt:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('POSTGRES_HOST', 'postgres') }}"
+      port: "{{ env_var('POSTGRES_PORT', '5432') | int }}"
+      user: "{{ env_var('POSTGRES_USER', 'gdelt') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD', 'gdelt') }}"
+      dbname: "{{ env_var('POSTGRES_DB', 'gdelt') }}"
+      schema: public
+      threads: 4

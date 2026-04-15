@@ -1,6 +1,6 @@
 # GDELT / CAMEO lookup tables
 
-CSV reference tables for the categorical columns of `events`. Extracted from the upstream codebooks in [`../codebooks/`](../codebooks/).
+CSV reference tables for the categorical columns of `events`, loaded into Postgres as dbt seeds (schema `public_lookup`). Extracted from the upstream codebooks in [`../../docs/examples/codebooks/`](../../docs/examples/codebooks/).
 
 | File | Rows | Source document | Source section |
 |---|---|---|---|
