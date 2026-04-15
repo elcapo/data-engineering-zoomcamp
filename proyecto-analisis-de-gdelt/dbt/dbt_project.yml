@@ -15,6 +15,12 @@ clean-targets:
 on-run-start:
   - "{{ create_raw_tables() }}"
 
+models:
+  gdelt:
+    dashboards:
+      +materialized: view
+      +schema: dashboard
+
 seeds:
   gdelt:
     +schema: lookup

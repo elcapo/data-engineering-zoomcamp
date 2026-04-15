@@ -17,6 +17,7 @@ init:
 
 up: init
 	docker compose up -d --build
+	docker compose up -d --force-recreate --no-deps dbt-init metabase-init
 
 down:
 	docker compose down

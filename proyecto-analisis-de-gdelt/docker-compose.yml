@@ -168,7 +168,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-gdelt}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gdelt}
       POSTGRES_DB: ${POSTGRES_DB:-gdelt}
-    command: ["seed", "--full-refresh"]
+    command: ["build"]
     depends_on:
       postgres:
         condition: service_healthy
@@ -315,6 +315,13 @@ services:
           curl -sf -X DELETE -H "X-Metabase-Session: $$SESSION" \
             http://metabase:3000/api/database/$$id >/dev/null
         done
+        GDELT_ID=$$(curl -sf -H "X-Metabase-Session: $$SESSION" http://metabase:3000/api/database \
+          | jq -r '.data[] | select(.name=="GDELT Postgres") | .id')
+        if [ -n "$$GDELT_ID" ]; then
+          echo "Triggering schema sync for GDELT Postgres (id=$$GDELT_ID)..."
+          curl -sf -X POST -H "X-Metabase-Session: $$SESSION" \
+            http://metabase:3000/api/database/$$GDELT_ID/sync_schema >/dev/null
+        fi
         echo "Metabase setup complete."
     depends_on:
       metabase:

@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: gdelt
+    description: "Tables populated by the Flink stream jobs."
+    schema: public
+    tables:
+      - name: events
+      - name: mentions
+      - name: gkg
+      - name: event_counts_by_country
+      - name: conflict_trend
+      - name: top_actors
+      - name: media_attention
+      - name: tone_by_theme
