@@ -7,7 +7,7 @@
       "Port": 5432,
       "MaintenanceDB": "gdelt",
       "Username": "gdelt",
-      "PassFile": "/pgadmin4/pgpass",
+      "PassFile": "/pgadmin4/secrets/pgpass",
       "SSLMode": "prefer"
     }
   }

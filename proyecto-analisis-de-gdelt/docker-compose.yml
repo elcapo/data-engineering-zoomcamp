@@ -56,6 +56,22 @@ services:
       retries: 5
       start_period: 10s
 
+  pgadmin-init:
+    image: alpine:3
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-gdelt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gdelt}
+    volumes:
+      - pgadmin-secrets:/out
+    entrypoint:
+      - sh
+      - -c
+      - |
+        echo "postgres:5432:*:$$POSTGRES_USER:$$POSTGRES_PASSWORD" > /out/pgpass
+        chown 5050:5050 /out/pgpass
+        chmod 600 /out/pgpass
+    restart: "no"
+
   pgadmin:
     image: dpage/pgadmin4:9.14.0
     ports:
@@ -68,10 +84,12 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
       - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
-      - ./pgadmin/pgpass:/pgadmin4/pgpass:ro
+      - pgadmin-secrets:/pgadmin4/secrets:ro
     depends_on:
       postgres:
         condition: service_healthy
+      pgadmin-init:
+        condition: service_completed_successfully
 
   # --- Producer (triggered by Kestra, not auto-started) ---
 
@@ -206,6 +224,79 @@ services:
       postgres:
         condition: service_healthy
 
+  metabase-init:
+    image: alpine:3
+    environment:
+      METABASE_USER: ${METABASE_USER:-admin@admin.com}
+      METABASE_PASSWORD: ${METABASE_PASSWORD:-MetabaseAdmin1!}
+      POSTGRES_USER: ${POSTGRES_USER:-gdelt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gdelt}
+      POSTGRES_DB: ${POSTGRES_DB:-gdelt}
+    entrypoint:
+      - sh
+      - -c
+      - |
+        set -e
+        apk add --no-cache curl jq >/dev/null
+        echo "Waiting for Metabase..."
+        until curl -sf http://metabase:3000/api/health >/dev/null 2>&1; do sleep 3; done
+        PROPS=$$(curl -sf http://metabase:3000/api/session/properties)
+        if [ "$$(echo "$$PROPS" | jq -r '."has-user-setup"')" != "true" ]; then
+          TOKEN=$$(echo "$$PROPS" | jq -r '."setup-token"')
+          echo "Creating admin user via /api/setup..."
+          jq -n \
+            --arg token "$$TOKEN" \
+            --arg email "$$METABASE_USER" \
+            --arg password "$$METABASE_PASSWORD" \
+            '{
+              token: $$token,
+              user: {first_name: "Admin", last_name: "User", email: $$email, site_name: "GDELT", password: $$password, password_confirm: $$password},
+              prefs: {site_name: "GDELT", site_locale: "en", allow_tracking: false}
+            }' > /tmp/setup.json
+          curl -sf -X POST http://metabase:3000/api/setup \
+            -H "Content-Type: application/json" \
+            -d @/tmp/setup.json >/dev/null
+        else
+          echo "Admin user already exists, skipping setup."
+        fi
+        echo "Logging in..."
+        SESSION=$$(curl -sf -X POST http://metabase:3000/api/session \
+          -H "Content-Type: application/json" \
+          -d "{\"username\":\"$$METABASE_USER\",\"password\":\"$$METABASE_PASSWORD\"}" | jq -r .id)
+        if [ -z "$$SESSION" ] || [ "$$SESSION" = "null" ]; then
+          echo "Failed to log in to Metabase." >&2; exit 1
+        fi
+        EXISTS=$$(curl -sf -H "X-Metabase-Session: $$SESSION" http://metabase:3000/api/database \
+          | jq -r '.data[] | select(.name=="GDELT Postgres") | .id')
+        if [ -n "$$EXISTS" ]; then
+          echo "Postgres database already registered (id=$$EXISTS)."
+          exit 0
+        fi
+        echo "Registering Postgres database..."
+        jq -n \
+          --arg pguser "$$POSTGRES_USER" \
+          --arg pgpass "$$POSTGRES_PASSWORD" \
+          --arg pgdb "$$POSTGRES_DB" \
+          '{
+            engine: "postgres",
+            name: "GDELT Postgres",
+            details: {host: "postgres", port: 5432, dbname: $$pgdb, user: $$pguser, password: $$pgpass, ssl: false, "tunnel-enabled": false}
+          }' > /tmp/db.json
+        RESP=$$(curl -s -o /tmp/db-resp.json -w "%{http_code}" -X POST http://metabase:3000/api/database \
+          -H "Content-Type: application/json" \
+          -H "X-Metabase-Session: $$SESSION" \
+          -d @/tmp/db.json)
+        if [ "$$RESP" != "200" ]; then
+          echo "Failed to register database (HTTP $$RESP):" >&2
+          cat /tmp/db-resp.json >&2; echo >&2
+          exit 1
+        fi
+        echo "Metabase setup complete."
+    depends_on:
+      metabase:
+        condition: service_started
+    restart: "no"
+
 networks:
   default:
     name: gdelt-net
@@ -214,4 +305,5 @@ volumes:
   pgdata:
   kestra-data:
   pgadmin-data:
+  pgadmin-secrets:
   metabase-data:
