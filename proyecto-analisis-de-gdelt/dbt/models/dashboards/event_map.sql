@@ -6,9 +6,12 @@ SELECT
     e.goldstein_scale,
     e.event_root_code,
     erc.description AS event_root_description,
-    e.actor1_name,
-    e.actor2_name,
-    to_timestamp(e.date_added::text, 'YYYYMMDDHH24MISS') AS event_time
+    e.actor1_code,
+    e.actor1_country,
+    e.actor2_code,
+    e.actor2_country,
+    to_timestamp(e.date_added::text, 'YYYYMMDDHH24MISS') AS event_time,
+    e.source_url
 FROM {{ source('gdelt', 'events') }} AS e
 LEFT JOIN {{ ref('event_root_code') }} AS erc USING (event_root_code)
 WHERE e.action_geo_lat IS NOT NULL

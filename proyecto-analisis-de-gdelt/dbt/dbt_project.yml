@@ -20,6 +20,12 @@ models:
     dashboards:
       +materialized: view
       +schema: dashboard
+    lookups:
+      +schema: lookup
+      cameo_label:
+        +materialized: view
+      dim_actor_code:
+        +materialized: table
 
 seeds:
   gdelt:

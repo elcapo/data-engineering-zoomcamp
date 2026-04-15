@@ -1,0 +1,8 @@
+generic_code,actor_type
+IGO,International/regional inter-governmental organization
+IMG,International/regional militarized group
+INT,"International or transnational actor that cannot be further specified as IGO, UIS, NGO, NGM or MNC"
+MNC,Multi-national corporation
+NGM,Non-governmental movement
+NGO,Non-governmental organization
+UIS,Unidentified state actor

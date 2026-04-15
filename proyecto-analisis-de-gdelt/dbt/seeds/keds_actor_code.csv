@@ -1,0 +1,626 @@
+code,actor_name,date_restricted
+ABN,ethnic Albanian,false
+ABW,Aruba,false
+AFG,Afghanistan,false
+AFGGOVTAL,Taliban,true
+AFGREBTAL,Taliban,true
+AFR,Africa,false
+AGO,Angola,false
+AGOCAB,Cabinda Enclave,false
+AGOREBUNI,National Union for the Total Independence of Angola (UNITA),false
+AGR,Agriculture (secondary role code),false
+AIA,Anguilla,false
+ALA,Åland Islands,false
+ALB,Albania,false
+AND,Andorra,false
+ANT,Netherlands Antilles,false
+ARB,Arab (ethnic group),false
+ARBBTH,Baath Party,false
+ARE,United Arab Emirates,false
+ARG,Argentina,false
+ARM,Armenia,false
+ASA,Asia (region),false
+ASM,American Samoa,false
+ATG,Antigua and Barbuda,false
+ATH,Agnostic/Atheist,false
+AUS,Australia,false
+AUT,Austria,false
+AZE,Azerbaijan,false
+BAH,Bahai,false
+BDI,Burundi,false
+BEL,Belgium,false
+BEN,Benin,false
+BFA,Burkina Faso,false
+BGD,Bangladesh,false
+BGR,Bulgaria,false
+BHR,Bahrain,false
+BHS,Bahamas,false
+BIH,Bosnia and Herzegovina,true
+BIHBHF,Bosniak/Croat Federation of Bosnia and Herzegovina,true
+BIHSRP,Bosnian Serb Republika Srpska,true
+BLK,Balkans,false
+BLR,Belarus,false
+BLZ,Belize,false
+BMU,Bermuda,false
+BOL,Bolivia,false
+BRA,Brazil,false
+BRB,Barbados,false
+BRN,Brunei Darussalam,false
+BTN,Bhutan,false
+BUD,Buddhist,false
+BUS,Business (secondary role code),false
+BWA,Botswana,false
+CAF,Central African Republic,false
+CAN,Canada,false
+CAS,Central Asia,false
+CAU,Caucasus,false
+CEU,Central Europe,false
+CFR,Central Africa,false
+CHE,Switzerland,false
+CHL,Chile,false
+CHN,China,false
+CHNTIC,Tibet,false
+CHR,Christian,false
+CHRCPT,Coptic,false
+CHRCTH,Catholic,false
+CHRDOX,Orthodox,false
+CHRJHW,Jehovah’s Witnesses,false
+CHRLDS,Latter Day Saints,false
+CHRMRN,Maronite,false
+CHRPRO,Protestant,false
+CHRRAD,“fundamentalist” Christian,false
+CIV,Cte d’Ivoire (Ivory Coast),false
+CMN,Communist Party,false
+CMR,Cameroon,false
+COD,Democratic Republic of the Congo (Kinshasa),false
+COG,People’s Republic of the Congo (Brazzaville),false
+COK,Cook Islands,false
+COL,Colombia,false
+COM,Comoros,false
+CON,Confucian,false
+COP,Cop (primary role code),false
+CPV,Cape Verde,false
+CRB,Caribbean,false
+CRI,Costa Rica,false
+CRM,Criminal (secondary role code),false
+CRO,ethnic Croat,false
+CUB,Cuba,false
+CVL,Civilian (secondary role code),false
+CYM,Cayman Islands,false
+CYP,Cyprus,false
+CYPGRK,Greek Cypriot,false
+CYPTRK,Turkish Cypriot,false
+CZA,Czechoslovakia,false
+CZE,Czech Republic,false
+DEU,Germany,false
+DEV,Development (secondary role code),false
+DJI,Djibouti,false
+DMA,Dominica,false
+DNK,Denmark,false
+DOM,Dominican Republic,false
+DZA,Algeria,false
+DZAGOVFLN,National Liberation Front (FLN),false
+DZAGOVMSP,Movement of the Society for Peace,false
+DZAGOVRND,Democratic National Rally,false
+DZAOPPENN,Ennahda Movement,false
+DZAOPPFIS,Islamic Salvation Front,false
+DZAOPPFLN,National Liberation Front (FLN),false
+DZAOPPMSP,Movement of the Society for Peace,false
+DZAREBFIS,Islamic Salvation Army,false
+DZAREBGIA,Armed Islamic Group (GIA),false
+DZAREBGSP,Salafist Group,false
+EAF,Eastern Africa,false
+ECU,Ecuador,false
+EDU,Education (secondary role code),false
+EEU,Eastern Europe,false
+EGY,Egypt,false
+EGYREBMBR,Muslim Brotherhood,false
+EIN,East Indies (region),false
+ELI,Elites (secondary role code),false
+ENV,Environment (secondary role code),false
+ERI,Eritrea,false
+ESH,Western Sahara,false
+ESP,Spain,false
+ESPBSQ,Basque,false
+EST,Estonia,false
+ETH,Ethiopia,false
+EUR,Europe,false
+FIN,Finland,false
+FJI,Fiji,false
+FLK,Falkland Islands (Malvinas),false
+FRA,France,false
+FRO,Faeroe Islands,false
+FRY,Federal Republic of Yugoslavia,false
+FRYKSV,Kosovo,true
+FRYMTN,Montenegro,true
+FRYSRB,Serbia,true
+FRYVVD,Vojvodina,true
+FSM,Micronesia,false
+GAB,Gabon,false
+GBR,United Kingdom,false
+GBRREBIRA,Irish Republican Army,false
+GEO,Georgia,false
+GHA,Ghana,false
+GIB,Gibraltar,false
+GIN,Guinea,false
+GLP,Guadeloupe,false
+GMB,Gambia,false
+GME,Democratic Republic of Germany (East Berlin),false
+GMW,Federal Republic of Germany (Bonn),false
+GNB,Guinea-Bissau,false
+GNQ,Equatorial Guinea,false
+GOV,Government (primary role code,false
+GRC,Greece,false
+GRD,Grenada,false
+GRL,Greenland,false
+GTM,Guatemala,false
+GUF,French Guiana,false
+GUM,Guam,false
+GUY,Guyana,false
+GYP,Gypsy,false
+HIN,Hindu,false
+HKG,Hong Kong (Special Administrative Region of China),false
+HLH,Health (secondary role code),false
+HND,Honduras,false
+HRV,Croatia,true
+HTI,Haiti,false
+HUN,Hungary,false
+HUT,Hutu (ethnic group),false
+IDN,Indonesia,false
+IGO,Inter-governmental organizations,false
+IGOAFRAFU,African Union,false
+IGOAFRAGRIAC,Inter-African Coffee Organization (IACO),false
+IGOAFRBUSCES,Common Market for Eastern and Southern Africa,false
+IGOAFRBUSCFA,Franc Zone Financial Community of Africa,false
+IGOAFRDEVAFB,African Development Bank,false
+IGOAFRDEVATD,Eastern and Southern African Trade and Development Bank,false
+IGOAFRDEVNEP,New Economic Partnership for Africa’s Development,false
+IGOAFROAU,Organization of African Unity (OAU),false
+IGOAFRPAP,Pan African Parliament,false
+IGOAGRCPA,Cocoa Producer’s Alliance,false
+IGOAGRCPC,Association of Coffee Producing Countries,false
+IGOAGRICO,International Cocoa Organization (ICCO),false
+IGOAGRIGC,International Grains Council,false
+IGOARBAPE,Organization of Arab Petroleum Exporting Countries (OAPEC),false
+IGOARBDEVABD,Arab Bank for Economic Development in Africa,false
+IGOBUSBIS,Bank for International Settlements,false
+IGOBUSGOE,Group of Eight (G-8),false
+IGOBUSGOS,Group of Seven (G-7),false
+IGOBUSGSS,Group of Seventy-Seven (G-77),false
+IGOBUSHIP,Highly Indebted Poor Countries (HIPC),false
+IGOBUSIMF,International Monetary Fund (IMF),false
+IGOBUSOPC,Organization of Petroleum Exporting Countries (OPEC),false
+IGOBUSPRC,Paris Club,false
+IGOBUSWTO,World Trade Organization (WTO),false
+IGOCAFBCA,Bank of Central African States (BEAC),false
+IGOCAFCEM,Monetary and Economic Community of Central Africa (CEMAC),false
+IGOCAFECA,Economic Community of Central African States,false
+IGOCASCIS,Commonwealth of Independent States,false
+IGOCOPITP,Interpol,false
+IGOCWN,Commonwealth of Nations,false
+IGOEAFDEVIAD,Intergovernmental Authority on Development (IGAD),false
+IGOEAFEAC,East African Community,false
+IGOEURBUSEFT,European Free Trade Association,false
+IGOEURCOE,Council of Europe,false
+IGOEURDEVEBR,European Bank for Reconstruction and Development,false
+IGOEUREEC,European Union,false
+IGOEURSCE,Council of Security and Cooperation in Europe (OSCE),false
+IGOJUDICC,International Criminal Court,false
+IGOLEGIPU,Inter-Parliamentary Union,false
+IGOMEAACC,Arab Cooperation Council,false
+IGOMEAAEU,Arab Economic Unity Council,false
+IGOMEAAMF,Arab Monetary Fund for Economic and Social Development,false
+IGOMEAAMU,Arab Maghreb Union,false
+IGOMEAARL,Arab League,false
+IGOMOSDEVIDB,Islamic Development Bank,false
+IGOMOSOIC,Organization of Islamic Conferences (OIC),false
+IGONAFCSS,Community of Sahel-Saharan States (CENSAD),false
+IGONON,Organization of Non-Aligned Countries,false
+IGOOAS,Organization of American States,false
+IGOPGSGCC,Gulf Cooperation Council,false
+IGOPKO,Peacekeeping force (organization unknown),false
+IGOSAFDEVSAD,Southern African Development Community,false
+IGOSASSAA,South Asian Association,false
+IGOSEAASN,Association of Southeast Asian Nations (ASEAN),false
+IGOSEADEVADB,Asian Development Bank,false
+IGOSEASOT,Southeast Asia Collective Defense Treaty (SEATO),false
+IGOUNO,United Nations,false
+IGOUNOAGRFAO,United Nations Food and Agriculture Organization,false
+IGOUNOAIE,International Energy Agency,false
+IGOUNODEVWBK,The World Bank,false
+IGOUNOHLHWHO,World Health Organization (WHO),false
+IGOUNOHRIHCH,United Nations High Commission for Human Rights (OHCHR),false
+IGOUNOIAE,International Atomic Energy Agency (IAEA),false
+IGOUNOJUDICJ,International Court of Justice (ICJ),false
+IGOUNOJUDWCT,International War Crimes Tribunals,false
+IGOUNOKID,United Nations Children’s Fund (UNICEF),false
+IGOUNOLABILO,International Labor Organization,false
+IGOUNOREFHCR,United Nations High Commission for Refugees (OHCR),false
+IGOUNOWFP,World Food Program,false
+IGOWAFDEVWAM,West Africa Monetary and Economic Union,false
+IGOWAFUEM,Economic and Monetary Union of West Africa (UEMOA),false
+IGOWAFWAD,West Africa Development Bank,false
+IGOWAFWAS,Economic Community of West African States (ECOWAS),false
+IGOWEU,Western European Union,false
+IGOWSTNAT,North Atlantic Treaty Organization (NATO),false
+IMGMOSALQ,Al Qaeda,false
+IMGSEAMOSASF,Abu Sayyaf,false
+IMGSEAMOSJMA,Jemaah Islamiya,false
+IMY,Isle of Man,false
+IND,India,false
+INDKAS,Indian-controlled Kashmir,false
+INT,Ambiguous international or transnational actor,false
+IRL,Ireland,false
+IRN,Iran,false
+IRQ,Iraq,false
+IRQBAG,Baghdad,false
+IRQKURKDP,Kurdish Democratic Party (KDP),false
+ISL,Iceland,false
+ISR,Israel,false
+ISRGOVCMN,Israeli Communist Party,true
+ISRGOVLBA,Israeli Labor Party,true
+ISRGOVLKD,Likud Party,true
+ISRGOVMRZ,Meretz Party,true
+ISRGOVSHA,Shas Party,true
+ISROPPLBA,Israeli Labor Party,true
+ISROPPLKD,Likud Party,true
+ISROPPMRZ,Meretz Party,true
+ISROPPSHA,Shas Party,true
+ISRSET,Israeli Settlers,false
+ITA,Italy,false
+JAM,Jamaica,false
+JAN,Jain,false
+JEW,Jew,false
+JEWHSD,Hasidic Jew,false
+JEWUDX,Ultra-Orthodox Jew,false
+JOR,Jordan,false
+JOROPPIAF,Islamic Action Front,false
+JPN,Japan,false
+JUD,Judiciary (primary role code),false
+KAS,Kashmir,false
+KAZ,Kazakhstan,false
+KEN,Kenya,false
+KGZ,Kyrgyzstan,false
+KHM,Cambodia,false
+KHMREBKMR,Khmer Rouge,false
+KIR,Kiribati,false
+KNA,Saint Kitts-Nevis,false
+KOR,Republic of Korea (Seoul),false
+KUR,Kurd (ethnic group),false
+KWT,Kuwait,false
+LAB,Labor (secondary role code),false
+LAM,Latin America,false
+LAO,Laos,false
+LBN,Lebanon,false
+LBNREBAML,Amal Militia,false
+LBNREBASL,South Lebanon Army,false
+LBNREBHEZ,Hezbullah,false
+LBR,Liberia,false
+LBRBOM,Bomi (Liberia),false
+LBRBON,Bong (Liberia),false
+LBRCAP,Grand Cape Mount (Liberia),false
+LBRGBA,Grand Bassa (Liberia),false
+LBRGGC,Grand Gedeh (Liberia),false
+LBRGOVLAP,Liberia Action Party,true
+LBRGOVNDP,National Democratic Party of Liberia,true
+LBRGOVNPF,National Patriotic Front of Liberia (NPFL),true
+LBRGOVUPP,United People’s Party,true
+LBRKRH,Krahn (ethnic group),false
+LBRKRU,Grand Kru (Liberia),false
+LBRLOF,Lofa (Liberia),false
+LBRMAN,"Mandingo, Mandingoe (ethnic group)",false
+LBRMNT,Montserrado (Liberia),false
+LBRMRG,Margibi (Liberia),false
+LBRMRY,Maryland (Liberia),false
+LBRNIM,Nimba (Liberia),false
+LBROPPALC,All Liberia Coalition Party,false
+LBROPPLAP,Liberia Action Party,true
+LBROPPNDM,New Deal Movement,false
+LBROPPNDP,National Democratic Party of Liberia,true
+LBROPPUPP,United People’s Party,true
+LBRREBAFL,Armed Forces of Liberia,true
+LBRREBINP,Independent NPFL,false
+LBRREBLPC,Liberia Peace Council,false
+LBRREBLUR,Liberians United for Reconciliation and Democracy (LURD),false
+LBRREBNPF,National Patriotic Front of Liberia (NPFL),true
+LBRREBULM,United Liberation Front for Democracy,false
+LBRRVC,Rivercess (Liberia),false
+LBRSIN,Sino (Liberia),false
+LBY,Libya,false
+LCA,Saint Lucia,false
+LEG,Legislature (secondary role code),false
+LIE,Liechtenstein,false
+LKA,Sri Lanka,false
+LKAREBJVP,People’s Liberation Front,false
+LSO,Lesotho,false
+LTU,Lithuania,false
+LUX,Luxembourg,false
+LVA,Latvia,false
+MAC,Macao (Special Administrative Region of China),false
+MAR,Morocco,false
+MARREBPLS,Polisario Guerillas,false
+MCO,Monaco,false
+MDA,Moldova,false
+MDG,Madagascar,false
+MDT,Mediterranean,false
+MDV,Maldives,false
+MEA,Middle East,false
+MED,Medical (secondary role code),false
+MEX,Mexico,false
+MHL,Marshall Islands,false
+MIL,MIlitary (primary role code),false
+MKD,Macedonia,false
+MLI,Mali,false
+MLT,Malta,false
+MMR,Myanmar (Burma),false
+MNC,Multi-national corporation,false
+MNG,Mongolia,false
+MNP,Northern Mariana Islands,false
+MOD,Moderate (tertiary role code),false
+MOS,Muslim,false
+MOSALE,Alewi,false
+MOSDRZ,Druze,false
+MOSRAD,"“Fundamentalist,” “radical,” “extremist” Muslim",false
+MOSSFI,Sufi,false
+MOSSHI,Shia,false
+MOSSUN,Sunni,false
+MOZ,Mozambique,false
+MRT,Mauritania,false
+MSR,Montserrat,false
+MTN,Montenegro,false
+MTQ,Martinique,false
+MUS,Mauritius,false
+MWI,Malawi,false
+MYS,Malaysia,false
+MYT,Mayotte,false
+NAF,North Africa,false
+NAM,Namibia,false
+NCL,New Caledonia,false
+NER,Niger,false
+NFK,Norfolk Island,false
+NGA,Nigeria,false
+NGAABI,Abia (Nigeria),false
+NGAABU,Abuja (Nigeria),false
+NGAADA,Adamawa (Nigeria),false
+NGAAKI,Akwa Ibom (Nigeria),false
+NGAANB,Anambra (Nigeria),false
+NGABAU,Bauchi (Nigeria),false
+NGABAY,Bayelsa (Nigeria),false
+NGABIA,Biafra (Nigeria),false
+NGABNU,Benue (Nigeria),false
+NGABOR,Borno (Nigeria),false
+NGACRR,Cross River (Nigeria),false
+NGADEL,Delta (Nigeria),false
+NGAEBO,Edo (Nigeria),false
+NGAEKI,Ekiti (Nigeria),false
+NGAENU,Enugu (Nigeria),false
+NGAGOM,Gombe (Nigeria),false
+NGAHAU,Hausa (ethnic group),false
+NGAIBO,"Ibo, Igbo (ethnic group)",false
+NGAIJW,Ijaws (ethnic group),false
+NGAIMO,Imo (Nigeria),false
+NGAJIG,Jigawa (Nigeria),false
+NGAKAD,Kaduna (Nigeria),false
+NGAKAN,Kano (Nigeria),false
+NGAKAT,Katsina (Nigeria),false
+NGAKEB,Kebbi (Nigeria),false
+NGAKOG,Kogi (Nigeria),false
+NGAKWA,Kwara (Nigeria),false
+NGALAG,Lagos (Nigeria),false
+NGANAS,Nassarawa (Nigeria),false
+NGANDR,Niger Delta Region (Nigeria),false
+NGANGR,Niger (Nigeria),false
+NGANNG,North Nigeria (Nigeria),false
+NGAOGO,Ogoni (ethnic group),false
+NGAOGU,Ogun (Nigeria),false
+NGAOND,Ondo (Nigeria),false
+NGAOPPANP,All Nigeria People’s Party,false
+NGAOPPCFD,Campaign for Democracy,false
+NGAOPPNDC,National Democratic Coalition of Nigeria (NADECO),false
+NGAOSU,Osun (Nigeria),false
+NGAOYO,Oyo (Nigeria),false
+NGAPLA,Plateu State (Nigeria),false
+NGAREBMAD,Movement for the Advancement of Democracy (MAD),false
+NGARIV,Rivers (Nigeria),false
+NGASOK,Sokoto (Nigeria),false
+NGATAR,Taraba (Nigeria),false
+NGATIV,"Tiv (ethnic group, language)",false
+NGAYOB,Yobe (Nigeria),false
+NGAYRB,Yoruba (ethnic group),false
+NGAZAM,Zamfara (Nigeria),false
+NGM,Non-governmental movements,false
+NGMGRP,Greenpeace,false
+NGO,Non-governmental organizations,false
+NGOCHRCSI,Christian Solidarity International,false
+NGOHLHCRC,International Fed. of Red Cross and Red Crescent (ICRC),false
+NGOHLHIRC,Red Cross,false
+NGOHLHMSF,Medecins Sans Frontieres (Doctors Without Borders),false
+NGOHLHRCR,Red Crescent,false
+NGOHRIAMN,Amnesty International,false
+NGOHRIFID,International Federation of Human Rights (FIDH),false
+NGOHRIHRW,Human Rights Watch,false
+NGOHRIIHF,International Helsinki Federation for Human Rights,false
+NGOICG,International Crisis Group,false
+NGOJUDJUR,International Commission of Jurists,false
+NGOREFIOM,International Organization for Migration,false
+NGOUAJ,Union of Arab Journalists,false
+NGOWEF,World Economic Forum,false
+NGOXFM,Oxfam,false
+NIC,Nicaragua,false
+NIU,Niue,false
+NLD,Netherlands,false
+NMR,North America,false
+NOR,Norway,false
+NPL,Nepal,false
+NRU,Nauru,false
+NZL,New Zealand,false
+OMN,Oman,false
+OPP,Opposition (primary role code),false
+PAG,Animist/Pagan,false
+PAK,Pakistan,false
+PAKKAS,Pakistani-controlled Kashmir,false
+PAL,Palestinian,false
+PALPLO,Palestine Liberation Organization,false
+PALREBANO,Abu Nidal Organization,false
+PALREBPLF,Palestine Liberation Front,false
+PAN,Panama,false
+PCN,Pitcairn,false
+PER,Peru,false
+PGS,Persian Gulf,false
+PHL,Philippines,false
+PLW,Palau,false
+PNG,Papua New Guinea,false
+PNGBOU,Bougainville,false
+POL,Poland,false
+PRI,Puerto Rico,false
+PRK,Democratic People’s Rep. of Korea (Pyongyang),false
+PRT,Portugal,false
+PRY,Paraguay,false
+PSE,Palestinian Occupied Territories,false
+PSEGOVFTA,Fatah,true
+PSEGOVHMS,Hamas,true
+PSEGZS,Gaza Strip,false
+PSEREBAAM,Al Aqsa Martyrs Brigade,false
+PSEREBDFL,Democratic Front for the Liberation of Palestine (DFLP),false
+PSEREBHMS,Hamas,true
+PSEREBISJ,Palestinian Islamic Jihad,false
+PSEREBPFL,People’s Front for the Liberation of Palestine (PFLP),false
+PSEWSB,West Bank,false
+PYF,French Polynesia,false
+QAT,Qatar,false
+RAD,Radical (tertiary role code),false
+REB,Rebel (primary role code),false
+REF,Refugee (secondary role code),false
+REU,Runion,false
+ROM,Romania,false
+RUS,Russia,false
+RUSCNY,Chechnya,false
+RWA,Rwanda,false
+RWAGOVRPF,Rwandan Patriotic Front,true
+RWAUAFRPF,Rwandan Patriotic Front,true
+SAF,Southern Africa,false
+SAM,South America,false
+SAS,South Asia,false
+SAU,Saudi Arabia,false
+SCG,Serbia and Montenegro,true
+SCGKSV,Kosovo,true
+SCGMTN,Montenegro,true
+SCGSRB,Serbia,true
+SCGVVD,Vojvodina,true
+SCN,Scandinavia,false
+SDN,Sudan,false
+SDNDFR,Darfur,false
+SDNREBNDA,National Democratic Alliance,false
+SDNREBSPL,Sudan People’s Liberation Army,false
+SEA,Southeast Asia,false
+SEN,Senegal,false
+SENREBMDF,Movement of Democratic Forces of Casamance,false
+SER,ethnic Serb,false
+SGP,Singapore,false
+SHN,Saint Helena,false
+SIK,Sikh,false
+SJM,Svalbard and Jan Mayen Islands,false
+SLA,Slav,false
+SLB,Solomon Islands,false
+SLE,Sierra Leone,false
+SLEREBKAM,Kamojor militia,false
+SLEREBRUF,Revolutionary United Front,false
+SLV,El Salvador,false
+SMR,San Marino,false
+SNL,Sinhalese (ethnic group),false
+SOM,Somalia,false
+SPM,Saint Pierre and Miquelon,false
+SPY,Spy (primary role code),false
+SRB,Serbia,true
+SRBKSV,Kosovo,true
+SRBVVD,Vojvodina,true
+STP,Sao Tome and Principe,false
+SUR,Suriname,false
+SVK,Slovakia,false
+SVN,Slovenia,false
+SWE,Sweden,false
+SWZ,Swaziland,false
+SYC,Seychelles,false
+SYR,Syria,false
+TAM,Tamil (ethnic group),false
+TAO,Taoist,false
+TCA,Turks and Caicos Islands,false
+TCD,Chad,false
+TER,Terai (region in northern India/southern Nepal),false
+TGO,Togo,false
+THA,Thailand,false
+TJK,Tajikistan,false
+TKL,Tokelau,false
+TKM,Turkmenistan,false
+TMP,East Timor (Timor-Leste),false
+TON,Tonga,false
+TRG,Tuareg (ethnic group),false
+TRK,ethnic Turk,false
+TTO,Trinidad and Tobago,false
+TUN,Tunisia,false
+TUR,Turkey,false
+TURANK,Ankara,false
+TURGOVAKP,Justice and Development Party (AKP),true
+TURGOVANP,Motherland Party (ANAP),true
+TURGOVCHP,Republican People’s Party (CHP),true
+TURGOVDSP,Democratic Left Party (DSP),true
+TURGOVDYP,True Path Party (DYP),true
+TURGOVMHP,National Action Party (MHP),true
+TURGOVREP,Welfare Party (Refah),true
+TURIST,Istanbul,false
+TURIZM,Izmir,false
+TUROPPAKP,Justice and Development Party (AKP),true
+TUROPPANP,Motherland Party (ANAP),true
+TUROPPCHP,Republican People’s Party (CHP),true
+TUROPPDSP,Democratic Left Party (DSP),true
+TUROPPDTP,Democratic Society Party (DTP),false
+TUROPPDYP,True Path Party (DYP),true
+TUROPPFAZ,Virtue Party (Fazilet),false
+TUROPPHDP,Democratic People’s Party (DEHAP/HADEP),false
+TUROPPMHP,National Action Party (MHP),true
+TUROPPREP,Welfare Party (Refah),true
+TURREBDSL,Dev-Sol,false
+TURREBPKK,Kurdistan Workers’ Party (PKK),false
+TURSOE,Southeast Turkey,false
+TUT,Tutsi (ethnic group),false
+TUV,Tuvalu,false
+TWN,Taiwan,false
+TZA,Tanzania,false
+UAF,Unidentified Armed Force (tertiary role code),false
+UGA,Uganda,false
+UGAREBADF,Allied Democratic Forces,false
+UGAREBLRA,Lord’s Resistance Army,false
+UIG,Uighur (Chinese ethnic minority),false
+UIS,Unidentified state actors,false
+UKR,Ukraine,false
+URY,Uruguay,false
+USA,United States,false
+USR,Union of Soviet Socialist Republics (USSR),false
+UZB,Uzbekistan,false
+VAT,Holy See (Vatican City),false
+VCT,Saint Vincent and the Grenadines,false
+VEN,Venezuela,false
+VGB,British Virgin Islands,false
+VIR,U.S. Virigin Islands,false
+VNM,Vietnam,false
+VUT,Vanuatu,false
+WAF,West Africa,false
+WLF,Wallis and Futuna Islands,false
+WSM,Samoa,false
+WST,“the West”,false
+YEM,Yemen,false
+YMN,North Yemen,false
+YMS,South Yemen,false
+YUG,Socialist Federal Republic of Yugoslavia,true
+YUGBSN,Yugoslavia’s Republic of Bosnia,true
+YUGCTA,Yugoslavia’s Republic of Croatia,true
+YUGKSV,Kosovo,true
+YUGMCD,Yugoslavia’s Republic of Macedonia,true
+YUGMTN,Montenegro,true
+YUGSLN,Yugoslavia’s Republic of Slovenia,true
+YUGSRB,Yugoslavia’s Republic of Serbia,true
+YUGVVD,Vojvodina,true
+ZAF,South Africa,false
+ZMB,Zambia,false
+ZRO,Zoroastrian,false
+ZWE,Zimbabwe,false

@@ -1,0 +1,1126 @@
+religion_code,description,depth,parent_code
+ABR,(other) Abrahamic religions,1,
+ABR010,Freemasonry,2,ABR
+ABR011,Prince Hall Freemasonry,2,ABR
+ABR012,Ancient Arabic Order of the Nobles of the Mystic Shrine   a.k.a. Shriners,2,ABR
+ABRNRM,new Abrahamic movements,2,ABR
+ABRNRM010,Builders of the Adytum,3,ABRNRM
+ABRNRM020,House of Yahweh,3,ABRNRM
+ABRNRM030,Pilgrims of Ares,3,ABRNRM
+ABRRAC,racial Abrahamic religions,2,ABR
+ABRRAC010,Rastafarianism,3,ABRRAC
+ABRRAC011,Bobo Shanti,3,ABRRAC
+ABRRAC012,Nyahbinghi Order,3,ABRRAC
+ABRRAC013,Twelve Tribes of Israel,3,ABRRAC
+ADR,African diasporic religions,1,
+ADR010,Arara,2,ADR
+ADR020,"Candomble (Animism, Batuque)",2,ADR
+ADR021,Ketu Candomble,2,ADR
+ADR022,Bantu/Angola Candomble,2,ADR
+ADR023,Jeje Candomble,2,ADR
+ADR030,Kumina,2,ADR
+ADR040,Macumba,2,ADR
+ADR050,"Mami Wata (the name refers to the deity, not the religion)",2,ADR
+ADR060,Obeah (can also be used to describe some folk practices within local Protestant denominations),2,ADR
+ADR070,Palo/Las Reglas de Congo,2,ADR
+ADR080,Winti,2,ADR
+ADRSYN,syncretic African diasporic religions,2,ADR
+ADRSYN010,Hoodoo,3,ADRSYN
+ADRSYN020,Quimbanda,3,ADRSYN
+ADRSYN030,Santera a.k.a. Lukum,3,ADRSYN
+ADRSYN040,Santo Daime,3,ADRSYN
+ADRSYN050,Umbanda,3,ADRSYN
+ADRSYN060,Vodou,3,ADRSYN
+ADRSYN061,Louisianan Voodoo,3,ADRSYN
+ADRSYN062,Haitian Vodou,3,ADRSYN
+ATH,Agnostic/Atheist,1,
+ATH010,Freethought,2,ATH
+BAH,Bahai Faith         inc. all non-schismatic Bahai,1,
+BAH010,Baha’is Under the Provisions of the Covenant,2,BAH
+BAH020,Faith of God a.k.a. the House of Mankind and the Universal Palace of Order,2,BAH
+BAH030,Free Baha’i Faith,2,BAH
+BAH040,Orthodox Baha’i Faith a.k.a. Mother Baha’i Council,2,BAH
+BAH050,Orthodox Baha’i Faith Under the Regency,2,BAH
+BAH060,Charles Mason Remey Society,2,BAH
+BAH070,The Friends Newsletter,2,BAH
+BUD,Buddhism,1,
+BUDMAH,Mahayana Buddhism,2,BUD
+BUDMAH100,Pure Land Buddhism a.k.a. Amidism,3,BUDMAH
+BUDMAH110,Jodo Shinshu a.k.a. Shin Buddhism,3,BUDMAH
+BUDMAH111,"Hongan-ji School a.k.a. Jodo Shinshu Hompa Hongwanji-ha, Nishi Hongan-ji",3,BUDMAH
+BUDMAH112,"Otani School a.k.a. Jodo Shinshu Otani-ha, Higashi Hongan-ji",3,BUDMAH
+BUDMAH113,Takada School,3,BUDMAH
+BUDMAH114,Bukkoji School,3,BUDMAH
+BUDMAH115,Kosho School,3,BUDMAH
+BUDMAH116,Kibe School,3,BUDMAH
+BUDMAH117,Izumoji School,3,BUDMAH
+BUDMAH118,Joshoji School,3,BUDMAH
+BUDMAH120,Jodo Shu (mainline group: ”Chinzei” branch),3,BUDMAH
+BUDMAH121,Seizan branch,3,BUDMAH
+BUDMAH130,"Vietnamese Pure Land Buddhism (specifically, Vietnamese Pure Land Buddhism Association)",3,BUDMAH
+BUDMAH140,Yuzu Nembutsu,3,BUDMAH
+BUDMAH200,Zen Buddhism a.k.a. Chan Buddhism,3,BUDMAH
+BUDMAH210,Classic Zen,3,BUDMAH
+BUDMAH211,Caodong school inc. Soto sect (Japanese line),3,BUDMAH
+BUDMAH212,Fayan school,3,BUDMAH
+BUDMAH213,Guiyang school,3,BUDMAH
+BUDMAH214,Linji school inc. Rinzai school (Japanese line),3,BUDMAH
+BUDMAH215,Yunmen school,3,BUDMAH
+BUDMAH220,Japanese Zen (excluding classical schools),3,BUDMAH
+BUDMAH221,Obaku,3,BUDMAH
+BUDMAH223,Soto,3,BUDMAH
+BUDMAH230,Seon Buddhism a.k.a. Korean Zen,3,BUDMAH
+BUDMAH231,Jogye Order,3,BUDMAH
+BUDMAH240,"Thien Tong a.k.a. Thien Buddhism, Vietnamese Zen",3,BUDMAH
+BUDMAH300,Nichiren Buddhism (note that a number of names are shared by multiple schools/sects),3,BUDMAH
+BUDMAH301,Fuji Taisekiji Kenshokai,3,BUDMAH
+BUDMAH302,Fuju-fuse Nichiren Komon Shu,3,BUDMAH
+BUDMAH303,Hokke Nichiren Shu,3,BUDMAH
+BUDMAH304,Hokkeshu,3,BUDMAH
+BUDMAH305,Hompa Nichiren Shu,3,BUDMAH
+BUDMAH306,Honke Nichiren Shu,3,BUDMAH
+BUDMAH307,Honmon Butsuryu Shu Ja,3,BUDMAH
+BUDMAH308,Honmon Hokke Shu,3,BUDMAH
+BUDMAH309,Honmon Kyoo Shu,3,BUDMAH
+BUDMAH310,Honmon Shoshu,3,BUDMAH
+BUDMAH311,Kempon Hokke Shu,3,BUDMAH
+BUDMAH312,Kokuchukai— a.k.a. Kokuchukai ja,3,BUDMAH
+BUDMAH313,Nichiren Hokke Shu,3,BUDMAH
+BUDMAH314,Nichiren Honshu,3,BUDMAH
+BUDMAH315,Nichiren Komon Shu,3,BUDMAH
+BUDMAH316,Nichiren Shoshu,3,BUDMAH
+BUDMAH317,Nichiren Shu,3,BUDMAH
+BUDMAH318,Nichiren Shu Fuju-fuse-ha a.s.a. Nichirenshu Fuju-fuse-ha,3,BUDMAH
+BUDMAH319,Nipponzan Myohoji,3,BUDMAH
+BUDMAH320,Reiyukai a.k.a. Spiritual-Friendship-Association,3,BUDMAH
+BUDMAH321,Rissho Kosei Kai,3,BUDMAH
+BUDMAH322,Shobo Hokke Shu,3,BUDMAH
+BUDMAH323,Shoshinkai,3,BUDMAH
+BUDMAH324,Soka Gakkai,3,BUDMAH
+BUDMAH400,Tiantai and regional variants thereof,3,BUDMAH
+BUDMAH410,Cheontae,3,BUDMAH
+BUDMAH420,Tendai,3,BUDMAH
+BUDMAH500,Shinnyo-en,3,BUDMAH
+BUDMLN,millenarian Buddhist movements,2,BUD
+BUDMLN010,Aum Shinrikyo a.k.a. Aleph,3,BUDMLN
+BUDMLN011,Hikari No Wa,3,BUDMLN
+BUDNRM,new Buddhist movements,2,BUD
+BUDNRM010,Santi Asoke,3,BUDNRM
+BUDSYN,syncretic Buddhism,2,BUD
+BUDSYN010,Tara Center,3,BUDSYN
+BUDTHR,Therevada Buddhism,2,BUD
+BUDTHR410,Amarapura Nikaya,3,BUDTHR
+BUDTHR420,Dhammayuttika Nikaya,3,BUDTHR
+BUDTHR430,Dvara Nikaya,3,BUDTHR
+BUDTHR440,Maha Nikaya,3,BUDTHR
+BUDTHR441,Dhammakaya Movement,3,BUDTHR
+BUDTHR450,Mahasthabir Nikaya,3,BUDTHR
+BUDTHR460,Ramanna Nikaya,3,BUDTHR
+BUDTHR470,Sangharaj Nikaya,3,BUDTHR
+BUDTHR480,Shwekyin Nikaya,3,BUDTHR
+BUDTHR490,Siam Nikaya,3,BUDTHR
+BUDTHR500,Thudhamma Nikaya,3,BUDTHR
+BUDVAJ,"Vajrayana Buddhism a.k.a. Tantra, Diamond Vehicle, Esoteric Buddhism,",2,BUD
+BUDVAJ100,Newar Buddhism,3,BUDVAJ
+BUDVAJ200,"Shingon Buddhism a.k.a. Orthodox Esoteric Buddhism, Japanese Esoteric Buddhism",3,BUDVAJ
+BUDVAJ210,Kogi Shingon School a.k.a. Ancient Shingon School,3,BUDVAJ
+BUDVAJ220,Shingi Shingon School a.k.a. Reformed Shingon School,3,BUDVAJ
+BUDVAJ300,Shugendo,3,BUDVAJ
+BUDVAJ400,Tibetan Buddhism (N.B. all forms of Tibetan Buddhism other than Gelug are called ”Red Hat sects”),3,BUDVAJ
+BUDVAJ410,"Gelug a.k.a. Gelug-pa, dGe Lugs Pa, dge-lugs-pa, Dgelugspa, Yellow Hat Sect; includes Dalai Lama",3,BUDVAJ
+BUDVAJ420,"Kagyu a.k.a. Kagyupa, Kagyud",3,BUDVAJ
+BUDVAJ421,Barom Kagyu,3,BUDVAJ
+BUDVAJ422,"Drubgyu Karma Kamtsang a.k.a. Karma Kagyu, Karma Kamtsang, Karmapa Sect",3,BUDVAJ
+BUDVAJ423,Drikung Kagyu,3,BUDVAJ
+BUDVAJ424,Drukpa Kagyu,3,BUDVAJ
+BUDVAJ425,Shangpa Kagyu,3,BUDVAJ
+BUDVAJ426,Taklung Kagyu,3,BUDVAJ
+BUDVAJ430,Nyingma a.k.a. Nyingmapa,3,BUDVAJ
+BUDVAJ440,Rime Movement (ecumenical/”eclectic” movement),3,BUDVAJ
+BUDVAJ450,Sakya a.k.a. Sakyapa,3,BUDVAJ
+BUDVAJ451,Ngor,3,BUDVAJ
+BUDVAJ452,Tshar,3,BUDVAJ
+CHR,Christianity,1,
+CHR001,Charismatic Christianity,2,CHR
+CHR002,conservative Christianity,2,CHR
+CHR003,evangelical Christianity,2,CHR
+CHR004,liberal Christianity,2,CHR
+CHR005,Prosperity theology,2,CHR
+CHR100,ecumenical Christian movements,2,CHR
+CHR101,World Council of Churches,2,CHR
+CHRANG,Anglican Communion,2,CHR
+CHRANG001,Anglican,3,CHRANG
+CHRANG002,Episcopalian,3,CHRANG
+CHRANG011,”conservative” Anglican,3,CHRANG
+CHRANG012,”liberal” Anglican,3,CHRANG
+CHRANG013,”high” Anglican,3,CHRANG
+CHRANG014,”low” Anglican,3,CHRANG
+CHRANG015,”Catholic” Anglican,3,CHRANG
+CHRANG900,schismatic Catholics within the Anglican Communion,3,CHRANG
+CHRANG901,Philippine Independent Church,3,CHRANG
+CHRANG902,(Old Catholic Church inc. Union of Utrech and any other Old Catholic members of the Anglican Communion),3,CHRANG
+CHRCPT,Coptic Orthodox (could also call it ”CHRDOX202”),2,CHR
+CHRCTH,Roman Catholic       (Latin Rite is defined as the mainstream),2,CHR
+CHRCTH001,Liberation Theology,3,CHRCTH
+CHRCTH201,Apostolate for Family Consecration,3,CHRCTH
+CHRCTH202,Catholic Charismatic Renewal,3,CHRCTH
+CHRCTH203,Catholic Worker Movement,3,CHRCTH
+CHRCTH204,Communion and Liberation,3,CHRCTH
+CHRCTH205,Community of Sant’Egidio,3,CHRCTH
+CHRCTH206,Cursillo Movement,3,CHRCTH
+CHRCTH207,Focolare Movement,3,CHRCTH
+CHRCTH208,L’Arche,3,CHRCTH
+CHRCTH209,Legion of Mary,3,CHRCTH
+CHRCTH210,Madonna House Apostolate,3,CHRCTH
+CHRCTH211,Neocatechumenal Way,3,CHRCTH
+CHRCTH212,Regnum Christi,3,CHRCTH
+CHRCTH213,Schoenstatt Movement,3,CHRCTH
+CHRCTH214,Worldwide Marriage,3,CHRCTH
+CHRCTH401,Adorers a.k.a. Adorers of the Blood of Christ,3,CHRCTH
+CHRCTH402,Adornos a.k.a. Clerics Regular Minor,3,CHRCTH
+CHRCTH403,Assumptionists a.k.a. Augustinians of the Assumption,3,CHRCTH
+CHRCTH404,Society of the Atonement a.k.a. Atonement Friars/Graymoor Friars/Sisters,3,CHRCTH
+CHRCTH405,Augustinians a.k.a. Order of Saint Augustine,3,CHRCTH
+CHRCTH406,Baladites a.k.a. Order of Lebanese Maronite,3,CHRCTH
+CHRCTH407,Barnabites a.k.a. Clerics Regular of Saint Paul,3,CHRCTH
+CHRCTH408,Basilians a.k.a. Congregation of St. Basil,3,CHRCTH
+CHRCTH409,Benedictines a.k.a. Order of Saint Benedict,3,CHRCTH
+CHRCTH410,Bridgettines a.k.a. Order of Our Savior,3,CHRCTH
+CHRCTH411,Brothers of Christian Instruction of St Gabriel,3,CHRCTH
+CHRCTH412,Brothers of the Christian Schools a.k.a. Lasallian Brothers or Christian Brothers,3,CHRCTH
+CHRCTH413,Brothers of Mercy of Our Lady of Perpetual Help,3,CHRCTH
+CHRCTH414,Camaldolese a.k.a. Camaldolese Benedictines,3,CHRCTH
+CHRCTH415,Camillians a.k.a. Order of Saint Camillus,3,CHRCTH
+CHRCTH416,Canossians a.k.a. Canossian Daughters and Sons of Charity,3,CHRCTH
+CHRCTH417,Canons Regular of the New Jerusalem,3,CHRCTH
+CHRCTH418,Capuchins a.k.a. Order of Friars Minor Capuchin,3,CHRCTH
+CHRCTH419,Carmelites a.k.a. Order of Our Lady of Mt. Carmel,3,CHRCTH
+CHRCTH420,Carmelites of Mary Immaculate,3,CHRCTH
+CHRCTH421,Carthusians,3,CHRCTH
+CHRCTH422,Celestines defunct,3,CHRCTH
+CHRCTH423,Cistercians,3,CHRCTH
+CHRCTH424,Claretians a.k.a. Claretian Missionaries,3,CHRCTH
+CHRCTH425,Columbans a.k.a. Missionary Society of St. Columban,3,CHRCTH
+CHRCTH426,"Congregatio Immaculatae Cordis Mariae a.k.a. Scheutfathers, Scheutists, Missionhurst",3,CHRCTH
+CHRCTH427,Congregation of the Disciples of the Lord,3,CHRCTH
+CHRCTH428,Congregation of Holy Cross,3,CHRCTH
+CHRCTH429,Congregation of Notre Dame,3,CHRCTH
+CHRCTH430,Congregation of the Sacred Hearts of Jesus and Mary,3,CHRCTH
+CHRCTH431,Conventual Franciscans a.k.a. Conventuals or Order of Friars Minor Conventual,3,CHRCTH
+CHRCTH432,Crosiers a.k.a. Canons Regular of the Holy Cross,3,CHRCTH
+CHRCTH433,Daughters of Charity of St. Vincent de Paul,3,CHRCTH
+CHRCTH434,Dehonians a.k.a. Priests of the Sacred Heart of Jesus,3,CHRCTH
+CHRCTH435,Divine Word Missionaries,3,CHRCTH
+CHRCTH436,Discalced Carmelites,3,CHRCTH
+CHRCTH437,Dominicans a.k.a. Order of Friars Preachers,3,CHRCTH
+CHRCTH438,Dottrinari a.k.a. Congregazione dei Preti della Dottrina Cristiana,3,CHRCTH
+CHRCTH439,Eudists a.k.a. Congregation of Jesus and Mary,3,CHRCTH
+CHRCTH440,Franciscan Brothers of Brooklyn,3,CHRCTH
+CHRCTH441,Franciscans a.k.a. Order of Friars Minor,3,CHRCTH
+CHRCTH442,Franciscan Missionaries of Divine Motherhood,3,CHRCTH
+CHRCTH443,Franciscan Missionaries of Mary,3,CHRCTH
+CHRCTH444,Franciscan Friars of the Third Order Regular,3,CHRCTH
+CHRCTH445,Fransalians a.k.a. Missionaries of St. Francis de Sales,3,CHRCTH
+CHRCTH446,Grey Nuns of the Sacred Heart,3,CHRCTH
+CHRCTH447,Good Shepherd Sisters,3,CHRCTH
+CHRCTH448,Handmaids of the Blessed Sacrament and of Charity,3,CHRCTH
+CHRCTH449,Handmaids of the Sacred Heart of Jesus,3,CHRCTH
+CHRCTH450,Holy Cross Fathers a.k.a. Congregation of Holy Cross,3,CHRCTH
+CHRCTH451,Order of Hospitalers a.k.a. Hospitaler Brothers of St. John of God,3,CHRCTH
+CHRCTH452,Infant Jesus Sisters a.k.a. Nicolas Barre,3,CHRCTH
+CHRCTH453,Institute of Christ the King Sovereign Priest,3,CHRCTH
+CHRCTH454,Jesuits a.k.a. Society of Jesus,3,CHRCTH
+CHRCTH455,Josephines of Asti a.k.a. Oblates of St. Joseph,3,CHRCTH
+CHRCTH456,Josephite Fathers and Brothers a.k.a. St. Joseph’s Society of the Sacred Heart,3,CHRCTH
+CHRCTH457,"Lazarists a.k.a. Vincentians, Congregation of the Mission",3,CHRCTH
+CHRCTH458,Legionaries of Christ,3,CHRCTH
+CHRCTH459,Little Sisters of the Poor,3,CHRCTH
+CHRCTH460,Loreto Sisters a.k.a. Institute of the Blessed Virgin Mary,3,CHRCTH
+CHRCTH461,Marian Fathers,3,CHRCTH
+CHRCTH462,"Marianists a.k.a. Marists, Daughters of Mary Immaculate, Society of Mary",3,CHRCTH
+CHRCTH465,Marist Brothers,3,CHRCTH
+CHRCTH466,Maryknoll a.k.a. Catholic Foreign Mission Society of America,3,CHRCTH
+CHRCTH467,Mercedarians a.k.a. Order of Our Lady of Mercy,3,CHRCTH
+CHRCTH468,Missionaries of Charity,3,CHRCTH
+CHRCTH469,Missionaries of the Sacred Heart,3,CHRCTH
+CHRCTH470,Missionary Contemplative Movement ”P. de Foucauld” a.k.a. Centro Missionario ”P. de Foucauld”,3,CHRCTH
+CHRCTH471,Norbertines or Premonstratensians a.k.a. Canons Regular of Prmontr,3,CHRCTH
+CHRCTH472,Olivetans a.k.a. Order of Our Lady of Mount Olivet,3,CHRCTH
+CHRCTH473,Oblates Of Mary Immaculate,3,CHRCTH
+CHRCTH474,Oblate Sisters of Providence,3,CHRCTH
+CHRCTH475,Oratorians a.k.a. Oratory of St. Philip Neri,3,CHRCTH
+CHRCTH476,Order of St. Elisabeth,3,CHRCTH
+CHRCTH477,Pallottines a.k.a. Society of the Catholic Apostolate,3,CHRCTH
+CHRCTH478,Paris Foreign Missions Society a.k.a. Missions Etrangres de Paris,3,CHRCTH
+CHRCTH479,Passionists a.k.a. Congregation of the Passion,3,CHRCTH
+CHRCTH480,Paulists a.k.a. Congregation of St. Paul,3,CHRCTH
+CHRCTH481,Piarists a.k.a. Clerics Regulars Poors of the Mother of God of the Pious Schools,3,CHRCTH
+CHRCTH482,Poor Clares a.k.a. Nuns of the Order of St. Clare/(Order of Poor Ladies,3,CHRCTH
+CHRCTH483,Presentation Brothers,3,CHRCTH
+CHRCTH484,Presentation Sisters a.k.a. Sisters of the Presentation of the Blessed Virgin Mary,3,CHRCTH
+CHRCTH485,Priestly Fraternity of St. Peter,3,CHRCTH
+CHRCTH486,Redemptorists a.k.a. Congregation of the Most Holy Redeemer,3,CHRCTH
+CHRCTH487,Religious of the Cenacle,3,CHRCTH
+CHRCTH488,Resurrectionists,3,CHRCTH
+CHRCTH489,Rogationists of the Heart of Jesus,3,CHRCTH
+CHRCTH490,Rosminians a.k.a. Institute of Charity,3,CHRCTH
+CHRCTH491,Sacramentines a.k.a. Congregation of the Blessed Sacrament,3,CHRCTH
+CHRCTH492,"Salesians of St. John Bosco a.k.a. Salesian Society, Salesians of John Bosco, Society of St. Francis de Sales",3,CHRCTH
+CHRCTH493,"Salesian Sisters a.k.a. Daughters of Mary Help of Christian, (Daughters of St. Francis de Sales?)",3,CHRCTH
+CHRCTH494,Salvatorians a.k.a. Society of the Divine Savior,3,CHRCTH
+CHRCTH495,Scalabrians a.k.a. Congregation of the Missionaries of St. Charles Borromeo,3,CHRCTH
+CHRCTH496,School Sisters of Notre Dame,3,CHRCTH
+CHRCTH497,"Servites a.k.a. Order of Friars, Servants of Mary",3,CHRCTH
+CHRCTH498,Sisters of Charity,3,CHRCTH
+CHRCTH499,Sisters of Charity of the Blessed Virgin Mary,3,CHRCTH
+CHRCTH500,Sisters of the Holy Names of Jesus and Mary,3,CHRCTH
+CHRCTH501,Sisters of Mercy or Religious Sisters of Mercy,3,CHRCTH
+CHRCTH502,Sisters of Notre Dame de Namur,3,CHRCTH
+CHRCTH503,Sisters of Our Lady of Mercy,3,CHRCTH
+CHRCTH504,Sisters of St Joseph,3,CHRCTH
+CHRCTH505,Sisters of St Joseph of the Sacred Heart,3,CHRCTH
+CHRCTH506,Society of the Precious Blood a.k.a. Precious Blood Fathers,3,CHRCTH
+CHRCTH507,Spiritans or Holy Ghost Fathers a.k.a. Congregation of the Holy Ghost,3,CHRCTH
+CHRCTH508,Stigmatines a.k.a. Congregation of the Sacred Stigmata,3,CHRCTH
+CHRCTH509,Sulpician Fathers a.k.a. Society of Saint Sulpice,3,CHRCTH
+CHRCTH510,Theatines a.k.a. Congregation of Clerics Regular,3,CHRCTH
+CHRCTH511,Trappists a.k.a. Order of Cistercians of the Strict Observance,3,CHRCTH
+CHRCTH512,Trinitarians a.k.a. Order of the Most Holy Trinity,3,CHRCTH
+CHRCTH513,"Ursulines a.k.a. Ursuline Nuns of the Roman Union, also Ursuline Sisters of Tildonck",3,CHRCTH
+CHRCTH514,Verbum Dei Missionary Fraternity,3,CHRCTH
+CHRCTH515,Viatorians a.k.a. Clerics of Saint Viator,3,CHRCTH
+CHRCTH517,Vocationists a.k.a. Clerics of the Divine Vocation,3,CHRCTH
+CHRCTH518,Xaverians or Xaverian Brothers a.k.a. Missionary Society of St. Francis Xavier,3,CHRCTH
+CHRCTH600,miscellaneous Roman Catholic organizations,3,CHRCTH
+CHRCTH601,Opus Dei,3,CHRCTH
+CHRCTH602,personal ordinariates of former Anglicans,3,CHRCTH
+CHRCTH603,Sovereign Military Hospitaller Order of Saint John of Jerusalem of Rhodes and of Malta a.k.a. Order of Malta,3,CHRCTH
+CHRCTH800,Eastern Catholic Church,3,CHRCTH
+CHRCTH810,Alexandrian liturgical tradition,3,CHRCTH
+CHRCTH811,Coptic Catholic Church,3,CHRCTH
+CHRCTH812,Ethiopian Catholic Church,3,CHRCTH
+CHRCTH820,Antiochan liturgical tradition,3,CHRCTH
+CHRCTH822,Syriac Catholic Church,3,CHRCTH
+CHRCTH823,Syro-Malankara Catholic Church,3,CHRCTH
+CHRCTH830,Armenian liturgical tradition,3,CHRCTH
+CHRCTH831,Armenian Catholic Church,3,CHRCTH
+CHRCTH840,Chaldean/East Syrian liturgical tradition,3,CHRCTH
+CHRCTH841,Chaldean Catholic Church,3,CHRCTH
+CHRCTH842,Syro-Malabar Church,3,CHRCTH
+CHRCTH851,Albanian Catholic Church,3,CHRCTH
+CHRCTH852,Belarusian Catholic Church,3,CHRCTH
+CHRCTH853,Bulgarian Catholic Church,3,CHRCTH
+CHRCTH854,Eparchy of Krizevci,3,CHRCTH
+CHRCTH855,Eucharistic Catholic Church,3,CHRCTH
+CHRCTH856,Greek Byzantine Catholic Church,3,CHRCTH
+CHRCTH857,Hungarian Catholic Church,3,CHRCTH
+CHRCTH858,Italo-Albanian Catholic Church,3,CHRCTH
+CHRCTH859,Macedonian Catholic Church,3,CHRCTH
+CHRCTH860,Melkite Greek Catholic Church,3,CHRCTH
+CHRCTH861,Romanian Church United with Rome,3,CHRCTH
+CHRCTH862,Russian Catholic Church,3,CHRCTH
+CHRCTH863,Ruthenian Catholic Church,3,CHRCTH
+CHRCTH864,Slovak Catholic Church,3,CHRCTH
+CHRCTH865,Ukrainian Catholic Church,3,CHRCTH
+CHRCTH900,schismatic Catholics,3,CHRCTH
+CHRCTH901,African Church Incorporated,3,CHRCTH
+CHRCTH902,Antiochian Catholic Church in America (we can reserve the 100’s for Catholic schisms),3,CHRCTH
+CHRCTH903,Worldwide Communion of Catholic Apostolic Churches (led by Brazilian Catholic Apostolic Church),3,CHRCTH
+CHRCTH904,Chinese Patriotic Catholic Association,3,CHRCTH
+CHRCTH905,Heenum Catholic Church,3,CHRCTH
+CHRCTH906,Independent Catholic Churches,3,CHRCTH
+CHRCTH907,Liberal Catholic Church,3,CHRCTH
+CHRCTH908,Mariavite Church,3,CHRCTH
+CHRCTH909,Polish National Catholic Church (and Polish Catholic Church),3,CHRCTH
+CHRCTH910,Society of Saint Pius X,3,CHRCTH
+CHRDOX,Orthodox Christian (Note: category includes all non-Catholic forms of ”Eastern” Christianity),2,CHR
+CHRDOX100,"Orthodox Communion (listed in order of seniority, rather than alphabetized)",3,CHRDOX
+CHRDOX101,Ecumenical Patriarchate of Constantinople,3,CHRDOX
+CHRDOX102,Orthodox Church of Alexandria,3,CHRDOX
+CHRDOX103,Orthodox Church of Antioch,3,CHRDOX
+CHRDOX104,Orthodox Church of Jerusalem,3,CHRDOX
+CHRDOX105,Orthodox Church of Russia,3,CHRDOX
+CHRDOX106,Orthodox Church of Serbia,3,CHRDOX
+CHRDOX107,Orthodox Church of Romania,3,CHRDOX
+CHRDOX108,Orthodox Church of Bulgaria,3,CHRDOX
+CHRDOX109,Orthodox Church of Georgia,3,CHRDOX
+CHRDOX110,Orthodox Church of Cyprus,3,CHRDOX
+CHRDOX111,Orthodox Church of Greece,3,CHRDOX
+CHRDOX112,Orthodox Church of Poland,3,CHRDOX
+CHRDOX113,Orthodox Church of Albania,3,CHRDOX
+CHRDOX114,Orthodox Church of the Czech lands and Slovakia,3,CHRDOX
+CHRDOX115,Orthodox Church in America,3,CHRDOX
+CHRDOX200,"autonomous, unrecognized, and separated Orthodox",3,CHRDOX
+CHRDOX201,American World Patriarchs,3,CHRDOX
+CHRDOX202,Belarusian Autocephalous Orthodox Church,3,CHRDOX
+CHRDOX203,Chinese Orthodox Church,3,CHRDOX
+CHRDOX204,Croatian Orthodox Church,3,CHRDOX
+CHRDOX205,Estonian Orthodox Church,3,CHRDOX
+CHRDOX206,Finnish Orthodox Church,3,CHRDOX
+CHRDOX207,Greek Old Calendarists,3,CHRDOX
+CHRDOX208,Japanese Orthodox Church,3,CHRDOX
+CHRDOX209,Latvian Orthodox Church,3,CHRDOX
+CHRDOX210,Macedonian Orthodox Church,3,CHRDOX
+CHRDOX211,Metropolitan Church of Bessarabia,3,CHRDOX
+CHRDOX212,Moldovan Orthodox Church,3,CHRDOX
+CHRDOX213,Montenegrin Orthodox Church,3,CHRDOX
+CHRDOX214,Old Believers,3,CHRDOX
+CHRDOX215,Old Calendar Bulgarian Orthodox Church,3,CHRDOX
+CHRDOX216,Old Calendar Romanian Orthodox Church,3,CHRDOX
+CHRDOX217,Orthodox Church in Italy,3,CHRDOX
+CHRDOX218,Orthodox Church of Greece (Holy Synod in Resistance),3,CHRDOX
+CHRDOX219,Orthodox Ohrid Archbishopric,3,CHRDOX
+CHRDOX220,Patriarchal Exarchate in Western Europe,3,CHRDOX
+CHRDOX221,Russian Orthodox Church Outside Russia,3,CHRDOX
+CHRDOX222,Russian True Orthodox Church,3,CHRDOX
+CHRDOX223,Ukrainian Orthodox Church (Kyiv Patriarchate),3,CHRDOX
+CHRDOX224,Ukrainian Orthodox Church (Moscow Patriarchate),3,CHRDOX
+CHRDOX300,Oriental Orthodox Oriental Orthodox,3,CHRDOX
+CHRDOX301,Armenian Apostolic Church,3,CHRDOX
+CHRDOX303,Eritrean Orthodox,3,CHRDOX
+CHRDOX304,Ethiopian Orthodox,3,CHRDOX
+CHRDOX305,Malankara Orthodox Syrian Church (also known as Indian Orthodox),3,CHRDOX
+CHRDOX306,Syriac Orthodox,3,CHRDOX
+CHRDOX400,Assyrian Church of the East,3,CHRDOX
+CHRDOX500,Ancient Church of the East,3,CHRDOX
+CHRDOX900,schismatic Orthodox,3,CHRDOX
+CHRDOX910,Old Believers - Bespopovtsy,3,CHRDOX
+CHRDOX911,Pomortsy a.k.a. Danilovtsy,3,CHRDOX
+CHRDOX912,Novopomortsy a.k.a. New Pomortsy,3,CHRDOX
+CHRDOX913,Staropomortsy a.k.a. Old Pomortsy,3,CHRDOX
+CHRDOX914,Fedoseevtsy a.k.a. Society of Christian Old Believers of the Old Pomortsy Unmarried Confession,3,CHRDOX
+CHRDOX915,Fillipovtsy,3,CHRDOX
+CHRDOX916,Chasovennye a.k.a. Semeyskie,3,CHRDOX
+CHRDOX920,Old Believers - Popovtsy,3,CHRDOX
+CHRDOX921,Belokrinitskaya hierarchy a.k.a. Russian Orthodox Old-Rite Church,3,CHRDOX
+CHRDOX922,Novozybkovskaya hierarchy a.k.a. Russian Old-Orthodox Church,3,CHRDOX
+CHRGNO,gnostic Christianity,2,CHR
+CHRGNO010,Anthroposophy,3,CHRGNO
+CHRGNO020,Foundation for Inner Peace i.e. A Course in Miracles,3,CHRGNO
+CHRGNO030,Order of the Solar Temple,3,CHRGNO
+CHRGNO041,Ancient Mystical Order Rosae Crucis,3,CHRGNO
+CHRGNO042,Antiquus Ordo Rosicrucianis a.k.a. Ancient Order of the Rosicrucians,3,CHRGNO
+CHRGNO043,Fraternitas Rosae Crucis,3,CHRGNO
+CHRGNO044,Lectorium Rosicrucianum,3,CHRGNO
+CHRGNO045,Rosicrucian Fellowship,3,CHRGNO
+CHRGNO046,Societas Rosicruciana,3,CHRGNO
+CHRGNO060,Summum,3,CHRGNO
+CHRJHW,Bible Student Movement (mainline group: Jehovah’s Witnesses),2,CHR
+CHRJHW010,Chicago Bible Students,3,CHRJHW
+CHRJHW020,Christian Millennial Fellowship,3,CHRJHW
+CHRJHW030,Dawn Bible Students,3,CHRJHW
+CHRJHW040,Free Bible Students,3,CHRJHW
+CHRJHW041,Berean Bible Students Church,3,CHRJHW
+CHRJHW042,Christian Millennial Fellowship a.k.a. Free Bible Students,3,CHRJHW
+CHRJHW050,"Friends of Man a.k.a. Philanthropic Assembly of the Friends of Man, The Church of the Kingdom of God",3,CHRJHW
+CHRJHW070,Goshen Fellowship,3,CHRJHW
+CHRJHW080,Independent Bible Students,3,CHRJHW
+CHRJHW090,Laymen’s Home Missionary Movement hostile to JW church,3,CHRJHW
+CHRJHW100,True Faith Jehovah’s Witnesses Association,3,CHRJHW
+CHRLDS,Latter Day Saints a.k.a. Mormonism,2,CHR
+CHRLDS010,"Aaronic Order numbering Aaronic Order isn’t mainstream, right?",3,CHRLDS
+CHRLDS020,Church of Christ (Temple Lot),3,CHRLDS
+CHRLDS030,Church of Christ with the Elijah Message,3,CHRLDS
+CHRLDS040,Church of the Firstborn of the Fulness of Times,3,CHRLDS
+CHRLDS050,Church of the Lamb of God,3,CHRLDS
+CHRLDS060,Community of Christ a.k.a. Reorganized Church of Jesus Christ of Latter Day Saints,3,CHRLDS
+CHRLDS061,Restoration Branches,3,CHRLDS
+CHRLDS070,Confederate Nations of Israel,3,CHRLDS
+CHRLDS080,Fundamentalist Church of Jesus Christ of Latter Day Saints a.k.a. FLDS,3,CHRLDS
+CHRLDS090,"Latter-day Church of Christ a.k.a. Kingston Clan, Kingston Group, Davis County Cooperative, The Co-op Society",3,CHRLDS
+CHRLDS100,Rigdonites,3,CHRLDS
+CHRLDS110,Righteous Branch of the Church of Jesus Christ of Latter-day Saints,3,CHRLDS
+CHRLDS120,The Church of Jesus Christ (Bickertonite),3,CHRLDS
+CHRLDS130,The Church of Jesus Christ of Latter Day Saints (Strangite),3,CHRLDS
+CHRLDS140,Zion’s Order,3,CHRLDS
+CHRMAY,”maybe” Christian churches of controversial status,2,CHR
+CHRMAY001,esoteric Christianity,3,CHRMAY
+CHRMAY111,Christian Churches of God,3,CHRMAY
+CHRMAY112,Christian Educational Ministries,3,CHRMAY
+CHRMAY113,"Church of God, 21st Century",3,CHRMAY
+CHRMAY114,"Church of God, an International Community",3,CHRMAY
+CHRMAY115,Church of God International (USA),3,CHRMAY
+CHRMAY116,"Church of God, The Eternal",3,CHRMAY
+CHRMAY117,Church of God Preparing for the Kingdom of God,3,CHRMAY
+CHRMAY118,Church of the Eternal God,3,CHRMAY
+CHRMAY119,Church of the Great God,3,CHRMAY
+CHRMAY120,Global Church of God (and offshoots),3,CHRMAY
+CHRMAY121,Intercontinental Church of God,3,CHRMAY
+CHRMAY122,Living Church of God,3,CHRMAY
+CHRMAY123,Philadelphia Church of God,3,CHRMAY
+CHRMAY124,Restored Church of God,3,CHRMAY
+CHRMAY125,Church of God Fellowship,3,CHRMAY
+CHRMAY126,Church of the Great God,3,CHRMAY
+CHRMAY127,Sabbath Church of God,3,CHRMAY
+CHRMAY128,United Church of God,3,CHRMAY
+CHRMAY130,Bethel Ministerial Association,3,CHRMAY
+CHRMAY140,Christadelphianism a.k.a. Thomasites,3,CHRMAY
+CHRMAY150,"Christian Conventions a.k.a. Two-by-Twos, the Workers and Friends",3,CHRMAY
+CHRMAY151,Cooneyites,3,CHRMAY
+CHRMAY160,"Christian Science a.k.a. Church of Christ, Scientist",3,CHRMAY
+CHRMAY170,Church of the Blessed Hope,3,CHRMAY
+CHRMAY180,Friends of Man,3,CHRMAY
+CHRMAY190,Iglesia ni Cristo,3,CHRMAY
+CHRMAY200,The Local Church a.k.a. Little Flock,3,CHRMAY
+CHRMAY210,Members Church of God International,3,CHRMAY
+CHRMAY220,Mita Congregation,3,CHRMAY
+CHRMAY230,"New Thought Movement inc. only the Christian, official New Thought movements",3,CHRMAY
+CHRMAY231,Church of Divine Science,3,CHRMAY
+CHRMAY232,Religious Science,3,CHRMAY
+CHRMAY233,Unity School of Christianity a.k.a. Unity Church,3,CHRMAY
+CHRMAY240,Oneness Pentecostalism (maybe delete some members,3,CHRMAY
+CHRMAY241,United Pentecostal Church International,3,CHRMAY
+CHRMAY242,Pentecostal Assemblies of the World,3,CHRMAY
+CHRMAY250,Spiritual Christianity,3,CHRMAY
+CHRMAY251,Molokans,3,CHRMAY
+CHRMAY252,Dukhobors a.s.a. Doukhobors,3,CHRMAY
+CHRMAY253,Khlysts,3,CHRMAY
+CHRMAY254,Skoptsy,3,CHRMAY
+CHRMAY255,Ikonobortsy,3,CHRMAY
+CHRMAY260,"Swedenborgianism a.k.a. The Lord’s New Church, Church of the New Jerusalem",3,CHRMAY
+CHRMAY270,The Way International,3,CHRMAY
+CHRMAY271,American Fellowship Services,3,CHRMAY
+CHRMAY272,Great Lakes Fellowship,3,CHRMAY
+CHRMAY273,Pacific West Fellowship,3,CHRMAY
+CHRMAY280,Unification Church (Moonies),3,CHRMAY
+CHRMLN,millenarian Christianity,2,CHR
+CHRMLN010,Branch Davidians,3,CHRMLN
+CHRMLN020,"The Brethren a.k.a. The Body of Christ, The Garbage Eaters",3,CHRMLN
+CHRMLN030,Concerned Christians,3,CHRMLN
+CHRMRN,Maronite Church (could also call it ”CHRCTH921”),2,CHR
+CHRNRM,new Christian movements,2,CHR
+CHRNRM010,The Body of Christ,3,CHRNRM
+CHRNRM020,Church of the Living Word a.k.a. The Walk,3,CHRNRM
+CHRNRM030,The Family International,3,CHRNRM
+CHRNRM040,Foundation of Human Understanding,3,CHRNRM
+CHRNRM050,International Community of Christ,3,CHRNRM
+CHRNRM060,Shepherding Movement,3,CHRNRM
+CHROFF,offshoots of Christianity,2,CHR
+CHROFF010,National Spiritualist Association of Churches,3,CHROFF
+CHROFF020,Spiritualism,3,CHROFF
+CHROFF030,Unitarian-Universalism,3,CHROFF
+CHROFF031,Covenant of Unitarian Universalist Pagans,3,CHROFF
+CHROFF032,Unitarianism,3,CHROFF
+CHROFF033,Universalism,3,CHROFF
+CHROFF040,Urantia Foundation,3,CHROFF
+CHRPRO,Protestant,2,CHR
+CHRPRO010,(Protestant - generic terms/non-denominational movements),3,CHRPRO
+CHRPRO011,charismatic Protestantism,3,CHRPRO
+CHRPRO012,cyberchurch,3,CHRPRO
+CHRPRO013,dispensationalism,3,CHRPRO
+CHRPRO014,evangelical Protestantism,3,CHRPRO
+CHRPRO015,pietism,3,CHRPRO
+CHRPRO111,Advent Christian Church,3,CHRPRO
+CHRPRO112,Church of God (Seventh Day),3,CHRPRO
+CHRPRO113,Church of God and Saints of Christ,3,CHRPRO
+CHRPRO114,Church of God General Conference,3,CHRPRO
+CHRPRO115,Davidian Seventh-day Adventist Association,3,CHRPRO
+CHRPRO116,Seventh Day Adventist Reform Movement,3,CHRPRO
+CHRPRO117,Seventh-day Adventist Church,3,CHRPRO
+CHRPRO118,United Church of God,3,CHRPRO
+CHRPRO119,Worldwide Church of God,3,CHRPRO
+CHRPRO120,Assembly of Yahweh,3,CHRPRO
+CHRPRO121,Primitive Advent Christian Church,3,CHRPRO
+CHRPRO122,United Seventh-Day Brethren,3,CHRPRO
+CHRPRO123,True and Free Adventists,3,CHRPRO
+CHRPRO124,United Sabbath-Day Adventist Church,3,CHRPRO
+CHRPRO141,Ethiopian churches,3,CHRPRO
+CHRPRO142,Zionist churches,3,CHRPRO
+CHRPRO143,Messianic churches,3,CHRPRO
+CHRPRO144,Apostolic churches,3,CHRPRO
+CHRPRO145,Aladura Pentecostal Churches,3,CHRPRO
+CHRPRO161,Amish,3,CHRPRO
+CHRPRO162,Apostolic Christian Church (Nazarean),3,CHRPRO
+CHRPRO163,Brethren in Christ,3,CHRPRO
+CHRPRO164,Bruderhof,3,CHRPRO
+CHRPRO165,"Church of God in Christ, Mennonite",3,CHRPRO
+CHRPRO166,Church of the Brethren,3,CHRPRO
+CHRPRO167,Hutterites a.k.a. ”New Baptists”,3,CHRPRO
+CHRPRO168,Mennonites,3,CHRPRO
+CHRPRO169,"Old German Baptist Brethren a.k.a. Hutterian Brethren, Hutterian Society of Brothers",3,CHRPRO
+CHRPRO170,Schwarzenau Brethren,3,CHRPRO
+CHRPRO181,Free and General Baptists,3,CHRPRO
+CHRPRO182,Seventh Day Baptists,3,CHRPRO
+CHRPRO183,Strict and Particular Baptists,3,CHRPRO
+CHRPRO211,Confessional Evangelical Lutheran Conference,3,CHRPRO
+CHRPRO212,Evangelical Catholic Lutheranism a.k.a. High Church Lutheranism,3,CHRPRO
+CHRPRO213,International Lutheran Council,3,CHRPRO
+CHRPRO214,Lutheran World Federation,3,CHRPRO
+CHRPRO215,Unaffiliated Lutheran denominations,3,CHRPRO
+CHRPRO251,Independent Pentecostalism,3,CHRPRO
+CHRPRO252,Reformed/Higher Life Pentecostalism (most prominent group: Assemblies of God),3,CHRPRO
+CHRPRO253,Wesleyan/Holiness Pentecostalism,3,CHRPRO
+CHRPRO281,Czechoslovak Hussite Church,3,CHRPRO
+CHRPRO282,Moravian Church,3,CHRPRO
+CHRPRO283,Unity of the Brethren,3,CHRPRO
+CHRPRO284,Waldensian Evangelical Church,3,CHRPRO
+CHRPRO331,Churches of Christ (mainline),3,CHRPRO
+CHRPRO332,Disciples of Christ a.k.a. Christian Church,3,CHRPRO
+CHRPRO333,Independent Christian Churches/Churches of Christ,3,CHRPRO
+CHRPRO334,International Churches of Christ,3,CHRPRO
+CHRPRO351,China Christian Council,3,CHRPRO
+CHRPRO352,Church of Christ in Thailand,3,CHRPRO
+CHRPRO353,Church of North India,3,CHRPRO
+CHRPRO354,Church of Pakistan,3,CHRPRO
+CHRPRO355,Church of South India,3,CHRPRO
+CHRPRO356,Evangelical Church in Germany,3,CHRPRO
+CHRPRO357,Evangelical Free Church,3,CHRPRO
+CHRPRO358,Indonesia Christian Church a.k.a. Gereja Kristen Indonesia,3,CHRPRO
+CHRPRO359,International Council of Community Churches,3,CHRPRO
+CHRPRO360,Protestant Church in the Netherlands,3,CHRPRO
+CHRPRO361,Union of Waldensian and Methodist Churches,3,CHRPRO
+CHRPRO362,United Church in Jamaica and the Cayman Islands,3,CHRPRO
+CHRPRO363,United Church in Papua New Guinea and the Solomon Islands,3,CHRPRO
+CHRPRO364,United Church of Canada,3,CHRPRO
+CHRPRO365,United Church of Christ,3,CHRPRO
+CHRPRO366,United Church of Christ in Japan a.k.a. Nihon Kirisuto Kyodan,3,CHRPRO
+CHRPRO367,United Church of Christ in the Philippines,3,CHRPRO
+CHRPRO368,United Free Church of Scotland,3,CHRPRO
+CHRPRO370,United Reformed Church,3,CHRPRO
+CHRPRO371,Uniting Church in Australia,3,CHRPRO
+CHRPRO900,"otherwise excluded denominations, associations, churches or movements",3,CHRPRO
+CHRPRO901,American Evangelical Christian Churches,3,CHRPRO
+CHRPRO902,Apostolic Christian Church of America,3,CHRPRO
+CHRPRO903,Association of Vineyard Churches,3,CHRPRO
+CHRPRO904,Born Again Movement a.k.a. Word of Life Church/Movement,3,CHRPRO
+CHRPRO905,British New Church Movement,3,CHRPRO
+CHRPRO906,Brunstad Christian Church,3,CHRPRO
+CHRPRO907,Calvary Chapel,3,CHRPRO
+CHRPRO908,"Charismatic Episcopal Church (not an offshoot of Anglicanism, but mostly uses its doctrines and materials)",3,CHRPRO
+CHRPRO909,Christian World Liberation Front a.k.a. the Spiritual Counterfeits Project,3,CHRPRO
+CHRPRO910,Community of Jesus,3,CHRPRO
+CHRPRO911,Followers of Christ Church,3,CHRPRO
+CHRPRO912,Great Commission church movement,3,CHRPRO
+CHRPRO913,Greater Grace World Outreach,3,CHRPRO
+CHRPRO914,Independent Fundamental Churches of America,3,CHRPRO
+CHRPRO915,Jews for Jesus,3,CHRPRO
+CHRPRO916,Moody Church,3,CHRPRO
+CHRPRO918,Most Holy Church of God in Christ Jesus,3,CHRPRO
+CHRPRO919,New Apostolic Church,3,CHRPRO
+CHRPRO920,New Life Fellowship,3,CHRPRO
+CHRPRO921,"The Christian Community a.k.a. Christian Community Church, Christengemeinschaft",3,CHRPRO
+CHRPRO922,True Jesus Church,3,CHRPRO
+CHRPRO923,United Church of Christ,3,CHRPRO
+CHRRAC,Christian groups with racial theologies,2,CHR
+CHRRAC010,British Israelism a.k.a. Anglo-Israelism,3,CHRRAC
+CHRRAC011,Anglo-Saxon Federation of America,3,CHRRAC
+CHRRAC020,Christian Identity,3,CHRRAC
+CHRRAC021,Aryan Nations Church,3,CHRRAC
+CHRRAC022,Assembly of Christian Soldiers,3,CHRRAC
+CHRRAC023,Christian Identity Church,3,CHRRAC
+CHRRAC024,Church of Israel,3,CHRRAC
+CHRRAC025,"The Covenant, the Sword, and the Arm of the Lord",3,CHRRAC
+CHRRAD,fundamentalist Christian,2,CHR
+CHRSYN,syncretic Christianity,2,CHR
+CHRSYN011,Union of Messianic Jewish Congregations,3,CHRSYN
+CHRSYN020,Native American Church,3,CHRSYN
+CHRSYN030,Sacred Name Movement a.k.a. Yahwehism,3,CHRSYN
+CHRSYN031,Assemblies of the Called Out Ones of Yah”,3,CHRSYN
+CHRSYN032,Assemblies of Yahweh,3,CHRSYN
+CHRSYN033,Yahwehs Assembly in Messiah,3,CHRSYN
+CHRSYN034,Yahweh’s Assembly in Yahshua,3,CHRSYN
+CHRSYN035,Yahweh’s Restoration Ministry,3,CHRSYN
+CHRSYN036,Yahweh’s Philadelphia Truth Congregation,3,CHRSYN
+CHRSYN040,Spiritual Baptist,3,CHRSYN
+CHRSYN050,Uniao do Vegetal,3,CHRSYN
+CON,Confucianism,1,
+CON200,New Confucianism,2,CON
+CONSYN,Neo-Confucianism (or CON100),2,CON
+EAR,(other) East Asian religions,1,
+EAR010,Chinese Folk Religion,2,EAR
+EARMLN010,Jeung San Do,3,EARMLN
+EARNRM010,Falun Gong,3,EARNRM
+EARSYN010,Caodaism,3,EARSYN
+EARSYN020,"Chondogyo a.k.a. Chendogyo, Chendoism, Chondoism",3,EARSYN
+EARSYN030,I-Kuan Tao,3,EARSYN
+EARSYN040,Kejawen/Kebatinan,3,EARSYN
+HIN,Hinduism,1,
+HIN100,ecumenical Hindu movements,2,HIN
+HIN101,Hindu Aikya Vedi,2,HIN
+HIN102,Hindu Forum of Britain,2,HIN
+HIN103,Vishva Hindu Parishad,2,HIN
+HIN104,Malaysia Hindudharma Mamandram,2,HIN
+HIN105,Rashtriya Swayamsevak Sangh,2,HIN
+HIN106,Sanatan Sanstha,2,HIN
+HIN108,Hindu Munnani (”of Tamilnadu”),2,HIN
+HIN109,Hindu Youth Network,2,HIN
+HINAST,Hinduism by school of astika (orthodox) philosophies,2,HIN
+HINAST100,Mimamsa,3,HINAST
+HINAST200,Nyaya-Vaisheshika (inc. either of the parts separately),3,HINAST
+HINAST300,Samkhya,3,HINAST
+HINAST410,Advaita Vedanta,3,HINAST
+HINAST420,Vishishtadvaita,3,HINAST
+HINAST430,Dvaita,3,HINAST
+HINAST440,Dvaitadvaita,3,HINAST
+HINAST450,Shuddhadvaita,3,HINAST
+HINAST460,Achintya Bhedabheda,3,HINAST
+HINAST470,Purnadvaita a.k.a. Integral Advaita,3,HINAST
+HINAST710,Bhakti Yoga,3,HINAST
+HINAST711,Hanuman Foundation,3,HINAST
+HINAST720,Hatha Yoga,3,HINAST
+HINAST730,Jnana Yoga,3,HINAST
+HINAST740,Karma Yoga,3,HINAST
+HINAST750,Kriya Yoga,3,HINAST
+HINAST751,Self-Realization Fellowship,3,HINAST
+HINAST752,Yogoda Satsanga Society of India,3,HINAST
+HINAST760,Natya Yoga,3,HINAST
+HINAST770,Purna Yoga a.k.a. Integral Yoga,3,HINAST
+HINAST771,Aurobindo Ashrama,3,HINAST
+HINAST780,Raja Yoga,3,HINAST
+HINAST790,named Yogic organizations,3,HINAST
+HINAST791,Kripalu Yoga Retreat,3,HINAST
+HINAST792,Himalayan Institute of Yoga Science and Philosophy,3,HINAST
+HINDEN,Hinduism by denomination prioritize this categorization,2,HIN
+HINDEN100,Shaivism,3,HINDEN
+HINDEN110,Kashmir Shaivism,3,HINDEN
+HINDEN111,Krana,3,HINDEN
+HINDEN112,Kula,3,HINDEN
+HINDEN113,Pratyabhijna,3,HINDEN
+HINDEN114,Siddha Yoga,3,HINDEN
+HINDEN115,Spanda,3,HINDEN
+HINDEN121,Shaiva Siddhanta,3,HINDEN
+HINDEN122,Lingayatism,3,HINDEN
+HINDEN123,Visishtadvaita,3,HINDEN
+HINDEN124,Agama Hindu Dharma,3,HINDEN
+HINDEN125,Arsha Vidya Gurukulam,3,HINDEN
+HINDEN126,Brahma Kumaris World Spiritual University,3,HINDEN
+HINDEN200,Shaktism,3,HINDEN
+HINDEN210,Hindu tantra,3,HINDEN
+HINDEN211,Ananda Marga,3,HINDEN
+HINDEN300,Smartism,3,HINDEN
+HINDEN310,Ramakrishna Movement (a.k.a. Vedantic Movement),3,HINDEN
+HINDEN311,Ramakrishna Mission (the aid work portion of the Movement),3,HINDEN
+HINDEN312,Ramakrishna Math,3,HINDEN
+HINDEN313,Sri Sarada Math,3,HINDEN
+HINDEN314,Ramakrishna Sarada Mission,3,HINDEN
+HINDEN320,(Smarta) Advaita Vedanta,3,HINDEN
+HINDEN321,Ramachandrapura Math a.k.a. Sri Sri Jagadguru Shankaracharya Mahasamstanam SriSamstana Gokarna,3,HINDEN
+HINDEN322,Sri Ramana Ashram a.k.a. Sri Ramanasramam,3,HINDEN
+HINDEN331,"Sharada Pitha a.k.a. Sringeri Sharada Peetham, Sringeri Mutt",3,HINDEN
+HINDEN332,Jyotirmatha Pitha,3,HINDEN
+HINDEN333,Govardhana Pitha,3,HINDEN
+HINDEN334,Dwaraka Pitha,3,HINDEN
+HINDEN335,Kanchi Kamakoti Pitha,3,HINDEN
+HINDEN336,Vivekananda Kendra,3,HINDEN
+HINDEN337,Divine Life Society,3,HINDEN
+HINDEN339,Transcendental Meditation movement a.k.a. International Meditation Society,3,HINDEN
+HINDEN340,Sivananda Yoga,3,HINDEN
+HINDEN341,Divine Life Society,3,HINDEN
+HINDEN342,Sathya Sai Baba,3,HINDEN
+HINDEN343,Art of Living Foundation,3,HINDEN
+HINDEN345,Dwaraka Pitham,3,HINDEN
+HINDEN346,Govardhana Matha,3,HINDEN
+HINDEN347,Jyotirmath,3,HINDEN
+HINDEN348,Swarnavalli Mutt,3,HINDEN
+HINDEN350,Kanchi Kamakoti Peetham,3,HINDEN
+HINDEN400,Vaishnavism,3,HINDEN
+HINDEN410,Brahma sampradaya inc. Gaudiya Vaishnavism (sole subset),3,HINDEN
+HINDEN411,Gaudiya Math,3,HINDEN
+HINDEN412,"International Society for Krishna Consciousness a.k.a. ISKON, or Hare Krishnas",3,HINDEN
+HINDEN420,Halumatha,3,HINDEN
+HINDEN421,Kaginele Kanaka Guru Peetha,3,HINDEN
+HINDEN422,Mata Amritanandamayi Math,3,HINDEN
+HINDEN430,Shri Vaishnava a.k.a. Sri Sampradaya,3,HINDEN
+HINDEN431,Andavan Ashramam,3,HINDEN
+HINDEN432,Ahobila Matha,3,HINDEN
+HINDEN433,Parakala Matha,3,HINDEN
+HINDEN434,Sree Narayana Dharma Paripalana Yogam,3,HINDEN
+HINDEN435,Sree Narayana Dharma Sangham,3,HINDEN
+HINDEN450,Swaminarayan Hinduism,3,HINDEN
+HINDEN451,Bochasanwasi Shri Akshar Purushottam Swaminarayan Sanstha,3,HINDEN
+HINDEN452,Swaminarayan Maninagar,3,HINDEN
+HINDEN453,Swaminarayan Sampraday,3,HINDEN
+HINDEN454,Rudra sampradaya inc. Shree Vallabha Nidhi (sole subset),3,HINDEN
+HINDEN456,Sri Narasingha Caitanya Matha (Dvaita philosophy),3,HINDEN
+HINDEN457,The Ramanandi movement,3,HINDEN
+HINDEN458,Vaisnava-Sahajiya,3,HINDEN
+HINDEN500,Other Hindu denominations,3,HINDEN
+HINDEN510,Ganapatya,3,HINDEN
+HINDEN520,Saura,3,HINDEN
+HINMAY,Hindu groups of controversial status,2,HIN
+HINMAY010,Ayyavazhi,3,HINMAY
+HINNRM,New Hindu Movements,2,HIN
+HINNRM010,Arya Samaj,3,HINNRM
+HINOFF,offshoots of Hinduism,2,HIN
+HINOFF010,Brahmoism,3,HINOFF
+HINOFF011,Sadharan Brahmo Samaj,3,HINOFF
+HINSYN,syncretic Hindu movements,2,HIN
+HINSYN010,Sant Mat and related movements,3,HINSYN
+HINSYN011,Radha Soami a.k.a. Radhasoami,3,HINSYN
+HINSYN012,Divine Light Mission,3,HINSYN
+HINWLB,wellbeing-related Hindu movements,2,HIN
+HINWLB010,Chopra Center,3,HINWLB
+INR,(other) Indian religions,1,
+INR010,Ravidasi,2,INR
+INR020,Din-i-Ilahi,2,INR
+INRNRM,Indian NRMs,2,INR
+INRNRM010,Adidam,3,INRNRM
+INRNRM020,Adventures in Enlightenment,3,INRNRM
+INRNRM040,Elan Vital,3,INRNRM
+INRNRM050,Meher Baba followers,3,INRNRM
+INRNRM060,Sant Nirankari Mission,3,INRNRM
+INRSYN,Syncretic Indian religions,2,INR
+INRSYN010,Radha Soami Satsang Beas,3,INRSYN
+IRR,(other) Iranic religions,1,
+IRR010,Ahl-e Haqq/Yarsan,2,IRR
+IRR020,Yazidism,2,IRR
+IRRGNO,gnostic Iranic religion,2,IRR
+IRRGNO010,Mandaeanism,3,IRRGNO
+ITR,indigenous tribal religions,1,
+ITRCRB,indigenous Caribbean religions,2,ITR
+ITRCRB010,Espiritismo,3,ITRCRB
+ITRCRB011,Espiritismo de Cordon,3,ITRCRB
+ITRCRB012,Puerto Rican Espiritismo,3,ITRCRB
+ITRCRB013,Table Espiritismo,3,ITRCRB
+ITRCRB020,Santerismo (syncretizes Espiritsmo and Santera),3,ITRCRB
+ITRNAM,North American First Nations religions,2,ITR
+ITRNAM010,Native American Church (Peyotism),3,ITRNAM
+ITRWAF,indigenous West African religions,2,ITR
+ITRWAF010,West African Vodun,3,ITRWAF
+JAN,Jainism,1,
+JAN100,Digambar,2,JAN
+JAN110,Digambar Terapanthi,2,JAN
+JAN120,Taran Panth,2,JAN
+JAN200,Svetambara,2,JAN
+JAN210,Baissamprada a.k.a. Bastola,2,JAN
+JAN220,Murtipujaka,2,JAN
+JAN230,Sthanakvasi,2,JAN
+JAN240,Svetambar Terapanth,2,JAN
+JEW,Judaism,1,
+JEW001,(any) ecumenical Jewish organization,2,JEW
+JEW010,"Conservative Judaism (should we have a Sephardic Jewish code, too?)",2,JEW
+JEW011,Conservadox Judaism (could also go under Orthodoxy),2,JEW
+JEW012,Masorti Judaism,2,JEW
+JEW020,Humanistic Judaism,2,JEW
+JEW030,Jewish Renewal,2,JEW
+JEW050,Liberal Judaism,2,JEW
+JEW060,Neolog Judaism,2,JEW
+JEW070,Orthodox Judaism,2,JEW
+JEW071,Chief Rabbinate of Israel,2,JEW
+JEW073,Modern Orthodoxy inc. three subgroups: Edah; Orthodox Union; and Religious Zionist Movement,2,JEW
+JEW074,Union of Orthodox Rabbis,2,JEW
+JEW075,World Agudath Israel inc. any type of Orthodox Jew,2,JEW
+JEW080,Reconstructionist Judaism,2,JEW
+JEW090,Reform/Progressive Judaism,2,JEW
+JEW800,quasi-ethnic divisions of Judaism,2,JEW
+JEW810,Ashkenazi Judaism,2,JEW
+JEW820,Mizrahi Judaism,2,JEW
+JEW830,Sephardic Judaism,2,JEW
+JEWHSD,Hasidic Judaism,2,JEW
+JEWHSD010,Chabad a.k.a. Chabad-Lubavitch,3,JEWHSD
+JEWHSD020,Satmar,3,JEWHSD
+JEWNRM010,Jewish Science,3,JEWNRM
+JEWOFF,offshoots of Judaism,2,JEW
+JEWOFF010,Samaritanism,3,JEWOFF
+JEWRAC,Judaism with racial theologies,2,JEW
+JEWRAC010,Black Hebrew Israelites,3,JEWRAC
+JEWRAC011,African Hebrew Israelites of Jerusalem,3,JEWRAC
+JEWRAC012,Church of God and Saints of Christ,3,JEWRAC
+JEWRAC013,Commandment Keepers a.k.a. Holy Church of the Living God,3,JEWRAC
+JEWRAC014,Nation of Yahweh,3,JEWRAC
+JEWUDX,"Haredi/Ultra-orthodox a.s.a. Chareidi, Charedi",2,JEW
+JEWUDX010,Central Rabbinical Congress of the United States and Canada,3,JEWUDX
+JEWUDX030,Lithuanian/Yeshiva Haredi Judaism,3,JEWUDX
+MOS,Islam,1,
+MOSALE,Alawi/Alewi,2,MOS
+MOSDRZ,Druze,2,MOS
+MOSMAY,Muslims of controversial status,2,MOS
+MOSMAY010,Ahmadiyya (check this one again),3,MOSMAY
+MOSMAY011,Lahore Ahmadiyya Movement,3,MOSMAY
+MOSMAY012,Ahmadiyya Muslim Community,3,MOSMAY
+MOSMAY020,United Submitters International,3,MOSMAY
+MOSMAY030,Zikri,3,MOSMAY
+MOSOFF,offshoots of Islam,2,MOS
+MOSOFF010,Bawa Muhaiyaddeen Fellowship,3,MOSOFF
+MOSOFF020,Universal Sufism,3,MOSOFF
+MOSOFF021,Dances of Universal Peace,3,MOSOFF
+MOSRAC,racialist Islam,2,MOS
+MOSRAC100,Black Muslim movements,3,MOSRAC
+MOSRAC110,American Society of Muslims (make a Black Islam section),3,MOSRAC
+MOSRAC120,Moorish Science Temple of America,3,MOSRAC
+MOSRAC130,Nation of Islam,3,MOSRAC
+MOSRAC140,Nuwaubianism,3,MOSRAC
+MOSRAC141,United Nuwaubian Nation of Moors,3,MOSRAC
+MOSRAC142,Yamassee Native Americans,3,MOSRAC
+MOSRAC150,The Nation of Gods and Earths,3,MOSRAC
+MOSRAC160,United Nations of Islam,3,MOSRAC
+MOSRAD,fundamentalist Muslim,2,MOS
+MOSSFI,Sufi,2,MOS
+MOSSFI010,Mawlawi Order a.k.a. Whirling Dervishes,3,MOSSFI
+MOSSFI020,Naqshbandi,3,MOSSFI
+MOSSHI,Shia,2,MOS
+MOSSHI100,Twelver,3,MOSSHI
+MOSSHI200,Zaidi/Zaiddiyah,3,MOSSHI
+MOSSHI300,Ismaili,3,MOSSHI
+MOSSHI310,Alavi Bohra,3,MOSSHI
+MOSSHI320,Dawoodi Bohra,3,MOSSHI
+MOSSHI330,Mustaali,3,MOSSHI
+MOSSHI331,Hebtiahs Bohra,3,MOSSHI
+MOSSHI332,Abta-i-Malak,3,MOSSHI
+MOSSHI340,Nizari,3,MOSSHI
+MOSSHI350,Sulaimani Bohra,3,MOSSHI
+MOSSHISFI,Bektashi the Twelver Sufis,3,MOSSHI
+MOSSUN,Sunni,2,MOS
+MOSSUN011,Berailvi,3,MOSSUN
+MOSSUN012,Deobandi,3,MOSSUN
+MOSSUN020,Hanbali school,3,MOSSUN
+MOSSUN030,Maliki school,3,MOSSUN
+MOSSUN040,Shafi’i school,3,MOSSUN
+MOSSYN,syncretic Islam,2,MOS
+NRM,new religious movements              (category of last resort),1,
+NRM010,Agasha Temple of Wisdom,2,NRM
+NRM020,Amica Temple of Radiance,2,NRM
+NRM030,Arica School,2,NRM
+NRM040,Arcane School,2,NRM
+NRM050,Association for Research and Enlightenment,2,NRM
+NRM060,Breatharians,2,NRM
+NRM070,Eckankar,2,NRM
+NRM071,Ancient Teachings of the Masters,2,NRM
+NRM080,Esalen Institute,2,NRM
+NRM090,Foundation for Higher Spiritual Learning,2,NRM
+NRM100,Institute of Noetic Sciences,2,NRM
+NRM110,Kerista,2,NRM
+NRM120,Landmark Education,2,NRM
+NRM130,Lucis Trust a.k.a. Lucifer Trust,2,NRM
+NRM140,Philosophical Research Society,2,NRM
+NRM150,Rainbow Family,2,NRM
+NRM160,Rama computer cult,2,NRM
+NRM170,Satanism,2,NRM
+NRM171,Casual/Adolescent Satanism,2,NRM
+NRM172,LaVeyan Satanism,2,NRM
+NRM173,Luciferianism,2,NRM
+NRM174,Order of Nine Angels,2,NRM
+NRM175,Our Lady of Endor Coven/Ophite Cultus Satanis,2,NRM
+NRM176,Palladists,2,NRM
+NRM177,Symbolic Satanism,2,NRM
+NRM178,Temple of Set,2,NRM
+NRM180,Spiritual Frontiers Fellowship,2,NRM
+NRM190,Subud,2,NRM
+NRM200,Universal Faithists of Kosmon,2,NRM
+NRM210,Universal Great Brotherhood,2,NRM
+NRM220,Universal Life Church,2,NRM
+NRM230,White Eagle Lodge,2,NRM
+NRMGNO,new gnostic religious movements,2,NRM
+NRMGNO100,Fraternity of the Inner Light,3,NRMGNO
+NRMGNO200,Ordo Templi Orientis,3,NRMGNO
+NRMGNO300,Theosophy and offshoots,3,NRMGNO
+NRMGNO310,Aquarian Christine Church Universal,3,NRMGNO
+NRMGNO320,Ascended Master Teachings,3,NRMGNO
+NRMGNO321,"I AM Activity a.k.a. I AM Movement, Saint Germain Foundation",3,NRMGNO
+NRMGNO322,Summit Lighthouse inc. Church Universal and Triumphant,3,NRMGNO
+NRMGNO330,Theosophy proper (mainstream is Theosophical Society),3,NRMGNO
+NRMGNO331,United Lodge of Theosophists,3,NRMGNO
+NRMGNO400,The Word Foundation,3,NRMGNO
+NRMMLN010,Adelphi Organization,3,NRMMLN
+NRMPAG,modern paganism a.k.a. Neopaganism,2,NRM
+NRMPAG010,ecumenical Paganism,3,NRMPAG
+NRMPAG011,Council of Magickal Arts,3,NRMPAG
+NRMPAG021,Ancient Order of Druids,3,NRMPAG
+NRMPAG022,r nDraocht Fin,3,NRMPAG
+NRMPAG023,British Druid Order,3,NRMPAG
+NRMPAG024,Celtic Neoshamanism,3,NRMPAG
+NRMPAG025,Celtic Reconstructionist Paganism,3,NRMPAG
+NRMPAG026,Celtic Wicca,3,NRMPAG
+NRMPAG027,Church of the Universal Bond,3,NRMPAG
+NRMPAG028,Gorsedd Beirdd Ynys Prydain,3,NRMPAG
+NRMPAG029,Hermetic Order of the Golden Dawn,3,NRMPAG
+NRMPAG030,"Order of Bards, Ovates and Druids",3,NRMPAG
+NRMPAG031,Reformed Druids of North America,3,NRMPAG
+NRMPAG032,The Druid Order a.k.a. An Druidh Uileach Braithreachas,3,NRMPAG
+NRMPAG040,Eco-paganism,3,NRMPAG
+NRMPAG041,Church of Aphrodite,3,NRMPAG
+NRMPAG050,Finnish Neopaganism,3,NRMPAG
+NRMPAG060,"German Neopaganism a.k.a. Asatru, Heathenism, Heathenry, Odinism, Forn Sior, Vor Sior, Theodism",3,NRMPAG
+NRMPAG061,Asatruarfelagio,3,NRMPAG
+NRMPAG062,Germanische Glaubens-Gemeinschaft,3,NRMPAG
+NRMPAG070,Hellenic Neopaganism,3,NRMPAG
+NRMPAG071,Church of All Worlds,3,NRMPAG
+NRMPAG072,Feraferia,3,NRMPAG
+NRMPAG073,Hellenion,3,NRMPAG
+NRMPAG074,Supreme Council of Ethnikoi Hellenes,3,NRMPAG
+NRMPAG080,Kemetism,3,NRMPAG
+NRMPAG081,Ausar Auset,3,NRMPAG
+NRMPAG082,Church of the Eternal Source,3,NRMPAG
+NRMPAG083,Fellowship of Isis,3,NRMPAG
+NRMPAG084,Kemetic/Tameran Wicca,3,NRMPAG
+NRMPAG085,Kemetic Orthodoxy,3,NRMPAG
+NRMPAG086,Kemetic Reconstructionism/Revivalism,3,NRMPAG
+NRMPAG087,Neo-Atenism,3,NRMPAG
+NRMPAG090,Neoshamanism,3,NRMPAG
+NRMPAG100,"Norse paganism a.k.a. Forn Sed, Nordisk Sed, Folktro",3,NRMPAG
+NRMPAG101,Core Shamanism,3,NRMPAG
+NRMPAG110,Polytheistic Reconstructionism,3,NRMPAG
+NRMPAG120,Roman Neopaganism,3,NRMPAG
+NRMPAG130,Slavic Neopaganism,3,NRMPAG
+NRMPAG131,Native Faith Association of Ukraine,3,NRMPAG
+NRMPAG132,Native Polish Church,3,NRMPAG
+NRMPAG133,RUNVira,3,NRMPAG
+NRMPAG140,Wicca,3,NRMPAG
+NRMPAG141,Covenant of the Goddess,3,NRMPAG
+NRMPAG142,Dianic Wicca,3,NRMPAG
+NRMPAG143,New Reformed Orthodox Order of the Golden Dawn,3,NRMPAG
+NRMRAC,new racial religious movements,2,NRM
+NRMRAC010,Ansaaru Allah Community a.k.a. Nuwaubiansm,3,NRMRAC
+NRMRAC020,Creativity,3,NRMRAC
+NRMRAC021,Creativity Movement,3,NRMRAC
+NRMRAC022,Creativity Alliance,3,NRMRAC
+NRMRAC030,Esoteric Nazism,3,NRMRAC
+NRMRAC040,Wotanism,3,NRMRAC
+NRMSYN,syncretic NRMs,2,NRM
+NRMSYN010,"Astara, Inc.",3,NRMSYN
+NRMSYN020,Lucis Trust,3,NRMSYN
+NRMSYN021,Arcane School,3,NRMSYN
+NRMSYN030,Movement of Spiritual Inner Awareness,3,NRMSYN
+NRMSYN040,Oceaniaic cargo cult,3,NRMSYN
+NRMSYN041,John Frum,3,NRMSYN
+NRMSYN042,Johnson Cult,3,NRMSYN
+NRMSYN050,Thelema,3,NRMSYN
+NRMSYN060,Vale do Amanhecer,3,NRMSYN
+NRMUFO,UFO cults,2,NRM
+NRMUFO010,Aetherius Society,3,NRMUFO
+NRMUFO020,"Chen Tao a.k.a. God’s Salvation Church, God Saves the Earth Flying Saucer Foundation",3,NRMUFO
+NRMUFO030,Heaven’s Gate,3,NRMUFO
+NRMUFO040,Raelism,3,NRMUFO
+NRMUFO050,Scientology,3,NRMUFO
+NRMUFO051,Process Church of the Final Judgement,3,NRMUFO
+NRMUFO060,Unarius Academy of Science,3,NRMUFO
+NRMUFO070,Universal Faithists of Kosmon,3,NRMUFO
+NRMWLN,wellbeing-related new religious movements,2,NRM
+NRMWLN010,Alcoholics Anonymous,3,NRMWLN
+NRMWLN020,Erhard Seminar Training,3,NRMWLN
+NRMWLN030,Heart Consciousness Church inc. New Age Church of Being,3,NRMWLN
+NRMWLN040,Human Potential Movement,3,NRMWLN
+NRMWLN041,Silva Mind Control,3,NRMWLN
+NRMWLN050,Lifespring (and offshoots),3,NRMWLN
+NRMWLN060,Narcotics Anonymous,3,NRMWLN
+NRMWLN070,White Dove International,3,NRMWLN
+REL,Unspecified Religious,1,
+SHN,Shinto,1,
+SHN010,folk Shinto or Ko Shinto,2,SHN
+SHN020,Imperial Shinto,2,SHN
+SHN030,Koshinto,2,SHN
+SHN040,Shrine Shinto,2,SHN
+SHNNRM,"”New Japanese Religions”   (note, many groups in this section are offshoots)",2,SHN
+SHNNRM110,Fusokyo,3,SHNNRM
+SHNNRM120,Izumo Oyashirokyo,3,SHNNRM
+SHNNRM130,Jikkokyo,3,SHNNRM
+SHNNRM140,Konkokyo,3,SHNNRM
+SHNNRM150,Kurozumikyo,3,SHNNRM
+SHNNRM160,Kyoha Shinto Rengokai,3,SHNNRM
+SHNNRM170,Misogikyo,3,SHNNRM
+SHNNRM180,Ontakekyo,3,SHNNRM
+SHNNRM190,Shinrikyo (N.B. This is not the same as Aum Shinrikyo),3,SHNNRM
+SHNNRM200,Shinto Shuseiha,3,SHNNRM
+SHNNRM210,Shinto Taikyo,3,SHNNRM
+SHNNRM220,Shinto Taiseikyo,3,SHNNRM
+SHNNRM230,Tenrikyo,3,SHNNRM
+SHNNRM301,Ananaikyo,3,SHNNRM
+SHNNRM302,Byakko Shinkokai,3,SHNNRM
+SHNNRM303,Chikakusan Minshukyo Kyodan,3,SHNNRM
+SHNNRM304,Chushinkai,3,SHNNRM
+SHNNRM305,Daihizenkyo,3,SHNNRM
+SHNNRM306,Ennokyo,3,SHNNRM
+SHNNRM307,Hachidai Ryuo Daishizen Aishinkyodan,3,SHNNRM
+SHNNRM308,Hachidai Ryuojin Hakko Seidan,3,SHNNRM
+SHNNRM309,Hachirakukai Kyodan,3,SHNNRM
+SHNNRM310,Hi no Oshie,3,SHNNRM
+SHNNRM311,Hikari Kyokai,3,SHNNRM
+SHNNRM312,Hizuki no Miya,3,SHNNRM
+SHNNRM313,Honbushin,3,SHNNRM
+SHNNRM314,Honmichi,3,SHNNRM
+SHNNRM315,Ishinkyo,3,SHNNRM
+SHNNRM316,Izumo Shinyu Kyokai,3,SHNNRM
+SHNNRM317,Izumokyo,3,SHNNRM
+SHNNRM318,Jieido,3,SHNNRM
+SHNNRM319,Jingukyo,3,SHNNRM
+SHNNRM320,Kakushin Shukyo Nipponkyo,3,SHNNRM
+SHNNRM321,Kannagarakyo,3,SHNNRM
+SHNNRM322,Kikueikai Kyodan,3,SHNNRM
+SHNNRM323,Kogi Shinto,3,SHNNRM
+SHNNRM324,Koshinto Senpokyo,3,SHNNRM
+SHNNRM325,Koso Kotai Jingu Amatsukyo,3,SHNNRM
+SHNNRM326,Kuzuryu Taisha,3,SHNNRM
+SHNNRM327,Kyuseishukyo,3,SHNNRM
+SHNNRM328,Makoto no Michi,3,SHNNRM
+SHNNRM329,Makoto no Michikyo,3,SHNNRM
+SHNNRM330,Maruyamakyo,3,SHNNRM
+SHNNRM331,Misogikyo Shinpa,3,SHNNRM
+SHNNRM332,Mitamakyo,3,SHNNRM
+SHNNRM333,Miyaji Shinsendo,3,SHNNRM
+SHNNRM334,Nihon Jingu Honcho,3,SHNNRM
+SHNNRM335,Nihon Seido Kyodan,3,SHNNRM
+SHNNRM336,Nikkokyo,3,SHNNRM
+SHNNRM337,Okanmichi,3,SHNNRM
+SHNNRM338,Omiwakyo (Kojima),3,SHNNRM
+SHNNRM339,Omiwakyo (Sako),3,SHNNRM
+SHNNRM340,Omoto a.k.a. Oomoto,3,SHNNRM
+SHNNRM341,Omoto Hikari no Michi,3,SHNNRM
+SHNNRM342,Oyamanezu no Mikoto Shinji Kyokai,3,SHNNRM
+SHNNRM343,"Perfect Liberty Kyodan a.k.a. PL Kyodan, Church of Perfect Liberty",3,SHNNRM
+SHNNRM344,Reiha no Hikari Kyokai,3,SHNNRM
+SHNNRM345,Renmonkyo,3,SHNNRM
+SHNNRM346,Renshindo Kyodan,3,SHNNRM
+SHNNRM347,Samuhara Jinja,3,SHNNRM
+SHNNRM348,Seicho no Ie,3,SHNNRM
+SHNNRM349,Seikokyo,3,SHNNRM
+SHNNRM350,Seimeikyo,3,SHNNRM
+SHNNRM351,Seishin Myojokai,3,SHNNRM
+SHNNRM352,Sekai Kyuseikyo,3,SHNNRM
+SHNNRM353,Sekai Mahikari Bunmei Kyodan,3,SHNNRM
+SHNNRM354,Sekai Shindokyo,3,SHNNRM
+SHNNRM355,Shidaido,3,SHNNRM
+SHNNRM356,Shin Nihon Shukyo Dantai Rengokai,3,SHNNRM
+SHNNRM357,Shindo Tenkokyo,3,SHNNRM
+SHNNRM358,Shinji Shumeikai,3,SHNNRM
+SHNNRM359,Shinmei Aishinkai,3,SHNNRM
+SHNNRM360,Shinreikai Kyodan,3,SHNNRM
+SHNNRM361,Shinreikyo,3,SHNNRM
+SHNNRM362,Shinri Jikko no Oshie,3,SHNNRM
+SHNNRM363,Shinsei Tengan Manaita no Kai,3,SHNNRM
+SHNNRM364,Shinto Shinkyo,3,SHNNRM
+SHNNRM365,Shinto Shinshinkyo,3,SHNNRM
+SHNNRM366,Shizensha,3,SHNNRM
+SHNNRM367,Shoroku Shinto Yamatoyama,3,SHNNRM
+SHNNRM368,Shukyo Hojin Shiko Gakuen,3,SHNNRM
+SHNNRM369,Shuyodan Hoseikai,3,SHNNRM
+SHNNRM370,Soshindo,3,SHNNRM
+SHNNRM371,Soshindo Kyodan,3,SHNNRM
+SHNNRM372,Subikari Koha Sekai Shindan,3,SHNNRM
+SHNNRM373,Sukui no Hikari Kyodan,3,SHNNRM
+SHNNRM374,Sukyo Mahikari,3,SHNNRM
+SHNNRM375,Sumerakyo,3,SHNNRM
+SHNNRM376,Taiwa Kyodan,3,SHNNRM
+SHNNRM377,Tamamitsu Jinja,3,SHNNRM
+SHNNRM378,Tenchikyo,3,SHNNRM
+SHNNRM379,Tengenkyo,3,SHNNRM
+SHNNRM380,Tenjokyo,3,SHNNRM
+SHNNRM381,Tenjokyo Hon’in,3,SHNNRM
+SHNNRM382,Tenkokyo,3,SHNNRM
+SHNNRM383,Ten’onkyo,3,SHNNRM
+SHNNRM384,Tensei Shinbikai,3,SHNNRM
+SHNNRM385,Tensha Tsuchimikado Shinto Honcho,3,SHNNRM
+SHNNRM386,Tenshin Seikyo,3,SHNNRM
+SHNNRM387,Tenshindo Kyodan,3,SHNNRM
+SHNNRM388,Tenshinkyo Shin’yuden Kyokai,3,SHNNRM
+SHNNRM389,Tensho Kotai Jingukyo,3,SHNNRM
+SHNNRM390,Tenshokyo,3,SHNNRM
+SHNNRM391,Tenshukyo,3,SHNNRM
+SHNNRM392,Tokumitsukyo,3,SHNNRM
+SHNNRM393,Worldmate f.k.a. Cosmomate,3,SHNNRM
+SHNNRM394,Yamakage Shinto,3,SHNNRM
+SHNNRM395,Yamatokyo,3,SHNNRM
+SHNNRM396,Zenrinkyo,3,SHNNRM
+SHNSYN,syncretic Shinto,2,SHN
+SHNSYN010,Shinbutsu shugo a.k.a. Shinbutsu konko (combines Shinto and Buddhism),3,SHNSYN
+SIK,Sikh,1,
+SIK000,mainline Sikh,2,SIK
+SIK010,Khalsa,2,SIK
+SIK011,Nihang,2,SIK
+SIK020,Sahajdhari Sikh,2,SIK
+SIK100,Namdhari or Kuka Sikhs,2,SIK
+SIKNRM,new religious movements of Sikh origin,2,SIK
+SIKNRM010,"3HO a.k.a. Healthy, Happy, Holy Organization",3,SIKNRM
+TAO,Taoist,1,
+TAO100,organized Taoism,2,TAO
+TAO200,folk Taoism,2,TAO
+ZRO,Zoroastrianism,1,

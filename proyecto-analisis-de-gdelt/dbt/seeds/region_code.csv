@@ -1,0 +1,26 @@
+region_code,name
+AFR,Africa
+ASA,Asia
+BLK,Balkans
+CRB,Caribbean
+CAU,Caucasus
+CFR,Central Africa
+CAS,Central Asia
+CEU,Central Europe
+EIN,East Indies
+EAF,Eastern Africa
+EEU,Eastern Europe
+EUR,Europe
+LAM,Latin America
+MEA,Middle East
+MDT,Mediterranean
+NAF,North Africa
+NMR,North America
+PGS,Persian Gulf
+SCN,Scandinavia
+SAM,South America
+SAS,South Asia
+SEA,Southeast Asia
+SAF,Southern Africa
+WAF,West Africa
+WST,"""the West"""
