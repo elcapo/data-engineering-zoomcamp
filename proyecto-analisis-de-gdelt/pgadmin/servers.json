@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "gdelt Postgres",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "gdelt",
+      "Username": "gdelt",
+      "PassFile": "/pgadmin4/pgpass",
+      "SSLMode": "prefer"
+    }
+  }
+}

@@ -140,10 +140,10 @@ Aggregated tables — populated by the `event_aggregations` and `gkg_aggregation
 
 ### Configuration
 
-All ports, credentials, and tuning knobs are configurable via environment variables with sensible defaults. See [`env.example`](env.example) for the full list. To override any value, copy the file and uncomment what you need:
+All ports, credentials, and tuning knobs are configurable via environment variables with sensible defaults. See [`env.template`](env.template) for the full list. The recommended way to create your `.env` is `make init`, which copies the template and fills the three password placeholders with random values:
 
 ```bash
-cp env.example .env
+make init
 # edit .env as needed
 ```
 
@@ -152,8 +152,14 @@ cp env.example .env
 ```bash
 git clone https://github.com/elcapo/data-engineering-zoomcamp/
 cd data-engineering-zoomcamp/proyecto-analisis-de-gdelt
-docker compose up -d --build
+make up
 ```
+
+`make up` runs `make init` first, which generates a `.env` with random passwords for Postgres, pgAdmin and Kestra (only if `.env` does not exist yet) and (re)creates `pgadmin/pgpass` so pgAdmin connects to Postgres without prompting. Then it launches `docker compose up -d --build`.
+
+To stop the stack: `make down`. To wipe everything (volumes, `.env` and `pgadmin/pgpass`) and start fresh: `make reset`.
+
+Plain `docker compose up -d --build` also works if you prefer — the compose file keeps sensible defaults for every password — but you'll need to run `make init` at least once to create `pgadmin/pgpass` (otherwise the pgAdmin bind mount fails) and pgAdmin won't auto-connect unless the file's password matches the Postgres one.
 
 This builds all images and starts all services:
 
