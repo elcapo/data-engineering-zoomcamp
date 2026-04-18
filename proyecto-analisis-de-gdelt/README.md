@@ -115,7 +115,7 @@ Lookup tables — populated by dbt seeds (schema `public_lookup`), CAMEO/GDELT r
 ## Dashboard Panels
 
 - **Global Event Map**: Geolocated events plotted on a world map, colored by Goldstein scale (conflict ↔ cooperation).
-- **Event Volume**: Time-series of events per 15-minute window, broken down by event root code.
+- **Event Volume**: Time-series of events per hour window, broken down by event root code.
 - **Conflict Trend**: Rolling average of the Goldstein scale by country or region.
 - **Top Actors**: Bar chart of most active actors in the current time window.
 - **Media Attention**: Number of mentions over time for selected events, showing how stories propagate.
