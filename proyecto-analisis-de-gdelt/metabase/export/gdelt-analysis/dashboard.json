@@ -1,0 +1,1301 @@
+{
+  "description": "Charts that help making insights on the most recent events",
+  "archived": false,
+  "view_count": 25,
+  "collection_position": null,
+  "dashcards": [
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "cache_invalidated_at": "2026-04-18T20:09:35.992189Z",
+        "description": "Geolocated events plotted on a world map, colored by Goldstein scale (conflict ↔ cooperation).",
+        "archived": false,
+        "view_count": 8,
+        "collection_position": null,
+        "source_card_id": null,
+        "table_id": 24,
+        "result_metadata": [
+          {
+            "database_type": "text",
+            "semantic_type": null,
+            "table_id": 37,
+            "qp/implicit-field?": true,
+            "lib/deduplicated-name": "iso2",
+            "lib/original-name": "iso2",
+            "lib/breakout?": true,
+            "name": "iso2",
+            "lib/source": "source/joins",
+            "lib/source-column-alias": "iso2",
+            "lib/original-display-name": "Iso2",
+            "source": "breakout",
+            "lib/original-join-alias": "Country Code - Actor1 Country",
+            "field_ref": [
+              "field",
+              203,
+              {
+                "join-alias": "Country Code - Actor1 Country"
+              }
+            ],
+            "effective_type": "type/Text",
+            "active": true,
+            "id": 203,
+            "lib/desired-column-alias": "Country Code - Actor1 Country__iso2",
+            "position": 1,
+            "visibility_type": "normal",
+            "display_name": "Country Code - Actor1 Country → Iso2",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 165,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0.0,
+                  "percent-url": 0.0,
+                  "percent-email": 0.0,
+                  "percent-state": 0.1151515151515152,
+                  "average-length": 2.0
+                }
+              }
+            },
+            "base_type": "type/Text",
+            "source_alias": "Country Code - Actor1 Country",
+            "metabase.lib.join/join-alias": "Country Code - Actor1 Country"
+          },
+          {
+            "database_type": "text",
+            "semantic_type": "type/Name",
+            "table_id": 37,
+            "qp/implicit-field?": true,
+            "lib/deduplicated-name": "name",
+            "lib/original-name": "name",
+            "lib/breakout?": true,
+            "name": "name",
+            "lib/source": "source/joins",
+            "lib/source-column-alias": "name",
+            "lib/original-display-name": "Name",
+            "source": "breakout",
+            "lib/original-join-alias": "Country Code - Actor1 Country",
+            "field_ref": [
+              "field",
+              204,
+              {
+                "join-alias": "Country Code - Actor1 Country"
+              }
+            ],
+            "effective_type": "type/Text",
+            "active": true,
+            "id": 204,
+            "lib/desired-column-alias": "Country Code - Actor1 Country__name",
+            "position": 2,
+            "visibility_type": "normal",
+            "display_name": "Country Code - Actor1 Country → Name",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 165,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0.0,
+                  "percent-url": 0.0,
+                  "percent-email": 0.0,
+                  "percent-state": 0.006060606060606061,
+                  "average-length": 8.16969696969697
+                }
+              }
+            },
+            "base_type": "type/Text",
+            "source_alias": "Country Code - Actor1 Country",
+            "metabase.lib.join/join-alias": "Country Code - Actor1 Country"
+          },
+          {
+            "database_type": "float8",
+            "semantic_type": null,
+            "lib/deduplicated-name": "avg",
+            "lib/original-name": "avg",
+            "name": "avg",
+            "lib/source": "source/aggregations",
+            "lib/source-column-alias": "avg",
+            "source": "aggregation",
+            "field_ref": [
+              "aggregation",
+              0
+            ],
+            "effective_type": "type/Float",
+            "lib/desired-column-alias": "avg",
+            "display_name": "Average of Goldstein Scale",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 43,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": -5.12903225518042,
+                  "q1": -1.5843749735504389,
+                  "q3": 1.2541666686534882,
+                  "max": 5.0,
+                  "sd": 2.2689892387487065,
+                  "avg": -0.05587310054760712
+                }
+              }
+            },
+            "base_type": "type/Float"
+          }
+        ],
+        "embedding_type": null,
+        "dependency_analysis_version": 0,
+        "initially_published_at": null,
+        "can_write": true,
+        "card_schema": 23,
+        "database_id": 2,
+        "enable_embedding": false,
+        "collection_id": null,
+        "query_type": "query",
+        "download_perms": "full",
+        "name": "Global Event Map",
+        "document_id": null,
+        "last_used_at": "2026-04-18T20:25:19.477188Z",
+        "type": "question",
+        "query_average_duration": 74,
+        "creator_id": 1,
+        "moderation_reviews": [],
+        "updated_at": "2026-04-18T20:09:35.994665Z",
+        "made_public_by_id": null,
+        "embedding_params": null,
+        "cache_ttl": null,
+        "dataset_query": {
+          "lib/type": "mbql/query",
+          "database": 2,
+          "stages": [
+            {
+              "filters": [
+                [
+                  "time-interval",
+                  {
+                    "lib/uuid": "4c29962b-34d6-44f6-84b4-b5ef60a5020b"
+                  },
+                  [
+                    "field",
+                    {
+                      "lib/uuid": "8db360c1-090d-4835-b790-7222196e050a",
+                      "effective-type": "type/DateTimeWithLocalTZ",
+                      "base-type": "type/DateTimeWithLocalTZ"
+                    },
+                    153
+                  ],
+                  0,
+                  "day"
+                ]
+              ],
+              "aggregation": [
+                [
+                  "avg",
+                  {
+                    "lib/uuid": "aa8493e0-1b16-4b59-99b7-2d4b7cd27001"
+                  },
+                  [
+                    "field",
+                    {
+                      "lib/uuid": "a96e363a-1b03-41a1-abfd-cb0ef7646704",
+                      "effective-type": "type/Float",
+                      "base-type": "type/Float"
+                    },
+                    148
+                  ]
+                ]
+              ],
+              "joins": [
+                {
+                  "lib/type": "mbql/join",
+                  "lib/options": {
+                    "lib/uuid": "7593fc88-bf02-42b1-b073-73e9f2ebbf6a"
+                  },
+                  "fields": "all",
+                  "conditions": [
+                    [
+                      "=",
+                      {
+                        "lib/uuid": "b89e17b1-bc60-4534-93ae-0762c6814387"
+                      },
+                      [
+                        "field",
+                        {
+                          "lib/uuid": "2841c385-3434-4eac-992a-4db94e22868b",
+                          "effective-type": "type/Text",
+                          "base-type": "type/Text"
+                        },
+                        216
+                      ],
+                      [
+                        "field",
+                        {
+                          "lib/uuid": "428b1f97-aa9c-482b-b15a-3334413a56d9",
+                          "effective-type": "type/Text",
+                          "base-type": "type/Text",
+                          "join-alias": "Country Code - Actor1 Country"
+                        },
+                        202
+                      ]
+                    ]
+                  ],
+                  "strategy": "left-join",
+                  "stages": [
+                    {
+                      "lib/type": "mbql.stage/mbql",
+                      "lib/options": {
+                        "lib/uuid": "0dbff49d-a82b-4f13-b087-91a074e0aad5"
+                      },
+                      "source-table": 37
+                    }
+                  ],
+                  "alias": "Country Code - Actor1 Country"
+                }
+              ],
+              "fields": [
+                [
+                  "field",
+                  {
+                    "effective-type": "type/BigInteger",
+                    "lib/uuid": "2a12efd9-9a94-4d6f-b4a4-e64f03c9935b",
+                    "base-type": "type/BigInteger"
+                  },
+                  145
+                ]
+              ],
+              "source-table": 24,
+              "lib/type": "mbql.stage/mbql",
+              "breakout": [
+                [
+                  "field",
+                  {
+                    "effective-type": "type/Text",
+                    "base-type": "type/Text",
+                    "lib/uuid": "f3287452-15f5-4e00-8f17-ebe8f2d4d6c5",
+                    "join-alias": "Country Code - Actor1 Country"
+                  },
+                  203
+                ],
+                [
+                  "field",
+                  {
+                    "base-type": "type/Text",
+                    "lib/uuid": "d96008c0-034a-4929-af00-d7ad60bed386",
+                    "effective-type": "type/Text",
+                    "join-alias": "Country Code - Actor1 Country"
+                  },
+                  204
+                ]
+              ]
+            }
+          ]
+        },
+        "id": 41,
+        "legacy_query": null,
+        "parameter_mappings": [],
+        "display": "map",
+        "archived_directly": false,
+        "entity_id": "bwtYMIbsgeBNPKIQCRv5D",
+        "collection_preview": true,
+        "visualization_settings": {
+          "map.center_latitude": 18.145851771694467,
+          "map.center_longitude": 39.02343750000001,
+          "map.zoom": 2,
+          "map.type": "region",
+          "map.dimension": "iso2",
+          "map.metric": "goldstein_scale",
+          "map.region": "world_countries"
+        },
+        "metabase_version": "v0.59.6.5 (809ffc8)",
+        "parameters": [],
+        "dashboard_id": null,
+        "created_at": "2026-04-15T19:52:23.016085Z",
+        "public_uuid": null
+      },
+      "updated_at": "2026-04-18T19:24:26.373998Z",
+      "col": 0,
+      "id": 37,
+      "parameter_mappings": [],
+      "card_id": 41,
+      "entity_id": "8EF2sF1dgkOHsPpZY1EC-",
+      "visualization_settings": {},
+      "size_y": 13,
+      "dashboard_id": 2,
+      "created_at": "2026-04-18T19:24:26.373998Z",
+      "row": 0
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "cache_invalidated_at": "2026-04-18T20:12:39.518292Z",
+        "description": "Bar chart of most active actors in the current time window.",
+        "archived": false,
+        "view_count": 11,
+        "collection_position": null,
+        "source_card_id": null,
+        "table_id": 25,
+        "result_metadata": [
+          {
+            "database_type": "text",
+            "semantic_type": null,
+            "table_id": 25,
+            "lib/deduplicated-name": "actor_code",
+            "lib/original-name": "actor_code",
+            "lib/breakout?": true,
+            "name": "actor_code",
+            "lib/source": "source/table-defaults",
+            "lib/source-column-alias": "actor_code",
+            "lib/original-display-name": "Actor Code",
+            "source": "breakout",
+            "field_ref": [
+              "field",
+              173,
+              null
+            ],
+            "effective_type": "type/Text",
+            "active": true,
+            "id": 173,
+            "lib/desired-column-alias": "actor_code",
+            "position": 2,
+            "visibility_type": "normal",
+            "display_name": "Actor Code",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 390,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0.0,
+                  "percent-url": 0.0,
+                  "percent-email": 0.0,
+                  "percent-state": 0.0,
+                  "average-length": 5.1461538461538465
+                }
+              }
+            },
+            "base_type": "type/Text"
+          },
+          {
+            "database_type": "text",
+            "semantic_type": null,
+            "table_id": 33,
+            "qp/implicit-field?": true,
+            "lib/deduplicated-name": "label_full",
+            "lib/original-name": "label_full",
+            "lib/breakout?": true,
+            "name": "label_full",
+            "lib/source": "source/joins",
+            "lib/source-column-alias": "label_full",
+            "lib/original-display-name": "Label Full",
+            "source": "breakout",
+            "lib/original-join-alias": "Dim Actor Code - Actor Code",
+            "field_ref": [
+              "field",
+              206,
+              {
+                "join-alias": "Dim Actor Code - Actor Code"
+              }
+            ],
+            "effective_type": "type/Text",
+            "active": true,
+            "id": 206,
+            "lib/desired-column-alias": "Dim Actor Code - Actor Code__label_full",
+            "position": 1,
+            "visibility_type": "normal",
+            "display_name": "Dim Actor Code - Actor Code → Label Full",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 861,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0.0,
+                  "percent-url": 0.0,
+                  "percent-email": 0.0,
+                  "percent-state": 0.0,
+                  "average-length": 20.548723897911835
+                }
+              }
+            },
+            "base_type": "type/Text",
+            "source_alias": "Dim Actor Code - Actor Code",
+            "metabase.lib.join/join-alias": "Dim Actor Code - Actor Code"
+          },
+          {
+            "database_type": "int8",
+            "semantic_type": "type/Quantity",
+            "lib/deduplicated-name": "sum",
+            "lib/original-name": "sum",
+            "name": "sum",
+            "lib/source": "source/aggregations",
+            "lib/source-column-alias": "sum",
+            "source": "aggregation",
+            "field_ref": [
+              "aggregation",
+              0
+            ],
+            "effective_type": "type/BigInteger",
+            "lib/desired-column-alias": "sum",
+            "display_name": "Sum of Event Count",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 10,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 634.0,
+                  "q1": 810.0,
+                  "q3": 912.0,
+                  "max": 4733.0,
+                  "sd": 1287.4430688599614,
+                  "avg": 1353.1
+                }
+              }
+            },
+            "base_type": "type/BigInteger"
+          }
+        ],
+        "embedding_type": null,
+        "dependency_analysis_version": 0,
+        "initially_published_at": null,
+        "can_write": true,
+        "card_schema": 23,
+        "database_id": 2,
+        "enable_embedding": false,
+        "collection_id": null,
+        "query_type": "query",
+        "download_perms": "full",
+        "name": "Top 10 Actors",
+        "document_id": null,
+        "last_used_at": "2026-04-18T20:25:19.477188Z",
+        "type": "question",
+        "query_average_duration": 72,
+        "creator_id": 1,
+        "moderation_reviews": [],
+        "updated_at": "2026-04-18T20:12:39.521504Z",
+        "made_public_by_id": null,
+        "embedding_params": null,
+        "cache_ttl": null,
+        "dataset_query": {
+          "lib/type": "mbql/query",
+          "database": 2,
+          "stages": [
+            {
+              "lib/type": "mbql.stage/mbql",
+              "limit": 10,
+              "filters": [
+                [
+                  "time-interval",
+                  {
+                    "lib/uuid": "da5976b3-5c8c-4b8d-9d67-2a7ba7759fed"
+                  },
+                  [
+                    "field",
+                    {
+                      "lib/uuid": "1afaab2c-6965-4da4-ad93-48a5500264f5",
+                      "effective-type": "type/DateTime",
+                      "base-type": "type/DateTime"
+                    },
+                    171
+                  ],
+                  0,
+                  "day"
+                ]
+              ],
+              "fields": [
+                [
+                  "field",
+                  {
+                    "lib/uuid": "05166398-074d-4774-ac70-80d990bc0a0c",
+                    "effective-type": "type/Text",
+                    "base-type": "type/Text"
+                  },
+                  173
+                ]
+              ],
+              "joins": [
+                {
+                  "lib/type": "mbql/join",
+                  "fields": "all",
+                  "conditions": [
+                    [
+                      "=",
+                      {
+                        "lib/uuid": "8e24bcd6-db68-4d24-966d-a4ae4a8a2237"
+                      },
+                      [
+                        "field",
+                        {
+                          "lib/uuid": "2c40132f-cdc2-44f5-8524-d9b144d548e7",
+                          "effective-type": "type/Text",
+                          "base-type": "type/Text"
+                        },
+                        173
+                      ],
+                      [
+                        "field",
+                        {
+                          "base-type": "type/Text",
+                          "lib/uuid": "07c8f143-0953-4b48-84d1-d4b3cb7b31e9",
+                          "effective-type": "type/Text",
+                          "join-alias": "Dim Actor Code - Actor Code"
+                        },
+                        205
+                      ]
+                    ]
+                  ],
+                  "strategy": "left-join",
+                  "stages": [
+                    {
+                      "lib/type": "mbql.stage/mbql",
+                      "lib/options": {
+                        "lib/uuid": "d2cd0ae9-dd43-462c-823a-919ccefad71b"
+                      },
+                      "source-table": 33
+                    }
+                  ],
+                  "lib/options": {
+                    "lib/uuid": "bce10298-7460-4d38-9c50-c76465a20925"
+                  },
+                  "alias": "Dim Actor Code - Actor Code"
+                }
+              ],
+              "source-table": 25,
+              "breakout": [
+                [
+                  "field",
+                  {
+                    "effective-type": "type/Text",
+                    "lib/uuid": "9d04b144-0020-4d5d-bf94-6fe6505ff7b3",
+                    "base-type": "type/Text"
+                  },
+                  173
+                ],
+                [
+                  "field",
+                  {
+                    "lib/uuid": "42398255-9fa3-475e-b09c-bc6270077292",
+                    "effective-type": "type/Text",
+                    "base-type": "type/Text",
+                    "join-alias": "Dim Actor Code - Actor Code"
+                  },
+                  206
+                ]
+              ],
+              "order-by": [
+                [
+                  "desc",
+                  {
+                    "lib/uuid": "b0bc987c-e0aa-4a77-bf17-cf6cb5f30e36"
+                  },
+                  [
+                    "aggregation",
+                    {
+                      "effective-type": "type/Integer",
+                      "lib/uuid": "279be4ea-492f-4890-951c-6406903a371d",
+                      "base-type": "type/Integer",
+                      "lib/source-name": "sum"
+                    },
+                    "876dd24c-34fc-4f7e-afcf-967d7e15a6c8"
+                  ]
+                ]
+              ],
+              "aggregation": [
+                [
+                  "sum",
+                  {
+                    "lib/uuid": "876dd24c-34fc-4f7e-afcf-967d7e15a6c8"
+                  },
+                  [
+                    "field",
+                    {
+                      "effective-type": "type/Integer",
+                      "lib/uuid": "fc03c001-ed34-44cd-b638-3baea3cf6624",
+                      "base-type": "type/Integer"
+                    },
+                    174
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        "id": 40,
+        "legacy_query": null,
+        "parameter_mappings": [],
+        "display": "bar",
+        "archived_directly": false,
+        "entity_id": "DOhDU7UNMiTmkbCS3WqUI",
+        "collection_preview": true,
+        "visualization_settings": {
+          "graph.y_axis.title_text": "Event Count",
+          "pie.dimension": [
+            "actor_code"
+          ],
+          "graph.series_order_dimension": null,
+          "graph.x_axis.title_text": "Actor",
+          "graph.metrics": [
+            "sum"
+          ],
+          "graph.series_order": null,
+          "series_settings": {
+            "sum": {
+              "title": "Event Count"
+            }
+          },
+          "graph.x_axis.scale": "ordinal",
+          "graph.dimensions": [
+            "label_full"
+          ]
+        },
+        "metabase_version": "v0.59.6.5 (809ffc8)",
+        "parameters": [],
+        "dashboard_id": null,
+        "created_at": "2026-04-15T19:30:42.967322Z",
+        "public_uuid": null
+      },
+      "updated_at": "2026-04-18T20:27:17.630046Z",
+      "col": 0,
+      "id": 38,
+      "parameter_mappings": [],
+      "card_id": 40,
+      "entity_id": "cgeNWOZORLHA1EtN1kvj-",
+      "visualization_settings": {},
+      "size_y": 13,
+      "dashboard_id": 2,
+      "created_at": "2026-04-18T19:24:26.373998Z",
+      "row": 49
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "cache_invalidated_at": null,
+        "description": "Time-series of events per hour window, broken down by event root code.",
+        "archived": false,
+        "view_count": 3,
+        "collection_position": null,
+        "source_card_id": null,
+        "table_id": 26,
+        "result_metadata": [
+          {
+            "database_type": "timestamp",
+            "semantic_type": "type/CreationTimestamp",
+            "table_id": 26,
+            "lib/deduplicated-name": "window_start",
+            "lib/original-name": "window_start",
+            "lib/breakout?": true,
+            "unit": "hour",
+            "name": "window_start",
+            "lib/source": "source/table-defaults",
+            "lib/source-column-alias": "window_start",
+            "lib/original-display-name": "Window Start",
+            "source": "breakout",
+            "field_ref": [
+              "field",
+              154,
+              {
+                "temporal-unit": "hour"
+              }
+            ],
+            "effective_type": "type/DateTime",
+            "active": true,
+            "id": 154,
+            "lib/desired-column-alias": "window_start",
+            "metabase.lib.field/temporal-unit": "hour",
+            "position": 0,
+            "visibility_type": "normal",
+            "inherited_temporal_unit": "hour",
+            "display_name": "Window Start: Hour",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 4,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/DateTime": {
+                  "earliest": "2026-04-15T16:00:00Z",
+                  "latest": "2026-04-15T16:45:00Z"
+                }
+              }
+            },
+            "base_type": "type/DateTime"
+          },
+          {
+            "database_type": "text",
+            "semantic_type": "type/Description",
+            "table_id": 26,
+            "lib/deduplicated-name": "event_root_description",
+            "lib/original-name": "event_root_description",
+            "lib/breakout?": true,
+            "name": "event_root_description",
+            "lib/source": "source/table-defaults",
+            "lib/source-column-alias": "event_root_description",
+            "lib/original-display-name": "Event Root Description",
+            "source": "breakout",
+            "field_ref": [
+              "field",
+              157,
+              null
+            ],
+            "effective_type": "type/Text",
+            "active": true,
+            "id": 157,
+            "lib/desired-column-alias": "event_root_description",
+            "position": 3,
+            "visibility_type": "normal",
+            "display_name": "Event Root Description",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 19,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0.0,
+                  "percent-url": 0.0,
+                  "percent-email": 0.0,
+                  "percent-state": 0.0,
+                  "average-length": 12.626666666666667
+                }
+              }
+            },
+            "base_type": "type/Text"
+          },
+          {
+            "database_type": "numeric",
+            "semantic_type": "type/Quantity",
+            "lib/deduplicated-name": "sum",
+            "lib/original-name": "sum",
+            "name": "sum",
+            "lib/source": "source/aggregations",
+            "lib/source-column-alias": "sum",
+            "source": "aggregation",
+            "field_ref": [
+              "aggregation",
+              0
+            ],
+            "effective_type": "type/Decimal",
+            "lib/desired-column-alias": "sum",
+            "display_name": "Sum of Event Count",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 110,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 1.0,
+                  "q1": 34.41817288374271,
+                  "q3": 232.32576538582524,
+                  "max": 5011.0,
+                  "sd": 544.9651714606259,
+                  "avg": 264.2518518518518
+                }
+              }
+            },
+            "base_type": "type/Decimal"
+          }
+        ],
+        "embedding_type": null,
+        "dependency_analysis_version": 0,
+        "initially_published_at": null,
+        "can_write": true,
+        "card_schema": 23,
+        "database_id": 2,
+        "enable_embedding": false,
+        "collection_id": null,
+        "query_type": "query",
+        "download_perms": "full",
+        "name": "Event Volume",
+        "document_id": null,
+        "last_used_at": "2026-04-18T20:25:19.477188Z",
+        "type": "question",
+        "query_average_duration": 35,
+        "creator_id": 1,
+        "moderation_reviews": [],
+        "updated_at": "2026-04-18T20:08:18.290983Z",
+        "made_public_by_id": null,
+        "embedding_params": null,
+        "cache_ttl": null,
+        "dataset_query": {
+          "lib/type": "mbql/query",
+          "database": 2,
+          "stages": [
+            {
+              "fields": [
+                [
+                  "field",
+                  {
+                    "lib/uuid": "aed5a312-2e5b-4024-828b-a42a6a5eb031",
+                    "effective-type": "type/DateTime",
+                    "base-type": "type/DateTime"
+                  },
+                  154
+                ],
+                [
+                  "field",
+                  {
+                    "effective-type": "type/Text",
+                    "lib/uuid": "da4d6963-bb24-4363-816d-16440d67de4f",
+                    "base-type": "type/Text"
+                  },
+                  157
+                ],
+                [
+                  "field",
+                  {
+                    "lib/uuid": "42a5d949-3bcd-4c8c-929c-fbc0eb7964a7",
+                    "effective-type": "type/BigInteger",
+                    "base-type": "type/BigInteger"
+                  },
+                  158
+                ]
+              ],
+              "joins": [
+                {
+                  "lib/type": "mbql/join",
+                  "strategy": "left-join",
+                  "stages": [
+                    {
+                      "lib/options": {
+                        "lib/uuid": "290014e2-9b7d-4741-9fe2-bf29bbfa68db"
+                      },
+                      "lib/type": "mbql.stage/mbql",
+                      "source-table": 16
+                    }
+                  ],
+                  "lib/options": {
+                    "lib/uuid": "90a0ca21-b1aa-4a10-8579-582b24c6db8b"
+                  },
+                  "fields": "all",
+                  "conditions": [
+                    [
+                      "=",
+                      {
+                        "lib/uuid": "851186b7-ea43-4186-a0e4-ae0ea3fc53f6"
+                      },
+                      [
+                        "field",
+                        {
+                          "effective-type": "type/Text",
+                          "lib/uuid": "8bd8e4c4-c872-4cfe-b9c1-f2386c1b7a13",
+                          "base-type": "type/Text"
+                        },
+                        156
+                      ],
+                      [
+                        "field",
+                        {
+                          "lib/uuid": "08a61e32-ff83-4996-a415-4f4d7bd41b23",
+                          "effective-type": "type/Text",
+                          "base-type": "type/Text",
+                          "join-alias": "Event Root Code"
+                        },
+                        137
+                      ]
+                    ]
+                  ],
+                  "alias": "Event Root Code"
+                }
+              ],
+              "aggregation": [
+                [
+                  "sum",
+                  {
+                    "lib/uuid": "3bd47b9f-796e-44de-86f8-29530f671f42"
+                  },
+                  [
+                    "field",
+                    {
+                      "lib/uuid": "da5c3d2a-3f3f-409b-8c97-30779da8fef1",
+                      "effective-type": "type/BigInteger",
+                      "base-type": "type/BigInteger"
+                    },
+                    158
+                  ]
+                ]
+              ],
+              "source-table": 26,
+              "lib/type": "mbql.stage/mbql",
+              "breakout": [
+                [
+                  "field",
+                  {
+                    "lib/uuid": "b9459695-fd84-4a56-a706-c0f73f435905",
+                    "effective-type": "type/DateTime",
+                    "base-type": "type/DateTime",
+                    "temporal-unit": "hour"
+                  },
+                  154
+                ],
+                [
+                  "field",
+                  {
+                    "effective-type": "type/Text",
+                    "lib/uuid": "099a1457-efeb-47dc-aef9-856e46aecd34",
+                    "base-type": "type/Text"
+                  },
+                  157
+                ]
+              ]
+            }
+          ]
+        },
+        "id": 46,
+        "legacy_query": null,
+        "parameter_mappings": [],
+        "display": "line",
+        "archived_directly": false,
+        "entity_id": "Dg0_22aPwPju4YnEdkP2h",
+        "collection_preview": true,
+        "visualization_settings": {
+          "graph.x_axis.scale": "timeseries",
+          "graph.dimensions": [
+            "window_start",
+            "event_root_description"
+          ],
+          "graph.metrics": [
+            "sum"
+          ]
+        },
+        "metabase_version": "v0.59.6.5 (809ffc8)",
+        "parameters": [],
+        "dashboard_id": null,
+        "created_at": "2026-04-18T20:08:18.290983Z",
+        "public_uuid": null
+      },
+      "updated_at": "2026-04-18T20:13:28.379304Z",
+      "col": 0,
+      "id": 43,
+      "parameter_mappings": [],
+      "card_id": 46,
+      "entity_id": "aZsP_Bhcb9BbkbU8NhfTH",
+      "visualization_settings": {},
+      "size_y": 10,
+      "dashboard_id": 2,
+      "created_at": "2026-04-18T20:08:50.692456Z",
+      "row": 13
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "cache_invalidated_at": null,
+        "description": "Rolling average of the Goldstein scale by country or region.",
+        "archived": false,
+        "view_count": 3,
+        "collection_position": null,
+        "source_card_id": null,
+        "table_id": 22,
+        "result_metadata": [
+          {
+            "inherited-temporal-unit": "hour",
+            "lib/type": "metadata/column",
+            "base-type": "type/DateTime",
+            "lib/deduplicated-name": "window_start",
+            "semantic-type": "type/CreationTimestamp",
+            "lib/original-name": "window_start",
+            "lib/breakout?": true,
+            "table-id": 22,
+            "unit": "hour",
+            "name": "window_start",
+            "lib/source": "source/table-defaults",
+            "lib/source-column-alias": "window_start",
+            "lib/original-display-name": "Window Start",
+            "source": "breakout",
+            "database-type": "timestamp",
+            "effective-type": "type/DateTime",
+            "active": true,
+            "id": 141,
+            "visibility-type": "normal",
+            "lib/desired-column-alias": "window_start",
+            "metabase.lib.field/temporal-unit": "hour",
+            "display-name": "Window Start: Hour",
+            "position": 0,
+            "field-ref": [
+              "field",
+              141,
+              {
+                "temporal-unit": "hour"
+              }
+            ],
+            "fingerprint": {
+              "global": {
+                "distinct-count": 1,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/DateTime": {
+                  "earliest": "2026-04-15T16:00:00Z",
+                  "latest": "2026-04-15T16:00:00Z"
+                }
+              }
+            }
+          },
+          {
+            "lib/type": "metadata/column",
+            "base-type": "type/Text",
+            "lib/deduplicated-name": "country",
+            "semantic-type": "type/Country",
+            "lib/original-name": "country",
+            "lib/breakout?": true,
+            "table-id": 22,
+            "name": "country",
+            "lib/source": "source/table-defaults",
+            "lib/source-column-alias": "country",
+            "lib/original-display-name": "Country",
+            "source": "breakout",
+            "database-type": "text",
+            "effective-type": "type/Text",
+            "active": true,
+            "id": 143,
+            "visibility-type": "normal",
+            "lib/desired-column-alias": "country",
+            "display-name": "Country",
+            "position": 2,
+            "field-ref": [
+              "field",
+              143,
+              null
+            ],
+            "fingerprint": {
+              "global": {
+                "distinct-count": 117,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0.0,
+                  "percent-url": 0.0,
+                  "percent-email": 0.0,
+                  "percent-state": 0.0,
+                  "average-length": 3.0
+                }
+              }
+            }
+          },
+          {
+            "lib/type": "metadata/column",
+            "base-type": "type/Float",
+            "lib/deduplicated-name": "avg",
+            "lib/original-name": "avg",
+            "name": "avg",
+            "lib/source": "source/aggregations",
+            "lib/source-column-alias": "avg",
+            "source": "aggregation",
+            "effective-type": "type/Float",
+            "lib/desired-column-alias": "avg",
+            "display-name": "Average of Avg Goldstein",
+            "field-ref": [
+              "aggregation",
+              0
+            ]
+          }
+        ],
+        "embedding_type": null,
+        "dependency_analysis_version": 0,
+        "initially_published_at": null,
+        "can_write": true,
+        "card_schema": 23,
+        "database_id": 2,
+        "enable_embedding": false,
+        "collection_id": null,
+        "query_type": "query",
+        "download_perms": "full",
+        "name": "Conflict Trend",
+        "document_id": null,
+        "last_used_at": "2026-04-18T20:27:22.786327Z",
+        "type": "question",
+        "query_average_duration": null,
+        "creator_id": 1,
+        "moderation_reviews": [],
+        "updated_at": "2026-04-18T20:24:51.89752Z",
+        "made_public_by_id": null,
+        "embedding_params": null,
+        "cache_ttl": null,
+        "dataset_query": {
+          "lib/type": "mbql/query",
+          "database": 2,
+          "stages": [
+            {
+              "source-table": 22,
+              "breakout": [
+                [
+                  "field",
+                  {
+                    "effective-type": "type/DateTime",
+                    "base-type": "type/DateTime",
+                    "lib/uuid": "d309f92b-7162-4137-af8a-c6d1ca8b9eff",
+                    "temporal-unit": "hour"
+                  },
+                  141
+                ],
+                [
+                  "field",
+                  {
+                    "lib/uuid": "a4ab7c81-7e17-41cf-b588-9b7713589b64",
+                    "effective-type": "type/Text",
+                    "base-type": "type/Text"
+                  },
+                  143
+                ]
+              ],
+              "lib/type": "mbql.stage/mbql",
+              "aggregation": [
+                [
+                  "avg",
+                  {
+                    "lib/uuid": "787d66b8-421b-4d3c-8ccb-6dad047b2e0c"
+                  },
+                  [
+                    "field",
+                    {
+                      "lib/uuid": "c8d2d527-74f3-4f8d-a659-e3bd43d1de72",
+                      "effective-type": "type/Float",
+                      "base-type": "type/Float"
+                    },
+                    144
+                  ]
+                ]
+              ]
+            }
+          ]
+        },
+        "id": 47,
+        "legacy_query": null,
+        "parameter_mappings": [],
+        "display": "pivot",
+        "archived_directly": false,
+        "entity_id": "RS75iKZHOAA2MVOQwukuw",
+        "collection_preview": true,
+        "visualization_settings": {
+          "pivot_table.column_split": {
+            "rows": [
+              "country"
+            ],
+            "columns": [
+              "window_start"
+            ],
+            "values": [
+              "avg"
+            ]
+          },
+          "pivot_table.column_widths": {
+            "leftHeaderWidths": [
+              85
+            ],
+            "totalLeftHeaderWidths": 85,
+            "valueHeaderWidths": {}
+          },
+          "table.column_formatting": [
+            {
+              "columns": [
+                "avg"
+              ],
+              "type": "range",
+              "colors": [
+                "hsla(358, 71%, 62%, 1)",
+                "transparent",
+                "hsla(89, 48%, 40%, 1)"
+              ],
+              "min_type": null,
+              "max_type": null,
+              "min_value": 0,
+              "max_value": 100,
+              "highlight_row": false
+            }
+          ]
+        },
+        "metabase_version": "v0.59.6.5 (809ffc8)",
+        "parameters": [],
+        "dashboard_id": 2,
+        "created_at": "2026-04-18T20:24:51.89752Z",
+        "public_uuid": null
+      },
+      "updated_at": "2026-04-18T20:27:17.630046Z",
+      "col": 0,
+      "id": 44,
+      "parameter_mappings": [],
+      "card_id": 47,
+      "entity_id": "N_qwm0VRHgXycYwQW8tJ-",
+      "visualization_settings": {},
+      "size_y": 26,
+      "dashboard_id": 2,
+      "created_at": "2026-04-18T20:24:51.904012Z",
+      "row": 23
+    }
+  ],
+  "embedding_type": null,
+  "dependency_analysis_version": 0,
+  "initially_published_at": null,
+  "can_write": true,
+  "can_set_cache_policy": true,
+  "tabs": [],
+  "enable_embedding": false,
+  "collection_id": null,
+  "show_in_getting_started": false,
+  "name": "GDELT Analysis",
+  "is_remote_synced": false,
+  "width": "fixed",
+  "caveats": null,
+  "collection_authority_level": null,
+  "creator_id": 1,
+  "can_restore": false,
+  "moderation_reviews": [],
+  "updated_at": "2026-04-18T19:24:06.540967Z",
+  "made_public_by_id": null,
+  "embedding_params": null,
+  "cache_ttl": null,
+  "last_used_param_values": {},
+  "id": 2,
+  "last_viewed_at": "2026-04-18T20:25:19.425124Z",
+  "position": null,
+  "archived_directly": false,
+  "entity_id": "-mmDqaNL8ygCkyMvDkjEe",
+  "param_fields": {},
+  "last-edit-info": {
+    "id": 1,
+    "email": "carlos.capote@hawara.es",
+    "first_name": "Admin",
+    "last_name": "User",
+    "timestamp": "2026-04-18T20:27:17.63928Z"
+  },
+  "collection": {
+    "metabase.collections.models.collection.root/is-root?": true,
+    "authority_level": null,
+    "name": "Our analytics",
+    "is_personal": false,
+    "id": "root",
+    "is_remote_synced": false,
+    "can_write": true
+  },
+  "parameters": [],
+  "auto_apply_filters": true,
+  "created_at": "2026-04-18T19:24:06.540967Z",
+  "public_uuid": null,
+  "points_of_interest": null,
+  "can_delete": false
+}

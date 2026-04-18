@@ -1,0 +1,345 @@
+{
+  "cache_invalidated_at": "2026-04-18T20:09:35.992189Z",
+  "description": "Geolocated events plotted on a world map, colored by Goldstein scale (conflict ↔ cooperation).",
+  "archived": false,
+  "view_count": 8,
+  "collection_position": null,
+  "source_card_id": null,
+  "table_id": 24,
+  "can_run_adhoc_query": true,
+  "result_metadata": [
+    {
+      "database_type": "text",
+      "semantic_type": null,
+      "table_id": 37,
+      "qp/implicit-field?": true,
+      "lib/deduplicated-name": "iso2",
+      "lib/original-name": "iso2",
+      "lib/breakout?": true,
+      "name": "iso2",
+      "lib/source": "source/joins",
+      "lib/source-column-alias": "iso2",
+      "lib/original-display-name": "Iso2",
+      "source": "breakout",
+      "lib/original-join-alias": "Country Code - Actor1 Country",
+      "field_ref": [
+        "field",
+        203,
+        {
+          "join-alias": "Country Code - Actor1 Country"
+        }
+      ],
+      "effective_type": "type/Text",
+      "active": true,
+      "id": 203,
+      "lib/desired-column-alias": "Country Code - Actor1 Country__iso2",
+      "position": 1,
+      "visibility_type": "normal",
+      "display_name": "Country Code - Actor1 Country → Iso2",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 165,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.1151515151515152,
+            "average-length": 2.0
+          }
+        }
+      },
+      "base_type": "type/Text",
+      "source_alias": "Country Code - Actor1 Country",
+      "metabase.lib.join/join-alias": "Country Code - Actor1 Country"
+    },
+    {
+      "database_type": "text",
+      "semantic_type": "type/Name",
+      "table_id": 37,
+      "qp/implicit-field?": true,
+      "lib/deduplicated-name": "name",
+      "lib/original-name": "name",
+      "lib/breakout?": true,
+      "name": "name",
+      "lib/source": "source/joins",
+      "lib/source-column-alias": "name",
+      "lib/original-display-name": "Name",
+      "source": "breakout",
+      "lib/original-join-alias": "Country Code - Actor1 Country",
+      "field_ref": [
+        "field",
+        204,
+        {
+          "join-alias": "Country Code - Actor1 Country"
+        }
+      ],
+      "effective_type": "type/Text",
+      "active": true,
+      "id": 204,
+      "lib/desired-column-alias": "Country Code - Actor1 Country__name",
+      "position": 2,
+      "visibility_type": "normal",
+      "display_name": "Country Code - Actor1 Country → Name",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 165,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.006060606060606061,
+            "average-length": 8.16969696969697
+          }
+        }
+      },
+      "base_type": "type/Text",
+      "source_alias": "Country Code - Actor1 Country",
+      "metabase.lib.join/join-alias": "Country Code - Actor1 Country"
+    },
+    {
+      "database_type": "float8",
+      "semantic_type": null,
+      "lib/deduplicated-name": "avg",
+      "lib/original-name": "avg",
+      "name": "avg",
+      "lib/source": "source/aggregations",
+      "lib/source-column-alias": "avg",
+      "source": "aggregation",
+      "field_ref": [
+        "aggregation",
+        0
+      ],
+      "effective_type": "type/Float",
+      "lib/desired-column-alias": "avg",
+      "display_name": "Average of Goldstein Scale",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 43,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": -5.12903225518042,
+            "q1": -1.5843749735504389,
+            "q3": 1.2541666686534882,
+            "max": 5.0,
+            "sd": 2.2689892387487065,
+            "avg": -0.05587310054760712
+          }
+        }
+      },
+      "base_type": "type/Float"
+    }
+  ],
+  "embedding_type": null,
+  "dependency_analysis_version": 0,
+  "creator": {
+    "email": "carlos.capote@hawara.es",
+    "first_name": "Admin",
+    "is_data_analyst": false,
+    "last_login": "2026-04-18T20:29:48.099265Z",
+    "is_qbnewb": false,
+    "is_superuser": true,
+    "id": 1,
+    "last_name": "User",
+    "tenant_id": null,
+    "date_joined": "2026-04-15T15:47:41.068144Z",
+    "common_name": "Admin User"
+  },
+  "initially_published_at": null,
+  "can_write": true,
+  "card_schema": 23,
+  "database_id": 2,
+  "enable_embedding": false,
+  "collection_id": null,
+  "query_type": "query",
+  "name": "Global Event Map",
+  "last_query_start": "2026-04-18T20:25:19.445534Z",
+  "is_remote_synced": false,
+  "dashboard_count": 1,
+  "document_id": null,
+  "last_used_at": "2026-04-18T20:25:19.477188Z",
+  "dashboard": null,
+  "type": "question",
+  "average_query_time": 62.625,
+  "creator_id": 1,
+  "can_restore": false,
+  "moderation_reviews": [],
+  "updated_at": "2026-04-18T20:09:35.994665Z",
+  "made_public_by_id": null,
+  "embedding_params": null,
+  "cache_ttl": null,
+  "dataset_query": {
+    "lib/type": "mbql/query",
+    "database": 2,
+    "stages": [
+      {
+        "filters": [
+          [
+            "time-interval",
+            {
+              "lib/uuid": "4c29962b-34d6-44f6-84b4-b5ef60a5020b"
+            },
+            [
+              "field",
+              {
+                "lib/uuid": "8db360c1-090d-4835-b790-7222196e050a",
+                "effective-type": "type/DateTimeWithLocalTZ",
+                "base-type": "type/DateTimeWithLocalTZ"
+              },
+              153
+            ],
+            0,
+            "day"
+          ]
+        ],
+        "aggregation": [
+          [
+            "avg",
+            {
+              "lib/uuid": "aa8493e0-1b16-4b59-99b7-2d4b7cd27001"
+            },
+            [
+              "field",
+              {
+                "lib/uuid": "a96e363a-1b03-41a1-abfd-cb0ef7646704",
+                "effective-type": "type/Float",
+                "base-type": "type/Float"
+              },
+              148
+            ]
+          ]
+        ],
+        "joins": [
+          {
+            "lib/type": "mbql/join",
+            "lib/options": {
+              "lib/uuid": "7593fc88-bf02-42b1-b073-73e9f2ebbf6a"
+            },
+            "fields": "all",
+            "conditions": [
+              [
+                "=",
+                {
+                  "lib/uuid": "b89e17b1-bc60-4534-93ae-0762c6814387"
+                },
+                [
+                  "field",
+                  {
+                    "lib/uuid": "2841c385-3434-4eac-992a-4db94e22868b",
+                    "effective-type": "type/Text",
+                    "base-type": "type/Text"
+                  },
+                  216
+                ],
+                [
+                  "field",
+                  {
+                    "lib/uuid": "428b1f97-aa9c-482b-b15a-3334413a56d9",
+                    "effective-type": "type/Text",
+                    "base-type": "type/Text",
+                    "join-alias": "Country Code - Actor1 Country"
+                  },
+                  202
+                ]
+              ]
+            ],
+            "strategy": "left-join",
+            "stages": [
+              {
+                "lib/type": "mbql.stage/mbql",
+                "lib/options": {
+                  "lib/uuid": "0dbff49d-a82b-4f13-b087-91a074e0aad5"
+                },
+                "source-table": 37
+              }
+            ],
+            "alias": "Country Code - Actor1 Country"
+          }
+        ],
+        "fields": [
+          [
+            "field",
+            {
+              "effective-type": "type/BigInteger",
+              "lib/uuid": "2a12efd9-9a94-4d6f-b4a4-e64f03c9935b",
+              "base-type": "type/BigInteger"
+            },
+            145
+          ]
+        ],
+        "source-table": 24,
+        "lib/type": "mbql.stage/mbql",
+        "breakout": [
+          [
+            "field",
+            {
+              "effective-type": "type/Text",
+              "base-type": "type/Text",
+              "lib/uuid": "f3287452-15f5-4e00-8f17-ebe8f2d4d6c5",
+              "join-alias": "Country Code - Actor1 Country"
+            },
+            203
+          ],
+          [
+            "field",
+            {
+              "base-type": "type/Text",
+              "lib/uuid": "d96008c0-034a-4929-af00-d7ad60bed386",
+              "effective-type": "type/Text",
+              "join-alias": "Country Code - Actor1 Country"
+            },
+            204
+          ]
+        ]
+      }
+    ]
+  },
+  "id": 41,
+  "legacy_query": null,
+  "parameter_mappings": [],
+  "can_manage_db": true,
+  "display": "map",
+  "archived_directly": false,
+  "entity_id": "bwtYMIbsgeBNPKIQCRv5D",
+  "param_fields": {},
+  "collection_preview": true,
+  "last-edit-info": {
+    "id": 1,
+    "email": "carlos.capote@hawara.es",
+    "first_name": "Admin",
+    "last_name": "User",
+    "timestamp": "2026-04-18T20:09:36.011735Z"
+  },
+  "visualization_settings": {
+    "map.center_latitude": 18.145851771694467,
+    "map.center_longitude": 39.02343750000001,
+    "map.zoom": 2,
+    "map.type": "region",
+    "map.dimension": "iso2",
+    "map.metric": "goldstein_scale",
+    "map.region": "world_countries"
+  },
+  "collection": {
+    "metabase.collections.models.collection.root/is-root?": true,
+    "authority_level": null,
+    "name": "Our analytics",
+    "is_personal": false,
+    "id": "root",
+    "is_remote_synced": false,
+    "can_write": true
+  },
+  "metabase_version": "v0.59.6.5 (809ffc8)",
+  "parameters": [],
+  "dashboard_id": null,
+  "created_at": "2026-04-15T19:52:23.016085Z",
+  "parameter_usage_count": 0,
+  "public_uuid": null,
+  "can_delete": false
+}

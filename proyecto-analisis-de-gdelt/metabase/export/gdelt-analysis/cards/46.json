@@ -1,0 +1,334 @@
+{
+  "cache_invalidated_at": null,
+  "description": "Time-series of events per hour window, broken down by event root code.",
+  "archived": false,
+  "view_count": 3,
+  "collection_position": null,
+  "source_card_id": null,
+  "table_id": 26,
+  "can_run_adhoc_query": true,
+  "result_metadata": [
+    {
+      "database_type": "timestamp",
+      "semantic_type": "type/CreationTimestamp",
+      "table_id": 26,
+      "lib/deduplicated-name": "window_start",
+      "lib/original-name": "window_start",
+      "lib/breakout?": true,
+      "unit": "hour",
+      "name": "window_start",
+      "lib/source": "source/table-defaults",
+      "lib/source-column-alias": "window_start",
+      "lib/original-display-name": "Window Start",
+      "source": "breakout",
+      "field_ref": [
+        "field",
+        154,
+        {
+          "temporal-unit": "hour"
+        }
+      ],
+      "effective_type": "type/DateTime",
+      "active": true,
+      "id": 154,
+      "lib/desired-column-alias": "window_start",
+      "metabase.lib.field/temporal-unit": "hour",
+      "position": 0,
+      "visibility_type": "normal",
+      "inherited_temporal_unit": "hour",
+      "display_name": "Window Start: Hour",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 4,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/DateTime": {
+            "earliest": "2026-04-15T16:00:00Z",
+            "latest": "2026-04-15T16:45:00Z"
+          }
+        }
+      },
+      "base_type": "type/DateTime"
+    },
+    {
+      "database_type": "text",
+      "semantic_type": "type/Description",
+      "table_id": 26,
+      "lib/deduplicated-name": "event_root_description",
+      "lib/original-name": "event_root_description",
+      "lib/breakout?": true,
+      "name": "event_root_description",
+      "lib/source": "source/table-defaults",
+      "lib/source-column-alias": "event_root_description",
+      "lib/original-display-name": "Event Root Description",
+      "source": "breakout",
+      "field_ref": [
+        "field",
+        157,
+        null
+      ],
+      "effective_type": "type/Text",
+      "active": true,
+      "id": 157,
+      "lib/desired-column-alias": "event_root_description",
+      "position": 3,
+      "visibility_type": "normal",
+      "display_name": "Event Root Description",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 19,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.0,
+            "average-length": 12.626666666666667
+          }
+        }
+      },
+      "base_type": "type/Text"
+    },
+    {
+      "database_type": "numeric",
+      "semantic_type": "type/Quantity",
+      "lib/deduplicated-name": "sum",
+      "lib/original-name": "sum",
+      "name": "sum",
+      "lib/source": "source/aggregations",
+      "lib/source-column-alias": "sum",
+      "source": "aggregation",
+      "field_ref": [
+        "aggregation",
+        0
+      ],
+      "effective_type": "type/Decimal",
+      "lib/desired-column-alias": "sum",
+      "display_name": "Sum of Event Count",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 110,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 1.0,
+            "q1": 34.41817288374271,
+            "q3": 232.32576538582524,
+            "max": 5011.0,
+            "sd": 544.9651714606259,
+            "avg": 264.2518518518518
+          }
+        }
+      },
+      "base_type": "type/Decimal"
+    }
+  ],
+  "embedding_type": null,
+  "dependency_analysis_version": 0,
+  "creator": {
+    "email": "carlos.capote@hawara.es",
+    "first_name": "Admin",
+    "is_data_analyst": false,
+    "last_login": "2026-04-18T20:29:48.099265Z",
+    "is_qbnewb": false,
+    "is_superuser": true,
+    "id": 1,
+    "last_name": "User",
+    "tenant_id": null,
+    "date_joined": "2026-04-15T15:47:41.068144Z",
+    "common_name": "Admin User"
+  },
+  "initially_published_at": null,
+  "can_write": true,
+  "card_schema": 23,
+  "database_id": 2,
+  "enable_embedding": false,
+  "collection_id": null,
+  "query_type": "query",
+  "name": "Event Volume",
+  "last_query_start": "2026-04-18T20:25:19.441384Z",
+  "is_remote_synced": false,
+  "dashboard_count": 1,
+  "document_id": null,
+  "last_used_at": "2026-04-18T20:25:19.477188Z",
+  "dashboard": null,
+  "type": "question",
+  "average_query_time": 34.333333333333336,
+  "creator_id": 1,
+  "can_restore": false,
+  "moderation_reviews": [],
+  "updated_at": "2026-04-18T20:08:18.290983Z",
+  "made_public_by_id": null,
+  "embedding_params": null,
+  "cache_ttl": null,
+  "dataset_query": {
+    "lib/type": "mbql/query",
+    "database": 2,
+    "stages": [
+      {
+        "fields": [
+          [
+            "field",
+            {
+              "lib/uuid": "aed5a312-2e5b-4024-828b-a42a6a5eb031",
+              "effective-type": "type/DateTime",
+              "base-type": "type/DateTime"
+            },
+            154
+          ],
+          [
+            "field",
+            {
+              "effective-type": "type/Text",
+              "lib/uuid": "da4d6963-bb24-4363-816d-16440d67de4f",
+              "base-type": "type/Text"
+            },
+            157
+          ],
+          [
+            "field",
+            {
+              "lib/uuid": "42a5d949-3bcd-4c8c-929c-fbc0eb7964a7",
+              "effective-type": "type/BigInteger",
+              "base-type": "type/BigInteger"
+            },
+            158
+          ]
+        ],
+        "joins": [
+          {
+            "lib/type": "mbql/join",
+            "strategy": "left-join",
+            "stages": [
+              {
+                "lib/options": {
+                  "lib/uuid": "290014e2-9b7d-4741-9fe2-bf29bbfa68db"
+                },
+                "lib/type": "mbql.stage/mbql",
+                "source-table": 16
+              }
+            ],
+            "lib/options": {
+              "lib/uuid": "90a0ca21-b1aa-4a10-8579-582b24c6db8b"
+            },
+            "fields": "all",
+            "conditions": [
+              [
+                "=",
+                {
+                  "lib/uuid": "851186b7-ea43-4186-a0e4-ae0ea3fc53f6"
+                },
+                [
+                  "field",
+                  {
+                    "effective-type": "type/Text",
+                    "lib/uuid": "8bd8e4c4-c872-4cfe-b9c1-f2386c1b7a13",
+                    "base-type": "type/Text"
+                  },
+                  156
+                ],
+                [
+                  "field",
+                  {
+                    "lib/uuid": "08a61e32-ff83-4996-a415-4f4d7bd41b23",
+                    "effective-type": "type/Text",
+                    "base-type": "type/Text",
+                    "join-alias": "Event Root Code"
+                  },
+                  137
+                ]
+              ]
+            ],
+            "alias": "Event Root Code"
+          }
+        ],
+        "aggregation": [
+          [
+            "sum",
+            {
+              "lib/uuid": "3bd47b9f-796e-44de-86f8-29530f671f42"
+            },
+            [
+              "field",
+              {
+                "lib/uuid": "da5c3d2a-3f3f-409b-8c97-30779da8fef1",
+                "effective-type": "type/BigInteger",
+                "base-type": "type/BigInteger"
+              },
+              158
+            ]
+          ]
+        ],
+        "source-table": 26,
+        "lib/type": "mbql.stage/mbql",
+        "breakout": [
+          [
+            "field",
+            {
+              "lib/uuid": "b9459695-fd84-4a56-a706-c0f73f435905",
+              "effective-type": "type/DateTime",
+              "base-type": "type/DateTime",
+              "temporal-unit": "hour"
+            },
+            154
+          ],
+          [
+            "field",
+            {
+              "effective-type": "type/Text",
+              "lib/uuid": "099a1457-efeb-47dc-aef9-856e46aecd34",
+              "base-type": "type/Text"
+            },
+            157
+          ]
+        ]
+      }
+    ]
+  },
+  "id": 46,
+  "legacy_query": null,
+  "parameter_mappings": [],
+  "can_manage_db": true,
+  "display": "line",
+  "archived_directly": false,
+  "entity_id": "Dg0_22aPwPju4YnEdkP2h",
+  "param_fields": {},
+  "collection_preview": true,
+  "last-edit-info": {
+    "id": 1,
+    "email": "carlos.capote@hawara.es",
+    "first_name": "Admin",
+    "last_name": "User",
+    "timestamp": "2026-04-18T20:08:18.298382Z"
+  },
+  "visualization_settings": {
+    "graph.x_axis.scale": "timeseries",
+    "graph.dimensions": [
+      "window_start",
+      "event_root_description"
+    ],
+    "graph.metrics": [
+      "sum"
+    ]
+  },
+  "collection": {
+    "metabase.collections.models.collection.root/is-root?": true,
+    "authority_level": null,
+    "name": "Our analytics",
+    "is_personal": false,
+    "id": "root",
+    "is_remote_synced": false,
+    "can_write": true
+  },
+  "metabase_version": "v0.59.6.5 (809ffc8)",
+  "parameters": [],
+  "dashboard_id": null,
+  "created_at": "2026-04-18T20:08:18.290983Z",
+  "parameter_usage_count": 0,
+  "public_uuid": null,
+  "can_delete": false
+}

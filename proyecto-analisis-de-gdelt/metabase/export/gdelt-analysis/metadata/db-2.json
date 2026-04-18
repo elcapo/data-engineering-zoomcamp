@@ -1,0 +1,961 @@
+{
+  "id": 2,
+  "name": "GDELT Postgres",
+  "engine": "postgres",
+  "tables": [
+    {
+      "id": 18,
+      "name": "action_geo_type",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 132,
+          "name": "action_geo_type",
+          "parent_id": null
+        },
+        {
+          "id": 133,
+          "name": "meaning",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "name": "actor_ethnic_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 175,
+          "name": "ethnic_code",
+          "parent_id": null
+        },
+        {
+          "id": 176,
+          "name": "description",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "name": "actor_ethnic_group_country",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 177,
+          "name": "ethnic_code",
+          "parent_id": null
+        },
+        {
+          "id": 178,
+          "name": "country_iso3",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "actor_international_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 179,
+          "name": "full_code",
+          "parent_id": null
+        },
+        {
+          "id": 180,
+          "name": "actor_name",
+          "parent_id": null
+        },
+        {
+          "id": 181,
+          "name": "region",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "name": "actor_international_generic_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 182,
+          "name": "generic_code",
+          "parent_id": null
+        },
+        {
+          "id": 183,
+          "name": "actor_type",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "name": "actor_religion_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 184,
+          "name": "religion_code",
+          "parent_id": null
+        },
+        {
+          "id": 185,
+          "name": "description",
+          "parent_id": null
+        },
+        {
+          "id": 186,
+          "name": "priority",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "name": "actor_religion_directory",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 187,
+          "name": "religion_code",
+          "parent_id": null
+        },
+        {
+          "id": 188,
+          "name": "description",
+          "parent_id": null
+        },
+        {
+          "id": 189,
+          "name": "depth",
+          "parent_id": null
+        },
+        {
+          "id": 190,
+          "name": "parent_code",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "name": "actor_religion_generic_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 191,
+          "name": "generic_code",
+          "parent_id": null
+        },
+        {
+          "id": 192,
+          "name": "description",
+          "parent_id": null
+        },
+        {
+          "id": 193,
+          "name": "priority",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "name": "actor_role_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 194,
+          "name": "role_code",
+          "parent_id": null
+        },
+        {
+          "id": 195,
+          "name": "label",
+          "parent_id": null
+        },
+        {
+          "id": 196,
+          "name": "description",
+          "parent_id": null
+        },
+        {
+          "id": 197,
+          "name": "priority",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "name": "cameo_label",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 198,
+          "name": "code",
+          "parent_id": null
+        },
+        {
+          "id": 199,
+          "name": "kind",
+          "parent_id": null
+        },
+        {
+          "id": 200,
+          "name": "label",
+          "parent_id": null
+        },
+        {
+          "id": 201,
+          "name": "priority",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "conflict_trend",
+      "schema": "public",
+      "fields": [
+        {
+          "id": 72,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 73,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 74,
+          "name": "country",
+          "parent_id": null
+        },
+        {
+          "id": 75,
+          "name": "avg_goldstein",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "name": "conflict_trend",
+      "schema": "public_dashboard",
+      "fields": [
+        {
+          "id": 141,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 142,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 143,
+          "name": "country",
+          "parent_id": null
+        },
+        {
+          "id": 144,
+          "name": "avg_goldstein",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "name": "country_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 202,
+          "name": "cameo_code",
+          "parent_id": null
+        },
+        {
+          "id": 203,
+          "name": "iso2",
+          "parent_id": null
+        },
+        {
+          "id": 204,
+          "name": "name",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "name": "dim_actor_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 205,
+          "name": "actor_code",
+          "parent_id": null
+        },
+        {
+          "id": 206,
+          "name": "label_full",
+          "parent_id": null
+        },
+        {
+          "id": 207,
+          "name": "parts",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "event_base_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 134,
+          "name": "event_base_code",
+          "parent_id": null
+        },
+        {
+          "id": 135,
+          "name": "event_root_code",
+          "parent_id": null
+        },
+        {
+          "id": 136,
+          "name": "description",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "name": "event_counts_by_country",
+      "schema": "public",
+      "fields": [
+        {
+          "id": 76,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 77,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 78,
+          "name": "country",
+          "parent_id": null
+        },
+        {
+          "id": 79,
+          "name": "event_root_code",
+          "parent_id": null
+        },
+        {
+          "id": 80,
+          "name": "event_count",
+          "parent_id": null
+        },
+        {
+          "id": 81,
+          "name": "avg_goldstein",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "name": "event_map",
+      "schema": "public_dashboard",
+      "fields": [
+        {
+          "id": 145,
+          "name": "global_event_id",
+          "parent_id": null
+        },
+        {
+          "id": 146,
+          "name": "latitude",
+          "parent_id": null
+        },
+        {
+          "id": 147,
+          "name": "longitude",
+          "parent_id": null
+        },
+        {
+          "id": 148,
+          "name": "goldstein_scale",
+          "parent_id": null
+        },
+        {
+          "id": 149,
+          "name": "event_root_code",
+          "parent_id": null
+        },
+        {
+          "id": 150,
+          "name": "event_root_description",
+          "parent_id": null
+        },
+        {
+          "id": 215,
+          "name": "actor1_code",
+          "parent_id": null
+        },
+        {
+          "id": 216,
+          "name": "actor1_country",
+          "parent_id": null
+        },
+        {
+          "id": 217,
+          "name": "actor2_code",
+          "parent_id": null
+        },
+        {
+          "id": 218,
+          "name": "actor2_country",
+          "parent_id": null
+        },
+        {
+          "id": 153,
+          "name": "event_time",
+          "parent_id": null
+        },
+        {
+          "id": 219,
+          "name": "source_url",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "event_root_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 137,
+          "name": "event_root_code",
+          "parent_id": null
+        },
+        {
+          "id": 138,
+          "name": "description",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "event_volume",
+      "schema": "public_dashboard",
+      "fields": [
+        {
+          "id": 154,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 155,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 156,
+          "name": "event_root_code",
+          "parent_id": null
+        },
+        {
+          "id": 157,
+          "name": "event_root_description",
+          "parent_id": null
+        },
+        {
+          "id": 158,
+          "name": "event_count",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "events",
+      "schema": "public",
+      "fields": [
+        {
+          "id": 82,
+          "name": "global_event_id",
+          "parent_id": null
+        },
+        {
+          "id": 83,
+          "name": "sql_date",
+          "parent_id": null
+        },
+        {
+          "id": 84,
+          "name": "actor1_code",
+          "parent_id": null
+        },
+        {
+          "id": 85,
+          "name": "actor1_name",
+          "parent_id": null
+        },
+        {
+          "id": 86,
+          "name": "actor1_country",
+          "parent_id": null
+        },
+        {
+          "id": 87,
+          "name": "actor2_code",
+          "parent_id": null
+        },
+        {
+          "id": 88,
+          "name": "actor2_name",
+          "parent_id": null
+        },
+        {
+          "id": 89,
+          "name": "actor2_country",
+          "parent_id": null
+        },
+        {
+          "id": 90,
+          "name": "event_root_code",
+          "parent_id": null
+        },
+        {
+          "id": 91,
+          "name": "quad_class",
+          "parent_id": null
+        },
+        {
+          "id": 92,
+          "name": "goldstein_scale",
+          "parent_id": null
+        },
+        {
+          "id": 93,
+          "name": "num_mentions",
+          "parent_id": null
+        },
+        {
+          "id": 94,
+          "name": "num_sources",
+          "parent_id": null
+        },
+        {
+          "id": 95,
+          "name": "num_articles",
+          "parent_id": null
+        },
+        {
+          "id": 96,
+          "name": "action_geo_type",
+          "parent_id": null
+        },
+        {
+          "id": 97,
+          "name": "action_geo_name",
+          "parent_id": null
+        },
+        {
+          "id": 98,
+          "name": "action_geo_lat",
+          "parent_id": null
+        },
+        {
+          "id": 99,
+          "name": "action_geo_long",
+          "parent_id": null
+        },
+        {
+          "id": 100,
+          "name": "date_added",
+          "parent_id": null
+        },
+        {
+          "id": 101,
+          "name": "source_url",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "gkg",
+      "schema": "public",
+      "fields": [
+        {
+          "id": 102,
+          "name": "gkg_record_id",
+          "parent_id": null
+        },
+        {
+          "id": 103,
+          "name": "gkg_date",
+          "parent_id": null
+        },
+        {
+          "id": 104,
+          "name": "source_name",
+          "parent_id": null
+        },
+        {
+          "id": 105,
+          "name": "document_id",
+          "parent_id": null
+        },
+        {
+          "id": 106,
+          "name": "themes",
+          "parent_id": null
+        },
+        {
+          "id": 107,
+          "name": "persons",
+          "parent_id": null
+        },
+        {
+          "id": 108,
+          "name": "organizations",
+          "parent_id": null
+        },
+        {
+          "id": 109,
+          "name": "tone",
+          "parent_id": null
+        },
+        {
+          "id": 110,
+          "name": "positive_score",
+          "parent_id": null
+        },
+        {
+          "id": 111,
+          "name": "negative_score",
+          "parent_id": null
+        },
+        {
+          "id": 112,
+          "name": "word_count",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "name": "keds_actor_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 208,
+          "name": "code",
+          "parent_id": null
+        },
+        {
+          "id": 209,
+          "name": "actor_name",
+          "parent_id": null
+        },
+        {
+          "id": 210,
+          "name": "date_restricted",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "media_attention",
+      "schema": "public",
+      "fields": [
+        {
+          "id": 113,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 114,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 115,
+          "name": "global_event_id",
+          "parent_id": null
+        },
+        {
+          "id": 116,
+          "name": "mention_count",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "name": "media_attention",
+      "schema": "public_dashboard",
+      "fields": [
+        {
+          "id": 159,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 160,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 161,
+          "name": "global_event_id",
+          "parent_id": null
+        },
+        {
+          "id": 162,
+          "name": "mention_count",
+          "parent_id": null
+        },
+        {
+          "id": 163,
+          "name": "actor1_name",
+          "parent_id": null
+        },
+        {
+          "id": 164,
+          "name": "actor2_name",
+          "parent_id": null
+        },
+        {
+          "id": 165,
+          "name": "event_root_code",
+          "parent_id": null
+        },
+        {
+          "id": 166,
+          "name": "event_root_description",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "mentions",
+      "schema": "public",
+      "fields": [
+        {
+          "id": 117,
+          "name": "global_event_id",
+          "parent_id": null
+        },
+        {
+          "id": 118,
+          "name": "event_time_date",
+          "parent_id": null
+        },
+        {
+          "id": 119,
+          "name": "mention_time_date",
+          "parent_id": null
+        },
+        {
+          "id": 120,
+          "name": "mention_source",
+          "parent_id": null
+        },
+        {
+          "id": 121,
+          "name": "mention_identifier",
+          "parent_id": null
+        },
+        {
+          "id": 122,
+          "name": "sentence_id",
+          "parent_id": null
+        },
+        {
+          "id": 123,
+          "name": "mention_doc_tone",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "quad_class",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 139,
+          "name": "quad_class",
+          "parent_id": null
+        },
+        {
+          "id": 140,
+          "name": "meaning",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "name": "region_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 211,
+          "name": "region_code",
+          "parent_id": null
+        },
+        {
+          "id": 212,
+          "name": "name",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "tone_by_theme",
+      "schema": "public",
+      "fields": [
+        {
+          "id": 124,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 125,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 126,
+          "name": "theme",
+          "parent_id": null
+        },
+        {
+          "id": 127,
+          "name": "avg_tone",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "name": "tone_by_theme",
+      "schema": "public_dashboard",
+      "fields": [
+        {
+          "id": 167,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 168,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 169,
+          "name": "theme",
+          "parent_id": null
+        },
+        {
+          "id": 170,
+          "name": "avg_tone",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "top_actors",
+      "schema": "public",
+      "fields": [
+        {
+          "id": 128,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 129,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 130,
+          "name": "actor_code",
+          "parent_id": null
+        },
+        {
+          "id": 131,
+          "name": "event_count",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "top_actors",
+      "schema": "public_dashboard",
+      "fields": [
+        {
+          "id": 171,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 172,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 173,
+          "name": "actor_code",
+          "parent_id": null
+        },
+        {
+          "id": 174,
+          "name": "event_count",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "name": "un_country_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 213,
+          "name": "iso3",
+          "parent_id": null
+        },
+        {
+          "id": 214,
+          "name": "name",
+          "parent_id": null
+        }
+      ]
+    }
+  ]
+}
