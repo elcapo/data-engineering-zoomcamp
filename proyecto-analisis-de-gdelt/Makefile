@@ -1,4 +1,4 @@
-.PHONY: init up down reset
+.PHONY: init up down reset metabase-export metabase-import
 
 init:
 	@[ -f .env ] || { \
@@ -25,3 +25,11 @@ down:
 reset:
 	docker compose down -v
 	rm -f .env
+
+metabase-export:
+	@[ -n "$(DASHBOARD)" ] || { echo "Usage: make metabase-export DASHBOARD=<name>"; exit 1; }
+	@python3 metabase/scripts/export-dashboard.py "$(DASHBOARD)"
+
+metabase-import:
+	@[ -n "$(DIR)" ] || { echo "Usage: make metabase-import DIR=<export-dir> [SUFFIX=' (imported)']"; exit 1; }
+	@python3 metabase/scripts/import-dashboard.py "$(DIR)" $(if $(SUFFIX),--name-suffix "$(SUFFIX)") $(if $(COLLECTION),--collection-id $(COLLECTION))

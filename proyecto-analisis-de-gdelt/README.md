@@ -233,15 +233,19 @@ Metabase has no provisioning: the first time you open `http://localhost:8084` yo
 - Database: `gdelt` (or your `POSTGRES_DB`)
 - Username / password: match `POSTGRES_USER` / `POSTGRES_PASSWORD`
 
-Models, questions, and dashboards are authored in the UI. To version them in this repo, use Metabase's serialization CLI:
+Models, questions, and dashboards are authored in the UI. Metabase's built-in `v2-dump!` / `v2-load!` commands are Enterprise-only, so this repo ships a pair of Python scripts that export/import a single dashboard (plus the cards it references) through the REST API, saving each as a JSON file under `metabase/export/`:
 
 ```bash
-# Export everything to ./metabase/export/ (host-visible, ready to commit)
-docker compose exec metabase java -jar /app/metabase.jar export /metabase-export
+# Export. Accepts a dashboard id, exact name, or url-slug.
+# Output: metabase/export/<id>-<slug>/{dashboard.json, cards/*.json, metadata/db-*.json}
+make metabase-export DASHBOARD=2-gdelt-analysis
 
-# Import on a fresh instance (after wiping the metabase-data volume)
-docker compose exec metabase java -jar /app/metabase.jar import /metabase-export
+# Import. Creates new cards + dashboard (never updates existing).
+# Optional: SUFFIX appended to names, COLLECTION target collection id.
+make metabase-import DIR=metabase/export/2-gdelt-analysis
 ```
+
+Database, table, and field ids differ between Metabase instances, so the export also snapshots the schema (names) of every referenced database and the import remaps ids by name match. The target instance must therefore have a database registered with the same name (e.g. `GDELT Postgres`) and the same table/column names as the source.
 
 ## GDELT Data Reference
 
