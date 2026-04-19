@@ -11,7 +11,7 @@ The **Global Database of Events, Language and Tone** (GDELT) monitors news media
 | **Events**  | Who did what to whom, where, and when. Includes actor codes, event types ([CAMEO taxonomy](http://data.gdeltproject.org/documentation/CAMEO.Manual.1.1b3.pdf)), geographic coordinates, and a Goldstein conflict/cooperation scale. |
 | **Mentions** | Every news article that references an event, with publication timestamps. Tracks how stories spread through global media over time. |
 | **GKG** | Global Knowledge Graph of entities, themes, emotions, and counts extracted from articles. Connects people, organizations, locations, and topics. |
-O
+
 The data source is updated every 15 minutes, lists the latest CSV files for all three tables:
 
 - http://data.gdeltproject.org/gdeltv2/lastupdate.txt
@@ -68,17 +68,39 @@ graph TB
 
 ### Components
 
-| Component | Technology | Role |
-|-----------|-----------|------|
-| **Orchestrator** | Kestra | Triggers the producer every 15 minutes via a scheduled flow. Provides observability, retry logic, and execution history through its web UI. |
-| **Producer** | Python | Downloads the latest GDELT CSV files, parses them, and publishes records to Redpanda topics. Executed as a Kestra task. |
-| **Broker** | Redpanda | Kafka-compatible message broker. Receives raw events and serves them to Flink. Lightweight, single-binary, no JVM. |
-| **Stream processor** | Apache Flink | Consumes events from Redpanda, applies windowed aggregations (event counts by country, conflict trends, actor analysis), and writes results to PostgreSQL. |
-| **Storage** | PostgreSQL | Stores both raw events and pre-aggregated metrics for Metabase to query. |
-| **DB admin UI** | pgAdmin | Web UI to inspect the PostgreSQL database, run ad-hoc queries, and browse tables during development. |
-| **Dashboard** | Metabase | Visualizes global event trends, conflict hotspots, top actors, and media attention in near real-time. |
+| Component | Technology | Version | Role |
+|-----------|-----------|---------|------|
+| **Orchestrator** | Kestra | 1.3.10 | Triggers the producer every 15 minutes via a scheduled flow. Provides observability, retry logic, and execution history through its web UI. |
+| **Producer** | Python | 3.12 | Downloads the latest GDELT CSV files, parses them, and publishes records to Redpanda topics. Executed as a Kestra task. |
+| **Broker** | Redpanda | 26.1.4 | Kafka-compatible message broker. Receives raw events and serves them to Flink. Lightweight, single-binary, no JVM. |
+| **Stream processor** | Apache Flink | 1.20.3 | Consumes events from Redpanda, applies windowed aggregations, and writes results to PostgreSQL. |
+| **Data transformations** | dbt | 1.11 | Owns the Postgres schema: loads CAMEO lookups as seeds and ensures Flink-target tables exist before stream jobs start. |
+| **Storage** | PostgreSQL | 18.3 | Stores both raw events and pre-aggregated metrics for Metabase to query. |
+| **DB admin UI** | pgAdmin | — | Web UI to inspect the PostgreSQL database, run ad-hoc queries, and browse tables during development. |
+| **Dashboard** | Metabase | 0.59.6.5 | Visualizes global event trends, conflict hotspots, top actors, and media attention in near real-time. |
 
-### Redpanda Topics
+Build-time tooling: **Docker Compose** orchestrates all services, and **uv** installs Python dependencies for the producer and dbt images.
+
+## Orchestrator: Kestra
+
+![Kestra UI](./docs/resources/images/kestra.png)
+
+Kestra runs a scheduled flow that triggers the producer every 15 minutes. The flow definition lives under `kestra/` and is mounted into the Kestra container on startup. The web UI exposes execution history, logs, and manual replay for debugging individual runs.
+
+## Producer: Python
+
+The producer runs as two independent steps so Kafka never receives partial data:
+
+- **Download** (`producer/download.py`): fetches the three GDELT CSVs listed in `lastupdate.txt`, with aggressive retry against CDN 404s.
+- **Publish** (`producer/publish.py`): only starts once all three files are on disk, then parses and publishes records to Redpanda.
+
+Source code, dependencies, and unit tests live under `producer/`.
+
+## Broker: Redpanda
+
+![Redpanda Console](./docs/resources/images/redpanda.png)
+
+Kafka API-compatible, single-binary, no JVM. The producer publishes to three topics that Flink consumes:
 
 | Topic | Content |
 |-------|---------|
@@ -86,9 +108,34 @@ graph TB
 | `gdelt.mentions` | Article mentions with timestamps and source metadata. |
 | `gdelt.gkg` | GKG records: themes, persons, organizations, tone, locations. |
 
-### PostgreSQL Tables
+## Stream Processor: Apache Flink
 
-Raw tables — populated by the `raw_ingest` Flink job, one row per record consumed from Kafka without transformations:
+![Flink Web UI](./docs/resources/images/flink.png)
+
+Three PyFlink jobs consume from Redpanda and write to PostgreSQL via JDBC. Source code lives under `flink/jobs/`.
+
+| Job | Populates |
+|-----|-----------|
+| `raw_ingest` | `events`, `mentions`, `gkg` (raw mirror of the Kafka topics). |
+| `event_aggregations` | `event_counts_by_country`, `conflict_trend`, `top_actors`, `media_attention`. |
+| `gkg_aggregations` | `tone_by_theme`. |
+
+Aggregations use tumbling windows with exactly-once semantics.
+
+## Data Transformations: dbt
+
+dbt owns the Postgres schema. It runs once at startup via the `dbt-init` service and:
+
+- Loads CAMEO/GDELT reference codebooks as seeds into the `public_lookup` schema.
+- Ensures the Flink-target tables exist before stream jobs start.
+
+Models and seeds live under `dbt/`.
+
+## Storage: PostgreSQL
+
+All downstream state lives in a single Postgres instance. Tables are grouped by how they are populated.
+
+**Raw tables** — populated by the `raw_ingest` Flink job, one row per record consumed from Kafka without transformations:
 
 | Table | Content |
 |-------|---------|
@@ -96,7 +143,7 @@ Raw tables — populated by the `raw_ingest` Flink job, one row per record consu
 | `mentions` | Raw article mentions mirrored from `gdelt.mentions`. |
 | `gkg` | Raw GKG records mirrored from `gdelt.gkg`. |
 
-Aggregated tables — populated by the `event_aggregations` and `gkg_aggregations` Flink jobs via tumbling windows:
+**Aggregated tables** — populated by the `event_aggregations` and `gkg_aggregations` Flink jobs via tumbling windows:
 
 | Table | Content |
 |-------|---------|
@@ -106,7 +153,7 @@ Aggregated tables — populated by the `event_aggregations` and `gkg_aggregation
 | `media_attention` | Mention counts per event, per window. |
 | `tone_by_theme` | Average tone per GKG theme, per window. |
 
-Lookup tables — populated by dbt seeds (schema `public_lookup`), CAMEO/GDELT reference codebooks:
+**Lookup tables** — populated by dbt seeds (schema `public_lookup`), CAMEO/GDELT reference codebooks:
 
 | Table | Rows | Content |
 |-------|------|---------|
@@ -115,7 +162,17 @@ Lookup tables — populated by dbt seeds (schema `public_lookup`), CAMEO/GDELT r
 | `quad_class` | 4 | QuadClass cooperation/conflict buckets. |
 | `action_geo_type` | 6 | Geocoding resolution types for event locations. |
 
-## Dashboard Panels
+## DB Admin UI: pgAdmin
+
+![pgAdmin](./docs/resources/images/pgadmin.png)
+
+Web UI to inspect the database, run ad-hoc queries, and browse tables during development. Provisioning lives under `pgadmin/`.
+
+## Dashboard: Metabase
+
+Metabase serves the end-user dashboards backed by the aggregated and lookup tables in Postgres.
+
+### Dashboard Panels
 
 - **Global Event Map**: Geolocated events plotted on a world map, colored by Goldstein scale (conflict ↔ cooperation).
 - **Event Volume**: Time-series of events per hour window, broken down by event root code.
@@ -124,51 +181,61 @@ Lookup tables — populated by dbt seeds (schema `public_lookup`), CAMEO/GDELT r
 - **Media Attention**: Number of mentions over time for selected events, showing how stories propagate.
 - **Tone Analysis**: Average tone by country or theme from the GKG data.
 
+### Initial Setup
+
+Metabase has no provisioning. On first open of `http://localhost:8084`, complete the onboarding (create admin user) and add the Postgres connection from the UI:
+
+- Host: `postgres`
+- Port: `5432`
+- Database: `gdelt` (or your `POSTGRES_DB`)
+- Username / password: match `POSTGRES_USER` / `POSTGRES_PASSWORD`
+
+### Exporting and Importing Dashboards
+
+Models, questions, and dashboards are authored in the UI. Metabase's built-in `v2-dump!` / `v2-load!` commands are Enterprise-only, so this repo ships a pair of Python scripts that export/import a single dashboard (plus the cards it references) through the REST API, saving each as a JSON file under `metabase/export/`.
+
+```bash
+make metabase-export DASHBOARD=1-gdelt-analysis
+make metabase-import DIR=metabase/export/1-gdelt-analysis
+```
+
+- `metabase-export` accepts a dashboard id, exact name, or URL slug. Output: `metabase/export/<id>-<slug>/{dashboard.json, cards/*.json, metadata/db-*.json}`.
+- `metabase-import` creates new cards and dashboard (never updates existing). Optional `SUFFIX` appends to names, `COLLECTION` sets the target collection id.
+
+Database, table, and field ids differ between Metabase instances, so the export also snapshots the schema (names) of every referenced database and the import remaps ids by name match. The target instance must therefore have a database registered with the same name (e.g. `GDELT Postgres`) and the same table/column names as the source.
+
 ## Project Structure
 
-- **docker-compose.yml**: Definition of all the services with default values
-- **kestra/**: Orchestration flows
-- **producer/**: Data ingest and publication scripts
-- **flink/**: Data processing jobs
-- **dbt/**: Database schema (raw + aggregated tables) and CAMEO lookup seeds
-- **README.md**: Project
-
-## Tech Stack
-
-| Tool | Version | Why |
-|------|---------|-----|
-| **Kestra** | 1.3.10 | Workflow orchestrator with scheduling, retries, and a built-in UI. Triggers the producer on a 15-minute cron. |
-| **Python** | 3.12 | Producer scripts and Flink jobs. |
-| **Redpanda** | 26.1.4 | Kafka API-compatible broker, zero-JVM, trivial Docker setup. |
-| **Apache Flink** | 1.20.3 | Windowed stream processing with exactly-once semantics. |
-| **PostgreSQL** | 18.3 | Reliable, widely available relational storage. |
-| **Metabase** | 0.59.6.5 | Dashboards with native PostgreSQL support and a friendly query builder. |
-| **dbt** | 1.11 (dbt-postgres 1.10) | Owns the Postgres schema: loads CAMEO lookups as seeds and ensures Flink-target tables exist before stream jobs start. |
-| **uv** | latest | Fast Python package manager. Used to install producer and dbt dependencies at build time. |
-| **Docker / Compose** |  | Single `docker compose up` to run everything. |
-
-### Python Dependencies (kept minimal)
-
-| Package | Purpose |
-|---------|---------|
-| `requests` | Download GDELT CSV files over HTTP. |
-| `kafka-python-ng` | Produce messages to Redpanda (Kafka protocol). |
-| `apache-flink` | Write Flink stream processing jobs in Python (PyFlink). |
+- **docker-compose.yml**: All service definitions with default values.
+- **kestra/**: Orchestration flows.
+- **producer/**: Data ingest and publication scripts.
+- **flink/**: Stream processing jobs.
+- **dbt/**: Database schema and CAMEO lookup seeds.
+- **metabase/**: Dashboard export/import scripts.
+- **pgadmin/**: pgAdmin provisioning.
+- **terraform/**: Cloud deployment skeletons.
+- **docs/**: Resources and reference material.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Docker and Docker Compose
+- Docker and Docker Compose.
 
 ### Configuration
 
-All ports, credentials, and tuning knobs are configurable via environment variables with sensible defaults. See [`env.template`](env.template) for the full list. The recommended way to create your `.env` is `make init`, which copies the template and fills the three password placeholders with random values:
+All ports, credentials, and tuning knobs are configurable via environment variables with sensible defaults. See [`env.template`](env.template) for the full list.
 
-```bash
-make init
-# edit .env as needed
-```
+### Make Targets
+
+| Command | Effect |
+|---------|--------|
+| `make init` | Generate `.env` from `env.template` with random passwords. Runs automatically before `make up` if `.env` is missing. |
+| `make up` | Build images and start the stack. |
+| `make down` | Stop the stack. Volumes and `.env` are preserved. |
+| `make reset` | Stop the stack and remove volumes and `.env`. |
+
+Plain `docker compose up -d --build` also works, using the default passwords from `docker-compose.yml`.
 
 ### Run
 
@@ -178,41 +245,25 @@ cd data-engineering-zoomcamp/proyecto-analisis-de-gdelt
 make up
 ```
 
-`make up` runs `make init` first, which generates a `.env` with random passwords for Postgres, pgAdmin and Kestra (only if `.env` does not exist yet) and (re)creates `pgadmin/pgpass` so pgAdmin connects to Postgres without prompting. Then it launches `docker compose up -d --build`.
+Services and default ports:
 
-To stop the stack: `make down`. To wipe everything (volumes, `.env` and `pgadmin/pgpass`) and start fresh: `make reset`.
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| Kestra UI | `localhost:8080` | admin@kestra.io / Admin1234! |
+| Redpanda Console | `localhost:8081` | — |
+| Redpanda Broker (Kafka API) | `localhost:9092` | — |
+| Flink Web UI | `localhost:8082` | — |
+| PostgreSQL | `localhost:5432` | gdelt / gdelt |
+| pgAdmin | `localhost:8083` | admin@admin.com / admin |
+| Metabase | `localhost:8084` | — |
 
-Plain `docker compose up -d --build` also works if you prefer — the compose file keeps sensible defaults for every password — but you'll need to run `make init` at least once to create `pgadmin/pgpass` (otherwise the pgAdmin bind mount fails) and pgAdmin won't auto-connect unless the file's password matches the Postgres one.
-
-This builds all images and starts all services:
-
-| Service | Port (by default) |
-|---------|------|
-| Kestra UI | `localhost:8080` (admin@kestra.io/Admin1234!) |
-| Redpanda Console | `localhost:8081` |
-| Redpanda Broker (Kafka API) | `localhost:9092` |
-| Flink Web UI | `localhost:8082` |
-| PostgreSQL | `localhost:5432` (gdelt/gdelt) |
-| pgAdmin | `localhost:8083` (admin@admin.com/admin) |
-| Metabase | `localhost:8084` |
-
-Kestra triggers the producer every 15 minutes. The producer runs as two independent steps: a download phase that fetches the three GDELT CSVs (with aggressive retry against CDN 404s) and a publish phase that only runs once all three files are on disk, so Kafka never receives partial data.
-
-To run the first ingestion immediately without waiting for the schedule:
+Kestra triggers the producer every 15 minutes. To run the first ingestion immediately without waiting for the schedule:
 
 ```bash
 mkdir -p /tmp/gdelt
 docker compose run --rm -e OUTPUT_DIR=/data -v /tmp/gdelt:/data producer python /app/download.py
 docker compose run --rm -e INPUT_DIR=/data -v /tmp/gdelt:/data producer python /app/publish.py
 ```
-
-After the first execution, data flows through:
-
-1. Kestra (orchestration)
-2. Redpanda
-3. Flink
-4. PostgreSQL
-5. Metabase
 
 ### Verify
 
@@ -227,30 +278,7 @@ docker compose exec postgres psql -U gdelt -c "SELECT count(*) FROM events;"
 open http://localhost:8084
 ```
 
-### Metabase
-
-Metabase has no provisioning: the first time you open `http://localhost:8084` you complete the onboarding (create admin user) and then add the Postgres connection from the UI:
-
-- Host: `postgres`
-- Port: `5432`
-- Database: `gdelt` (or your `POSTGRES_DB`)
-- Username / password: match `POSTGRES_USER` / `POSTGRES_PASSWORD`
-
-Models, questions, and dashboards are authored in the UI. Metabase's built-in `v2-dump!` / `v2-load!` commands are Enterprise-only, so this repo ships a pair of Python scripts that export/import a single dashboard (plus the cards it references) through the REST API, saving each as a JSON file under `metabase/export/`:
-
-```bash
-# Export. Accepts a dashboard id, exact name, or url-slug.
-# Output: metabase/export/<id>-<slug>/{dashboard.json, cards/*.json, metadata/db-*.json}
-make metabase-export DASHBOARD=1-gdelt-analysis
-
-# Import. Creates new cards + dashboard (never updates existing).
-# Optional: SUFFIX appended to names, COLLECTION target collection id.
-make metabase-import DIR=metabase/export/1-gdelt-analysis
-```
-
-Database, table, and field ids differ between Metabase instances, so the export also snapshots the schema (names) of every referenced database and the import remaps ids by name match. The target instance must therefore have a database registered with the same name (e.g. `GDELT Postgres`) and the same table/column names as the source.
-
-## Cloud deployment
+## Cloud Deployment
 
 A Terraform skeleton for a single-VM lift-and-shift on GCP lives in [`terraform/gcp/`](terraform/gcp/README.md). It provisions a Compute Engine VM with a persistent data disk, installs Docker on first boot and runs `make up` to bring the stack online. Single-node, no HA — intended for demos, not production.
 
