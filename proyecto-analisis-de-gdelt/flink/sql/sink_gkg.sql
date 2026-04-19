@@ -10,7 +10,8 @@ CREATE TABLE sink_gkg (
     `positive_score`  DOUBLE,
     `negative_score`  DOUBLE,
     `word_count`      INT,
-    PRIMARY KEY (`gkg_record_id`) NOT ENFORCED
+    `gkg_ts`          TIMESTAMP(3),
+    PRIMARY KEY (`gkg_record_id`, `gkg_ts`) NOT ENFORCED
 ) WITH (
     'connector'   = 'jdbc',
     'url'         = '$PG_URL',

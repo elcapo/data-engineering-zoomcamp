@@ -19,7 +19,8 @@ CREATE TABLE sink_events (
     `action_geo_long`  DOUBLE,
     `date_added`       BIGINT,
     `source_url`       STRING,
-    PRIMARY KEY (`global_event_id`) NOT ENFORCED
+    `event_ts`         TIMESTAMP(3),
+    PRIMARY KEY (`global_event_id`, `event_ts`) NOT ENFORCED
 ) WITH (
     'connector'   = 'jdbc',
     'url'         = '$PG_URL',

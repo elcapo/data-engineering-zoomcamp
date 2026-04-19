@@ -147,6 +147,17 @@ The raw tables are populated by the `raw_ingest` Flink job, one row per record c
 | `mentions` | Raw article mentions mirrored from `gdelt.mentions`. |
 | `gkg` | Raw GKG records mirrored from `gdelt.gkg`. |
 
+Each raw table is **RANGE-partitioned by month** on a TIMESTAMP column derived by Flink from the GDELT 14-digit timestamp (`event_ts`, `mention_ts`, `gkg_ts`). This keeps indexes small, enables partition pruning in dashboard queries, and lets old data be removed with `DROP PARTITION` instead of `DELETE`.
+
+Partitions are created automatically by the `create_raw_tables` dbt macro on every `dbt run`. The window is configurable via dbt vars:
+
+| Var | Default | Meaning |
+|-----|---------|---------|
+| `raw_partitions_months_back` | `1` | Months before the current month to pre-create. |
+| `raw_partitions_months_forward` | `2` | Months after the current month to pre-create. |
+
+A `DEFAULT` partition catches any row outside the window (e.g. replays of historical data).
+
 ### Aggregated tables
 
 The aggregated tables are populated by the `event_aggregations` and `gkg_aggregations` Flink jobs via tumbling windows:
@@ -281,6 +292,7 @@ All ports, credentials, and tuning knobs are configurable via environment variab
 | `make up` | Build images and start the stack. |
 | `make down` | Stop the stack. Volumes and `.env` are preserved. |
 | `make reset` | Stop the stack and remove volumes and `.env`. |
+| `make repartition` | Drop and recreate the raw tables (e.g. after changing the partition layout) without losing data: Flink is stopped, consumer-group offsets are reset, dbt recreates the partitioned tables, and Flink is relaunched to replay from the earliest offset. Redpanda and Postgres keep running. |
 
 Plain `docker compose up -d --build` also works, using the default passwords from `docker-compose.yml`.
 

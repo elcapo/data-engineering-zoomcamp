@@ -19,5 +19,7 @@ SELECT
     action_geo_lat,
     action_geo_long,
     date_added,
-    source_url
+    source_url,
+    TO_TIMESTAMP(LPAD(CAST(date_added AS STRING), 14, '0'), 'yyyyMMddHHmmss') AS event_ts
 FROM kafka_events_raw
+WHERE date_added IS NOT NULL
