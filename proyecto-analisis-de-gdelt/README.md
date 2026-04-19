@@ -85,7 +85,7 @@ Build-time tooling: **Docker Compose** orchestrates all services, and **uv** ins
 
 ![Kestra UI](./docs/resources/images/kestra.png)
 
-Kestra runs a scheduled flow that triggers the producer every 15 minutes. The flow definition lives under `kestra/` and is mounted into the Kestra container on startup. The web UI exposes execution history, logs, and manual replay for debugging individual runs.
+Kestra runs a scheduled flow that triggers the producer every 15 minutes. The flow definition lives under [`kestra/`](./kestra/) and is mounted into the Kestra container on startup. The web UI exposes execution history, logs, and manual replay for debugging individual runs.
 
 ## Producer: Python
 
@@ -94,7 +94,7 @@ The producer runs as two independent steps so Kafka never receives partial data:
 - **Download** (`producer/download.py`): fetches the three GDELT CSVs listed in `lastupdate.txt`, with aggressive retry against CDN 404s.
 - **Publish** (`producer/publish.py`): only starts once all three files are on disk, then parses and publishes records to Redpanda.
 
-Source code, dependencies, and unit tests live under `producer/`.
+Source code, dependencies, and unit tests live under [`producer/`](./producer/).
 
 ## Broker: Redpanda
 
@@ -112,7 +112,7 @@ Kafka API-compatible, single-binary, no JVM. The producer publishes to three top
 
 ![Flink Web UI](./docs/resources/images/flink.png)
 
-Three PyFlink jobs consume from Redpanda and write to PostgreSQL via JDBC. Source code lives under `flink/jobs/`.
+Three PyFlink jobs consume from Redpanda and write to PostgreSQL via JDBC. Source code lives under [`flink/jobs/`](./flink/jobs/).
 
 | Job | Populates |
 |-----|-----------|
@@ -129,7 +129,7 @@ dbt owns the Postgres schema. It runs once at startup via the `dbt-init` service
 - Loads CAMEO/GDELT reference codebooks as seeds into the `public_lookup` schema.
 - Ensures the Flink-target tables exist before stream jobs start.
 
-Models and seeds live under `dbt/`.
+Models and seeds live under [`dbt/`](./dbt/).
 
 ## Storage: PostgreSQL
 
@@ -166,7 +166,7 @@ All downstream state lives in a single Postgres instance. Tables are grouped by 
 
 ![pgAdmin](./docs/resources/images/pgadmin.png)
 
-Web UI to inspect the database, run ad-hoc queries, and browse tables during development. Provisioning lives under `pgadmin/`.
+Web UI to inspect the database, run ad-hoc queries, and browse tables during development. Provisioning lives under [`pgadmin/`](./pgadmin/) and it takes care of the pre-configuration of pgAdmin so that as soon as your Docker containers are running, you can log in and run queries.
 
 ## Dashboard: Metabase
 
@@ -183,12 +183,16 @@ Metabase serves the end-user dashboards backed by the aggregated and lookup tabl
 
 ### Initial Setup
 
-Metabase has no provisioning. On first open of `http://localhost:8084`, complete the onboarding (create admin user) and add the Postgres connection from the UI:
+The stack ships with a `metabase-init` service that provisions Metabase on `make up` via its REST API, so there is no onboarding to click through. On first start it:
 
-- Host: `postgres`
-- Port: `5432`
-- Database: `gdelt` (or your `POSTGRES_DB`)
-- Username / password: match `POSTGRES_USER` / `POSTGRES_PASSWORD`
+1. Creates the admin user from `METABASE_USER` / `METABASE_PASSWORD` (see `.env`). The email defaults to `admin@admin.com`; the password is randomized by `make init`.
+2. Registers the Postgres instance under the name **`GDELT Postgres`** — this exact name is required by the export/import scripts below.
+3. Removes Metabase's default "Sample Database".
+4. Triggers a schema sync so every Flink-populated table shows up in Metabase.
+
+The provisioning is idempotent (it checks Metabase's `has-user-setup` property), so re-running `make up` is safe.
+
+Once `make up` finishes, open `http://localhost:8084` and sign in with the admin user; the Postgres connection is ready to query.
 
 ### Exporting and Importing Dashboards
 
@@ -255,7 +259,7 @@ Services and default ports:
 | Flink Web UI | `localhost:8082` | — |
 | PostgreSQL | `localhost:5432` | gdelt / gdelt |
 | pgAdmin | `localhost:8083` | admin@admin.com / admin |
-| Metabase | `localhost:8084` | — |
+| Metabase | `localhost:8084` | `admin@admin.com` / see `METABASE_PASSWORD` in `.env` |
 
 Kestra triggers the producer every 15 minutes. To run the first ingestion immediately without waiting for the schedule:
 
