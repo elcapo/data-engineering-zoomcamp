@@ -189,28 +189,28 @@ Metabase serves the end-user dashboards backed by the aggregated and lookup tabl
 
 ### Initial Setup
 
-The stack ships with a `metabase-init` service that provisions Metabase on `make up` via its REST API, so there is no onboarding to click through. On first start it:
+The stack ships with a `metabase-init` service that provisions Metabase when the project is initialized via its REST API, so there is no onboarding to click through. On first start it:
 
-1. Creates the admin user from `METABASE_USER` / `METABASE_PASSWORD` (see `.env`). The email defaults to `admin@admin.com`; the password is randomized by `make init`.
-2. Registers the Postgres instance under the name **`GDELT Postgres`** — this exact name is required by the export/import scripts below.
+1. Creates the admin user from `METABASE_USER` / `METABASE_PASSWORD`.
+2. Registers the Postgres instance under the name **`GDELT Postgres`**.
 3. Removes Metabase's default "Sample Database".
 4. Triggers a schema sync so every Flink-populated table shows up in Metabase.
 
 The provisioning is idempotent (it checks Metabase's `has-user-setup` property), so re-running `make up` is safe.
 
-Once `make up` finishes, open `http://localhost:8084` and sign in with the admin user; the Postgres connection is ready to query.
+Once `make up` finishes, open `http://localhost:8084` and sign in; the Postgres connection is ready to query.
 
 ### Exporting and Importing Dashboards
 
-Models, questions, and dashboards are authored in the UI. Metabase's built-in `v2-dump!` / `v2-load!` commands are Enterprise-only, so this repo ships a pair of Python scripts that export/import a single dashboard (plus the cards it references) through the REST API, saving each as a JSON file under `metabase/export/`.
+This repo ships a pair of Python scripts that export/import a single dashboard (plus the cards it references) through the REST API, saving each as a JSON file under `metabase/export/`. What means that models, questions, and dashboards can be authored using the UI and then exported and imported in other environments.
 
 ```bash
 make metabase-export DASHBOARD=1-gdelt-analysis
 make metabase-import DIR=metabase/export/1-gdelt-analysis
 ```
 
-- `metabase-export` accepts a dashboard id, exact name, or URL slug. Output: `metabase/export/<id>-<slug>/{dashboard.json, cards/*.json, metadata/db-*.json}`.
-- `metabase-import` creates new cards and dashboard (never updates existing). Optional `SUFFIX` appends to names, `COLLECTION` sets the target collection id.
+- `metabase-export` exports a dashboard to the [metabase/export](./metabase/export/) folder, as the one pre-bundled with this repository.
+- `metabase-import` creates new cards and dashboard (never updates existing). Optionally, it accepts a `SUFFIX` to be appended to names to avoid overwriting existing dashboards.
 
 Database, table, and field ids differ between Metabase instances, so the export also snapshots the schema (names) of every referenced database and the import remaps ids by name match. The target instance must therefore have a database registered with the same name (e.g. `GDELT Postgres`) and the same table/column names as the source.
 
