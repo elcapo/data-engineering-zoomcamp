@@ -1,0 +1,10 @@
+project_id     = "my-gcp-project"
+ssh_user       = "carlos"
+ssh_public_key = "ssh-ed25519 AAAA... carlos@laptop"
+
+# Optional overrides:
+# region            = "europe-southwest1"
+# zone              = "europe-southwest1-a"
+# machine_type      = "e2-standard-4"
+# data_disk_size_gb = 50
+# allowed_app_cidrs = ["203.0.113.42/32"]  # restrict UI access to your IP

@@ -1,0 +1,52 @@
+#!/bin/bash
+# Bootstrap the GDELT stack on first boot, and re-launch services on subsequent boots.
+# Idempotent: safe to re-run.
+set -euxo pipefail
+
+DATA_DEV=/dev/disk/by-id/google-gdelt-data
+MOUNT=/mnt/disks/data
+REPO_DIR=$MOUNT/gdelt-repo
+PROJECT_DIR=$REPO_DIR/${subdirectory}
+
+# 1. System packages + Docker
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get install -y ca-certificates curl git make gnupg lsb-release
+install -m 0755 -d /etc/apt/keyrings
+if [ ! -f /etc/apt/keyrings/docker.gpg ]; then
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  chmod a+r /etc/apt/keyrings/docker.gpg
+fi
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" > /etc/apt/sources.list.d/docker.list
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# 2. Mount the persistent data disk
+mkdir -p $MOUNT
+if ! blkid $DATA_DEV >/dev/null 2>&1; then
+  mkfs.ext4 -F -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard $DATA_DEV
+fi
+grep -qs "$DATA_DEV " /etc/fstab || echo "$DATA_DEV $MOUNT ext4 defaults,nofail 0 2" >> /etc/fstab
+mount -a
+
+# 3. Point Docker's data-root to the persistent disk so volumes survive VM recreation
+mkdir -p $MOUNT/docker /etc/docker
+cat > /etc/docker/daemon.json <<EOF
+{"data-root": "$MOUNT/docker"}
+EOF
+systemctl restart docker
+
+# 4. Clone or update the repo on the persistent disk (so .env with random passwords persists)
+if [ ! -d "$REPO_DIR/.git" ]; then
+  git clone --branch ${branch} ${repo_url} $REPO_DIR
+else
+  git -C $REPO_DIR fetch --quiet origin ${branch}
+  git -C $REPO_DIR checkout --quiet ${branch}
+  git -C $REPO_DIR pull --ff-only --quiet
+fi
+
+# 5. Launch the stack (make init is idempotent: keeps existing .env)
+cd $PROJECT_DIR
+make up
+
+echo "GDELT stack bootstrap complete."

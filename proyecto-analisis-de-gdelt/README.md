@@ -27,7 +27,7 @@ The file looks like this:
 ## Architecture
 
 ```mermaid
-graph LR
+graph TB
     subgraph Batch
         GDELT["🌐 GDELT Project<br><span style="color: lightgray">(Publisher)</span>"]
         Kestra["🎶 Kestra<br><span style="color: lightgray">(Orchestrator)</span>"]
@@ -62,6 +62,9 @@ graph LR
 
     Postgres -- "SQL queries" --> Metabase
 ```
+
+> If you have problems visualizing this diagram, check its pre-rendered version:
+> [Pre-rendered version of the architecture diagram](./docs/resources/charts/architecture.png)
 
 ### Components
 
@@ -246,6 +249,10 @@ make metabase-import DIR=metabase/export/1-gdelt-analysis
 ```
 
 Database, table, and field ids differ between Metabase instances, so the export also snapshots the schema (names) of every referenced database and the import remaps ids by name match. The target instance must therefore have a database registered with the same name (e.g. `GDELT Postgres`) and the same table/column names as the source.
+
+## Cloud deployment
+
+A Terraform skeleton for a single-VM lift-and-shift on GCP lives in [`terraform/gcp/`](terraform/gcp/README.md). It provisions a Compute Engine VM with a persistent data disk, installs Docker on first boot and runs `make up` to bring the stack online. Single-node, no HA — intended for demos, not production.
 
 ## GDELT Data Reference
 
