@@ -2,6 +2,8 @@
 
 A fully local and reproducible pipeline for ingesting, processing, and visualizing global events from the [GDELT Project](https://www.gdeltproject.org/) in near real-time. Everything runs in Docker, so no cloud accounts required.
 
+![Dashboard Preview](./docs/resources/images/dashboard/dashboard.png)
+
 ## What is GDELT?
 
 The **Global Database of Events, Language and Tone** (GDELT) monitors news media worldwide and extracts structured data about global events, people, organizations, themes, and sentiment. GDELT 2.0 publishes three datasets as CSV files every **15 minutes**:
