@@ -10,8 +10,8 @@ The **Global Database of Events, Language and Tone** (GDELT) monitors news media
 |-------------|-------------|
 | **Events**  | Who did what to whom, where, and when. Includes actor codes, event types ([CAMEO taxonomy](http://data.gdeltproject.org/documentation/CAMEO.Manual.1.1b3.pdf)), geographic coordinates, and a Goldstein conflict/cooperation scale. |
 | **Mentions** | Every news article that references an event, with publication timestamps. Tracks how stories spread through global media over time. |
-| **GKG** (Global Knowledge Graph) | Entities, themes, emotions, and counts extracted from articles. Connects people, organizations, locations, and topics. |
-
+| **GKG** | Global Knowledge Graph of entities, themes, emotions, and counts extracted from articles. Connects people, organizations, locations, and topics. |
+O
 The data source is updated every 15 minutes, lists the latest CSV files for all three tables:
 
 - http://data.gdeltproject.org/gdeltv2/lastupdate.txt
