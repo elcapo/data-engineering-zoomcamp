@@ -178,15 +178,6 @@ Web UI to inspect the database, run ad-hoc queries, and browse tables during dev
 
 Metabase serves the end-user dashboards backed by the aggregated and lookup tables in Postgres.
 
-### Dashboard Panels
-
-- **Global Event Map**: Geolocated events plotted on a world map, colored by Goldstein scale (conflict ↔ cooperation).
-- **Event Volume**: Time-series of events per hour window, broken down by event root code.
-- **Conflict Trend**: Rolling average of the Goldstein scale by country or region.
-- **Top Actors**: Bar chart of most active actors in the current time window.
-- **Media Attention**: Number of mentions over time for selected events, showing how stories propagate.
-- **Tone Analysis**: Average tone by country or theme from the GKG data.
-
 ### Initial Setup
 
 The stack ships with a `metabase-init` service that provisions Metabase when the project is initialized via its REST API, so there is no onboarding to click through. On first start it:
@@ -213,6 +204,50 @@ make metabase-import DIR=metabase/export/1-gdelt-analysis
 - `metabase-import` creates new cards and dashboard (never updates existing). Optionally, it accepts a `SUFFIX` to be appended to names to avoid overwriting existing dashboards.
 
 Database, table, and field ids differ between Metabase instances, so the export also snapshots the schema (names) of every referenced database and the import remaps ids by name match. The target instance must therefore have a database registered with the same name (e.g. `GDELT Postgres`) and the same table/column names as the source.
+
+### Dashboard Panels
+
+#### Global Event Map
+
+Geolocated events plotted on a world map, colored by Goldstein scale (from conflict to cooperation).
+
+![Global Event Map](./docs/resources/images/dashboard/global_event_map.png)
+
+#### Event Volume
+
+Time-series of events per hour window, broken down by event root code.
+
+![Event Volume](./docs/resources/images/dashboard/event_volume.png)
+
+#### Conflict Trend
+
+Rolling average of the Goldstein scale by country or region.
+
+![Conflict Trend](./docs/resources/images/dashboard/conflict_trend.png)
+
+#### Top Actors
+
+Most active actors in the recent news.
+
+![Top Actors](./docs/resources/images/dashboard/top_actors.png)
+
+#### Media Attention
+
+Regions and Topics where the Recent Media Attention is Focused.
+
+![Media Attention](./docs/resources/images/dashboard/media_attention.png)
+
+#### Tone Analysis per Person
+
+Average tone by person from the GKG data.
+
+![Tone Analysis per Person](./docs/resources/images/dashboard/tone_analysis_per_person.png)
+
+#### Tone Analysis per Organization
+
+Average tone by organization from the GKG data.
+
+![Tone Analysis per Organization](./docs/resources/images/dashboard/tone_analysis_per_organization.png)
 
 ## Project Structure
 
