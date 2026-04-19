@@ -14,6 +14,8 @@ services:
       - --advertise-kafka-addr=internal://redpanda:9092,external://localhost:${REDPANDA_PORT:-9092}
     ports:
       - "${REDPANDA_PORT:-9092}:19092"
+    volumes:
+      - redpanda-data:/var/lib/redpanda/data
     healthcheck:
       test: ["CMD", "rpk", "cluster", "health", "--api-urls=redpanda:9644"]
       interval: 10s
@@ -338,3 +340,4 @@ volumes:
   pgadmin-data:
   pgadmin-secrets:
   metabase-data:
+  redpanda-data:

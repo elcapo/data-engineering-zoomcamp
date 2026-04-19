@@ -292,7 +292,6 @@ All ports, credentials, and tuning knobs are configurable via environment variab
 | `make up` | Build images and start the stack. |
 | `make down` | Stop the stack. Volumes and `.env` are preserved. |
 | `make reset` | Stop the stack and remove volumes and `.env`. |
-| `make repartition` | Drop and recreate the raw tables (e.g. after changing the partition layout) without losing data: Flink is stopped, consumer-group offsets are reset, dbt recreates the partitioned tables, and Flink is relaunched to replay from the earliest offset. Redpanda and Postgres keep running. |
 
 Plain `docker compose up -d --build` also works, using the default passwords from `docker-compose.yml`.
 
