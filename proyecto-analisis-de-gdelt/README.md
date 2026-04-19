@@ -238,11 +238,11 @@ Models, questions, and dashboards are authored in the UI. Metabase's built-in `v
 ```bash
 # Export. Accepts a dashboard id, exact name, or url-slug.
 # Output: metabase/export/<id>-<slug>/{dashboard.json, cards/*.json, metadata/db-*.json}
-make metabase-export DASHBOARD=2-gdelt-analysis
+make metabase-export DASHBOARD=1-gdelt-analysis
 
 # Import. Creates new cards + dashboard (never updates existing).
 # Optional: SUFFIX appended to names, COLLECTION target collection id.
-make metabase-import DIR=metabase/export/2-gdelt-analysis
+make metabase-import DIR=metabase/export/1-gdelt-analysis
 ```
 
 Database, table, and field ids differ between Metabase instances, so the export also snapshots the schema (names) of every referenced database and the import remaps ids by name match. The target instance must therefore have a database registered with the same name (e.g. `GDELT Postgres`) and the same table/column names as the source.
