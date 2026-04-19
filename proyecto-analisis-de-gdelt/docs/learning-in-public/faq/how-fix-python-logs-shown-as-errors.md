@@ -34,3 +34,5 @@ logging.basicConfig(
 ```
 
 That single `stream=sys.stdout` argument is enough. After the change, your informational messages will show up as **DEBUG** in Kestra.
+
+> Published as: https://github.com/DataTalksClub/faq/issues/262
