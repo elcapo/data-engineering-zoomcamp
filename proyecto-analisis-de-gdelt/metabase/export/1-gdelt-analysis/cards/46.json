@@ -1,83 +1,35 @@
 {
   "cache_invalidated_at": null,
-  "description": "Time-series of events per hour window, broken down by event root code.",
+  "description": "Average tone by person or organization from the GKG data.",
   "archived": false,
-  "view_count": 3,
+  "view_count": 1,
   "collection_position": null,
   "source_card_id": null,
-  "table_id": 26,
+  "table_id": null,
   "can_run_adhoc_query": true,
   "result_metadata": [
     {
-      "database_type": "timestamp",
-      "semantic_type": "type/CreationTimestamp",
-      "table_id": 26,
-      "lib/deduplicated-name": "window_start",
-      "lib/original-name": "window_start",
-      "lib/breakout?": true,
-      "unit": "hour",
-      "name": "window_start",
-      "lib/source": "source/table-defaults",
-      "lib/source-column-alias": "window_start",
-      "lib/original-display-name": "Window Start",
-      "source": "breakout",
-      "field_ref": [
-        "field",
-        154,
-        {
-          "temporal-unit": "hour"
-        }
-      ],
-      "effective_type": "type/DateTime",
-      "active": true,
-      "id": 154,
-      "lib/desired-column-alias": "window_start",
-      "metabase.lib.field/temporal-unit": "hour",
-      "position": 0,
-      "visibility_type": "normal",
-      "inherited_temporal_unit": "hour",
-      "display_name": "Window Start: Hour",
-      "fingerprint": {
-        "global": {
-          "distinct-count": 4,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/DateTime": {
-            "earliest": "2026-04-15T16:00:00Z",
-            "latest": "2026-04-15T16:45:00Z"
-          }
-        }
-      },
-      "base_type": "type/DateTime"
-    },
-    {
       "database_type": "text",
-      "semantic_type": "type/Description",
-      "table_id": 26,
-      "lib/deduplicated-name": "event_root_description",
-      "lib/original-name": "event_root_description",
-      "lib/breakout?": true,
-      "name": "event_root_description",
-      "lib/source": "source/table-defaults",
-      "lib/source-column-alias": "event_root_description",
-      "lib/original-display-name": "Event Root Description",
-      "source": "breakout",
+      "semantic_type": null,
+      "lib/deduplicated-name": "person",
+      "lib/original-name": "person",
+      "name": "person",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "person",
+      "source": "native",
       "field_ref": [
         "field",
-        157,
-        null
+        "person",
+        {
+          "base-type": "type/Text"
+        }
       ],
       "effective_type": "type/Text",
-      "active": true,
-      "id": 157,
-      "lib/desired-column-alias": "event_root_description",
-      "position": 3,
-      "visibility_type": "normal",
-      "display_name": "Event Root Description",
+      "lib/desired-column-alias": "person",
+      "display_name": "person",
       "fingerprint": {
         "global": {
-          "distinct-count": 19,
+          "distinct-count": 25,
           "nil%": 0.0
         },
         "type": {
@@ -86,41 +38,81 @@
             "percent-url": 0.0,
             "percent-email": 0.0,
             "percent-state": 0.0,
-            "average-length": 12.626666666666667
+            "average-length": 13.24
           }
         }
       },
       "base_type": "type/Text"
     },
     {
-      "database_type": "numeric",
+      "database_type": "int8",
       "semantic_type": "type/Quantity",
-      "lib/deduplicated-name": "sum",
-      "lib/original-name": "sum",
-      "name": "sum",
-      "lib/source": "source/aggregations",
-      "lib/source-column-alias": "sum",
-      "source": "aggregation",
+      "lib/deduplicated-name": "article_count",
+      "lib/original-name": "article_count",
+      "name": "article_count",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "article_count",
+      "source": "native",
       "field_ref": [
-        "aggregation",
-        0
+        "field",
+        "article_count",
+        {
+          "base-type": "type/BigInteger"
+        }
       ],
-      "effective_type": "type/Decimal",
-      "lib/desired-column-alias": "sum",
-      "display_name": "Sum of Event Count",
+      "effective_type": "type/BigInteger",
+      "lib/desired-column-alias": "article_count",
+      "display_name": "article_count",
       "fingerprint": {
         "global": {
-          "distinct-count": 110,
+          "distinct-count": 22,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 1.0,
-            "q1": 34.41817288374271,
-            "q3": 232.32576538582524,
-            "max": 5011.0,
-            "sd": 544.9651714606259,
-            "avg": 264.2518518518518
+            "min": 111.0,
+            "q1": 119.75,
+            "q3": 195.75,
+            "max": 1118.0,
+            "sd": 205.02754286518027,
+            "avg": 210.28
+          }
+        }
+      },
+      "base_type": "type/BigInteger"
+    },
+    {
+      "database_type": "numeric",
+      "semantic_type": null,
+      "lib/deduplicated-name": "avg_tone",
+      "lib/original-name": "avg_tone",
+      "name": "avg_tone",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "avg_tone",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "avg_tone",
+        {
+          "base-type": "type/Decimal"
+        }
+      ],
+      "effective_type": "type/Decimal",
+      "lib/desired-column-alias": "avg_tone",
+      "display_name": "avg_tone",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 25,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": -6.995,
+            "q1": -4.9295,
+            "q3": -2.18325,
+            "max": 1.677,
+            "sd": 2.1201785522293477,
+            "avg": -3.0455200000000002
           }
         }
       },
@@ -133,13 +125,13 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "is_data_analyst": false,
-    "last_login": "2026-04-18T20:29:48.099265Z",
+    "last_login": "2026-04-19T17:40:48.069844Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
     "last_name": "User",
     "tenant_id": null,
-    "date_joined": "2026-04-15T15:47:41.068144Z",
+    "date_joined": "2026-04-19T10:42:20.404008Z",
     "common_name": "Admin User"
   },
   "initially_published_at": null,
@@ -148,20 +140,20 @@
   "database_id": 2,
   "enable_embedding": false,
   "collection_id": null,
-  "query_type": "query",
-  "name": "Event Volume",
-  "last_query_start": "2026-04-18T20:25:19.441384Z",
+  "query_type": "native",
+  "name": "Tone Analysis per Person",
+  "last_query_start": "2026-04-19T17:38:25.087488Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-04-18T20:25:19.477188Z",
+  "last_used_at": "2026-04-19T17:38:25.089934Z",
   "dashboard": null,
   "type": "question",
-  "average_query_time": 34.333333333333336,
+  "average_query_time": 79.0,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-04-18T20:08:18.290983Z",
+  "updated_at": "2026-04-19T17:30:34.94886Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -170,122 +162,8 @@
     "database": 2,
     "stages": [
       {
-        "fields": [
-          [
-            "field",
-            {
-              "lib/uuid": "aed5a312-2e5b-4024-828b-a42a6a5eb031",
-              "effective-type": "type/DateTime",
-              "base-type": "type/DateTime"
-            },
-            154
-          ],
-          [
-            "field",
-            {
-              "effective-type": "type/Text",
-              "lib/uuid": "da4d6963-bb24-4363-816d-16440d67de4f",
-              "base-type": "type/Text"
-            },
-            157
-          ],
-          [
-            "field",
-            {
-              "lib/uuid": "42a5d949-3bcd-4c8c-929c-fbc0eb7964a7",
-              "effective-type": "type/BigInteger",
-              "base-type": "type/BigInteger"
-            },
-            158
-          ]
-        ],
-        "joins": [
-          {
-            "lib/type": "mbql/join",
-            "strategy": "left-join",
-            "stages": [
-              {
-                "lib/options": {
-                  "lib/uuid": "290014e2-9b7d-4741-9fe2-bf29bbfa68db"
-                },
-                "lib/type": "mbql.stage/mbql",
-                "source-table": 16
-              }
-            ],
-            "lib/options": {
-              "lib/uuid": "90a0ca21-b1aa-4a10-8579-582b24c6db8b"
-            },
-            "fields": "all",
-            "conditions": [
-              [
-                "=",
-                {
-                  "lib/uuid": "851186b7-ea43-4186-a0e4-ae0ea3fc53f6"
-                },
-                [
-                  "field",
-                  {
-                    "effective-type": "type/Text",
-                    "lib/uuid": "8bd8e4c4-c872-4cfe-b9c1-f2386c1b7a13",
-                    "base-type": "type/Text"
-                  },
-                  156
-                ],
-                [
-                  "field",
-                  {
-                    "lib/uuid": "08a61e32-ff83-4996-a415-4f4d7bd41b23",
-                    "effective-type": "type/Text",
-                    "base-type": "type/Text",
-                    "join-alias": "Event Root Code"
-                  },
-                  137
-                ]
-              ]
-            ],
-            "alias": "Event Root Code"
-          }
-        ],
-        "aggregation": [
-          [
-            "sum",
-            {
-              "lib/uuid": "3bd47b9f-796e-44de-86f8-29530f671f42"
-            },
-            [
-              "field",
-              {
-                "lib/uuid": "da5c3d2a-3f3f-409b-8c97-30779da8fef1",
-                "effective-type": "type/BigInteger",
-                "base-type": "type/BigInteger"
-              },
-              158
-            ]
-          ]
-        ],
-        "source-table": 26,
-        "lib/type": "mbql.stage/mbql",
-        "breakout": [
-          [
-            "field",
-            {
-              "lib/uuid": "b9459695-fd84-4a56-a706-c0f73f435905",
-              "effective-type": "type/DateTime",
-              "base-type": "type/DateTime",
-              "temporal-unit": "hour"
-            },
-            154
-          ],
-          [
-            "field",
-            {
-              "effective-type": "type/Text",
-              "lib/uuid": "099a1457-efeb-47dc-aef9-856e46aecd34",
-              "base-type": "type/Text"
-            },
-            157
-          ]
-        ]
+        "lib/type": "mbql.stage/native",
+        "native": "WITH gkg_last_24h AS (\n    SELECT persons, tone\n    FROM public.gkg\n    WHERE gkg_date >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n      AND persons IS NOT NULL\n      AND persons <> ''\n      AND tone IS NOT NULL\n),\nexploded_persons AS (\n    SELECT\n        trim(person) AS person,\n        tone\n    FROM gkg_last_24h,\n         unnest(string_to_array(persons, ';')) AS person\n    WHERE trim(person) <> ''\n)\nSELECT\n    initcap(person) AS person,\n    COUNT(*) AS article_count,\n    ROUND(AVG(tone)::numeric, 3) AS avg_tone\nFROM exploded_persons\nGROUP BY person\nHAVING COUNT(*) >= 10\nORDER BY article_count DESC\nLIMIT 25;\n"
       }
     ]
   },
@@ -293,9 +171,9 @@
   "legacy_query": null,
   "parameter_mappings": [],
   "can_manage_db": true,
-  "display": "line",
+  "display": "combo",
   "archived_directly": false,
-  "entity_id": "Dg0_22aPwPju4YnEdkP2h",
+  "entity_id": "tn5uAQV3fCaFOZUQb_lo7",
   "param_fields": {},
   "collection_preview": true,
   "last-edit-info": {
@@ -303,16 +181,26 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "last_name": "User",
-    "timestamp": "2026-04-18T20:08:18.298382Z"
+    "timestamp": "2026-04-19T17:30:34.952311Z"
   },
   "visualization_settings": {
-    "graph.x_axis.scale": "timeseries",
     "graph.dimensions": [
-      "window_start",
-      "event_root_description"
+      "person"
     ],
+    "graph.x_axis.title_text": "Person",
+    "graph.y_axis.title_text": "Average tone",
+    "series_settings": {
+      "avg_tone": {
+        "title": "Average tone"
+      },
+      "article_count": {
+        "title": "Articles"
+      }
+    },
+    "graph.x_axis.scale": "ordinal",
     "graph.metrics": [
-      "sum"
+      "avg_tone",
+      "article_count"
     ]
   },
   "collection": {
@@ -327,7 +215,7 @@
   "metabase_version": "v0.59.6.5 (809ffc8)",
   "parameters": [],
   "dashboard_id": null,
-  "created_at": "2026-04-18T20:08:18.290983Z",
+  "created_at": "2026-04-19T17:30:34.94886Z",
   "parameter_usage_count": 0,
   "public_uuid": null,
   "can_delete": false

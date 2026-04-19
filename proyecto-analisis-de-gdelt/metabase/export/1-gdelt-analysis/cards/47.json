@@ -1,86 +1,35 @@
 {
   "cache_invalidated_at": null,
-  "description": "Rolling average of the Goldstein scale by country or region.",
+  "description": "Average tone by organization from the GKG data.",
   "archived": false,
-  "view_count": 3,
+  "view_count": 1,
   "collection_position": null,
   "source_card_id": null,
-  "table_id": 22,
+  "table_id": null,
   "can_run_adhoc_query": true,
   "result_metadata": [
     {
-      "inherited-temporal-unit": "hour",
-      "lib/type": "metadata/column",
-      "base-type": "type/DateTime",
-      "lib/deduplicated-name": "window_start",
-      "semantic-type": "type/CreationTimestamp",
-      "lib/original-name": "window_start",
-      "lib/breakout?": true,
-      "table-id": 22,
-      "unit": "hour",
-      "name": "window_start",
-      "lib/source": "source/table-defaults",
-      "lib/source-column-alias": "window_start",
-      "lib/original-display-name": "Window Start",
-      "source": "breakout",
-      "database-type": "timestamp",
-      "effective-type": "type/DateTime",
-      "active": true,
-      "id": 141,
-      "visibility-type": "normal",
-      "lib/desired-column-alias": "window_start",
-      "metabase.lib.field/temporal-unit": "hour",
-      "display-name": "Window Start: Hour",
-      "position": 0,
-      "field-ref": [
+      "database_type": "text",
+      "semantic_type": null,
+      "lib/deduplicated-name": "organization",
+      "lib/original-name": "organization",
+      "name": "organization",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "organization",
+      "source": "native",
+      "field_ref": [
         "field",
-        141,
+        "organization",
         {
-          "temporal-unit": "hour"
+          "base-type": "type/Text"
         }
       ],
+      "effective_type": "type/Text",
+      "lib/desired-column-alias": "organization",
+      "display_name": "organization",
       "fingerprint": {
         "global": {
-          "distinct-count": 1,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/DateTime": {
-            "earliest": "2026-04-15T16:00:00Z",
-            "latest": "2026-04-15T16:00:00Z"
-          }
-        }
-      }
-    },
-    {
-      "lib/type": "metadata/column",
-      "base-type": "type/Text",
-      "lib/deduplicated-name": "country",
-      "semantic-type": "type/Country",
-      "lib/original-name": "country",
-      "lib/breakout?": true,
-      "table-id": 22,
-      "name": "country",
-      "lib/source": "source/table-defaults",
-      "lib/source-column-alias": "country",
-      "lib/original-display-name": "Country",
-      "source": "breakout",
-      "database-type": "text",
-      "effective-type": "type/Text",
-      "active": true,
-      "id": 143,
-      "visibility-type": "normal",
-      "lib/desired-column-alias": "country",
-      "display-name": "Country",
-      "position": 2,
-      "field-ref": [
-        "field",
-        143,
-        null
-      ],
-      "fingerprint": {
-        "global": {
-          "distinct-count": 117,
+          "distinct-count": 25,
           "nil%": 0.0
         },
         "type": {
@@ -89,27 +38,85 @@
             "percent-url": 0.0,
             "percent-email": 0.0,
             "percent-state": 0.0,
-            "average-length": 3.0
+            "average-length": 14.4
           }
         }
-      }
+      },
+      "base_type": "type/Text"
     },
     {
-      "lib/type": "metadata/column",
-      "base-type": "type/Float",
-      "lib/deduplicated-name": "avg",
-      "lib/original-name": "avg",
-      "name": "avg",
-      "lib/source": "source/aggregations",
-      "lib/source-column-alias": "avg",
-      "source": "aggregation",
-      "effective-type": "type/Float",
-      "lib/desired-column-alias": "avg",
-      "display-name": "Average of Avg Goldstein",
-      "field-ref": [
-        "aggregation",
-        0
-      ]
+      "database_type": "int8",
+      "semantic_type": "type/Quantity",
+      "lib/deduplicated-name": "article_count",
+      "lib/original-name": "article_count",
+      "name": "article_count",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "article_count",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "article_count",
+        {
+          "base-type": "type/BigInteger"
+        }
+      ],
+      "effective_type": "type/BigInteger",
+      "lib/desired-column-alias": "article_count",
+      "display_name": "article_count",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 25,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 112.0,
+            "q1": 134.25,
+            "q3": 319.75,
+            "max": 1531.0,
+            "sd": 290.25893612428195,
+            "avg": 279.0
+          }
+        }
+      },
+      "base_type": "type/BigInteger"
+    },
+    {
+      "database_type": "numeric",
+      "semantic_type": null,
+      "lib/deduplicated-name": "avg_tone",
+      "lib/original-name": "avg_tone",
+      "name": "avg_tone",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "avg_tone",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "avg_tone",
+        {
+          "base-type": "type/Decimal"
+        }
+      ],
+      "effective_type": "type/Decimal",
+      "lib/desired-column-alias": "avg_tone",
+      "display_name": "avg_tone",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 25,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": -7.112,
+            "q1": -4.1905,
+            "q3": -0.21075000000000002,
+            "max": 1.427,
+            "sd": 2.506445606165565,
+            "avg": -2.44792
+          }
+        }
+      },
+      "base_type": "type/Decimal"
     }
   ],
   "embedding_type": null,
@@ -118,13 +125,13 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "is_data_analyst": false,
-    "last_login": "2026-04-18T20:29:48.099265Z",
+    "last_login": "2026-04-19T17:40:48.069844Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
     "last_name": "User",
     "tenant_id": null,
-    "date_joined": "2026-04-15T15:47:41.068144Z",
+    "date_joined": "2026-04-19T10:42:20.404008Z",
     "common_name": "Admin User"
   },
   "initially_published_at": null,
@@ -133,24 +140,20 @@
   "database_id": 2,
   "enable_embedding": false,
   "collection_id": null,
-  "query_type": "query",
-  "name": "Conflict Trend",
-  "last_query_start": "2026-04-18T20:27:22.783022Z",
+  "query_type": "native",
+  "name": "Tone Analysis per Organization",
+  "last_query_start": "2026-04-19T17:38:27.891121Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-04-18T20:27:22.786327Z",
-  "dashboard": {
-    "name": "GDELT Analysis",
-    "id": 2,
-    "moderation_status": null
-  },
+  "last_used_at": "2026-04-19T17:38:27.893177Z",
+  "dashboard": null,
   "type": "question",
-  "average_query_time": 13.333333333333334,
+  "average_query_time": 64.0,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-04-18T20:24:51.89752Z",
+  "updated_at": "2026-04-19T17:34:52.943554Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -159,46 +162,8 @@
     "database": 2,
     "stages": [
       {
-        "source-table": 22,
-        "breakout": [
-          [
-            "field",
-            {
-              "effective-type": "type/DateTime",
-              "base-type": "type/DateTime",
-              "lib/uuid": "d309f92b-7162-4137-af8a-c6d1ca8b9eff",
-              "temporal-unit": "hour"
-            },
-            141
-          ],
-          [
-            "field",
-            {
-              "lib/uuid": "a4ab7c81-7e17-41cf-b588-9b7713589b64",
-              "effective-type": "type/Text",
-              "base-type": "type/Text"
-            },
-            143
-          ]
-        ],
-        "lib/type": "mbql.stage/mbql",
-        "aggregation": [
-          [
-            "avg",
-            {
-              "lib/uuid": "787d66b8-421b-4d3c-8ccb-6dad047b2e0c"
-            },
-            [
-              "field",
-              {
-                "lib/uuid": "c8d2d527-74f3-4f8d-a659-e3bd43d1de72",
-                "effective-type": "type/Float",
-                "base-type": "type/Float"
-              },
-              144
-            ]
-          ]
-        ]
+        "native": "WITH gkg_last_24h AS (\n    SELECT organizations, tone\n    FROM public.gkg\n    WHERE gkg_date >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n      AND organizations IS NOT NULL\n      AND organizations <> ''\n      AND tone IS NOT NULL\n),\nexploded_organizations AS (\n    SELECT\n        trim(organization) AS organization,\n        tone\n    FROM gkg_last_24h,\n         unnest(string_to_array(organizations, ';')) AS organization\n    WHERE trim(organization) <> ''\n)\nSELECT\n    initcap(organization) AS organization,\n    COUNT(*) AS article_count,\n    ROUND(AVG(tone)::numeric, 3) AS avg_tone\nFROM exploded_organizations\nGROUP BY organization\nHAVING COUNT(*) >= 10\nORDER BY article_count DESC\nLIMIT 25;",
+        "lib/type": "mbql.stage/native"
       }
     ]
   },
@@ -206,9 +171,9 @@
   "legacy_query": null,
   "parameter_mappings": [],
   "can_manage_db": true,
-  "display": "pivot",
+  "display": "combo",
   "archived_directly": false,
-  "entity_id": "RS75iKZHOAA2MVOQwukuw",
+  "entity_id": "jPG60YHaQzlQPErA-2w64",
   "param_fields": {},
   "collection_preview": true,
   "last-edit-info": {
@@ -216,44 +181,25 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "last_name": "User",
-    "timestamp": "2026-04-18T20:24:51.910936Z"
+    "timestamp": "2026-04-19T17:34:52.946742Z"
   },
   "visualization_settings": {
-    "pivot_table.column_split": {
-      "rows": [
-        "country"
-      ],
-      "columns": [
-        "window_start"
-      ],
-      "values": [
-        "avg"
-      ]
-    },
-    "pivot_table.column_widths": {
-      "leftHeaderWidths": [
-        85
-      ],
-      "totalLeftHeaderWidths": 85,
-      "valueHeaderWidths": {}
-    },
-    "table.column_formatting": [
-      {
-        "columns": [
-          "avg"
-        ],
-        "type": "range",
-        "colors": [
-          "hsla(358, 71%, 62%, 1)",
-          "transparent",
-          "hsla(89, 48%, 40%, 1)"
-        ],
-        "min_type": null,
-        "max_type": null,
-        "min_value": 0,
-        "max_value": 100,
-        "highlight_row": false
+    "graph.dimensions": [
+      "organization"
+    ],
+    "series_settings": {
+      "avg_tone": {
+        "title": "Average tone"
+      },
+      "article_count": {
+        "title": "Articles"
       }
+    },
+    "graph.x_axis.title_text": "Organization",
+    "graph.x_axis.scale": "ordinal",
+    "graph.metrics": [
+      "avg_tone",
+      "article_count"
     ]
   },
   "collection": {
@@ -267,8 +213,8 @@
   },
   "metabase_version": "v0.59.6.5 (809ffc8)",
   "parameters": [],
-  "dashboard_id": 2,
-  "created_at": "2026-04-18T20:24:51.89752Z",
+  "dashboard_id": null,
+  "created_at": "2026-04-19T17:34:52.943554Z",
   "parameter_usage_count": 0,
   "public_uuid": null,
   "can_delete": false

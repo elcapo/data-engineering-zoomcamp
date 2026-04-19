@@ -4,34 +4,34 @@
   "engine": "postgres",
   "tables": [
     {
-      "id": 18,
+      "id": 26,
       "name": "action_geo_type",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 132,
+          "id": 169,
           "name": "action_geo_type",
           "parent_id": null
         },
         {
-          "id": 133,
+          "id": 170,
           "name": "meaning",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 29,
+      "id": 21,
       "name": "actor_ethnic_code",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 175,
+          "id": 171,
           "name": "ethnic_code",
           "parent_id": null
         },
         {
-          "id": 176,
+          "id": 172,
           "name": "description",
           "parent_id": null
         }
@@ -43,86 +43,113 @@
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 177,
+          "id": 173,
           "name": "ethnic_code",
           "parent_id": null
         },
         {
-          "id": 178,
+          "id": 174,
           "name": "country_iso3",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 28,
+      "id": 20,
       "name": "actor_international_code",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 179,
+          "id": 175,
           "name": "full_code",
           "parent_id": null
         },
         {
-          "id": 180,
+          "id": 176,
           "name": "actor_name",
           "parent_id": null
         },
         {
-          "id": 181,
+          "id": 177,
           "name": "region",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 31,
+      "id": 25,
       "name": "actor_international_generic_code",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 182,
+          "id": 178,
           "name": "generic_code",
           "parent_id": null
         },
         {
-          "id": 183,
+          "id": 179,
           "name": "actor_type",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 30,
+      "id": 23,
       "name": "actor_religion_code",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 184,
+          "id": 180,
           "name": "religion_code",
           "parent_id": null
         },
         {
-          "id": 185,
+          "id": 181,
           "name": "description",
           "parent_id": null
         },
         {
-          "id": 186,
+          "id": 182,
           "name": "priority",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 39,
+      "id": 38,
       "name": "actor_religion_directory",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 187,
+          "id": 183,
           "name": "religion_code",
+          "parent_id": null
+        },
+        {
+          "id": 184,
+          "name": "description",
+          "parent_id": null
+        },
+        {
+          "id": 185,
+          "name": "depth",
+          "parent_id": null
+        },
+        {
+          "id": 186,
+          "name": "parent_code",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "name": "actor_religion_generic_code",
+      "schema": "public_lookup",
+      "fields": [
+        {
+          "id": 187,
+          "name": "generic_code",
           "parent_id": null
         },
         {
@@ -132,24 +159,24 @@
         },
         {
           "id": 189,
-          "name": "depth",
-          "parent_id": null
-        },
-        {
-          "id": 190,
-          "name": "parent_code",
+          "name": "priority",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 34,
-      "name": "actor_religion_generic_code",
+      "id": 33,
+      "name": "actor_role_code",
       "schema": "public_lookup",
       "fields": [
         {
+          "id": 190,
+          "name": "role_code",
+          "parent_id": null
+        },
+        {
           "id": 191,
-          "name": "generic_code",
+          "name": "label",
           "parent_id": null
         },
         {
@@ -165,23 +192,23 @@
       ]
     },
     {
-      "id": 35,
-      "name": "actor_role_code",
+      "id": 37,
+      "name": "cameo_label",
       "schema": "public_lookup",
       "fields": [
         {
           "id": 194,
-          "name": "role_code",
+          "name": "code",
           "parent_id": null
         },
         {
           "id": 195,
-          "name": "label",
+          "name": "kind",
           "parent_id": null
         },
         {
           "id": 196,
-          "name": "description",
+          "name": "label",
           "parent_id": null
         },
         {
@@ -192,34 +219,7 @@
       ]
     },
     {
-      "id": 38,
-      "name": "cameo_label",
-      "schema": "public_lookup",
-      "fields": [
-        {
-          "id": 198,
-          "name": "code",
-          "parent_id": null
-        },
-        {
-          "id": 199,
-          "name": "kind",
-          "parent_id": null
-        },
-        {
-          "id": 200,
-          "name": "label",
-          "parent_id": null
-        },
-        {
-          "id": 201,
-          "name": "priority",
-          "parent_id": null
-        }
-      ]
-    },
-    {
-      "id": 15,
+      "id": 18,
       "name": "conflict_trend",
       "schema": "public",
       "fields": [
@@ -246,100 +246,100 @@
       ]
     },
     {
-      "id": 22,
+      "id": 19,
       "name": "conflict_trend",
       "schema": "public_dashboard",
       "fields": [
         {
-          "id": 141,
+          "id": 132,
           "name": "window_start",
           "parent_id": null
         },
         {
-          "id": 142,
+          "id": 133,
           "name": "window_end",
           "parent_id": null
         },
         {
-          "id": 143,
+          "id": 134,
           "name": "country",
           "parent_id": null
         },
         {
-          "id": 144,
+          "id": 135,
           "name": "avg_goldstein",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 37,
+      "id": 36,
       "name": "country_code",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 202,
+          "id": 198,
           "name": "cameo_code",
           "parent_id": null
         },
         {
-          "id": 203,
+          "id": 199,
           "name": "iso2",
           "parent_id": null
         },
         {
-          "id": 204,
+          "id": 200,
           "name": "name",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 33,
+      "id": 14,
       "name": "dim_actor_code",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 205,
+          "id": 201,
           "name": "actor_code",
           "parent_id": null
         },
         {
-          "id": 206,
+          "id": 202,
           "name": "label_full",
           "parent_id": null
         },
         {
-          "id": 207,
+          "id": 203,
           "name": "parts",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 17,
+      "id": 24,
       "name": "event_base_code",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 134,
+          "id": 204,
           "name": "event_base_code",
           "parent_id": null
         },
         {
-          "id": 135,
+          "id": 205,
           "name": "event_root_code",
           "parent_id": null
         },
         {
-          "id": 136,
+          "id": 206,
           "name": "description",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 20,
+      "id": 30,
       "name": "event_counts_by_country",
       "schema": "public",
       "fields": [
@@ -376,123 +376,123 @@
       ]
     },
     {
-      "id": 24,
+      "id": 31,
       "name": "event_map",
       "schema": "public_dashboard",
       "fields": [
         {
-          "id": 145,
+          "id": 136,
           "name": "global_event_id",
           "parent_id": null
         },
         {
-          "id": 146,
+          "id": 137,
           "name": "latitude",
           "parent_id": null
         },
         {
-          "id": 147,
+          "id": 138,
           "name": "longitude",
           "parent_id": null
         },
         {
-          "id": 148,
+          "id": 139,
           "name": "goldstein_scale",
           "parent_id": null
         },
         {
-          "id": 149,
+          "id": 140,
           "name": "event_root_code",
           "parent_id": null
         },
         {
-          "id": 150,
+          "id": 141,
           "name": "event_root_description",
           "parent_id": null
         },
         {
-          "id": 215,
+          "id": 142,
           "name": "actor1_code",
           "parent_id": null
         },
         {
-          "id": 216,
+          "id": 143,
           "name": "actor1_country",
           "parent_id": null
         },
         {
-          "id": 217,
+          "id": 144,
           "name": "actor2_code",
           "parent_id": null
         },
         {
-          "id": 218,
+          "id": 145,
           "name": "actor2_country",
           "parent_id": null
         },
         {
-          "id": 153,
+          "id": 146,
           "name": "event_time",
           "parent_id": null
         },
         {
-          "id": 219,
+          "id": 147,
           "name": "source_url",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 16,
+      "id": 22,
       "name": "event_root_code",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 137,
+          "id": 207,
           "name": "event_root_code",
           "parent_id": null
         },
         {
-          "id": 138,
+          "id": 208,
           "name": "description",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 26,
+      "id": 39,
       "name": "event_volume",
       "schema": "public_dashboard",
       "fields": [
         {
-          "id": 154,
+          "id": 148,
           "name": "window_start",
           "parent_id": null
         },
         {
-          "id": 155,
+          "id": 149,
           "name": "window_end",
           "parent_id": null
         },
         {
-          "id": 156,
+          "id": 150,
           "name": "event_root_code",
           "parent_id": null
         },
         {
-          "id": 157,
+          "id": 151,
           "name": "event_root_description",
           "parent_id": null
         },
         {
-          "id": 158,
+          "id": 152,
           "name": "event_count",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 11,
+      "id": 13,
       "name": "events",
       "schema": "public",
       "fields": [
@@ -599,7 +599,7 @@
       ]
     },
     {
-      "id": 10,
+      "id": 11,
       "name": "gkg",
       "schema": "public",
       "fields": [
@@ -661,22 +661,22 @@
       ]
     },
     {
-      "id": 36,
+      "id": 34,
       "name": "keds_actor_code",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 208,
+          "id": 209,
           "name": "code",
           "parent_id": null
         },
         {
-          "id": 209,
+          "id": 210,
           "name": "actor_name",
           "parent_id": null
         },
         {
-          "id": 210,
+          "id": 211,
           "name": "date_restricted",
           "parent_id": null
         }
@@ -710,54 +710,54 @@
       ]
     },
     {
-      "id": 23,
+      "id": 29,
       "name": "media_attention",
       "schema": "public_dashboard",
       "fields": [
         {
-          "id": 159,
+          "id": 153,
           "name": "window_start",
           "parent_id": null
         },
         {
-          "id": 160,
+          "id": 154,
           "name": "window_end",
           "parent_id": null
         },
         {
-          "id": 161,
+          "id": 155,
           "name": "global_event_id",
           "parent_id": null
         },
         {
-          "id": 162,
+          "id": 156,
           "name": "mention_count",
           "parent_id": null
         },
         {
-          "id": 163,
+          "id": 157,
           "name": "actor1_name",
           "parent_id": null
         },
         {
-          "id": 164,
+          "id": 158,
           "name": "actor2_name",
           "parent_id": null
         },
         {
-          "id": 165,
+          "id": 159,
           "name": "event_root_code",
           "parent_id": null
         },
         {
-          "id": 166,
+          "id": 160,
           "name": "event_root_description",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 13,
+      "id": 16,
       "name": "mentions",
       "schema": "public",
       "fields": [
@@ -799,41 +799,68 @@
       ]
     },
     {
-      "id": 14,
+      "id": 17,
       "name": "quad_class",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 139,
+          "id": 212,
           "name": "quad_class",
           "parent_id": null
         },
         {
-          "id": 140,
+          "id": 213,
           "name": "meaning",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 27,
+      "id": 10,
       "name": "region_code",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 211,
+          "id": 214,
           "name": "region_code",
           "parent_id": null
         },
         {
-          "id": 212,
+          "id": 215,
           "name": "name",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 19,
+      "id": 12,
+      "name": "tone_by_theme",
+      "schema": "public_dashboard",
+      "fields": [
+        {
+          "id": 161,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 162,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 163,
+          "name": "theme",
+          "parent_id": null
+        },
+        {
+          "id": 164,
+          "name": "avg_tone",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 27,
       "name": "tone_by_theme",
       "schema": "public",
       "fields": [
@@ -860,34 +887,7 @@
       ]
     },
     {
-      "id": 21,
-      "name": "tone_by_theme",
-      "schema": "public_dashboard",
-      "fields": [
-        {
-          "id": 167,
-          "name": "window_start",
-          "parent_id": null
-        },
-        {
-          "id": 168,
-          "name": "window_end",
-          "parent_id": null
-        },
-        {
-          "id": 169,
-          "name": "theme",
-          "parent_id": null
-        },
-        {
-          "id": 170,
-          "name": "avg_tone",
-          "parent_id": null
-        }
-      ]
-    },
-    {
-      "id": 12,
+      "id": 15,
       "name": "top_actors",
       "schema": "public",
       "fields": [
@@ -914,44 +914,44 @@
       ]
     },
     {
-      "id": 25,
+      "id": 35,
       "name": "top_actors",
       "schema": "public_dashboard",
       "fields": [
         {
-          "id": 171,
+          "id": 165,
           "name": "window_start",
           "parent_id": null
         },
         {
-          "id": 172,
+          "id": 166,
           "name": "window_end",
           "parent_id": null
         },
         {
-          "id": 173,
+          "id": 167,
           "name": "actor_code",
           "parent_id": null
         },
         {
-          "id": 174,
+          "id": 168,
           "name": "event_count",
           "parent_id": null
         }
       ]
     },
     {
-      "id": 32,
+      "id": 28,
       "name": "un_country_code",
       "schema": "public_lookup",
       "fields": [
         {
-          "id": 213,
+          "id": 216,
           "name": "iso3",
           "parent_id": null
         },
         {
-          "id": 214,
+          "id": 217,
           "name": "name",
           "parent_id": null
         }

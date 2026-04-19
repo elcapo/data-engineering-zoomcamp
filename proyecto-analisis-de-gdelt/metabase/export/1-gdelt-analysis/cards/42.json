@@ -1,0 +1,212 @@
+{
+  "cache_invalidated_at": "2026-04-19T16:42:55.901213Z",
+  "description": "Time-series of events per hour window, broken down by event root code.",
+  "archived": false,
+  "view_count": 13,
+  "collection_position": null,
+  "source_card_id": null,
+  "table_id": 39,
+  "can_run_adhoc_query": true,
+  "result_metadata": [
+    {
+      "database_type": "timestamp",
+      "semantic_type": null,
+      "lib/deduplicated-name": "event_hour",
+      "lib/original-name": "event_hour",
+      "name": "event_hour",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "event_hour",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "event_hour",
+        {
+          "base-type": "type/DateTime"
+        }
+      ],
+      "effective_type": "type/DateTime",
+      "lib/desired-column-alias": "event_hour",
+      "display_name": "event_hour",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 8,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/DateTime": {
+            "earliest": "2026-04-19T10:00:00Z",
+            "latest": "2026-04-19T17:00:00Z"
+          }
+        }
+      },
+      "base_type": "type/DateTime"
+    },
+    {
+      "database_type": "text",
+      "semantic_type": "type/Description",
+      "lib/deduplicated-name": "event_root_description",
+      "lib/original-name": "event_root_description",
+      "name": "event_root_description",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "event_root_description",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "event_root_description",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "effective_type": "type/Text",
+      "lib/desired-column-alias": "event_root_description",
+      "display_name": "event_root_description",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 10,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.0,
+            "average-length": 14.9
+          }
+        }
+      },
+      "base_type": "type/Text"
+    },
+    {
+      "database_type": "numeric",
+      "semantic_type": null,
+      "lib/deduplicated-name": "sum",
+      "lib/original-name": "sum",
+      "name": "sum",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "sum",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "sum",
+        {
+          "base-type": "type/Decimal"
+        }
+      ],
+      "effective_type": "type/Decimal",
+      "lib/desired-column-alias": "sum",
+      "display_name": "sum",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 72,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 2.0,
+            "q1": 39.10660171779821,
+            "q3": 166.0,
+            "max": 1468.0,
+            "sd": 192.46829428193485,
+            "avg": 137.5
+          }
+        }
+      },
+      "base_type": "type/Decimal"
+    }
+  ],
+  "embedding_type": null,
+  "dependency_analysis_version": 0,
+  "creator": {
+    "email": "carlos.capote@hawara.es",
+    "first_name": "Admin",
+    "is_data_analyst": false,
+    "last_login": "2026-04-19T17:40:48.069844Z",
+    "is_qbnewb": false,
+    "is_superuser": true,
+    "id": 1,
+    "last_name": "User",
+    "tenant_id": null,
+    "date_joined": "2026-04-19T10:42:20.404008Z",
+    "common_name": "Admin User"
+  },
+  "initially_published_at": null,
+  "can_write": true,
+  "card_schema": 23,
+  "database_id": 2,
+  "enable_embedding": false,
+  "collection_id": null,
+  "query_type": "native",
+  "name": "Event Volume",
+  "last_query_start": "2026-04-19T17:37:26.275646Z",
+  "is_remote_synced": false,
+  "dashboard_count": 1,
+  "document_id": null,
+  "last_used_at": "2026-04-19T17:37:26.289918Z",
+  "dashboard": null,
+  "type": "question",
+  "average_query_time": 39.53846153846154,
+  "creator_id": 1,
+  "can_restore": false,
+  "moderation_reviews": [],
+  "updated_at": "2026-04-19T16:42:55.902707Z",
+  "made_public_by_id": null,
+  "embedding_params": null,
+  "cache_ttl": null,
+  "dataset_query": {
+    "lib/type": "mbql/query",
+    "database": 2,
+    "stages": [
+      {
+        "lib/type": "mbql.stage/native",
+        "native": "WITH top_event_codes AS (\n  SELECT\n    event_root_code,\n    event_root_description,\n    SUM(event_count) AS event_count\n  FROM public_dashboard.event_volume\n  WHERE\n    window_start >= NOW() - INTERVAL '1 day'\n  GROUP BY\n    event_root_code,\n    event_root_description\n  ORDER BY\n    event_count DESC\n  LIMIT 10\n)\nSELECT\n  DATE_TRUNC('hour', public_dashboard.event_volume.window_start) AS event_hour,\n  public_dashboard.event_volume.event_root_description AS event_root_description,\n  SUM(public_dashboard.event_volume.event_count) AS sum\nFROM public_dashboard.event_volume\nLEFT JOIN (\n  SELECT\n    public_lookup.event_root_code.event_root_code AS event_root_code,\n    public_lookup.event_root_code.description AS description\n  FROM\n    public_lookup.event_root_code\n) AS \"Event Root Code\" ON public_dashboard.event_volume.event_root_code = \"Event Root Code\".event_root_code\nWHERE\n  public_dashboard.event_volume.event_root_code IN (\n    SELECT event_root_code FROM top_event_codes\n  )\nGROUP BY\n  DATE_TRUNC('hour', public_dashboard.event_volume.window_start),\n  public_dashboard.event_volume.event_root_description\nORDER BY\n  DATE_TRUNC('hour', public_dashboard.event_volume.window_start) ASC,\n  public_dashboard.event_volume.event_root_description ASC"
+      }
+    ]
+  },
+  "id": 42,
+  "legacy_query": null,
+  "parameter_mappings": [],
+  "can_manage_db": true,
+  "display": "line",
+  "archived_directly": false,
+  "entity_id": "nxzMKc4G1vEhmk9nSHcv0",
+  "param_fields": {},
+  "collection_preview": true,
+  "last-edit-info": {
+    "id": 1,
+    "email": "carlos.capote@hawara.es",
+    "first_name": "Admin",
+    "last_name": "User",
+    "timestamp": "2026-04-19T16:42:55.912229Z"
+  },
+  "visualization_settings": {
+    "graph.x_axis.scale": "timeseries",
+    "graph.dimensions": [
+      "event_hour",
+      "event_root_description"
+    ],
+    "graph.series_order_dimension": null,
+    "graph.series_order": null,
+    "graph.x_axis.title_text": "Hour",
+    "graph.y_axis.title_text": "Events",
+    "graph.metrics": [
+      "sum"
+    ]
+  },
+  "collection": {
+    "metabase.collections.models.collection.root/is-root?": true,
+    "authority_level": null,
+    "name": "Our analytics",
+    "is_personal": false,
+    "id": "root",
+    "is_remote_synced": false,
+    "can_write": true
+  },
+  "metabase_version": "v0.59.6.5 (809ffc8)",
+  "parameters": [],
+  "dashboard_id": null,
+  "created_at": "2026-04-19T13:39:52.752316Z",
+  "parameter_usage_count": 0,
+  "public_uuid": null,
+  "can_delete": false
+}

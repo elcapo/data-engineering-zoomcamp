@@ -1,0 +1,181 @@
+{
+  "cache_invalidated_at": "2026-04-19T16:55:59.972991Z",
+  "description": "Most active actors in the recent news.",
+  "archived": false,
+  "view_count": 2,
+  "collection_position": null,
+  "source_card_id": null,
+  "table_id": null,
+  "can_run_adhoc_query": true,
+  "result_metadata": [
+    {
+      "database_type": "text",
+      "semantic_type": "type/Country",
+      "lib/deduplicated-name": "country_name",
+      "lib/original-name": "country_name",
+      "name": "country_name",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "country_name",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "country_name",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "effective_type": "type/Text",
+      "lib/desired-column-alias": "country_name",
+      "display_name": "country_name",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 10,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.0,
+            "average-length": 7.4
+          }
+        }
+      },
+      "base_type": "type/Text"
+    },
+    {
+      "database_type": "int8",
+      "semantic_type": "type/Quantity",
+      "lib/deduplicated-name": "event_count",
+      "lib/original-name": "event_count",
+      "name": "event_count",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "event_count",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "event_count",
+        {
+          "base-type": "type/BigInteger"
+        }
+      ],
+      "effective_type": "type/BigInteger",
+      "lib/desired-column-alias": "event_count",
+      "display_name": "event_count",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 10,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 173.0,
+            "q1": 199.0,
+            "q3": 507.0,
+            "max": 2512.0,
+            "sd": 709.4084311750336,
+            "avg": 576.1
+          }
+        }
+      },
+      "base_type": "type/BigInteger"
+    }
+  ],
+  "embedding_type": null,
+  "dependency_analysis_version": 0,
+  "creator": {
+    "email": "carlos.capote@hawara.es",
+    "first_name": "Admin",
+    "is_data_analyst": false,
+    "last_login": "2026-04-19T17:40:48.069844Z",
+    "is_qbnewb": false,
+    "is_superuser": true,
+    "id": 1,
+    "last_name": "User",
+    "tenant_id": null,
+    "date_joined": "2026-04-19T10:42:20.404008Z",
+    "common_name": "Admin User"
+  },
+  "initially_published_at": null,
+  "can_write": true,
+  "card_schema": 23,
+  "database_id": 2,
+  "enable_embedding": false,
+  "collection_id": null,
+  "query_type": "native",
+  "name": "Top Actors",
+  "last_query_start": "2026-04-19T17:37:56.423738Z",
+  "is_remote_synced": false,
+  "dashboard_count": 1,
+  "document_id": null,
+  "last_used_at": "2026-04-19T17:37:56.426388Z",
+  "dashboard": null,
+  "type": "question",
+  "average_query_time": 27.0,
+  "creator_id": 1,
+  "can_restore": false,
+  "moderation_reviews": [],
+  "updated_at": "2026-04-19T16:55:59.97445Z",
+  "made_public_by_id": null,
+  "embedding_params": null,
+  "cache_ttl": null,
+  "dataset_query": {
+    "lib/type": "mbql/query",
+    "database": 2,
+    "stages": [
+      {
+        "lib/type": "mbql.stage/native",
+        "native": "WITH events_last_24h AS (\n    SELECT\n        actor1_country AS country,\n        to_timestamp(date_added::text, 'YYYYMMDDHH24MISS') AS event_ts\n    FROM public.events\n    WHERE date_added >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n      AND actor1_country IS NOT NULL\n      AND actor1_country <> ''\n),\ntop_10_countries AS (\n    SELECT country\n    FROM events_last_24h\n    GROUP BY country\n    ORDER BY COUNT(*) DESC\n    LIMIT 10\n)\nSELECT\n\tucc.name AS country_name,\n    COUNT(*) AS event_count\nFROM events_last_24h AS e\nJOIN top_10_countries AS t USING (country)\nINNER JOIN public_lookup.un_country_code AS ucc ON ucc.iso3 = e.country\nGROUP BY e.country, ucc.name\nORDER BY event_count DESC;\n"
+      }
+    ]
+  },
+  "id": 44,
+  "legacy_query": null,
+  "parameter_mappings": [],
+  "can_manage_db": true,
+  "display": "pie",
+  "archived_directly": false,
+  "entity_id": "1PZTMsbBsGJf8cljKcMgE",
+  "param_fields": {},
+  "collection_preview": true,
+  "last-edit-info": {
+    "id": 1,
+    "email": "carlos.capote@hawara.es",
+    "first_name": "Admin",
+    "last_name": "User",
+    "timestamp": "2026-04-19T16:55:59.983596Z"
+  },
+  "visualization_settings": {
+    "pie.slice_threshold": 5,
+    "pie.percent_visibility": "inside",
+    "graph.series_order_dimension": null,
+    "pie.show_labels": true,
+    "graph.metrics": [
+      "event_count"
+    ],
+    "graph.series_order": null,
+    "pie.show_legend": true,
+    "version": 2,
+    "graph.dimensions": [
+      "event_hour",
+      "country_name"
+    ]
+  },
+  "collection": {
+    "metabase.collections.models.collection.root/is-root?": true,
+    "authority_level": null,
+    "name": "Our analytics",
+    "is_personal": false,
+    "id": "root",
+    "is_remote_synced": false,
+    "can_write": true
+  },
+  "metabase_version": "v0.59.6.5 (809ffc8)",
+  "parameters": [],
+  "dashboard_id": null,
+  "created_at": "2026-04-19T16:52:57.736919Z",
+  "parameter_usage_count": 0,
+  "public_uuid": null,
+  "can_delete": false
+}
