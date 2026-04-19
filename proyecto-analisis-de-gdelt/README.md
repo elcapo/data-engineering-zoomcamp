@@ -259,12 +259,12 @@ Services and default ports:
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
-| Kestra UI | `localhost:8080` | admin@kestra.io / Admin1234! |
+| Kestra UI | `localhost:8080` | `admin@kestra.io` / see `KESTRA_PASSWORD` in `.env` |
 | Redpanda Console | `localhost:8081` | — |
 | Redpanda Broker (Kafka API) | `localhost:9092` | — |
 | Flink Web UI | `localhost:8082` | — |
-| PostgreSQL | `localhost:5432` | gdelt / gdelt |
-| pgAdmin | `localhost:8083` | admin@admin.com / admin |
+| PostgreSQL | `localhost:5432` | `gdelt` / see `POSTGRES_PASSWORD` in `.env` |
+| pgAdmin | `localhost:8083` | `admin@admin.com` / see `PGADMIN_PASSWORD` in `.env` |
 | Metabase | `localhost:8084` | `admin@admin.com` / see `METABASE_PASSWORD` in `.env` |
 
 Kestra triggers the producer every 15 minutes. To run the first ingestion immediately without waiting for the schedule:
