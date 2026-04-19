@@ -152,9 +152,9 @@ The raw tables are populated by the `raw_ingest` Flink job, one row per record c
 > [!NOTE]
 > Each raw table is **partitioned by month** on a TIMESTAMP column derived by Flink from the GDELT 14-digit timestamp.
 >
-> This keeps indexes small, enables partition pruning in dashboard queries, and lets old data be removed with `DROP PARTITION` instead of `DELETE`.
+> This keeps indexes small, enables partition pruning in dashboard queries, and lets old data be removed with `DROP PARTITION`.
 
-Partitions are created automatically by the `create_raw_tables` dbt macro on every `dbt run`. The window is configurable via dbt vars:
+Partitions are created automatically by the [`create_raw_tables`](./dbt/macros/create_raw_tables.sql) dbt macro on every `dbt run`. The window is configurable via dbt vars:
 
 | Var | Default | Meaning |
 |-----|---------|---------|
