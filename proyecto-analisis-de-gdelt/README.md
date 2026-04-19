@@ -147,7 +147,11 @@ The raw tables are populated by the `raw_ingest` Flink job, one row per record c
 | `mentions` | Raw article mentions mirrored from `gdelt.mentions`. |
 | `gkg` | Raw GKG records mirrored from `gdelt.gkg`. |
 
-Each raw table is **RANGE-partitioned by month** on a TIMESTAMP column derived by Flink from the GDELT 14-digit timestamp (`event_ts`, `mention_ts`, `gkg_ts`). This keeps indexes small, enables partition pruning in dashboard queries, and lets old data be removed with `DROP PARTITION` instead of `DELETE`.
+#### Table Partitions
+
+> [!NOTE]
+> Each raw table is **partitioned by month** on a TIMESTAMP column derived by Flink from the GDELT 14-digit timestamp (`event_ts`, `mention_ts`, `gkg_ts`).
+> This keeps indexes small, enables partition pruning in dashboard queries, and lets old data be removed with `DROP PARTITION` instead of `DELETE`.
 
 Partitions are created automatically by the `create_raw_tables` dbt macro on every `dbt run`. The window is configurable via dbt vars:
 
@@ -288,7 +292,7 @@ All ports, credentials, and tuning knobs are configurable via environment variab
 
 | Command | Effect |
 |---------|--------|
-| `make init` | Generate `.env` from `env.template` with random passwords. Runs automatically before `make up` if `.env` is missing. |
+| `make init` | Generate `.env` from `env.template` with random passwords.<br/>Runs automatically before `make up` if `.env` is missing. |
 | `make up` | Build images and start the stack. |
 | `make down` | Stop the stack. Volumes and `.env` are preserved. |
 | `make reset` | Stop the stack and remove volumes and `.env`. |
