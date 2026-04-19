@@ -91,8 +91,8 @@ Kestra runs a scheduled flow that triggers the producer every 15 minutes. The fl
 
 The producer runs as two independent steps so Kafka never receives partial data:
 
-- **Download** (`producer/download.py`): fetches the three GDELT CSVs listed in `lastupdate.txt`, with aggressive retry against CDN 404s.
-- **Publish** (`producer/publish.py`): only starts once all three files are on disk, then parses and publishes records to Redpanda.
+- [**Download**](`producer/download.py`): fetches the three GDELT CSVs listed in `lastupdate.txt`, with aggressive retry against CDN 404s.
+- [**Publish**](`producer/publish.py`): only starts once all three files are on disk, then parses and publishes records to Redpanda.
 
 Source code, dependencies, and unit tests live under [`producer/`](./producer/).
 
@@ -135,7 +135,9 @@ Models and seeds live under [`dbt/`](./dbt/).
 
 All downstream state lives in a single Postgres instance. Tables are grouped by how they are populated.
 
-**Raw tables** — populated by the `raw_ingest` Flink job, one row per record consumed from Kafka without transformations:
+### Raw tables
+
+The raw tables are populated by the `raw_ingest` Flink job, one row per record consumed from Kafka without transformations:
 
 | Table | Content |
 |-------|---------|
@@ -143,7 +145,9 @@ All downstream state lives in a single Postgres instance. Tables are grouped by 
 | `mentions` | Raw article mentions mirrored from `gdelt.mentions`. |
 | `gkg` | Raw GKG records mirrored from `gdelt.gkg`. |
 
-**Aggregated tables** — populated by the `event_aggregations` and `gkg_aggregations` Flink jobs via tumbling windows:
+### Aggregated tables
+
+The aggregated tables are populated by the `event_aggregations` and `gkg_aggregations` Flink jobs via tumbling windows:
 
 | Table | Content |
 |-------|---------|
@@ -153,7 +157,9 @@ All downstream state lives in a single Postgres instance. Tables are grouped by 
 | `media_attention` | Mention counts per event, per window. |
 | `tone_by_theme` | Average tone per GKG theme, per window. |
 
-**Lookup tables** — populated by dbt seeds (schema `public_lookup`), CAMEO/GDELT reference codebooks:
+### Lookup tables
+
+The lookup tables are populated by dbt seeds (schema `public_lookup`), CAMEO/GDELT reference codebooks:
 
 | Table | Rows | Content |
 |-------|------|---------|
