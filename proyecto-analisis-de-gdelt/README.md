@@ -96,6 +96,8 @@ The producer runs as two independent steps so Kafka never receives partial data:
 - [**Download**](`producer/download.py`): fetches the three GDELT CSVs listed in `lastupdate.txt`, with aggressive retry against CDN 404s.
 - [**Publish**](`producer/publish.py`): only starts once all three files are on disk, then parses and publishes records to Redpanda.
 
+A third entrypoint, [**Backfill**](`producer/backfill.py`), covers ad-hoc recovery of past data (e.g. after a Kestra outage): it iterates every 15-minute slot between a `start` and `end` timestamp and publishes each slot's records in a single process. See [`producer/README.md`](./producer/README.md#backfill) for usage and caveats.
+
 Source code, dependencies, and unit tests live under [`producer/`](./producer/).
 
 ## Broker: Redpanda
