@@ -343,7 +343,18 @@ open http://localhost:8084
 
 ## Cloud Deployment
 
-A Terraform skeleton for a single-VM lift-and-shift on GCP lives in [`terraform/gcp/`](terraform/gcp/README.md). It provisions a Compute Engine VM with a persistent data disk, installs Docker on first boot and runs `make up` to bring the stack online. Single-node, no HA — intended for demos, not production.
+The project ships with a Terraform skeleton for a single virtual machine lift-and-shift on Google Cloud Platform (GCP). It provisions a Compute Engine VM with a persistent data disk, installs Docker on first boot and runs `make up` to bring the stack online.
+
+```bash
+cd terraform/gcp
+cp terraform.tfvars.example terraform.tfvars
+# edit terraform.tfvars: project_id, ssh_user, ssh_public_key, optionally allowed_app_cidrs
+
+terraform init
+terraform apply
+```
+
+The complete documentation is available at [`terraform/gcp/`](terraform/gcp/README.md).
 
 ## GDELT Data Reference
 
