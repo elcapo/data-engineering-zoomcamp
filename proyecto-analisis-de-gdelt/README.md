@@ -365,3 +365,22 @@ The complete documentation is available at [`terraform/gcp/`](terraform/gcp/READ
 - **CAMEO Event Codes**: http://data.gdeltproject.org/documentation/CAMEO.Manual.1.1b3.pdf
 - **Last update file (entry point)**: http://data.gdeltproject.org/gdeltv2/lastupdate.txt
 - **Master file list**: http://data.gdeltproject.org/gdeltv2/masterfilelist.txt
+
+## Learning in Public
+
+The design decisions behind this project are documented in a series of short articles. Each one focuses on a concrete tradeoff and the reasoning behind it.
+
+1. [Project Introduction](./docs/learning-in-public/english/01-project-introduction.md)
+2. [From Questions to Data](./docs/learning-in-public/english/02-from-questions-to-data.md)
+3. [Different Speeds for the Same Data](./docs/learning-in-public/english/03-different-speeds-for-the-same-data.md)
+4. [The Dirty Work of Reference Tables](./docs/learning-in-public/english/04-the-dirty-work-of-reference-tables.md)
+5. [Download and Publish Separately](./docs/learning-in-public/english/05-download-and-publish-separately.md)
+6. [Kestra and Docker: A Reproducible Local Flow](./docs/learning-in-public/english/06-kestra-and-docker-a-reproducible-local-flow.md)
+7. [Two Branches of the Same Stream](./docs/learning-in-public/english/07-two-branches-of-the-same-stream.md)
+8. [Metabase: A Face for the Data](./docs/learning-in-public/english/08-metabase-a-face-for-the-data.md)
+9. [Versioned Dashboards](./docs/learning-in-public/english/09-versioned-dashboards.md)
+10. [Starting Ten Containers in Order](./docs/learning-in-public/english/10-starting-ten-containers-in-order.md)
+11. [Different Passwords on Each Machine](./docs/learning-in-public/english/11-different-passwords-on-each-machine.md)
+12. [Idempotency Without Thinking](./docs/learning-in-public/english/12-idempotency-without-thinking.md)
+13. [Processing Time vs Event Time](./docs/learning-in-public/english/13-processing-time-vs-event-time.md)
+14. [From Questions to Dashboard](./docs/learning-in-public/english/14-from-questions-to-dashboard.md)
