@@ -1,15 +1,15 @@
 {
-  "cache_invalidated_at": "2026-04-19T16:42:55.901213Z",
-  "description": "Time-series of events per hour window, broken down by event root code.",
+  "cache_invalidated_at": "2026-04-20T11:21:49.443661Z",
+  "description": "Rolling average of the Goldstein scale by country or region.",
   "archived": false,
-  "view_count": 13,
+  "view_count": 11,
   "collection_position": null,
   "source_card_id": null,
-  "table_id": 39,
+  "table_id": null,
   "can_run_adhoc_query": true,
   "result_metadata": [
     {
-      "database_type": "timestamp",
+      "database_type": "text",
       "semantic_type": null,
       "lib/deduplicated-name": "event_hour",
       "lib/original-name": "event_hour",
@@ -21,45 +21,48 @@
         "field",
         "event_hour",
         {
-          "base-type": "type/DateTime"
+          "base-type": "type/Text"
         }
       ],
-      "effective_type": "type/DateTime",
+      "effective_type": "type/Text",
       "lib/desired-column-alias": "event_hour",
       "display_name": "event_hour",
       "fingerprint": {
         "global": {
-          "distinct-count": 8,
+          "distinct-count": 4,
           "nil%": 0.0
         },
         "type": {
-          "type/DateTime": {
-            "earliest": "2026-04-19T10:00:00Z",
-            "latest": "2026-04-19T17:00:00Z"
+          "type/Text": {
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.0,
+            "average-length": 4.25
           }
         }
       },
-      "base_type": "type/DateTime"
+      "base_type": "type/Text"
     },
     {
       "database_type": "text",
-      "semantic_type": "type/Description",
-      "lib/deduplicated-name": "event_root_description",
-      "lib/original-name": "event_root_description",
-      "name": "event_root_description",
+      "semantic_type": "type/Country",
+      "lib/deduplicated-name": "country_name",
+      "lib/original-name": "country_name",
+      "name": "country_name",
       "lib/source": "source/native",
-      "lib/source-column-alias": "event_root_description",
+      "lib/source-column-alias": "country_name",
       "source": "native",
       "field_ref": [
         "field",
-        "event_root_description",
+        "country_name",
         {
           "base-type": "type/Text"
         }
       ],
       "effective_type": "type/Text",
-      "lib/desired-column-alias": "event_root_description",
-      "display_name": "event_root_description",
+      "lib/desired-column-alias": "country_name",
+      "display_name": "country_name",
       "fingerprint": {
         "global": {
           "distinct-count": 10,
@@ -71,7 +74,7 @@
             "percent-url": 0.0,
             "percent-email": 0.0,
             "percent-state": 0.0,
-            "average-length": 14.9
+            "average-length": 9.6
           }
         }
       },
@@ -80,35 +83,35 @@
     {
       "database_type": "numeric",
       "semantic_type": null,
-      "lib/deduplicated-name": "sum",
-      "lib/original-name": "sum",
-      "name": "sum",
+      "lib/deduplicated-name": "avg_goldstein",
+      "lib/original-name": "avg_goldstein",
+      "name": "avg_goldstein",
       "lib/source": "source/native",
-      "lib/source-column-alias": "sum",
+      "lib/source-column-alias": "avg_goldstein",
       "source": "native",
       "field_ref": [
         "field",
-        "sum",
+        "avg_goldstein",
         {
           "base-type": "type/Decimal"
         }
       ],
       "effective_type": "type/Decimal",
-      "lib/desired-column-alias": "sum",
-      "display_name": "sum",
+      "lib/desired-column-alias": "avg_goldstein",
+      "display_name": "avg_goldstein",
       "fingerprint": {
         "global": {
-          "distinct-count": 72,
+          "distinct-count": 37,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 2.0,
-            "q1": 39.10660171779821,
-            "q3": 166.0,
-            "max": 1468.0,
-            "sd": 192.46829428193485,
-            "avg": 137.5
+            "min": -2.82,
+            "q1": -0.024999999999999994,
+            "q3": 1.5,
+            "max": 3.75,
+            "sd": 1.3701165961988373,
+            "avg": 0.819
           }
         }
       },
@@ -121,13 +124,13 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "is_data_analyst": false,
-    "last_login": "2026-04-19T17:40:48.069844Z",
+    "last_login": "2026-04-20T11:22:30.021389Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
     "last_name": "User",
     "tenant_id": null,
-    "date_joined": "2026-04-19T10:42:20.404008Z",
+    "date_joined": "2026-04-20T07:16:32.090368Z",
     "common_name": "Admin User"
   },
   "initially_published_at": null,
@@ -137,19 +140,19 @@
   "enable_embedding": false,
   "collection_id": null,
   "query_type": "native",
-  "name": "Event Volume",
-  "last_query_start": "2026-04-19T17:37:26.275646Z",
+  "name": "Conflict Trend",
+  "last_query_start": "2026-04-20T11:21:55.990858Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-04-19T17:37:26.289918Z",
+  "last_used_at": "2026-04-20T11:21:55.993493Z",
   "dashboard": null,
   "type": "question",
-  "average_query_time": 39.53846153846154,
+  "average_query_time": 20.636363636363637,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-04-19T16:42:55.902707Z",
+  "updated_at": "2026-04-20T11:21:49.445875Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -158,8 +161,8 @@
     "database": 2,
     "stages": [
       {
-        "lib/type": "mbql.stage/native",
-        "native": "WITH top_event_codes AS (\n  SELECT\n    event_root_code,\n    event_root_description,\n    SUM(event_count) AS event_count\n  FROM public_dashboard.event_volume\n  WHERE\n    window_start >= NOW() - INTERVAL '1 day'\n  GROUP BY\n    event_root_code,\n    event_root_description\n  ORDER BY\n    event_count DESC\n  LIMIT 10\n)\nSELECT\n  DATE_TRUNC('hour', public_dashboard.event_volume.window_start) AS event_hour,\n  public_dashboard.event_volume.event_root_description AS event_root_description,\n  SUM(public_dashboard.event_volume.event_count) AS sum\nFROM public_dashboard.event_volume\nLEFT JOIN (\n  SELECT\n    public_lookup.event_root_code.event_root_code AS event_root_code,\n    public_lookup.event_root_code.description AS description\n  FROM\n    public_lookup.event_root_code\n) AS \"Event Root Code\" ON public_dashboard.event_volume.event_root_code = \"Event Root Code\".event_root_code\nWHERE\n  public_dashboard.event_volume.event_root_code IN (\n    SELECT event_root_code FROM top_event_codes\n  )\nGROUP BY\n  DATE_TRUNC('hour', public_dashboard.event_volume.window_start),\n  public_dashboard.event_volume.event_root_description\nORDER BY\n  DATE_TRUNC('hour', public_dashboard.event_volume.window_start) ASC,\n  public_dashboard.event_volume.event_root_description ASC"
+        "native": "WITH top_countries AS (\n  SELECT country\n  FROM \"public\".\"event_counts_by_country\"\n  WHERE window_start >= NOW() - (INTERVAL '1 hour' * 10)\n    AND country IS NOT NULL\n    AND country <> ''\n  GROUP BY country\n  ORDER BY SUM(event_count) DESC\n  LIMIT 10\n)\nSELECT\n  CONCAT(DATE_PART('hour', ct.window_start), ':00') AS event_hour,\n  cc.name AS country_name,\n  ROUND(CAST(AVG(ct.avg_goldstein) AS NUMERIC), 2) AS avg_goldstein\nFROM \"public_dashboard\".\"conflict_trend\" AS ct\nINNER JOIN \"public_lookup\".\"un_country_code\" AS cc ON cc.iso3 = ct.country\nINNER JOIN top_countries tc USING (country)\nWHERE ct.window_start >= NOW() - (INTERVAL '1 hour' * 10)\nGROUP BY DATE_PART('hour', ct.window_start), 2\nORDER BY DATE_PART('hour', ct.window_start) ASC, 2 ASC",
+        "lib/type": "mbql.stage/native"
       }
     ]
   },
@@ -167,9 +170,9 @@
   "legacy_query": null,
   "parameter_mappings": [],
   "can_manage_db": true,
-  "display": "line",
+  "display": "table",
   "archived_directly": false,
-  "entity_id": "nxzMKc4G1vEhmk9nSHcv0",
+  "entity_id": "YVwkEBXgGKB7Qqq_S74GU",
   "param_fields": {},
   "collection_preview": true,
   "last-edit-info": {
@@ -177,21 +180,42 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "last_name": "User",
-    "timestamp": "2026-04-19T16:42:55.912229Z"
+    "timestamp": "2026-04-20T11:21:49.453154Z"
   },
   "visualization_settings": {
-    "graph.x_axis.scale": "timeseries",
-    "graph.dimensions": [
-      "event_hour",
-      "event_root_description"
+    "pivot_table.column_split": {
+      "rows": [],
+      "columns": [],
+      "values": []
+    },
+    "pivot_table.column_widths": {
+      "leftHeaderWidths": [
+        85
+      ],
+      "totalLeftHeaderWidths": 85,
+      "valueHeaderWidths": {}
+    },
+    "table.column_formatting": [
+      {
+        "columns": [
+          "avg_goldstein"
+        ],
+        "type": "range",
+        "colors": [
+          "hsla(358, 71%, 62%, 1)",
+          "transparent",
+          "hsla(89, 48%, 40%, 1)"
+        ],
+        "min_type": null,
+        "max_type": null,
+        "min_value": 0,
+        "max_value": 100
+      }
     ],
-    "graph.series_order_dimension": null,
-    "graph.series_order": null,
-    "graph.x_axis.title_text": "Hour",
-    "graph.y_axis.title_text": "Events",
-    "graph.metrics": [
-      "sum"
-    ]
+    "table.pivot": true,
+    "table.pivot_column": "event_hour",
+    "table.cell_column": "avg_goldstein",
+    "table.row_index": false
   },
   "collection": {
     "metabase.collections.models.collection.root/is-root?": true,
@@ -205,7 +229,7 @@
   "metabase_version": "v0.59.6.5 (809ffc8)",
   "parameters": [],
   "dashboard_id": null,
-  "created_at": "2026-04-19T13:39:52.752316Z",
+  "created_at": "2026-04-20T07:17:32.067836Z",
   "parameter_usage_count": 0,
   "public_uuid": null,
   "can_delete": false

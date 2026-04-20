@@ -1,72 +1,35 @@
 {
-  "cache_invalidated_at": null,
-  "description": "Regions and Topics where the Recent Media Attention is Focused.",
+  "cache_invalidated_at": "2026-04-20T08:09:29.027988Z",
+  "description": "Average tone by person or organization from the GKG data.",
   "archived": false,
-  "view_count": 1,
+  "view_count": 11,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
   "can_run_adhoc_query": true,
   "result_metadata": [
     {
-      "database_type": "int8",
-      "semantic_type": null,
-      "lib/deduplicated-name": "global_event_id",
-      "lib/original-name": "global_event_id",
-      "name": "global_event_id",
-      "lib/source": "source/native",
-      "lib/source-column-alias": "global_event_id",
-      "source": "native",
-      "field_ref": [
-        "field",
-        "global_event_id",
-        {
-          "base-type": "type/BigInteger"
-        }
-      ],
-      "effective_type": "type/BigInteger",
-      "lib/desired-column-alias": "global_event_id",
-      "display_name": "global_event_id",
-      "fingerprint": {
-        "global": {
-          "distinct-count": 10,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/Number": {
-            "min": 1299950336.0,
-            "q1": 1299950437.0,
-            "q3": 1299952922.0,
-            "max": 1299957675.0,
-            "sd": 2938.239134432579,
-            "avg": 1299952353.9
-          }
-        }
-      },
-      "base_type": "type/BigInteger"
-    },
-    {
       "database_type": "text",
       "semantic_type": null,
-      "lib/deduplicated-name": "action_geo_name",
-      "lib/original-name": "action_geo_name",
-      "name": "action_geo_name",
+      "lib/deduplicated-name": "person",
+      "lib/original-name": "person",
+      "name": "person",
       "lib/source": "source/native",
-      "lib/source-column-alias": "action_geo_name",
+      "lib/source-column-alias": "person",
       "source": "native",
       "field_ref": [
         "field",
-        "action_geo_name",
+        "person",
         {
           "base-type": "type/Text"
         }
       ],
       "effective_type": "type/Text",
-      "lib/desired-column-alias": "action_geo_name",
-      "display_name": "action_geo_name",
+      "lib/desired-column-alias": "person",
+      "display_name": "person",
       "fingerprint": {
         "global": {
-          "distinct-count": 3,
+          "distinct-count": 15,
           "nil%": 0.0
         },
         "type": {
@@ -75,43 +38,7 @@
             "percent-url": 0.0,
             "percent-email": 0.0,
             "percent-state": 0.0,
-            "average-length": 18.6
-          }
-        }
-      },
-      "base_type": "type/Text"
-    },
-    {
-      "database_type": "text",
-      "semantic_type": "type/Description",
-      "lib/deduplicated-name": "event_description",
-      "lib/original-name": "event_description",
-      "name": "event_description",
-      "lib/source": "source/native",
-      "lib/source-column-alias": "event_description",
-      "source": "native",
-      "field_ref": [
-        "field",
-        "event_description",
-        {
-          "base-type": "type/Text"
-        }
-      ],
-      "effective_type": "type/Text",
-      "lib/desired-column-alias": "event_description",
-      "display_name": "event_description",
-      "fingerprint": {
-        "global": {
-          "distinct-count": 4,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/Text": {
-            "percent-json": 0.0,
-            "percent-url": 0.0,
-            "percent-email": 0.0,
-            "percent-state": 0.0,
-            "average-length": 12.1
+            "average-length": 13.866666666666667
           }
         }
       },
@@ -120,39 +47,76 @@
     {
       "database_type": "int8",
       "semantic_type": "type/Quantity",
-      "lib/deduplicated-name": "mention_count",
-      "lib/original-name": "mention_count",
-      "name": "mention_count",
+      "lib/deduplicated-name": "article_count",
+      "lib/original-name": "article_count",
+      "name": "article_count",
       "lib/source": "source/native",
-      "lib/source-column-alias": "mention_count",
+      "lib/source-column-alias": "article_count",
       "source": "native",
       "field_ref": [
         "field",
-        "mention_count",
+        "article_count",
         {
           "base-type": "type/BigInteger"
         }
       ],
       "effective_type": "type/BigInteger",
-      "lib/desired-column-alias": "mention_count",
-      "display_name": "mention_count",
+      "lib/desired-column-alias": "article_count",
+      "display_name": "article_count",
       "fingerprint": {
         "global": {
-          "distinct-count": 5,
+          "distinct-count": 15,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 71.0,
-            "q1": 71.0,
-            "q3": 90.0,
-            "max": 97.0,
-            "sd": 10.479609831583533,
-            "avg": 79.6
+            "min": 88.0,
+            "q1": 102.75,
+            "q3": 186.25,
+            "max": 751.0,
+            "sd": 165.5594268216818,
+            "avg": 178.26666666666668
           }
         }
       },
       "base_type": "type/BigInteger"
+    },
+    {
+      "database_type": "numeric",
+      "semantic_type": null,
+      "lib/deduplicated-name": "avg_tone",
+      "lib/original-name": "avg_tone",
+      "name": "avg_tone",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "avg_tone",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "avg_tone",
+        {
+          "base-type": "type/Decimal"
+        }
+      ],
+      "effective_type": "type/Decimal",
+      "lib/desired-column-alias": "avg_tone",
+      "display_name": "avg_tone",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 15,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": -6.378,
+            "q1": -6.154999999999999,
+            "q3": -2.6875,
+            "max": 0.326,
+            "sd": 2.1535198584996564,
+            "avg": -4.109733333333334
+          }
+        }
+      },
+      "base_type": "type/Decimal"
     }
   ],
   "embedding_type": null,
@@ -161,13 +125,13 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "is_data_analyst": false,
-    "last_login": "2026-04-19T17:40:48.069844Z",
+    "last_login": "2026-04-20T11:22:30.021389Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
     "last_name": "User",
     "tenant_id": null,
-    "date_joined": "2026-04-19T10:42:20.404008Z",
+    "date_joined": "2026-04-20T07:16:32.090368Z",
     "common_name": "Admin User"
   },
   "initially_published_at": null,
@@ -177,19 +141,19 @@
   "enable_embedding": false,
   "collection_id": null,
   "query_type": "native",
-  "name": "Media Attention",
-  "last_query_start": "2026-04-19T17:38:02.106022Z",
+  "name": "Tone Analysis per Person",
+  "last_query_start": "2026-04-20T11:21:55.799557Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-04-19T17:38:02.108625Z",
+  "last_used_at": "2026-04-20T11:21:55.993493Z",
   "dashboard": null,
   "type": "question",
-  "average_query_time": 58.0,
+  "average_query_time": 51.18181818181818,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-04-19T17:18:39.802089Z",
+  "updated_at": "2026-04-20T08:09:29.030684Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -199,7 +163,7 @@
     "stages": [
       {
         "lib/type": "mbql.stage/native",
-        "native": "WITH mentions_last_24h AS (\n    SELECT\n        m.global_event_id,\n        to_timestamp(m.mention_time_date::text, 'YYYYMMDDHH24MISS') AS mention_ts\n    FROM public.mentions AS m\n    JOIN public.events AS e USING (global_event_id)\n    WHERE m.mention_time_date >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n),\ntop_10_events AS (\n    SELECT global_event_id\n    FROM mentions_last_24h\n    GROUP BY global_event_id\n    ORDER BY COUNT(*) DESC\n    LIMIT 10\n)\nSELECT\n    m.global_event_id,\n    e.action_geo_name,\n    erc.description AS event_description,\n    COUNT(*) AS mention_count\nFROM mentions_last_24h AS m\nJOIN top_10_events AS t USING (global_event_id)\nINNER JOIN public.events AS e ON e.global_event_id = m.global_event_id\nINNER JOIN public_lookup.event_root_code AS erc ON erc.event_root_code = e.event_root_code\nGROUP BY\n    m.global_event_id,\n    e.action_geo_name,\n    erc.description\nORDER BY\n    m.global_event_id"
+        "native": "WITH gkg_last_24h AS (\n    SELECT persons, tone\n    FROM public.gkg\n    WHERE gkg_date >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n      AND persons IS NOT NULL\n      AND persons <> ''\n      AND tone IS NOT NULL\n),\nexploded_persons AS (\n    SELECT\n        trim(person) AS person,\n        tone\n    FROM gkg_last_24h,\n         unnest(string_to_array(persons, ';')) AS person\n    WHERE trim(person) <> ''\n)\nSELECT\n    initcap(person) AS person,\n    COUNT(*) AS article_count,\n    ROUND(AVG(tone)::numeric, 3) AS avg_tone\nFROM exploded_persons\nGROUP BY person\nHAVING COUNT(*) >= 10\nORDER BY article_count DESC\nLIMIT 15;\n"
       }
     ]
   },
@@ -207,9 +171,9 @@
   "legacy_query": null,
   "parameter_mappings": [],
   "can_manage_db": true,
-  "display": "sankey",
+  "display": "combo",
   "archived_directly": false,
-  "entity_id": "oakURPVtfstGwJx6rKluO",
+  "entity_id": "zw1DvMW3FZiV4fJlkI_7w",
   "param_fields": {},
   "collection_preview": true,
   "last-edit-info": {
@@ -217,20 +181,26 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "last_name": "User",
-    "timestamp": "2026-04-19T17:18:39.805314Z"
+    "timestamp": "2026-04-20T08:09:29.042849Z"
   },
   "visualization_settings": {
     "graph.dimensions": [
-      "event_hour",
-      "action_geo_name"
+      "person"
     ],
-    "graph.series_order_dimension": null,
-    "graph.series_order": null,
-    "sankey.source": "action_geo_name",
-    "sankey.target": "event_description",
-    "sankey.value": "mention_count",
+    "graph.x_axis.title_text": "Person",
+    "graph.y_axis.title_text": "Average tone",
+    "series_settings": {
+      "avg_tone": {
+        "title": "Average tone"
+      },
+      "article_count": {
+        "title": "Articles"
+      }
+    },
+    "graph.x_axis.scale": "ordinal",
     "graph.metrics": [
-      "mention_count"
+      "avg_tone",
+      "article_count"
     ]
   },
   "collection": {
@@ -245,7 +215,7 @@
   "metabase_version": "v0.59.6.5 (809ffc8)",
   "parameters": [],
   "dashboard_id": null,
-  "created_at": "2026-04-19T17:18:39.802089Z",
+  "created_at": "2026-04-20T07:17:32.165325Z",
   "parameter_usage_count": 0,
   "public_uuid": null,
   "can_delete": false

@@ -1,8 +1,8 @@
 {
-  "cache_invalidated_at": null,
-  "description": "Average tone by person or organization from the GKG data.",
+  "cache_invalidated_at": "2026-04-20T08:09:47.966189Z",
+  "description": "Average tone by organization from the GKG data.",
   "archived": false,
-  "view_count": 1,
+  "view_count": 11,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
@@ -11,25 +11,25 @@
     {
       "database_type": "text",
       "semantic_type": null,
-      "lib/deduplicated-name": "person",
-      "lib/original-name": "person",
-      "name": "person",
+      "lib/deduplicated-name": "organization",
+      "lib/original-name": "organization",
+      "name": "organization",
       "lib/source": "source/native",
-      "lib/source-column-alias": "person",
+      "lib/source-column-alias": "organization",
       "source": "native",
       "field_ref": [
         "field",
-        "person",
+        "organization",
         {
           "base-type": "type/Text"
         }
       ],
       "effective_type": "type/Text",
-      "lib/desired-column-alias": "person",
-      "display_name": "person",
+      "lib/desired-column-alias": "organization",
+      "display_name": "organization",
       "fingerprint": {
         "global": {
-          "distinct-count": 25,
+          "distinct-count": 15,
           "nil%": 0.0
         },
         "type": {
@@ -38,7 +38,7 @@
             "percent-url": 0.0,
             "percent-email": 0.0,
             "percent-state": 0.0,
-            "average-length": 13.24
+            "average-length": 13.933333333333334
           }
         }
       },
@@ -65,17 +65,17 @@
       "display_name": "article_count",
       "fingerprint": {
         "global": {
-          "distinct-count": 22,
+          "distinct-count": 14,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 111.0,
-            "q1": 119.75,
-            "q3": 195.75,
-            "max": 1118.0,
-            "sd": 205.02754286518027,
-            "avg": 210.28
+            "min": 122.0,
+            "q1": 157.25,
+            "q3": 248.5,
+            "max": 1262.0,
+            "sd": 280.16806180780645,
+            "avg": 272.0
           }
         }
       },
@@ -102,17 +102,17 @@
       "display_name": "avg_tone",
       "fingerprint": {
         "global": {
-          "distinct-count": 25,
+          "distinct-count": 15,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": -6.995,
-            "q1": -4.9295,
-            "q3": -2.18325,
-            "max": 1.677,
-            "sd": 2.1201785522293477,
-            "avg": -3.0455200000000002
+            "min": -6.333,
+            "q1": -3.863,
+            "q3": -1.17675,
+            "max": 1.912,
+            "sd": 2.204207426934312,
+            "avg": -2.3546666666666667
           }
         }
       },
@@ -125,13 +125,13 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "is_data_analyst": false,
-    "last_login": "2026-04-19T17:40:48.069844Z",
+    "last_login": "2026-04-20T11:22:30.021389Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
     "last_name": "User",
     "tenant_id": null,
-    "date_joined": "2026-04-19T10:42:20.404008Z",
+    "date_joined": "2026-04-20T07:16:32.090368Z",
     "common_name": "Admin User"
   },
   "initially_published_at": null,
@@ -141,19 +141,19 @@
   "enable_embedding": false,
   "collection_id": null,
   "query_type": "native",
-  "name": "Tone Analysis per Person",
-  "last_query_start": "2026-04-19T17:38:25.087488Z",
+  "name": "Tone Analysis per Organization",
+  "last_query_start": "2026-04-20T11:21:55.808903Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-04-19T17:38:25.089934Z",
+  "last_used_at": "2026-04-20T11:21:55.993493Z",
   "dashboard": null,
   "type": "question",
-  "average_query_time": 79.0,
+  "average_query_time": 43.0,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-04-19T17:30:34.94886Z",
+  "updated_at": "2026-04-20T08:09:47.969074Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -162,8 +162,8 @@
     "database": 2,
     "stages": [
       {
-        "lib/type": "mbql.stage/native",
-        "native": "WITH gkg_last_24h AS (\n    SELECT persons, tone\n    FROM public.gkg\n    WHERE gkg_date >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n      AND persons IS NOT NULL\n      AND persons <> ''\n      AND tone IS NOT NULL\n),\nexploded_persons AS (\n    SELECT\n        trim(person) AS person,\n        tone\n    FROM gkg_last_24h,\n         unnest(string_to_array(persons, ';')) AS person\n    WHERE trim(person) <> ''\n)\nSELECT\n    initcap(person) AS person,\n    COUNT(*) AS article_count,\n    ROUND(AVG(tone)::numeric, 3) AS avg_tone\nFROM exploded_persons\nGROUP BY person\nHAVING COUNT(*) >= 10\nORDER BY article_count DESC\nLIMIT 25;\n"
+        "native": "WITH gkg_last_24h AS (\n    SELECT organizations, tone\n    FROM public.gkg\n    WHERE gkg_date >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n      AND organizations IS NOT NULL\n      AND organizations <> ''\n      AND tone IS NOT NULL\n),\nexploded_organizations AS (\n    SELECT\n        trim(organization) AS organization,\n        tone\n    FROM gkg_last_24h,\n         unnest(string_to_array(organizations, ';')) AS organization\n    WHERE trim(organization) <> ''\n)\nSELECT\n    initcap(organization) AS organization,\n    COUNT(*) AS article_count,\n    ROUND(AVG(tone)::numeric, 3) AS avg_tone\nFROM exploded_organizations\nGROUP BY organization\nHAVING COUNT(*) >= 10\nORDER BY article_count DESC\nLIMIT 15;",
+        "lib/type": "mbql.stage/native"
       }
     ]
   },
@@ -173,7 +173,7 @@
   "can_manage_db": true,
   "display": "combo",
   "archived_directly": false,
-  "entity_id": "tn5uAQV3fCaFOZUQb_lo7",
+  "entity_id": "qoijerjBIxwZH7K_KTzQj",
   "param_fields": {},
   "collection_preview": true,
   "last-edit-info": {
@@ -181,14 +181,12 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "last_name": "User",
-    "timestamp": "2026-04-19T17:30:34.952311Z"
+    "timestamp": "2026-04-20T08:09:47.977957Z"
   },
   "visualization_settings": {
     "graph.dimensions": [
-      "person"
+      "organization"
     ],
-    "graph.x_axis.title_text": "Person",
-    "graph.y_axis.title_text": "Average tone",
     "series_settings": {
       "avg_tone": {
         "title": "Average tone"
@@ -197,6 +195,7 @@
         "title": "Articles"
       }
     },
+    "graph.x_axis.title_text": "Organization",
     "graph.x_axis.scale": "ordinal",
     "graph.metrics": [
       "avg_tone",
@@ -215,7 +214,7 @@
   "metabase_version": "v0.59.6.5 (809ffc8)",
   "parameters": [],
   "dashboard_id": null,
-  "created_at": "2026-04-19T17:30:34.94886Z",
+  "created_at": "2026-04-20T07:17:32.202973Z",
   "parameter_usage_count": 0,
   "public_uuid": null,
   "can_delete": false

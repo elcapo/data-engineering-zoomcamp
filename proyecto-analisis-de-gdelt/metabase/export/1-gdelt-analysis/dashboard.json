@@ -1,7 +1,7 @@
 {
   "description": "Charts that help making insights on the most recent events",
   "archived": false,
-  "view_count": 11,
+  "view_count": 15,
   "collection_position": null,
   "dashcards": [
     {
@@ -12,18 +12,18 @@
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": null,
+        "cache_invalidated_at": "2026-04-20T09:58:50.875852Z",
         "description": "Geolocated events plotted on a world map, colored by Goldstein scale (conflict ↔ cooperation).",
         "archived": false,
         "view_count": 11,
         "collection_position": null,
         "source_card_id": null,
-        "table_id": 31,
+        "table_id": 40,
         "result_metadata": [
           {
             "database_type": "text",
             "semantic_type": null,
-            "table_id": 36,
+            "table_id": 48,
             "qp/implicit-field?": true,
             "lib/deduplicated-name": "iso2",
             "lib/original-name": "iso2",
@@ -36,14 +36,14 @@
             "lib/original-join-alias": "Country Code - Actor1 Country",
             "field_ref": [
               "field",
-              199,
+              407,
               {
                 "join-alias": "Country Code - Actor1 Country"
               }
             ],
             "effective_type": "type/Text",
             "active": true,
-            "id": 199,
+            "id": 407,
             "lib/desired-column-alias": "Country Code - Actor1 Country__iso2",
             "position": 1,
             "visibility_type": "normal",
@@ -70,7 +70,7 @@
           {
             "database_type": "text",
             "semantic_type": "type/Name",
-            "table_id": 36,
+            "table_id": 48,
             "qp/implicit-field?": true,
             "lib/deduplicated-name": "name",
             "lib/original-name": "name",
@@ -83,14 +83,14 @@
             "lib/original-join-alias": "Country Code - Actor1 Country",
             "field_ref": [
               "field",
-              200,
+              408,
               {
                 "join-alias": "Country Code - Actor1 Country"
               }
             ],
             "effective_type": "type/Text",
             "active": true,
-            "id": 200,
+            "id": 408,
             "lib/desired-column-alias": "Country Code - Actor1 Country__name",
             "position": 2,
             "visibility_type": "normal",
@@ -132,17 +132,17 @@
             "display_name": "Average of Goldstein Scale",
             "fingerprint": {
               "global": {
-                "distinct-count": 70,
+                "distinct-count": 74,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": -4.5,
-                  "q1": -0.041657175368153304,
-                  "q3": 2.3424999862909317,
-                  "max": 6.700000047683716,
-                  "sd": 2.16369542724323,
-                  "avg": 0.8774554451455472
+                  "min": -8.333333333333334,
+                  "q1": 0.20799999237060546,
+                  "q3": 2.5835293983711916,
+                  "max": 7.400000095367432,
+                  "sd": 2.419667342056259,
+                  "avg": 1.1205657768480377
                 }
               }
             },
@@ -161,12 +161,12 @@
         "download_perms": "full",
         "name": "Global Event Map",
         "document_id": null,
-        "last_used_at": "2026-04-19T17:37:26.289918Z",
+        "last_used_at": "2026-04-20T11:21:55.993493Z",
         "type": "question",
-        "query_average_duration": 76,
+        "query_average_duration": 73,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-04-19T13:39:52.698101Z",
+        "updated_at": "2026-04-20T09:58:50.877989Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -175,6 +175,65 @@
           "database": 2,
           "stages": [
             {
+              "joins": [
+                {
+                  "lib/type": "mbql/join",
+                  "fields": "all",
+                  "conditions": [
+                    [
+                      "=",
+                      {
+                        "lib/uuid": "b89e17b1-bc60-4534-93ae-0762c6814387"
+                      },
+                      [
+                        "field",
+                        {
+                          "lib/uuid": "2841c385-3434-4eac-992a-4db94e22868b",
+                          "effective-type": "type/Text",
+                          "base-type": "type/Text"
+                        },
+                        351
+                      ],
+                      [
+                        "field",
+                        {
+                          "base-type": "type/Text",
+                          "lib/uuid": "428b1f97-aa9c-482b-b15a-3334413a56d9",
+                          "effective-type": "type/Text",
+                          "join-alias": "Country Code - Actor1 Country"
+                        },
+                        406
+                      ]
+                    ]
+                  ],
+                  "strategy": "left-join",
+                  "stages": [
+                    {
+                      "lib/type": "mbql.stage/mbql",
+                      "lib/options": {
+                        "lib/uuid": "0dbff49d-a82b-4f13-b087-91a074e0aad5"
+                      },
+                      "source-table": 48
+                    }
+                  ],
+                  "lib/options": {
+                    "lib/uuid": "7593fc88-bf02-42b1-b073-73e9f2ebbf6a"
+                  },
+                  "alias": "Country Code - Actor1 Country"
+                }
+              ],
+              "fields": [
+                [
+                  "field",
+                  {
+                    "effective-type": "type/BigInteger",
+                    "lib/uuid": "2a12efd9-9a94-4d6f-b4a4-e64f03c9935b",
+                    "base-type": "type/BigInteger"
+                  },
+                  344
+                ]
+              ],
+              "source-table": 40,
               "lib/type": "mbql.stage/mbql",
               "filters": [
                 [
@@ -185,11 +244,11 @@
                   [
                     "field",
                     {
-                      "effective-type": "type/DateTimeWithLocalTZ",
                       "lib/uuid": "8db360c1-090d-4835-b790-7222196e050a",
+                      "effective-type": "type/DateTimeWithLocalTZ",
                       "base-type": "type/DateTimeWithLocalTZ"
                     },
-                    146
+                    354
                   ],
                   0,
                   "day"
@@ -204,73 +263,14 @@
                   [
                     "field",
                     {
-                      "effective-type": "type/Float",
                       "lib/uuid": "a96e363a-1b03-41a1-abfd-cb0ef7646704",
+                      "effective-type": "type/Float",
                       "base-type": "type/Float"
                     },
-                    139
+                    347
                   ]
                 ]
               ],
-              "joins": [
-                {
-                  "lib/type": "mbql/join",
-                  "stages": [
-                    {
-                      "lib/options": {
-                        "lib/uuid": "0dbff49d-a82b-4f13-b087-91a074e0aad5"
-                      },
-                      "lib/type": "mbql.stage/mbql",
-                      "source-table": 36
-                    }
-                  ],
-                  "lib/options": {
-                    "lib/uuid": "7593fc88-bf02-42b1-b073-73e9f2ebbf6a"
-                  },
-                  "fields": "all",
-                  "conditions": [
-                    [
-                      "=",
-                      {
-                        "lib/uuid": "b89e17b1-bc60-4534-93ae-0762c6814387"
-                      },
-                      [
-                        "field",
-                        {
-                          "effective-type": "type/Text",
-                          "lib/uuid": "2841c385-3434-4eac-992a-4db94e22868b",
-                          "base-type": "type/Text"
-                        },
-                        143
-                      ],
-                      [
-                        "field",
-                        {
-                          "base-type": "type/Text",
-                          "lib/uuid": "428b1f97-aa9c-482b-b15a-3334413a56d9",
-                          "effective-type": "type/Text",
-                          "join-alias": "Country Code - Actor1 Country"
-                        },
-                        198
-                      ]
-                    ]
-                  ],
-                  "strategy": "left-join",
-                  "alias": "Country Code - Actor1 Country"
-                }
-              ],
-              "fields": [
-                [
-                  "field",
-                  {
-                    "lib/uuid": "2a12efd9-9a94-4d6f-b4a4-e64f03c9935b",
-                    "effective-type": "type/BigInteger",
-                    "base-type": "type/BigInteger"
-                  },
-                  136
-                ]
-              ],
-              "source-table": 31,
               "breakout": [
                 [
                   "field",
@@ -280,7 +280,7 @@
                     "base-type": "type/Text",
                     "join-alias": "Country Code - Actor1 Country"
                   },
-                  199
+                  407
                 ],
                 [
                   "field",
@@ -290,18 +290,18 @@
                     "lib/uuid": "d96008c0-034a-4929-af00-d7ad60bed386",
                     "join-alias": "Country Code - Actor1 Country"
                   },
-                  200
+                  408
                 ]
               ]
             }
           ]
         },
-        "id": 41,
+        "id": 40,
         "legacy_query": null,
         "parameter_mappings": [],
         "display": "map",
         "archived_directly": false,
-        "entity_id": "2D0CnEKOqOhvWOBr3CvfU",
+        "entity_id": "bSPGDlNwx5pdyBTIbkHVd",
         "collection_preview": true,
         "visualization_settings": {
           "map.center_latitude": 18.145851771694467,
@@ -310,25 +310,32 @@
           "map.type": "region",
           "map.dimension": "iso2",
           "map.metric": "goldstein_scale",
-          "map.region": "world_countries"
+          "map.region": "world_countries",
+          "map.colors": [
+            "hsl(26.19999999999999, 91.3%, 57.1%)",
+            "rgb(249, 175, 118)",
+            "rgb(250, 194, 151)",
+            "rgb(252, 213, 183)",
+            "rgb(253, 232, 216)"
+          ]
         },
         "metabase_version": "v0.59.6.5 (809ffc8)",
         "parameters": [],
         "dashboard_id": null,
-        "created_at": "2026-04-19T13:39:52.698101Z",
+        "created_at": "2026-04-20T07:17:31.943145Z",
         "public_uuid": null
       },
-      "updated_at": "2026-04-19T16:01:50.188822Z",
+      "updated_at": "2026-04-20T10:12:56.407246Z",
       "col": 0,
       "id": 37,
       "parameter_mappings": [],
-      "card_id": 41,
-      "entity_id": "CverqbJTKXPtojtSzSbsV",
+      "card_id": 40,
+      "entity_id": "UtNIr5XgsuELMFhcnu5fI",
       "visualization_settings": {},
       "size_y": 12,
       "dashboard_id": 2,
-      "created_at": "2026-04-19T13:39:52.882438Z",
-      "row": 0
+      "created_at": "2026-04-20T07:17:32.282224Z",
+      "row": 2
     },
     {
       "size_x": 24,
@@ -338,13 +345,13 @@
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": "2026-04-19T16:42:55.901213Z",
+        "cache_invalidated_at": null,
         "description": "Time-series of events per hour window, broken down by event root code.",
         "archived": false,
-        "view_count": 13,
+        "view_count": 10,
         "collection_position": null,
         "source_card_id": null,
-        "table_id": 39,
+        "table_id": null,
         "result_metadata": [
           {
             "database_type": "timestamp",
@@ -367,13 +374,13 @@
             "display_name": "event_hour",
             "fingerprint": {
               "global": {
-                "distinct-count": 8,
+                "distinct-count": 5,
                 "nil%": 0.0
               },
               "type": {
                 "type/DateTime": {
-                  "earliest": "2026-04-19T10:00:00Z",
-                  "latest": "2026-04-19T17:00:00Z"
+                  "earliest": "2026-04-20T07:00:00Z",
+                  "latest": "2026-04-20T11:00:00Z"
                 }
               }
             },
@@ -409,7 +416,7 @@
                   "percent-url": 0.0,
                   "percent-email": 0.0,
                   "percent-state": 0.0,
-                  "average-length": 14.9
+                  "average-length": 12.5
                 }
               }
             },
@@ -436,17 +443,17 @@
             "display_name": "sum",
             "fingerprint": {
               "global": {
-                "distinct-count": 72,
+                "distinct-count": 48,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": 2.0,
-                  "q1": 39.10660171779821,
-                  "q3": 166.0,
-                  "max": 1468.0,
-                  "sd": 192.46829428193485,
-                  "avg": 137.5
+                  "min": 11.0,
+                  "q1": 50.0,
+                  "q3": 200.0,
+                  "max": 868.0,
+                  "sd": 170.45229627705945,
+                  "avg": 158.88
                 }
               }
             },
@@ -465,12 +472,12 @@
         "download_perms": "full",
         "name": "Event Volume",
         "document_id": null,
-        "last_used_at": "2026-04-19T17:37:26.289918Z",
+        "last_used_at": "2026-04-20T11:21:55.993493Z",
         "type": "question",
-        "query_average_duration": 6,
+        "query_average_duration": 29,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-04-19T16:42:55.902707Z",
+        "updated_at": "2026-04-20T07:17:32.026382Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -484,12 +491,12 @@
             }
           ]
         },
-        "id": 42,
+        "id": 41,
         "legacy_query": null,
         "parameter_mappings": [],
         "display": "line",
         "archived_directly": false,
-        "entity_id": "nxzMKc4G1vEhmk9nSHcv0",
+        "entity_id": "9YL0wd_e0fTT6MzSjrtYI",
         "collection_preview": true,
         "visualization_settings": {
           "graph.x_axis.scale": "timeseries",
@@ -508,36 +515,36 @@
         "metabase_version": "v0.59.6.5 (809ffc8)",
         "parameters": [],
         "dashboard_id": null,
-        "created_at": "2026-04-19T13:39:52.752316Z",
+        "created_at": "2026-04-20T07:17:32.026382Z",
         "public_uuid": null
       },
-      "updated_at": "2026-04-19T16:01:50.188822Z",
+      "updated_at": "2026-04-20T10:12:56.407246Z",
       "col": 0,
-      "id": 39,
+      "id": 38,
       "parameter_mappings": [],
-      "card_id": 42,
-      "entity_id": "5Ubh-KNjBoPChYvr4fbLl",
+      "card_id": 41,
+      "entity_id": "PBAuMQ6lD8GjMk-c3hMwm",
       "visualization_settings": {},
       "size_y": 10,
       "dashboard_id": 2,
-      "created_at": "2026-04-19T13:39:52.882438Z",
-      "row": 12
+      "created_at": "2026-04-20T07:17:32.282224Z",
+      "row": 38
     },
     {
-      "size_x": 12,
+      "size_x": 24,
       "dashboard_tab_id": null,
       "series": [],
       "inline_parameters": [],
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": "2026-04-19T16:34:48.138652Z",
+        "cache_invalidated_at": "2026-04-20T11:21:49.443661Z",
         "description": "Rolling average of the Goldstein scale by country or region.",
         "archived": false,
-        "view_count": 17,
+        "view_count": 11,
         "collection_position": null,
         "source_card_id": null,
-        "table_id": 19,
+        "table_id": null,
         "result_metadata": [
           {
             "database_type": "text",
@@ -560,7 +567,7 @@
             "display_name": "event_hour",
             "fingerprint": {
               "global": {
-                "distinct-count": 7,
+                "distinct-count": 4,
                 "nil%": 0.0
               },
               "type": {
@@ -569,7 +576,7 @@
                   "percent-url": 0.0,
                   "percent-email": 0.0,
                   "percent-state": 0.0,
-                  "average-length": 5.0
+                  "average-length": 4.25
                 }
               }
             },
@@ -605,7 +612,7 @@
                   "percent-url": 0.0,
                   "percent-email": 0.0,
                   "percent-state": 0.0,
-                  "average-length": 7.701492537313433
+                  "average-length": 9.6
                 }
               }
             },
@@ -632,17 +639,17 @@
             "display_name": "avg_goldstein",
             "fingerprint": {
               "global": {
-                "distinct-count": 60,
+                "distinct-count": 37,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": -4.67,
-                  "q1": 0.0375,
-                  "q3": 1.895,
-                  "max": 6.0,
-                  "sd": 1.6453815411938084,
-                  "avg": 0.8279104477611938
+                  "min": -2.82,
+                  "q1": -0.024999999999999994,
+                  "q3": 1.5,
+                  "max": 3.75,
+                  "sd": 1.3701165961988373,
+                  "avg": 0.819
                 }
               }
             },
@@ -661,12 +668,12 @@
         "download_perms": "full",
         "name": "Conflict Trend",
         "document_id": null,
-        "last_used_at": "2026-04-19T17:37:26.289918Z",
+        "last_used_at": "2026-04-20T11:21:55.993493Z",
         "type": "question",
-        "query_average_duration": 6,
+        "query_average_duration": 3,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-04-19T16:34:48.14025Z",
+        "updated_at": "2026-04-20T11:21:49.445875Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -675,17 +682,17 @@
           "database": 2,
           "stages": [
             {
-              "native": "WITH top_countries AS (\n  SELECT country\n  FROM \"public\".\"event_counts_by_country\"\n  WHERE window_start >= NOW() - (INTERVAL '1 hour' * 10)\n    AND country IS NOT NULL\n    AND country <> ''\n  GROUP BY country\n  ORDER BY SUM(event_count) DESC\n  LIMIT 10\n)\nSELECT\n  CONCAT(DATE_PART('hour', ct.window_start), ':00') AS event_hour,\n  cc.name AS country_name,\n  ROUND(CAST(AVG(ct.avg_goldstein) AS NUMERIC), 2) AS avg_goldstein\nFROM \"public_dashboard\".\"conflict_trend\" AS ct\nINNER JOIN \"public_lookup\".\"un_country_code\" AS cc ON cc.iso3 = ct.country\nINNER JOIN top_countries tc USING (country)\nWHERE ct.window_start >= NOW() - (INTERVAL '1 hour' * 10)\nGROUP BY 1, 2\nORDER BY 1 ASC, 2 ASC",
+              "native": "WITH top_countries AS (\n  SELECT country\n  FROM \"public\".\"event_counts_by_country\"\n  WHERE window_start >= NOW() - (INTERVAL '1 hour' * 10)\n    AND country IS NOT NULL\n    AND country <> ''\n  GROUP BY country\n  ORDER BY SUM(event_count) DESC\n  LIMIT 10\n)\nSELECT\n  CONCAT(DATE_PART('hour', ct.window_start), ':00') AS event_hour,\n  cc.name AS country_name,\n  ROUND(CAST(AVG(ct.avg_goldstein) AS NUMERIC), 2) AS avg_goldstein\nFROM \"public_dashboard\".\"conflict_trend\" AS ct\nINNER JOIN \"public_lookup\".\"un_country_code\" AS cc ON cc.iso3 = ct.country\nINNER JOIN top_countries tc USING (country)\nWHERE ct.window_start >= NOW() - (INTERVAL '1 hour' * 10)\nGROUP BY DATE_PART('hour', ct.window_start), 2\nORDER BY DATE_PART('hour', ct.window_start) ASC, 2 ASC",
               "lib/type": "mbql.stage/native"
             }
           ]
         },
-        "id": 43,
+        "id": 42,
         "legacy_query": null,
         "parameter_mappings": [],
         "display": "table",
         "archived_directly": false,
-        "entity_id": "WRNk9oC3MnHaW9nP0j_vu",
+        "entity_id": "YVwkEBXgGKB7Qqq_S74GU",
         "collection_preview": true,
         "visualization_settings": {
           "pivot_table.column_split": {
@@ -725,33 +732,33 @@
         "metabase_version": "v0.59.6.5 (809ffc8)",
         "parameters": [],
         "dashboard_id": null,
-        "created_at": "2026-04-19T13:39:52.796211Z",
+        "created_at": "2026-04-20T07:17:32.067836Z",
         "public_uuid": null
       },
-      "updated_at": "2026-04-19T17:39:01.543582Z",
+      "updated_at": "2026-04-20T10:12:56.407246Z",
       "col": 0,
-      "id": 40,
+      "id": 39,
       "parameter_mappings": [],
-      "card_id": 43,
-      "entity_id": "w9DTOnueV0i4OdtzMQFDc",
+      "card_id": 42,
+      "entity_id": "zWAVumqgKKr7MDJQtFK_S",
       "visualization_settings": {},
-      "size_y": 11,
+      "size_y": 7,
       "dashboard_id": 2,
-      "created_at": "2026-04-19T13:39:52.882438Z",
-      "row": 22
+      "created_at": "2026-04-20T07:17:32.282224Z",
+      "row": 50
     },
     {
-      "size_x": 12,
+      "size_x": 10,
       "dashboard_tab_id": null,
       "series": [],
       "inline_parameters": [],
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": "2026-04-19T16:55:59.972991Z",
+        "cache_invalidated_at": "2026-04-20T10:14:26.747611Z",
         "description": "Most active actors in the recent news.",
         "archived": false,
-        "view_count": 2,
+        "view_count": 12,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -786,7 +793,7 @@
                   "percent-url": 0.0,
                   "percent-email": 0.0,
                   "percent-state": 0.0,
-                  "average-length": 7.4
+                  "average-length": 9.7
                 }
               }
             },
@@ -818,12 +825,12 @@
               },
               "type": {
                 "type/Number": {
-                  "min": 173.0,
-                  "q1": 199.0,
-                  "q3": 507.0,
-                  "max": 2512.0,
-                  "sd": 709.4084311750336,
-                  "avg": 576.1
+                  "min": 212.0,
+                  "q1": 237.0,
+                  "q3": 488.0,
+                  "max": 1846.0,
+                  "sd": 498.60896502168913,
+                  "avg": 511.3
                 }
               }
             },
@@ -842,12 +849,12 @@
         "download_perms": "full",
         "name": "Top Actors",
         "document_id": null,
-        "last_used_at": "2026-04-19T17:37:56.426388Z",
+        "last_used_at": "2026-04-20T11:21:55.993493Z",
         "type": "question",
-        "query_average_duration": 14,
+        "query_average_duration": 35,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-04-19T16:55:59.97445Z",
+        "updated_at": "2026-04-20T10:14:26.749042Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -861,18 +868,120 @@
             }
           ]
         },
-        "id": 44,
+        "id": 43,
         "legacy_query": null,
         "parameter_mappings": [],
         "display": "pie",
         "archived_directly": false,
-        "entity_id": "1PZTMsbBsGJf8cljKcMgE",
+        "entity_id": "5WZymato_5nS9-DLqHQkO",
         "collection_preview": true,
         "visualization_settings": {
-          "pie.slice_threshold": 5,
+          "pie.slice_threshold": 7,
           "pie.percent_visibility": "inside",
           "graph.series_order_dimension": null,
           "pie.show_labels": true,
+          "pie.rows": [
+            {
+              "key": "United States",
+              "name": "United States",
+              "originalName": "United States",
+              "color": "#509EE3",
+              "defaultColor": true,
+              "enabled": true,
+              "hidden": false,
+              "isOther": false
+            },
+            {
+              "key": "Iran",
+              "name": "Iran",
+              "originalName": "Iran",
+              "color": "#69C8C8",
+              "defaultColor": false,
+              "enabled": true,
+              "hidden": false,
+              "isOther": false
+            },
+            {
+              "key": "United Kingdom",
+              "name": "United Kingdom",
+              "originalName": "United Kingdom",
+              "color": "#F7C41F",
+              "defaultColor": false,
+              "enabled": true,
+              "hidden": false,
+              "isOther": false
+            },
+            {
+              "key": "Israel",
+              "name": "Israel",
+              "originalName": "Israel",
+              "color": "#E75454",
+              "defaultColor": false,
+              "enabled": true,
+              "hidden": false,
+              "isOther": false
+            },
+            {
+              "key": "India",
+              "name": "India",
+              "originalName": "India",
+              "color": "#ED8535",
+              "defaultColor": false,
+              "enabled": true,
+              "hidden": false,
+              "isOther": false
+            },
+            {
+              "key": "Pakistan",
+              "name": "Pakistan",
+              "originalName": "Pakistan",
+              "color": "#88BF4D",
+              "defaultColor": true,
+              "enabled": true,
+              "hidden": false,
+              "isOther": true
+            },
+            {
+              "key": "Australia",
+              "name": "Australia",
+              "originalName": "Australia",
+              "color": "#689636",
+              "defaultColor": true,
+              "enabled": true,
+              "hidden": false,
+              "isOther": true
+            },
+            {
+              "key": "Canada",
+              "name": "Canada",
+              "originalName": "Canada",
+              "color": "#A989C5",
+              "defaultColor": true,
+              "enabled": true,
+              "hidden": false,
+              "isOther": true
+            },
+            {
+              "key": "Korea, Republic of (Seoul)",
+              "name": "Korea, Republic of (Seoul)",
+              "originalName": "Korea, Republic of (Seoul)",
+              "color": "#8A5EB0",
+              "defaultColor": true,
+              "enabled": true,
+              "hidden": false,
+              "isOther": true
+            },
+            {
+              "key": "China",
+              "name": "China",
+              "originalName": "China",
+              "color": "#EF8C8C",
+              "defaultColor": true,
+              "enabled": true,
+              "hidden": false,
+              "isOther": true
+            }
+          ],
           "graph.metrics": [
             "event_count"
           ],
@@ -887,23 +996,23 @@
         "metabase_version": "v0.59.6.5 (809ffc8)",
         "parameters": [],
         "dashboard_id": null,
-        "created_at": "2026-04-19T16:52:57.736919Z",
+        "created_at": "2026-04-20T07:17:32.104198Z",
         "public_uuid": null
       },
-      "updated_at": "2026-04-19T17:39:01.543582Z",
-      "col": 12,
-      "id": 41,
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 0,
+      "id": 40,
       "parameter_mappings": [],
-      "card_id": 44,
-      "entity_id": "IsIP89grbw4wfM7WCYtYQ",
+      "card_id": 43,
+      "entity_id": "A65uhmg9g3ud1Gk36N5DX",
       "visualization_settings": {},
-      "size_y": 11,
+      "size_y": 10,
       "dashboard_id": 2,
-      "created_at": "2026-04-19T17:39:01.543582Z",
-      "row": 22
+      "created_at": "2026-04-20T07:17:32.282224Z",
+      "row": 16
     },
     {
-      "size_x": 24,
+      "size_x": 14,
       "dashboard_tab_id": null,
       "series": [],
       "inline_parameters": [],
@@ -913,7 +1022,7 @@
         "cache_invalidated_at": null,
         "description": "Regions and Topics where the Recent Media Attention is Focused.",
         "archived": false,
-        "view_count": 1,
+        "view_count": 10,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -944,12 +1053,12 @@
               },
               "type": {
                 "type/Number": {
-                  "min": 1299950336.0,
-                  "q1": 1299950437.0,
-                  "q3": 1299952922.0,
-                  "max": 1299957675.0,
-                  "sd": 2938.239134432579,
-                  "avg": 1299952353.9
+                  "min": 1300047448.0,
+                  "q1": 1300049075.0,
+                  "q3": 1300057850.0,
+                  "max": 1300058303.0,
+                  "sd": 4264.788572328841,
+                  "avg": 1300053785.7
                 }
               }
             },
@@ -976,7 +1085,7 @@
             "display_name": "action_geo_name",
             "fingerprint": {
               "global": {
-                "distinct-count": 3,
+                "distinct-count": 4,
                 "nil%": 0.0
               },
               "type": {
@@ -985,7 +1094,7 @@
                   "percent-url": 0.0,
                   "percent-email": 0.0,
                   "percent-state": 0.0,
-                  "average-length": 18.6
+                  "average-length": 29.0
                 }
               }
             },
@@ -1012,7 +1121,7 @@
             "display_name": "event_description",
             "fingerprint": {
               "global": {
-                "distinct-count": 4,
+                "distinct-count": 5,
                 "nil%": 0.0
               },
               "type": {
@@ -1021,7 +1130,7 @@
                   "percent-url": 0.0,
                   "percent-email": 0.0,
                   "percent-state": 0.0,
-                  "average-length": 12.1
+                  "average-length": 17.4
                 }
               }
             },
@@ -1048,17 +1157,17 @@
             "display_name": "mention_count",
             "fingerprint": {
               "global": {
-                "distinct-count": 5,
+                "distinct-count": 8,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": 71.0,
-                  "q1": 71.0,
-                  "q3": 90.0,
-                  "max": 97.0,
-                  "sd": 10.479609831583533,
-                  "avg": 79.6
+                  "min": 42.0,
+                  "q1": 58.373066958946424,
+                  "q3": 81.26794919243112,
+                  "max": 83.0,
+                  "sd": 15.263973561589031,
+                  "avg": 67.1
                 }
               }
             },
@@ -1077,12 +1186,12 @@
         "download_perms": "full",
         "name": "Media Attention",
         "document_id": null,
-        "last_used_at": "2026-04-19T17:38:02.108625Z",
+        "last_used_at": "2026-04-20T11:21:55.993493Z",
         "type": "question",
-        "query_average_duration": 38,
+        "query_average_duration": 212,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-04-19T17:18:39.802089Z",
+        "updated_at": "2026-04-20T07:17:32.13743Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -1096,12 +1205,12 @@
             }
           ]
         },
-        "id": 45,
+        "id": 44,
         "legacy_query": null,
         "parameter_mappings": [],
         "display": "sankey",
         "archived_directly": false,
-        "entity_id": "oakURPVtfstGwJx6rKluO",
+        "entity_id": "FkKLQD4_gY_uGD7tYgIkM",
         "collection_preview": true,
         "visualization_settings": {
           "graph.dimensions": [
@@ -1120,20 +1229,20 @@
         "metabase_version": "v0.59.6.5 (809ffc8)",
         "parameters": [],
         "dashboard_id": null,
-        "created_at": "2026-04-19T17:18:39.802089Z",
+        "created_at": "2026-04-20T07:17:32.13743Z",
         "public_uuid": null
       },
-      "updated_at": "2026-04-19T17:39:01.543582Z",
-      "col": 0,
-      "id": 42,
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 10,
+      "id": 41,
       "parameter_mappings": [],
-      "card_id": 45,
-      "entity_id": "627Mw55nrUDcQMPxFKnQE",
+      "card_id": 44,
+      "entity_id": "kQyNpg-nb1_364w_hsWuk",
       "visualization_settings": {},
       "size_y": 10,
       "dashboard_id": 2,
-      "created_at": "2026-04-19T17:39:01.543582Z",
-      "row": 33
+      "created_at": "2026-04-20T07:17:32.282224Z",
+      "row": 16
     },
     {
       "size_x": 12,
@@ -1143,10 +1252,10 @@
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": null,
+        "cache_invalidated_at": "2026-04-20T08:09:29.027988Z",
         "description": "Average tone by person or organization from the GKG data.",
         "archived": false,
-        "view_count": 1,
+        "view_count": 11,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -1172,7 +1281,7 @@
             "display_name": "person",
             "fingerprint": {
               "global": {
-                "distinct-count": 25,
+                "distinct-count": 15,
                 "nil%": 0.0
               },
               "type": {
@@ -1181,7 +1290,7 @@
                   "percent-url": 0.0,
                   "percent-email": 0.0,
                   "percent-state": 0.0,
-                  "average-length": 13.24
+                  "average-length": 13.866666666666667
                 }
               }
             },
@@ -1208,17 +1317,17 @@
             "display_name": "article_count",
             "fingerprint": {
               "global": {
-                "distinct-count": 22,
+                "distinct-count": 15,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": 111.0,
-                  "q1": 119.75,
-                  "q3": 195.75,
-                  "max": 1118.0,
-                  "sd": 205.02754286518027,
-                  "avg": 210.28
+                  "min": 88.0,
+                  "q1": 102.75,
+                  "q3": 186.25,
+                  "max": 751.0,
+                  "sd": 165.5594268216818,
+                  "avg": 178.26666666666668
                 }
               }
             },
@@ -1245,17 +1354,17 @@
             "display_name": "avg_tone",
             "fingerprint": {
               "global": {
-                "distinct-count": 25,
+                "distinct-count": 15,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": -6.995,
-                  "q1": -4.9295,
-                  "q3": -2.18325,
-                  "max": 1.677,
-                  "sd": 2.1201785522293477,
-                  "avg": -3.0455200000000002
+                  "min": -6.378,
+                  "q1": -6.154999999999999,
+                  "q3": -2.6875,
+                  "max": 0.326,
+                  "sd": 2.1535198584996564,
+                  "avg": -4.109733333333334
                 }
               }
             },
@@ -1274,12 +1383,12 @@
         "download_perms": "full",
         "name": "Tone Analysis per Person",
         "document_id": null,
-        "last_used_at": "2026-04-19T17:38:25.089934Z",
+        "last_used_at": "2026-04-20T11:21:55.993493Z",
         "type": "question",
-        "query_average_duration": 64,
+        "query_average_duration": 46,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-04-19T17:30:34.94886Z",
+        "updated_at": "2026-04-20T08:09:29.030684Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -1289,16 +1398,16 @@
           "stages": [
             {
               "lib/type": "mbql.stage/native",
-              "native": "WITH gkg_last_24h AS (\n    SELECT persons, tone\n    FROM public.gkg\n    WHERE gkg_date >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n      AND persons IS NOT NULL\n      AND persons <> ''\n      AND tone IS NOT NULL\n),\nexploded_persons AS (\n    SELECT\n        trim(person) AS person,\n        tone\n    FROM gkg_last_24h,\n         unnest(string_to_array(persons, ';')) AS person\n    WHERE trim(person) <> ''\n)\nSELECT\n    initcap(person) AS person,\n    COUNT(*) AS article_count,\n    ROUND(AVG(tone)::numeric, 3) AS avg_tone\nFROM exploded_persons\nGROUP BY person\nHAVING COUNT(*) >= 10\nORDER BY article_count DESC\nLIMIT 25;\n"
+              "native": "WITH gkg_last_24h AS (\n    SELECT persons, tone\n    FROM public.gkg\n    WHERE gkg_date >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n      AND persons IS NOT NULL\n      AND persons <> ''\n      AND tone IS NOT NULL\n),\nexploded_persons AS (\n    SELECT\n        trim(person) AS person,\n        tone\n    FROM gkg_last_24h,\n         unnest(string_to_array(persons, ';')) AS person\n    WHERE trim(person) <> ''\n)\nSELECT\n    initcap(person) AS person,\n    COUNT(*) AS article_count,\n    ROUND(AVG(tone)::numeric, 3) AS avg_tone\nFROM exploded_persons\nGROUP BY person\nHAVING COUNT(*) >= 10\nORDER BY article_count DESC\nLIMIT 15;\n"
             }
           ]
         },
-        "id": 46,
+        "id": 45,
         "legacy_query": null,
         "parameter_mappings": [],
         "display": "combo",
         "archived_directly": false,
-        "entity_id": "tn5uAQV3fCaFOZUQb_lo7",
+        "entity_id": "zw1DvMW3FZiV4fJlkI_7w",
         "collection_preview": true,
         "visualization_settings": {
           "graph.dimensions": [
@@ -1323,20 +1432,20 @@
         "metabase_version": "v0.59.6.5 (809ffc8)",
         "parameters": [],
         "dashboard_id": null,
-        "created_at": "2026-04-19T17:30:34.94886Z",
+        "created_at": "2026-04-20T07:17:32.165325Z",
         "public_uuid": null
       },
-      "updated_at": "2026-04-19T17:39:01.543582Z",
-      "col": 0,
-      "id": 43,
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 12,
+      "id": 42,
       "parameter_mappings": [],
-      "card_id": 46,
-      "entity_id": "8XdRXxr9kC1FOxDAIcsLg",
+      "card_id": 45,
+      "entity_id": "g2q6hRoxlMS4kdFQXZjDX",
       "visualization_settings": {},
-      "size_y": 6,
+      "size_y": 8,
       "dashboard_id": 2,
-      "created_at": "2026-04-19T17:39:01.543582Z",
-      "row": 43
+      "created_at": "2026-04-20T07:17:32.282224Z",
+      "row": 28
     },
     {
       "size_x": 12,
@@ -1346,10 +1455,10 @@
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": null,
+        "cache_invalidated_at": "2026-04-20T08:09:47.966189Z",
         "description": "Average tone by organization from the GKG data.",
         "archived": false,
-        "view_count": 1,
+        "view_count": 11,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -1375,7 +1484,7 @@
             "display_name": "organization",
             "fingerprint": {
               "global": {
-                "distinct-count": 25,
+                "distinct-count": 15,
                 "nil%": 0.0
               },
               "type": {
@@ -1384,7 +1493,7 @@
                   "percent-url": 0.0,
                   "percent-email": 0.0,
                   "percent-state": 0.0,
-                  "average-length": 14.4
+                  "average-length": 13.933333333333334
                 }
               }
             },
@@ -1411,17 +1520,17 @@
             "display_name": "article_count",
             "fingerprint": {
               "global": {
-                "distinct-count": 25,
+                "distinct-count": 14,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": 112.0,
-                  "q1": 134.25,
-                  "q3": 319.75,
-                  "max": 1531.0,
-                  "sd": 290.25893612428195,
-                  "avg": 279.0
+                  "min": 122.0,
+                  "q1": 157.25,
+                  "q3": 248.5,
+                  "max": 1262.0,
+                  "sd": 280.16806180780645,
+                  "avg": 272.0
                 }
               }
             },
@@ -1448,17 +1557,17 @@
             "display_name": "avg_tone",
             "fingerprint": {
               "global": {
-                "distinct-count": 25,
+                "distinct-count": 15,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": -7.112,
-                  "q1": -4.1905,
-                  "q3": -0.21075000000000002,
-                  "max": 1.427,
-                  "sd": 2.506445606165565,
-                  "avg": -2.44792
+                  "min": -6.333,
+                  "q1": -3.863,
+                  "q3": -1.17675,
+                  "max": 1.912,
+                  "sd": 2.204207426934312,
+                  "avg": -2.3546666666666667
                 }
               }
             },
@@ -1477,12 +1586,12 @@
         "download_perms": "full",
         "name": "Tone Analysis per Organization",
         "document_id": null,
-        "last_used_at": "2026-04-19T17:38:27.893177Z",
+        "last_used_at": "2026-04-20T11:21:55.993493Z",
         "type": "question",
-        "query_average_duration": 49,
+        "query_average_duration": 6,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-04-19T17:34:52.943554Z",
+        "updated_at": "2026-04-20T08:09:47.969074Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -1491,17 +1600,17 @@
           "database": 2,
           "stages": [
             {
-              "native": "WITH gkg_last_24h AS (\n    SELECT organizations, tone\n    FROM public.gkg\n    WHERE gkg_date >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n      AND organizations IS NOT NULL\n      AND organizations <> ''\n      AND tone IS NOT NULL\n),\nexploded_organizations AS (\n    SELECT\n        trim(organization) AS organization,\n        tone\n    FROM gkg_last_24h,\n         unnest(string_to_array(organizations, ';')) AS organization\n    WHERE trim(organization) <> ''\n)\nSELECT\n    initcap(organization) AS organization,\n    COUNT(*) AS article_count,\n    ROUND(AVG(tone)::numeric, 3) AS avg_tone\nFROM exploded_organizations\nGROUP BY organization\nHAVING COUNT(*) >= 10\nORDER BY article_count DESC\nLIMIT 25;",
+              "native": "WITH gkg_last_24h AS (\n    SELECT organizations, tone\n    FROM public.gkg\n    WHERE gkg_date >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n      AND organizations IS NOT NULL\n      AND organizations <> ''\n      AND tone IS NOT NULL\n),\nexploded_organizations AS (\n    SELECT\n        trim(organization) AS organization,\n        tone\n    FROM gkg_last_24h,\n         unnest(string_to_array(organizations, ';')) AS organization\n    WHERE trim(organization) <> ''\n)\nSELECT\n    initcap(organization) AS organization,\n    COUNT(*) AS article_count,\n    ROUND(AVG(tone)::numeric, 3) AS avg_tone\nFROM exploded_organizations\nGROUP BY organization\nHAVING COUNT(*) >= 10\nORDER BY article_count DESC\nLIMIT 15;",
               "lib/type": "mbql.stage/native"
             }
           ]
         },
-        "id": 47,
+        "id": 46,
         "legacy_query": null,
         "parameter_mappings": [],
         "display": "combo",
         "archived_directly": false,
-        "entity_id": "jPG60YHaQzlQPErA-2w64",
+        "entity_id": "qoijerjBIxwZH7K_KTzQj",
         "collection_preview": true,
         "visualization_settings": {
           "graph.dimensions": [
@@ -1525,20 +1634,335 @@
         "metabase_version": "v0.59.6.5 (809ffc8)",
         "parameters": [],
         "dashboard_id": null,
-        "created_at": "2026-04-19T17:34:52.943554Z",
+        "created_at": "2026-04-20T07:17:32.202973Z",
         "public_uuid": null
       },
-      "updated_at": "2026-04-19T17:39:01.543582Z",
-      "col": 12,
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 0,
+      "id": 43,
+      "parameter_mappings": [],
+      "card_id": 46,
+      "entity_id": "5RrkZtBhhM-76qdK1lfQ7",
+      "visualization_settings": {},
+      "size_y": 8,
+      "dashboard_id": 2,
+      "created_at": "2026-04-20T07:17:32.282224Z",
+      "row": 28
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-04-20T10:13:03.151966Z",
+      "col": 0,
       "id": 44,
       "parameter_mappings": [],
-      "card_id": 47,
-      "entity_id": "CFf7y7vYZLpTsI00TwCEV",
-      "visualization_settings": {},
-      "size_y": 6,
+      "card_id": null,
+      "entity_id": "Ojkjf76jMQaqis3l-lQPH",
+      "visualization_settings": {
+        "dashcard.background": false,
+        "virtual_card": {
+          "name": null,
+          "display": "heading",
+          "visualization_settings": {},
+          "archived": false
+        },
+        "text": "Global Event Map"
+      },
+      "size_y": 1,
       "dashboard_id": 2,
-      "created_at": "2026-04-19T17:39:01.543582Z",
-      "row": 43
+      "created_at": "2026-04-20T10:12:56.407246Z",
+      "row": 0
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-04-20T10:13:03.151966Z",
+      "col": 0,
+      "id": 45,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "ZQRY6p1HIKbhuaoo2ScmB",
+      "visualization_settings": {
+        "virtual_card": {
+          "name": null,
+          "display": "text",
+          "visualization_settings": {},
+          "archived": false
+        },
+        "text": "Countries that appeared in the most recent news classified by their average Goldstein scale, where negative values represent conflict and positive values represent cooperation."
+      },
+      "size_y": 1,
+      "dashboard_id": 2,
+      "created_at": "2026-04-20T10:12:56.407246Z",
+      "row": 1
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 0,
+      "id": 46,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "B0B_mA3d9QHbJOSMyF69Q",
+      "visualization_settings": {
+        "dashcard.background": false,
+        "virtual_card": {
+          "name": null,
+          "display": "heading",
+          "visualization_settings": {},
+          "archived": false
+        },
+        "text": "Top Actors and Media Attention"
+      },
+      "size_y": 1,
+      "dashboard_id": 2,
+      "created_at": "2026-04-20T10:12:56.407246Z",
+      "row": 14
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 0,
+      "id": 47,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "HDQDHVzx0uxHEDqjVjARO",
+      "visualization_settings": {
+        "virtual_card": {
+          "name": null,
+          "display": "text",
+          "visualization_settings": {},
+          "archived": false
+        },
+        "text": "Actors that appeared more often in the recent news and topics where the media attention was focused."
+      },
+      "size_y": 1,
+      "dashboard_id": 2,
+      "created_at": "2026-04-20T10:12:56.407246Z",
+      "row": 15
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 0,
+      "id": 48,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "CL8M0zci620If4BhWH8Ah",
+      "visualization_settings": {
+        "dashcard.background": false,
+        "virtual_card": {
+          "name": null,
+          "display": "heading",
+          "visualization_settings": {},
+          "archived": false
+        },
+        "text": "Tone Analysis"
+      },
+      "size_y": 1,
+      "dashboard_id": 2,
+      "created_at": "2026-04-20T10:12:56.407246Z",
+      "row": 26
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 0,
+      "id": 49,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "oSlrlUdY58B46uWTeAxw1",
+      "visualization_settings": {
+        "virtual_card": {
+          "name": null,
+          "display": "text",
+          "visualization_settings": {},
+          "archived": false
+        },
+        "text": "Analysis of the tone of the news that involve certain organizations and people."
+      },
+      "size_y": 1,
+      "dashboard_id": 2,
+      "created_at": "2026-04-20T10:12:56.407246Z",
+      "row": 27
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 0,
+      "id": 50,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "VkrdqWlF13C7oiaNIr6Hl",
+      "visualization_settings": {
+        "dashcard.background": false,
+        "virtual_card": {
+          "name": null,
+          "display": "heading",
+          "visualization_settings": {},
+          "archived": false
+        },
+        "text": "Event Volume"
+      },
+      "size_y": 1,
+      "dashboard_id": 2,
+      "created_at": "2026-04-20T10:12:56.407246Z",
+      "row": 36
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 0,
+      "id": 51,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "yRBPlW4NtexOYxorjF-fC",
+      "visualization_settings": {
+        "virtual_card": {
+          "name": null,
+          "display": "text",
+          "visualization_settings": {},
+          "archived": false
+        },
+        "text": "Number of events in the last 24 hours classified by event type."
+      },
+      "size_y": 1,
+      "dashboard_id": 2,
+      "created_at": "2026-04-20T10:12:56.407246Z",
+      "row": 37
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 0,
+      "id": 52,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "JeIaVQiIcW-pSdpJqL0Nx",
+      "visualization_settings": {
+        "dashcard.background": false,
+        "virtual_card": {
+          "name": null,
+          "display": "heading",
+          "visualization_settings": {},
+          "archived": false
+        },
+        "text": "Conflict Trend"
+      },
+      "size_y": 1,
+      "dashboard_id": 2,
+      "created_at": "2026-04-20T10:12:56.407246Z",
+      "row": 48
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-04-20T10:12:56.407246Z",
+      "col": 0,
+      "id": 53,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "PxipcwLTnG4bM6GfLKlUq",
+      "visualization_settings": {
+        "virtual_card": {
+          "name": null,
+          "display": "text",
+          "visualization_settings": {},
+          "archived": false
+        },
+        "text": "Evolution of the average Goldstein of the 10 countries that appeared more often in the most recent news."
+      },
+      "size_y": 1,
+      "dashboard_id": 2,
+      "created_at": "2026-04-20T10:12:56.407246Z",
+      "row": 49
     }
   ],
   "embedding_type": null,
@@ -1558,23 +1982,23 @@
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-04-19T17:39:56.373217Z",
+  "updated_at": "2026-04-20T07:18:27.719948Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
   "last_used_param_values": {},
   "id": 2,
-  "last_viewed_at": "2026-04-19T17:37:26.26356Z",
+  "last_viewed_at": "2026-04-20T11:21:55.978987Z",
   "position": null,
   "archived_directly": false,
-  "entity_id": "1rvhLuj_RuNQ99t5gBEoE",
+  "entity_id": "Bzvyt1SQDFiMgD3hsExVh",
   "param_fields": {},
   "last-edit-info": {
     "id": 1,
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "last_name": "User",
-    "timestamp": "2026-04-19T17:39:56.389288Z"
+    "timestamp": "2026-04-20T10:13:03.162052Z"
   },
   "collection": {
     "metabase.collections.models.collection.root/is-root?": true,
@@ -1587,7 +2011,7 @@
   },
   "parameters": [],
   "auto_apply_filters": true,
-  "created_at": "2026-04-19T13:39:52.828333Z",
+  "created_at": "2026-04-20T07:17:32.22652Z",
   "public_uuid": null,
   "points_of_interest": null,
   "can_delete": false

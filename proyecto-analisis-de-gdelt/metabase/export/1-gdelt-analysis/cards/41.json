@@ -1,44 +1,68 @@
 {
   "cache_invalidated_at": null,
-  "description": "Geolocated events plotted on a world map, colored by Goldstein scale (conflict ↔ cooperation).",
+  "description": "Time-series of events per hour window, broken down by event root code.",
   "archived": false,
-  "view_count": 11,
+  "view_count": 10,
   "collection_position": null,
   "source_card_id": null,
-  "table_id": 31,
+  "table_id": null,
   "can_run_adhoc_query": true,
   "result_metadata": [
     {
-      "database_type": "text",
+      "database_type": "timestamp",
       "semantic_type": null,
-      "table_id": 36,
-      "qp/implicit-field?": true,
-      "lib/deduplicated-name": "iso2",
-      "lib/original-name": "iso2",
-      "lib/breakout?": true,
-      "name": "iso2",
-      "lib/source": "source/joins",
-      "lib/source-column-alias": "iso2",
-      "lib/original-display-name": "Iso2",
-      "source": "breakout",
-      "lib/original-join-alias": "Country Code - Actor1 Country",
+      "lib/deduplicated-name": "event_hour",
+      "lib/original-name": "event_hour",
+      "name": "event_hour",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "event_hour",
+      "source": "native",
       "field_ref": [
         "field",
-        199,
+        "event_hour",
         {
-          "join-alias": "Country Code - Actor1 Country"
+          "base-type": "type/DateTime"
+        }
+      ],
+      "effective_type": "type/DateTime",
+      "lib/desired-column-alias": "event_hour",
+      "display_name": "event_hour",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 5,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/DateTime": {
+            "earliest": "2026-04-20T07:00:00Z",
+            "latest": "2026-04-20T11:00:00Z"
+          }
+        }
+      },
+      "base_type": "type/DateTime"
+    },
+    {
+      "database_type": "text",
+      "semantic_type": "type/Description",
+      "lib/deduplicated-name": "event_root_description",
+      "lib/original-name": "event_root_description",
+      "name": "event_root_description",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "event_root_description",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "event_root_description",
+        {
+          "base-type": "type/Text"
         }
       ],
       "effective_type": "type/Text",
-      "active": true,
-      "id": 199,
-      "lib/desired-column-alias": "Country Code - Actor1 Country__iso2",
-      "position": 1,
-      "visibility_type": "normal",
-      "display_name": "Country Code - Actor1 Country → Iso2",
+      "lib/desired-column-alias": "event_root_description",
+      "display_name": "event_root_description",
       "fingerprint": {
         "global": {
-          "distinct-count": 165,
+          "distinct-count": 10,
           "nil%": 0.0
         },
         "type": {
@@ -46,95 +70,49 @@
             "percent-json": 0.0,
             "percent-url": 0.0,
             "percent-email": 0.0,
-            "percent-state": 0.1151515151515152,
-            "average-length": 2.0
+            "percent-state": 0.0,
+            "average-length": 12.5
           }
         }
       },
-      "base_type": "type/Text",
-      "source_alias": "Country Code - Actor1 Country",
-      "metabase.lib.join/join-alias": "Country Code - Actor1 Country"
+      "base_type": "type/Text"
     },
     {
-      "database_type": "text",
-      "semantic_type": "type/Name",
-      "table_id": 36,
-      "qp/implicit-field?": true,
-      "lib/deduplicated-name": "name",
-      "lib/original-name": "name",
-      "lib/breakout?": true,
-      "name": "name",
-      "lib/source": "source/joins",
-      "lib/source-column-alias": "name",
-      "lib/original-display-name": "Name",
-      "source": "breakout",
-      "lib/original-join-alias": "Country Code - Actor1 Country",
+      "database_type": "numeric",
+      "semantic_type": null,
+      "lib/deduplicated-name": "sum",
+      "lib/original-name": "sum",
+      "name": "sum",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "sum",
+      "source": "native",
       "field_ref": [
         "field",
-        200,
+        "sum",
         {
-          "join-alias": "Country Code - Actor1 Country"
+          "base-type": "type/Decimal"
         }
       ],
-      "effective_type": "type/Text",
-      "active": true,
-      "id": 200,
-      "lib/desired-column-alias": "Country Code - Actor1 Country__name",
-      "position": 2,
-      "visibility_type": "normal",
-      "display_name": "Country Code - Actor1 Country → Name",
+      "effective_type": "type/Decimal",
+      "lib/desired-column-alias": "sum",
+      "display_name": "sum",
       "fingerprint": {
         "global": {
-          "distinct-count": 165,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/Text": {
-            "percent-json": 0.0,
-            "percent-url": 0.0,
-            "percent-email": 0.0,
-            "percent-state": 0.006060606060606061,
-            "average-length": 8.16969696969697
-          }
-        }
-      },
-      "base_type": "type/Text",
-      "source_alias": "Country Code - Actor1 Country",
-      "metabase.lib.join/join-alias": "Country Code - Actor1 Country"
-    },
-    {
-      "database_type": "float8",
-      "semantic_type": null,
-      "lib/deduplicated-name": "avg",
-      "lib/original-name": "avg",
-      "name": "avg",
-      "lib/source": "source/aggregations",
-      "lib/source-column-alias": "avg",
-      "source": "aggregation",
-      "field_ref": [
-        "aggregation",
-        0
-      ],
-      "effective_type": "type/Float",
-      "lib/desired-column-alias": "avg",
-      "display_name": "Average of Goldstein Scale",
-      "fingerprint": {
-        "global": {
-          "distinct-count": 70,
+          "distinct-count": 48,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": -4.5,
-            "q1": -0.041657175368153304,
-            "q3": 2.3424999862909317,
-            "max": 6.700000047683716,
-            "sd": 2.16369542724323,
-            "avg": 0.8774554451455472
+            "min": 11.0,
+            "q1": 50.0,
+            "q3": 200.0,
+            "max": 868.0,
+            "sd": 170.45229627705945,
+            "avg": 158.88
           }
         }
       },
-      "base_type": "type/Float"
+      "base_type": "type/Decimal"
     }
   ],
   "embedding_type": null,
@@ -143,13 +121,13 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "is_data_analyst": false,
-    "last_login": "2026-04-19T17:40:48.069844Z",
+    "last_login": "2026-04-20T11:22:30.021389Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
     "last_name": "User",
     "tenant_id": null,
-    "date_joined": "2026-04-19T10:42:20.404008Z",
+    "date_joined": "2026-04-20T07:16:32.090368Z",
     "common_name": "Admin User"
   },
   "initially_published_at": null,
@@ -158,20 +136,20 @@
   "database_id": 2,
   "enable_embedding": false,
   "collection_id": null,
-  "query_type": "query",
-  "name": "Global Event Map",
-  "last_query_start": "2026-04-19T17:37:26.274468Z",
+  "query_type": "native",
+  "name": "Event Volume",
+  "last_query_start": "2026-04-20T11:21:55.9652Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-04-19T17:37:26.289918Z",
+  "last_used_at": "2026-04-20T11:21:55.993493Z",
   "dashboard": null,
   "type": "question",
-  "average_query_time": 61.09090909090909,
+  "average_query_time": 24.6,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-04-19T13:39:52.698101Z",
+  "updated_at": "2026-04-20T07:17:32.026382Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -180,124 +158,8 @@
     "database": 2,
     "stages": [
       {
-        "lib/type": "mbql.stage/mbql",
-        "filters": [
-          [
-            "time-interval",
-            {
-              "lib/uuid": "4c29962b-34d6-44f6-84b4-b5ef60a5020b"
-            },
-            [
-              "field",
-              {
-                "effective-type": "type/DateTimeWithLocalTZ",
-                "lib/uuid": "8db360c1-090d-4835-b790-7222196e050a",
-                "base-type": "type/DateTimeWithLocalTZ"
-              },
-              146
-            ],
-            0,
-            "day"
-          ]
-        ],
-        "aggregation": [
-          [
-            "avg",
-            {
-              "lib/uuid": "aa8493e0-1b16-4b59-99b7-2d4b7cd27001"
-            },
-            [
-              "field",
-              {
-                "effective-type": "type/Float",
-                "lib/uuid": "a96e363a-1b03-41a1-abfd-cb0ef7646704",
-                "base-type": "type/Float"
-              },
-              139
-            ]
-          ]
-        ],
-        "joins": [
-          {
-            "lib/type": "mbql/join",
-            "stages": [
-              {
-                "lib/options": {
-                  "lib/uuid": "0dbff49d-a82b-4f13-b087-91a074e0aad5"
-                },
-                "lib/type": "mbql.stage/mbql",
-                "source-table": 36
-              }
-            ],
-            "lib/options": {
-              "lib/uuid": "7593fc88-bf02-42b1-b073-73e9f2ebbf6a"
-            },
-            "fields": "all",
-            "conditions": [
-              [
-                "=",
-                {
-                  "lib/uuid": "b89e17b1-bc60-4534-93ae-0762c6814387"
-                },
-                [
-                  "field",
-                  {
-                    "effective-type": "type/Text",
-                    "lib/uuid": "2841c385-3434-4eac-992a-4db94e22868b",
-                    "base-type": "type/Text"
-                  },
-                  143
-                ],
-                [
-                  "field",
-                  {
-                    "base-type": "type/Text",
-                    "lib/uuid": "428b1f97-aa9c-482b-b15a-3334413a56d9",
-                    "effective-type": "type/Text",
-                    "join-alias": "Country Code - Actor1 Country"
-                  },
-                  198
-                ]
-              ]
-            ],
-            "strategy": "left-join",
-            "alias": "Country Code - Actor1 Country"
-          }
-        ],
-        "fields": [
-          [
-            "field",
-            {
-              "lib/uuid": "2a12efd9-9a94-4d6f-b4a4-e64f03c9935b",
-              "effective-type": "type/BigInteger",
-              "base-type": "type/BigInteger"
-            },
-            136
-          ]
-        ],
-        "source-table": 31,
-        "breakout": [
-          [
-            "field",
-            {
-              "lib/uuid": "f3287452-15f5-4e00-8f17-ebe8f2d4d6c5",
-              "effective-type": "type/Text",
-              "base-type": "type/Text",
-              "join-alias": "Country Code - Actor1 Country"
-            },
-            199
-          ],
-          [
-            "field",
-            {
-              "effective-type": "type/Text",
-              "base-type": "type/Text",
-              "lib/uuid": "d96008c0-034a-4929-af00-d7ad60bed386",
-              "join-alias": "Country Code - Actor1 Country"
-            },
-            200
-          ]
-        ]
+        "lib/type": "mbql.stage/native",
+        "native": "WITH top_event_codes AS (\n  SELECT\n    event_root_code,\n    event_root_description,\n    SUM(event_count) AS event_count\n  FROM public_dashboard.event_volume\n  WHERE\n    window_start >= NOW() - INTERVAL '1 day'\n  GROUP BY\n    event_root_code,\n    event_root_description\n  ORDER BY\n    event_count DESC\n  LIMIT 10\n)\nSELECT\n  DATE_TRUNC('hour', public_dashboard.event_volume.window_start) AS event_hour,\n  public_dashboard.event_volume.event_root_description AS event_root_description,\n  SUM(public_dashboard.event_volume.event_count) AS sum\nFROM public_dashboard.event_volume\nLEFT JOIN (\n  SELECT\n    public_lookup.event_root_code.event_root_code AS event_root_code,\n    public_lookup.event_root_code.description AS description\n  FROM\n    public_lookup.event_root_code\n) AS \"Event Root Code\" ON public_dashboard.event_volume.event_root_code = \"Event Root Code\".event_root_code\nWHERE\n  public_dashboard.event_volume.event_root_code IN (\n    SELECT event_root_code FROM top_event_codes\n  )\nGROUP BY\n  DATE_TRUNC('hour', public_dashboard.event_volume.window_start),\n  public_dashboard.event_volume.event_root_description\nORDER BY\n  DATE_TRUNC('hour', public_dashboard.event_volume.window_start) ASC,\n  public_dashboard.event_volume.event_root_description ASC"
       }
     ]
   },
@@ -305,9 +167,9 @@
   "legacy_query": null,
   "parameter_mappings": [],
   "can_manage_db": true,
-  "display": "map",
+  "display": "line",
   "archived_directly": false,
-  "entity_id": "2D0CnEKOqOhvWOBr3CvfU",
+  "entity_id": "9YL0wd_e0fTT6MzSjrtYI",
   "param_fields": {},
   "collection_preview": true,
   "last-edit-info": {
@@ -315,16 +177,21 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "last_name": "User",
-    "timestamp": "2026-04-19T13:39:52.706276Z"
+    "timestamp": "2026-04-20T07:17:32.03187Z"
   },
   "visualization_settings": {
-    "map.center_latitude": 18.145851771694467,
-    "map.center_longitude": 39.02343750000001,
-    "map.zoom": 2,
-    "map.type": "region",
-    "map.dimension": "iso2",
-    "map.metric": "goldstein_scale",
-    "map.region": "world_countries"
+    "graph.x_axis.scale": "timeseries",
+    "graph.dimensions": [
+      "event_hour",
+      "event_root_description"
+    ],
+    "graph.series_order_dimension": null,
+    "graph.series_order": null,
+    "graph.x_axis.title_text": "Hour",
+    "graph.y_axis.title_text": "Events",
+    "graph.metrics": [
+      "sum"
+    ]
   },
   "collection": {
     "metabase.collections.models.collection.root/is-root?": true,
@@ -338,7 +205,7 @@
   "metabase_version": "v0.59.6.5 (809ffc8)",
   "parameters": [],
   "dashboard_id": null,
-  "created_at": "2026-04-19T13:39:52.698101Z",
+  "created_at": "2026-04-20T07:17:32.026382Z",
   "parameter_usage_count": 0,
   "public_uuid": null,
   "can_delete": false

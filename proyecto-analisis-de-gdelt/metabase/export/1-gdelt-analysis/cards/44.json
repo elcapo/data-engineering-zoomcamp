@@ -1,35 +1,72 @@
 {
-  "cache_invalidated_at": "2026-04-19T16:55:59.972991Z",
-  "description": "Most active actors in the recent news.",
+  "cache_invalidated_at": null,
+  "description": "Regions and Topics where the Recent Media Attention is Focused.",
   "archived": false,
-  "view_count": 2,
+  "view_count": 10,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
   "can_run_adhoc_query": true,
   "result_metadata": [
     {
-      "database_type": "text",
-      "semantic_type": "type/Country",
-      "lib/deduplicated-name": "country_name",
-      "lib/original-name": "country_name",
-      "name": "country_name",
+      "database_type": "int8",
+      "semantic_type": null,
+      "lib/deduplicated-name": "global_event_id",
+      "lib/original-name": "global_event_id",
+      "name": "global_event_id",
       "lib/source": "source/native",
-      "lib/source-column-alias": "country_name",
+      "lib/source-column-alias": "global_event_id",
       "source": "native",
       "field_ref": [
         "field",
-        "country_name",
+        "global_event_id",
+        {
+          "base-type": "type/BigInteger"
+        }
+      ],
+      "effective_type": "type/BigInteger",
+      "lib/desired-column-alias": "global_event_id",
+      "display_name": "global_event_id",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 10,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 1300047448.0,
+            "q1": 1300049075.0,
+            "q3": 1300057850.0,
+            "max": 1300058303.0,
+            "sd": 4264.788572328841,
+            "avg": 1300053785.7
+          }
+        }
+      },
+      "base_type": "type/BigInteger"
+    },
+    {
+      "database_type": "text",
+      "semantic_type": null,
+      "lib/deduplicated-name": "action_geo_name",
+      "lib/original-name": "action_geo_name",
+      "name": "action_geo_name",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "action_geo_name",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "action_geo_name",
         {
           "base-type": "type/Text"
         }
       ],
       "effective_type": "type/Text",
-      "lib/desired-column-alias": "country_name",
-      "display_name": "country_name",
+      "lib/desired-column-alias": "action_geo_name",
+      "display_name": "action_geo_name",
       "fingerprint": {
         "global": {
-          "distinct-count": 10,
+          "distinct-count": 4,
           "nil%": 0.0
         },
         "type": {
@@ -38,7 +75,43 @@
             "percent-url": 0.0,
             "percent-email": 0.0,
             "percent-state": 0.0,
-            "average-length": 7.4
+            "average-length": 29.0
+          }
+        }
+      },
+      "base_type": "type/Text"
+    },
+    {
+      "database_type": "text",
+      "semantic_type": "type/Description",
+      "lib/deduplicated-name": "event_description",
+      "lib/original-name": "event_description",
+      "name": "event_description",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "event_description",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "event_description",
+        {
+          "base-type": "type/Text"
+        }
+      ],
+      "effective_type": "type/Text",
+      "lib/desired-column-alias": "event_description",
+      "display_name": "event_description",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 5,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.0,
+            "average-length": 17.4
           }
         }
       },
@@ -47,35 +120,35 @@
     {
       "database_type": "int8",
       "semantic_type": "type/Quantity",
-      "lib/deduplicated-name": "event_count",
-      "lib/original-name": "event_count",
-      "name": "event_count",
+      "lib/deduplicated-name": "mention_count",
+      "lib/original-name": "mention_count",
+      "name": "mention_count",
       "lib/source": "source/native",
-      "lib/source-column-alias": "event_count",
+      "lib/source-column-alias": "mention_count",
       "source": "native",
       "field_ref": [
         "field",
-        "event_count",
+        "mention_count",
         {
           "base-type": "type/BigInteger"
         }
       ],
       "effective_type": "type/BigInteger",
-      "lib/desired-column-alias": "event_count",
-      "display_name": "event_count",
+      "lib/desired-column-alias": "mention_count",
+      "display_name": "mention_count",
       "fingerprint": {
         "global": {
-          "distinct-count": 10,
+          "distinct-count": 8,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 173.0,
-            "q1": 199.0,
-            "q3": 507.0,
-            "max": 2512.0,
-            "sd": 709.4084311750336,
-            "avg": 576.1
+            "min": 42.0,
+            "q1": 58.373066958946424,
+            "q3": 81.26794919243112,
+            "max": 83.0,
+            "sd": 15.263973561589031,
+            "avg": 67.1
           }
         }
       },
@@ -88,13 +161,13 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "is_data_analyst": false,
-    "last_login": "2026-04-19T17:40:48.069844Z",
+    "last_login": "2026-04-20T11:22:30.021389Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
     "last_name": "User",
     "tenant_id": null,
-    "date_joined": "2026-04-19T10:42:20.404008Z",
+    "date_joined": "2026-04-20T07:16:32.090368Z",
     "common_name": "Admin User"
   },
   "initially_published_at": null,
@@ -104,19 +177,19 @@
   "enable_embedding": false,
   "collection_id": null,
   "query_type": "native",
-  "name": "Top Actors",
-  "last_query_start": "2026-04-19T17:37:56.423738Z",
+  "name": "Media Attention",
+  "last_query_start": "2026-04-20T11:21:55.799759Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-04-19T17:37:56.426388Z",
+  "last_used_at": "2026-04-20T11:21:55.993493Z",
   "dashboard": null,
   "type": "question",
-  "average_query_time": 27.0,
+  "average_query_time": 244.7,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-04-19T16:55:59.97445Z",
+  "updated_at": "2026-04-20T07:17:32.13743Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -126,7 +199,7 @@
     "stages": [
       {
         "lib/type": "mbql.stage/native",
-        "native": "WITH events_last_24h AS (\n    SELECT\n        actor1_country AS country,\n        to_timestamp(date_added::text, 'YYYYMMDDHH24MISS') AS event_ts\n    FROM public.events\n    WHERE date_added >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n      AND actor1_country IS NOT NULL\n      AND actor1_country <> ''\n),\ntop_10_countries AS (\n    SELECT country\n    FROM events_last_24h\n    GROUP BY country\n    ORDER BY COUNT(*) DESC\n    LIMIT 10\n)\nSELECT\n\tucc.name AS country_name,\n    COUNT(*) AS event_count\nFROM events_last_24h AS e\nJOIN top_10_countries AS t USING (country)\nINNER JOIN public_lookup.un_country_code AS ucc ON ucc.iso3 = e.country\nGROUP BY e.country, ucc.name\nORDER BY event_count DESC;\n"
+        "native": "WITH mentions_last_24h AS (\n    SELECT\n        m.global_event_id,\n        to_timestamp(m.mention_time_date::text, 'YYYYMMDDHH24MISS') AS mention_ts\n    FROM public.mentions AS m\n    JOIN public.events AS e USING (global_event_id)\n    WHERE m.mention_time_date >= to_char(now() - interval '24 hours', 'YYYYMMDDHH24MISS')::bigint\n),\ntop_10_events AS (\n    SELECT global_event_id\n    FROM mentions_last_24h\n    GROUP BY global_event_id\n    ORDER BY COUNT(*) DESC\n    LIMIT 10\n)\nSELECT\n    m.global_event_id,\n    e.action_geo_name,\n    erc.description AS event_description,\n    COUNT(*) AS mention_count\nFROM mentions_last_24h AS m\nJOIN top_10_events AS t USING (global_event_id)\nINNER JOIN public.events AS e ON e.global_event_id = m.global_event_id\nINNER JOIN public_lookup.event_root_code AS erc ON erc.event_root_code = e.event_root_code\nGROUP BY\n    m.global_event_id,\n    e.action_geo_name,\n    erc.description\nORDER BY\n    m.global_event_id"
       }
     ]
   },
@@ -134,9 +207,9 @@
   "legacy_query": null,
   "parameter_mappings": [],
   "can_manage_db": true,
-  "display": "pie",
+  "display": "sankey",
   "archived_directly": false,
-  "entity_id": "1PZTMsbBsGJf8cljKcMgE",
+  "entity_id": "FkKLQD4_gY_uGD7tYgIkM",
   "param_fields": {},
   "collection_preview": true,
   "last-edit-info": {
@@ -144,22 +217,20 @@
     "email": "carlos.capote@hawara.es",
     "first_name": "Admin",
     "last_name": "User",
-    "timestamp": "2026-04-19T16:55:59.983596Z"
+    "timestamp": "2026-04-20T07:17:32.141563Z"
   },
   "visualization_settings": {
-    "pie.slice_threshold": 5,
-    "pie.percent_visibility": "inside",
-    "graph.series_order_dimension": null,
-    "pie.show_labels": true,
-    "graph.metrics": [
-      "event_count"
-    ],
-    "graph.series_order": null,
-    "pie.show_legend": true,
-    "version": 2,
     "graph.dimensions": [
       "event_hour",
-      "country_name"
+      "action_geo_name"
+    ],
+    "graph.series_order_dimension": null,
+    "graph.series_order": null,
+    "sankey.source": "action_geo_name",
+    "sankey.target": "event_description",
+    "sankey.value": "mention_count",
+    "graph.metrics": [
+      "mention_count"
     ]
   },
   "collection": {
@@ -174,7 +245,7 @@
   "metabase_version": "v0.59.6.5 (809ffc8)",
   "parameters": [],
   "dashboard_id": null,
-  "created_at": "2026-04-19T16:52:57.736919Z",
+  "created_at": "2026-04-20T07:17:32.13743Z",
   "parameter_usage_count": 0,
   "public_uuid": null,
   "can_delete": false
