@@ -17,3 +17,5 @@ La decisión fue extraer cada tabla una sola vez, transcribirla a un CSV y versi
 De aquí salieron 16 ficheros, algunos de solo 4 filas y otros de unas 2.500, todos documentados con su capítulo de origen. No es el trabajo más vistoso del proyecto, pero es el que convierte las filas crípticas de GDELT en algo legible e interpretable.
 
 #IngenieríaDeDatos #GDELT #dbt
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-gdelt-dbt-activity-7452351694472077312-tS8F

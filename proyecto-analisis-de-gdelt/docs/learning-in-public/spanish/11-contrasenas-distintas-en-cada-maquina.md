@@ -26,3 +26,5 @@ Dos detalles hacen que esto sea cómodo de usar:
 El resultado es que el repositorio es seguro de clonar — no lleva secretos reales ni de ejemplo — y cada máquina que lo usa arranca con contraseñas únicas que sólo ella conoce.
 
 #IngenieríaDeDatos #Docker #Seguridad #GDELT
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-docker-seguridad-activity-7452378130255654912-BUk0

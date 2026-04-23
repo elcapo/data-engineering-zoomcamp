@@ -9,3 +9,5 @@ Por otro lado, GDELT publica tres ficheros nuevos cada 15 minutos. Eventos, menc
 Lo interesante de este ejercicio es que la arquitectura empieza a dibujarse sola. Cada pregunta del artículo anterior cae, casi sin esfuerzo, en uno de los tres cubos. Y cada cubo pide herramientas distintas, ritmos distintos y hasta formas distintas de pensar en los errores: no es lo mismo que falle una carga puntual de referencia, que falle un cálculo semanal, que se atasque el flujo en vivo.
 
 #IngenieríaDeDatos #GDELT #Arquitectura #TiempoReal
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-gdelt-arquitectura-activity-7452347963357540352-kcfJ

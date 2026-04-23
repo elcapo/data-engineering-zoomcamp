@@ -15,3 +15,5 @@ Que las dos ramas partan del mismo origen y no una de la otra tiene una consecue
 Postgres acaba con dos familias de tablas conviviendo en el mismo sitio: las "en bruto", que crecen sin parar, y las agregadas, que se reescriben conforme cierran las ventanas. Los paneles siempre miran a las segundas; las primeras son la copia de seguridad que nos da flexibilidad por si el día de mañana necesitamos añadir un agregado nuevo.
 
 #IngenieríaDeDatos #Flink #GDELT
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-flink-gdelt-activity-7452363063036506112-HHUd

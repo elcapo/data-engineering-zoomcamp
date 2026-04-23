@@ -15,3 +15,5 @@ La separación tiene dos ventajas. La obvia: si la descarga aún no está dispon
 Además, orquestar los dos pasos desde fuera queda mucho más limpio. Cada proceso hace una sola cosa y, si algo falla, se sabe exactamente qué reintentar.
 
 #IngenieríaDeDatos #GDELT #Kafka
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-gdelt-kafka-activity-7452355534697111553-MRiY

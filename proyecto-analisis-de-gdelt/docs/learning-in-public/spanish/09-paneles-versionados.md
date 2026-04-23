@@ -21,3 +21,5 @@ El resultado es un flujo que encaja con el resto del proyecto: los paneles viven
 No es la parte más brillante del proyecto, pero es la que lleva de "tengo un panel bonito en mi portátil" a "el panel es parte del proyecto".
 
 #IngenieríaDeDatos #Metabase #GDELT
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-metabase-gdelt-activity-7452370672200257537-ghyP

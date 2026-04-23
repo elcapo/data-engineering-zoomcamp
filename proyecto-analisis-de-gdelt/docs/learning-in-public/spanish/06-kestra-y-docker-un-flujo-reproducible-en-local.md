@@ -13,3 +13,5 @@ A su alrededor, todo vive dentro de una composición de Docker: Redpanda (que ha
 La consecuencia práctica es muy cómoda: cualquiera que clone el repositorio puede levantar el sistema entero en su portátil con un único comando y los datos reales de GDELT empiezan a entrar a los pocos minutos sin depender de nada externo.
 
 #IngenieríaDeDatos #Kestra #Docker #GDELT
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kestra-docker-activity-7452359266293723136-bWmF

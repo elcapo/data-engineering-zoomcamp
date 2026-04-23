@@ -35,3 +35,5 @@ Juntando las tres piezas, el arranque se convierte en una cadena determinista: P
 Un detalle que cierra el cuadro: el productor de GDELT lleva `profiles: ["cli"]`. Eso significa que **no** arranca con el resto. Kestra lo lanza bajo demanda en su propio contenedor cada 15 minutos.
 
 #IngenieríaDeDatos #Docker #GDELT
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-docker-gdelt-activity-7452374353641598976-hgqQ

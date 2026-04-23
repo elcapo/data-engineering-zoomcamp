@@ -19,3 +19,5 @@ Para la implementación, he pensando en un stack en el que coordino Python, Redp
 El objetivo es doble: construir un flujo de datos que, a partir de la actualización periódica de GDELT, despache datos internamente en tiempo real y así familiarizarme un poco más con Kafka y Flink.
 
 #IngenieríaDeDatos #Kafka #GDELT #TiempoReal
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-kafka-gdelt-activity-7452340735833665536-K1es

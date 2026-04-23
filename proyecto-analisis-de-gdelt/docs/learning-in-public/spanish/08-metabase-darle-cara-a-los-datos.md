@@ -16,3 +16,5 @@ Son unas pocas llamadas al API encadenadas con `curl` y `jq`. Si el sistema ya e
 El resultado es que después de `make up`, Metabase está accesible en su puerto, con su base conectada y las tablas visibles. Queda sólo construir los paneles — que es justo la parte que sí quiero hacer a mano.
 
 #IngenieríaDeDatos #Metabase #GDELT
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-metabase-gdelt-activity-7452366804477292547-IEF1

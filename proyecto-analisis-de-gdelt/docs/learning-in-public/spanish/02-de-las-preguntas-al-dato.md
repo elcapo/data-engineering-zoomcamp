@@ -35,3 +35,5 @@ El codebook de eventos lista más de 60 columnas; yo me quedo con unas 20. Lo mi
 La conclusión de esta fase es tranquilizadora: las preguntas que me planteé no son aspiracionales, están cubiertas por campos concretos del dataset. El siguiente paso es implementar un productor que descargue los tres ficheros cada 15 minutos y los publique en Kafka.
 
 #IngenieríaDeDatos #GDELT #AnálisisExploratorio #Kafka
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-gdelt-anaerlisisexploratorio-activity-7452344181307596801-oxiW

@@ -21,3 +21,5 @@ En las tablas agregadas la clave primaria es siempre alguna combinación de `win
 El resultado: los trabajos de Flink se pueden parar, reiniciar o rehacer desde el principio de la retención de Kafka y las tablas finales siempre acaban con el mismo contenido.
 
 #IngenieríaDeDatos #Flink #GDELT
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-flink-gdelt-activity-7452381917230034944-Uj_Q

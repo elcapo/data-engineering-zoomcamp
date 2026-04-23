@@ -19,3 +19,5 @@ Si hay una conclusión tras todo este trabajo es que la parte vistosa de un proy
 #IngenieríaDeDatos #GDELT #Cierre
 
 ![Panel final del proyecto](../resources/images/dashboard/dashboard.png)
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-gdelt-cierre-activity-7452389460593238017-irki

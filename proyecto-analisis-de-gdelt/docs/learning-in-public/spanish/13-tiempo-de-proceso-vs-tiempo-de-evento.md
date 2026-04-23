@@ -25,3 +25,5 @@ Por qué no hace falta: GDELT publica cada 15 minutos con una latencia pequeña 
 Como seguro por si algún día hace falta el otro camino, las tablas en bruto preservan todos los tiempos originales de GDELT. Si mañana quiero agregar algo anclándolo al tiempo real, los datos están ahí.
 
 #IngenieríaDeDatos #Flink #GDELT
+
+> Publicado en: https://www.linkedin.com/posts/carlos-capote-perez-andreu_ingenieraedadedatos-flink-gdelt-activity-7452385668602736641-vyCI
