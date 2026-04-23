@@ -3,9 +3,9 @@ services:
     build:
       context: .
       args:
-        DATABASE_URL: postgresql://${POSTGRES_USER:-root}:${POSTGRES_PASSWORD:-root}@${POSTGRES_HOST}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-boc}
+        DATABASE_URL: ${DATABASE_URL:?DATABASE_URL must be set in frontend/web/.env}
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-root}:${POSTGRES_PASSWORD:-root}@${POSTGRES_HOST}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-boc}
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL must be set in frontend/web/.env}
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: "1"
     networks:

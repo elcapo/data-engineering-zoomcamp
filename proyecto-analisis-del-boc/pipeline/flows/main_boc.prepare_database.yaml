@@ -8,8 +8,9 @@ description: |
   Steps:
     1. **create_tables**: creates the **download_log** and **extraction_log** tables.
     2. **create_views**: creates or replaces the completeness views.
+    3. **apply_indexes**: creates BTREE/GIN indexes on the dlt-managed tables (issue, issue__dispositions, document) to support the frontend search queries.
 
-  The download views that depend on dlt tables are skipped with a warning if those tables do not yet exist.
+  The download views and the apply_indexes step depend on dlt tables and are skipped with a warning if those tables do not yet exist.
 
 tasks:
   - id: create_tables
@@ -106,5 +107,82 @@ tasks:
               # The view will be created the next time this flow runs after
               # the first extraction has populated the missing table.
               conn.rollback()
+
+      conn.close()
+
+  - id: apply_indexes
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import os
+      import re
+      from pathlib import Path
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      # CREATE INDEX CONCURRENTLY requires autocommit and cannot share an
+      # implicit transaction with other statements, so each sentence must
+      # be sent in its own execute() call.
+      conn.autocommit = True
+
+      sql_dir = Path("/app/sql/prepare")
+
+      index_files = [
+          "indexes_dataset.sql",
+          "indexes_dataset_trgm.sql",
+      ]
+
+      # Sentinel must be alone on its line; otherwise a comment that mentions
+      # the literal string "-- @statement" would wrongly split the file.
+      SENTINEL_RE = re.compile(r"^-- @statement\s*$", re.MULTILINE)
+
+      def has_sql(chunk):
+          # Ignore chunks with only comments/blank lines (e.g. file headers).
+          return any(
+              line.strip() and not line.strip().startswith("--")
+              for line in chunk.splitlines()
+          )
+
+      for f in index_files:
+          path = sql_dir / f
+          if not path.exists():
+              print(f"[apply_indexes] {f} not found, skipping")
+              continue
+
+          statements = [
+              s.strip()
+              for s in SENTINEL_RE.split(path.read_text())
+              if has_sql(s)
+          ]
+
+          for stmt in statements:
+              try:
+                  with conn.cursor() as cur:
+                      cur.execute(stmt)
+              except psycopg2.errors.UndefinedTable as e:
+                  # dlt table not created yet; will succeed on a later run
+                  # once the first extraction has populated it.
+                  print(f"[apply_indexes] skipping (table missing): {e}")
+              except psycopg2.errors.InsufficientPrivilege as e:
+                  # Typically CREATE EXTENSION pg_trgm without superuser.
+                  # Install the extension manually once and re-run the flow.
+                  print(f"[apply_indexes] skipping (insufficient privilege): {e}")
+              except psycopg2.errors.UndefinedObject as e:
+                  # gin_trgm_ops missing because pg_trgm wasn't installed.
+                  print(f"[apply_indexes] skipping (missing object): {e}")
 
       conn.close()

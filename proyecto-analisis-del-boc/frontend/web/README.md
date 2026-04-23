@@ -214,15 +214,13 @@ El servicio `boc-web` se conecta a la red externa `boc-postgres-network` (la mis
 
 ### Configuración
 
-Las variables de entorno se pasan como variables individuales y el `docker-compose.yml` construye `DATABASE_URL` internamente:
+El servicio espera una `DATABASE_URL` ya construida en `frontend/web/.env`:
 
 ```
-POSTGRES_HOST=<host>
-POSTGRES_PORT=5432
-POSTGRES_DB=boc
-POSTGRES_USER=<user>
-POSTGRES_PASSWORD=<password>
+DATABASE_URL=postgresql://<user>:<password>@<host>:5432/boc
 ```
+
+`docker-compose.yml` la pasa tal cual al contenedor (build y runtime). Si la variable no está definida, `docker compose up` aborta con un mensaje claro.
 
 ### Arrancar (acceso por puerto)
 
