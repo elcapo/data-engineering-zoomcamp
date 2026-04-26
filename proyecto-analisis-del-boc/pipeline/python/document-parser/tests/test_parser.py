@@ -272,3 +272,21 @@ class TestBody2025:
 
     def test_pdf_link_not_in_body(self, result_2025):
         assert "Descargar en formato pdf" not in result_2025
+
+
+# ---------------------------------------------------------------------------
+# Tolerant decoding (2009-037-008 has a stray non-UTF-8 byte)
+# ---------------------------------------------------------------------------
+
+
+class TestNonUtf8Bytes:
+    def test_parse_file_does_not_raise(self, html_2009_path):
+        # Real BOC document with a 0x8d byte in the body; must not raise.
+        result = parse_file(html_2009_path)
+        assert isinstance(result, str)
+        assert result.startswith("---\n")
+
+    def test_frontmatter_extracted(self, html_2009_path):
+        result = parse_file(html_2009_path)
+        assert "year: 2009" in result
+        assert "issue: 37" in result

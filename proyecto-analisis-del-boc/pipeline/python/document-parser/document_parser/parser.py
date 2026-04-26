@@ -66,7 +66,10 @@ def parse_file(html_path: str | Path) -> str:
         A Markdown string ready to be written to a .md file.
     """
     path = Path(html_path)
-    return parse(path.read_text(encoding="utf-8"))
+    # BOC pages declare charset=UTF-8 but a few historical documents contain
+    # stray bytes from a different code page; decode tolerantly so a single bad
+    # byte does not abort the whole extraction.
+    return parse(path.read_text(encoding="utf-8", errors="replace"))
 
 
 # ---------------------------------------------------------------------------

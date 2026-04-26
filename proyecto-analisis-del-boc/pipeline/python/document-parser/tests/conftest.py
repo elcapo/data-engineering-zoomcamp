@@ -43,3 +43,10 @@ def html_2025_path() -> Path:
 @pytest.fixture(scope="session")
 def html_2025(html_2025_path: Path) -> str:
     return html_2025_path.read_text(encoding="utf-8")
+
+
+@pytest.fixture(scope="session")
+def html_2009_path() -> Path:
+    # Contains a stray non-UTF-8 byte (0x8d) in the body despite the page
+    # declaring charset=UTF-8. Used to exercise tolerant decoding in parse_file.
+    return EXAMPLES / "2009-037-008.html"
