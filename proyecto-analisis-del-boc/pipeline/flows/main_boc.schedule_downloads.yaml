@@ -5,6 +5,10 @@ description: |
 
   This flow is triggered daily at midnight. It always re-downloads the top-level archive page (the list of all years) and then re-downloads the issue index for the current year with **overwrite: true** so it picks up any new boletines published during the day. Because each download_years call has **extract** enabled by default, the year index is also re-extracted automatically.
 
+concurrency:
+  limit: 1
+  behavior: CANCEL
+
 tasks:
   - id: cron_active
     type: io.kestra.plugin.core.kv.Get
@@ -53,3 +57,4 @@ triggers:
     type: io.kestra.plugin.core.trigger.Schedule
     description: Once a day
     cron: "0 0 * * *"
+    recoverMissedSchedules: NONE

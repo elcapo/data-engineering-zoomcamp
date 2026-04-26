@@ -1,6 +1,10 @@
 id: schedule_followups
 namespace: boc
 
+concurrency:
+  limit: 1
+  behavior: CANCEL
+
 tasks:
   - id: cron_active
     type: io.kestra.plugin.core.kv.Get
@@ -43,3 +47,4 @@ triggers:
     type: io.kestra.plugin.core.trigger.Schedule
     description: Every 10 minutes
     cron: "0/10 * * * *"
+    recoverMissedSchedules: NONE
