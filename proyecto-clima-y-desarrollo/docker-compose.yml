@@ -202,6 +202,57 @@ services:
         condition: service_healthy
     restart: "no"
 
+  # --- Stream processing ---
+
+  flink-jobmanager:
+    build: ./flink
+    command: jobmanager
+    ports:
+      - "${FLINK_PORT:-8082}:8081"
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: flink-jobmanager
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      PG_JDBC_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-climate}
+      POSTGRES_USER: ${POSTGRES_USER:-climate}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-climate}
+    depends_on:
+      redpanda:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      dbt-init:
+        condition: service_completed_successfully
+
+  flink-taskmanager:
+    build: ./flink
+    command: taskmanager
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: flink-jobmanager
+        taskmanager.numberOfTaskSlots: ${FLINK_TASK_SLOTS:-2}
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      PG_JDBC_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-climate}
+      POSTGRES_USER: ${POSTGRES_USER:-climate}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-climate}
+    depends_on:
+      - flink-jobmanager
+
+  flink-job-submitter:
+    build: ./flink
+    command: /opt/flink/submit-jobs.sh
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: flink-jobmanager
+      KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+      PG_JDBC_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-climate}
+      POSTGRES_USER: ${POSTGRES_USER:-climate}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-climate}
+    depends_on:
+      - flink-jobmanager
+      - flink-taskmanager
+    restart: "no"
+
   # --- Schema (dbt on-run-start creates the raw schema and tables) ---
 
   dbt-init:

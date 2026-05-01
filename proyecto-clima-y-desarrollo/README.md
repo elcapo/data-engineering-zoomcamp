@@ -266,6 +266,7 @@ Per-slice end-to-end checks are exposed as Make targets. Each one calls `make up
 |---|---|---|
 | `make smoke-test-worldbank` | World Bank batch | Runs `worldbank-ingest` + `worldbank-load` for `NY.GDP.PCAP.CD/2022`, then `dbt build --select stg_worldbank__indicators`. Asserts the JSON object lands in MinIO, ≥200 rows in `raw.worldbank_indicators_raw`, and the staging view is populated with the dbt tests green. |
 | `make smoke-test-openaq` | OpenAQ stream | Requires `OPENAQ_API_KEY` in `.env`. Runs `openaq-poll --countries ES --max-locations 20`, then asserts the `openaq.measurements` topic has `cleanup.policy=compact` and that ≥1 message lands with the expected key (`<location>:<param>:<iso8601>`) and JSON shape. |
+| `make smoke-test-flink` | Flink streaming | Requires `OPENAQ_API_KEY` in `.env`. Waits for `flink-job-submitter` to finish, asserts ≥1 RUNNING job via the Flink REST API, then polls OpenAQ once and verifies that `raw.openaq_measurements` ends up with ≥1 row written by the Flink JDBC sink. The hourly/daily aggregation tables are not asserted on (event-time tumbling windows only close once the watermark advances past their end). |
 
 The scripts live under `scripts/smoke-test-*.sh` and are safe to re-run; they upsert / consume from the start of the topic.
 
@@ -326,7 +327,7 @@ This README is the starting point. The folders above and the code they contain a
 2. `producer/` — World Bank batch ingestor (smallest end-to-end slice).
 3. `dbt/` — staging models on Postgres.
 4. `producer/` — OpenAQ stream producer + Redpanda topic creation.
-5. `flink/` — PyFlink job consuming OpenAQ.
+5. `flink/` — PyFlink job consuming OpenAQ. ✓ delivered (slice 3)
 6. `spark/` — historical backfill.
 7. `metabase/` — local dashboard with the two planned tiles.
 8. `terraform/gcp/` — cloud parity.
