@@ -196,6 +196,14 @@ Build-time tooling: **uv** installs Python dependencies; **Docker Compose** orch
    - `agg.openaq_hourly` and `agg.openaq_daily`
 3. The PyFlink job uses event time and watermarks to handle the inevitable late arrivals from slow stations.
 
+### Backfill flow (one-shot, OpenAQ S3 dump)
+
+OpenAQ publishes the full historical archive in a public S3 bucket: `s3://openaq-data-archive/records/csv.gz/locationid={N}/year={Y}/` (region `us-east-1`, accessible anonymously). For the historical bootstrap we read directly from the dump rather than paginating the live API — same data, no rate limits, no API key, and the partition layout maps cleanly to Spark's input pruning.
+
+1. A **PySpark job** (`spark/jobs/openaq_backfill.py`) reads the requested `(location, year)` partitions from the dump, normalizes columns to match the Flink streaming schema, looks up the ISO3 code from the `country_iso_codes` seed, and writes Parquet to `openaq/cleansed/year=YYYY/country_iso3=XXX/` in MinIO/GCS.
+2. The same job stages results in a temporary Postgres table and merges into `raw.openaq_measurements` with `INSERT … ON CONFLICT DO NOTHING`, so the backfill and the Flink stream coexist on the same target without duplicates.
+3. The live API stays the source of truth for fresh data (continuous polling); the dump is only used for the one-time historical load and any future re-runs over older windows.
+
 ### Join layer (where the project's question lives)
 
 A dbt model `marts.country_year_environment` joins:
@@ -267,6 +275,7 @@ Per-slice end-to-end checks are exposed as Make targets. Each one calls `make up
 | `make smoke-test-worldbank` | World Bank batch | Runs `worldbank-ingest` + `worldbank-load` for `NY.GDP.PCAP.CD/2022`, then `dbt build --select stg_worldbank__indicators`. Asserts the JSON object lands in MinIO, ≥200 rows in `raw.worldbank_indicators_raw`, and the staging view is populated with the dbt tests green. |
 | `make smoke-test-openaq` | OpenAQ stream | Requires `OPENAQ_API_KEY` in `.env`. Runs `openaq-poll --countries ES --max-locations 20`, then asserts the `openaq.measurements` topic has `cleanup.policy=compact` and that ≥1 message lands with the expected key (`<location>:<param>:<iso8601>`) and JSON shape. |
 | `make smoke-test-flink` | Flink streaming | Requires `OPENAQ_API_KEY` in `.env`. Waits for `flink-job-submitter` to finish, asserts ≥1 RUNNING job via the Flink REST API, then polls OpenAQ once and verifies that `raw.openaq_measurements` ends up with ≥1 row written by the Flink JDBC sink. The hourly/daily aggregation tables are not asserted on (event-time tumbling windows only close once the watermark advances past their end). |
+| `make smoke-test-spark` | OpenAQ backfill | No API key required (reads the public S3 dump anonymously). Runs `spark-backfill --locations 2178 --years 2023 --country-iso ES` against the Madrid station, asserts ≥1 Parquet file under `openaq/cleansed/` in MinIO and that `raw.openaq_measurements` grew. Re-runs once more to verify the `ON CONFLICT DO NOTHING` upsert is idempotent. Override the scope with `SPARK_BACKFILL_LOCATIONS` / `SPARK_BACKFILL_YEARS` / `SPARK_BACKFILL_COUNTRY_ISO`. |
 
 The scripts live under `scripts/smoke-test-*.sh` and are safe to re-run; they upsert / consume from the start of the topic.
 
@@ -327,8 +336,8 @@ This README is the starting point. The folders above and the code they contain a
 2. `producer/` — World Bank batch ingestor (smallest end-to-end slice).
 3. `dbt/` — staging models on Postgres.
 4. `producer/` — OpenAQ stream producer + Redpanda topic creation.
-5. `flink/` — PyFlink job consuming OpenAQ. ✓ delivered (slice 3)
-6. `spark/` — historical backfill.
+5. `flink/` — PyFlink job consuming OpenAQ.
+6. `spark/` — historical backfill from the OpenAQ S3 dump.
 7. `metabase/` — local dashboard with the two planned tiles.
 8. `terraform/gcp/` — cloud parity.
 9. `docs/` — learning-in-public articles, mirroring the GDELT and BOC pattern.
@@ -337,4 +346,5 @@ External references:
 
 - [World Bank Indicators API documentation](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation)
 - [OpenAQ API v3 documentation](https://docs.openaq.org/)
+- [OpenAQ S3 archive (Open Data on AWS)](https://docs.openaq.org/aws/about) — public dump used by the Spark backfill
 - [WHO Global Air Quality Guidelines (2021)](https://www.who.int/publications/i/item/9789240034228) — reference thresholds for PM2.5, PM10, NO2, O3, SO2

@@ -1,0 +1,15 @@
+[project]
+name = "climate-spark"
+version = "0.1.0"
+description = "PySpark backfill jobs for the climate-and-development pipeline."
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pyspark==3.5.4",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["jobs"]

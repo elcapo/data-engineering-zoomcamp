@@ -6,6 +6,7 @@ profile: climate
 
 model-paths: ["models"]
 macro-paths: ["macros"]
+seed-paths: ["seeds"]
 target-path: "target"
 clean-targets:
   - "target"
@@ -13,6 +14,16 @@ clean-targets:
 
 on-run-start:
   - "{{ create_raw_schema() }}"
+
+seeds:
+  climate:
+    +schema: seeds
+    country_iso_codes:
+      +column_types:
+        iso2: text
+        iso3: text
+        wb_code: text
+        country_name: text
 
 models:
   climate:
