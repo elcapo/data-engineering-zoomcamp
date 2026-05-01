@@ -1,0 +1,21 @@
+name: climate
+version: "1.0.0"
+config-version: 2
+
+profile: climate
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+on-run-start:
+  - "{{ create_raw_schema() }}"
+
+models:
+  climate:
+    staging:
+      +materialized: view
+      +schema: staging

@@ -76,7 +76,7 @@ Worldwide air quality measurements aggregated from government stations and refer
 License: per-source, mostly open. Update cadence: continuous; the API exposes a `/measurements` endpoint that lists records in a polling-friendly window. We treat this as a stream by polling at a high frequency from the producer and pushing every new record to Redpanda.
 
 > [!NOTE]
-> OpenAQ is not a true push stream — there is no websocket or webhook. The producer polls the API on a short interval, deduplicates by `(location_id, parameter, datetime_utc)`, and publishes only new records. From the broker downstream, the pipeline is fully streaming.
+> OpenAQ is not a true push stream — there is no websocket or webhook. A Kestra-scheduled producer polls the API on a short interval and publishes records to Redpanda keyed by `(location_id, parameter, datetime_utc)`. The topic uses log compaction, so re-publishing the same key is a no-op and no external dedupe state is required. From the broker downstream, the pipeline is fully streaming.
 
 ## Architecture: Local and Cloud, Same Code
 
@@ -97,7 +97,7 @@ flowchart TB
         L_Stream["🐼 Redpanda"]
         L_Flink["🐿️ PyFlink"]
         L_Spark["⚡ Spark<br>(container)"]
-        L_DWH["🦆 DuckDB"]
+        L_DWH["🐘 PostgreSQL"]
         L_BI["📊 Metabase"]
   end
  subgraph Cloud["Cloud Mode (Terraform → GCP)"]
@@ -157,7 +157,7 @@ flowchart TB
 The abstraction layer is intentionally thin:
 
 - **Object storage**: both MinIO and GCS expose an S3-compatible API. The code uses `boto3` against an endpoint URL that comes from `STORAGE_ENDPOINT`.
-- **Data warehouse**: dbt has both a `duckdb` and a `bigquery` adapter. A single `profiles.yml` defines two targets, and `dbt run --target $WAREHOUSE_BACKEND` selects one. SQL macros translate `partition_by` and `cluster_by` to the right dialect.
+- **Data warehouse**: dbt has both a `postgres` and a `bigquery` adapter. A single `profiles.yml` defines two targets, and the `WAREHOUSE_BACKEND` env var selects one. Adapter-aware macros translate `partition_by` and `cluster_by` to the right dialect (no-op on Postgres, where partitioning is set up via DDL macros instead).
 - **Stream broker**: Redpanda speaks the Kafka protocol identically whether it runs in a container or on a GCE VM. The producer/consumer code never changes.
 - **Stream processor**: PyFlink runs the same job in both modes; only the JDBC URL of the sink changes.
 - **Spark**: a single PySpark job script runs against either a local container or `gcloud dataproc batches submit`.
@@ -171,8 +171,8 @@ The abstraction layer is intentionally thin:
 | Stream broker | Redpanda (Docker) | Redpanda (GCE VM) | Kafka-compatible buffer between OpenAQ producer and Flink |
 | Stream processor | PyFlink | PyFlink | Tumbling-window aggregations on OpenAQ measurements; writes to DWH |
 | Batch transformations (heavy) | Spark (container) | Dataproc Serverless | Initial cleansing, country-code reconciliation, historical reprocessing |
-| Batch transformations (modeling) | dbt + DuckDB | dbt + BigQuery | `staging` → `intermediate` → `marts` SQL models |
-| Data warehouse | DuckDB | BigQuery | Source of truth for the dashboard; partitioned and clustered |
+| Batch transformations (modeling) | dbt + PostgreSQL | dbt + BigQuery | `staging` → `intermediate` → `marts` SQL models |
+| Data warehouse | PostgreSQL | BigQuery | Source of truth for the dashboard; partitioned and clustered |
 | Dashboard | Metabase | Looker Studio | Two tiles backed by `marts.country_year_environment` |
 | IaC | Docker Compose | Terraform (GCP) | Reproducible environment definition |
 
@@ -190,7 +190,7 @@ Build-time tooling: **uv** installs Python dependencies; **Docker Compose** orch
 
 ### Stream flow (continuous, OpenAQ)
 
-1. A **Python producer** polls OpenAQ `/measurements` every 60 seconds for the configured country list, deduplicates against a Redis cursor, and publishes new records to Redpanda topic `openaq.measurements`.
+1. A **Python producer** runs as a Kestra-scheduled task every few minutes: it polls OpenAQ `/measurements` for the configured country list and publishes records to the Redpanda topic `openaq.measurements`. Each message is keyed by `(location_id, parameter, datetime_utc)` and the topic uses log compaction, so re-publishing the same measurement is a no-op — no external dedupe state required.
 2. **PyFlink** consumes `openaq.measurements`, joins to a small `country` lookup, applies tumbling windows (1 hour, 1 day) per `country × parameter`, and writes:
    - `raw.openaq_measurements` (mirror of the topic)
    - `agg.openaq_hourly` and `agg.openaq_daily`
@@ -209,15 +209,15 @@ at the `country_iso3 × year` grain. This is the single table the dashboard quer
 
 ### Partitioning
 
-| Table | BigQuery | DuckDB | Reason |
+| Table | BigQuery | PostgreSQL | Reason |
 |---|---|---|---|
-| `raw.openaq_measurements` | `PARTITION BY DATE(datetime_utc)` | covering index on `datetime_utc` | High-volume, time-range queries dominate; pruning by day keeps scans cheap |
-| `staging.worldbank_*` | `PARTITION BY year` (integer range) | covering index on `(country_iso3, year)` | Tables are small but partitioning by year mirrors the natural query pattern |
-| `marts.country_year_environment` | `PARTITION BY year` | index on `(country_iso3, year)` | Dashboard filters by year range and country; partition pruning + clustering removes >95% of scan cost |
-| `agg.openaq_daily` | `PARTITION BY day` | covering index on `(country_iso3, day, parameter)` | Hourly job appends; dashboard reads recent windows |
+| `raw.openaq_measurements` | `PARTITION BY DATE(datetime_utc)` | `PARTITION BY RANGE (datetime_utc)`, monthly partitions ensured via DDL macro | High-volume, time-range queries dominate; pruning by month keeps scans cheap |
+| `staging.worldbank_*` | `PARTITION BY year` (integer range) | btree index on `(country_iso3, year)` | Tables are small but partitioning by year mirrors the natural query pattern |
+| `marts.country_year_environment` | `PARTITION BY year` | btree index on `(country_iso3, year)` | Dashboard filters by year range and country; partition pruning + clustering removes >95% of scan cost |
+| `agg.openaq_daily` | `PARTITION BY day` | `PARTITION BY RANGE (day)`, monthly partitions ensured via DDL macro | Hourly job appends; dashboard reads recent windows |
 
 > [!NOTE]
-> DuckDB does not support partitioned tables in the same sense as BigQuery; the equivalent there is Hive-style partitioning of the underlying Parquet files plus appropriate indexes. The dbt models are written so the same logical layout works in both engines.
+> Postgres native `PARTITION BY RANGE` is closer to BigQuery's model than the DuckDB alternative would have been. Per-partition DDL is issued by an `ensure_monthly_partitions` macro invoked from dbt's `on-run-start`, so the same logical layout works in both engines without query-side changes.
 
 ### Clustering
 
@@ -232,7 +232,7 @@ at the `country_iso3 × year` grain. This is the single table the dashboard quer
 Two layers, by design:
 
 - **PySpark** for the heavy and one-off lifting: initial historical backfill of OpenAQ (millions of rows), country-code reconciliation across ISO2 / ISO3 / World Bank codes, format normalization. Runs in a container locally and on Dataproc Serverless in cloud mode.
-- **dbt** for the day-to-day modeling: `staging/` (one model per source indicator and one for OpenAQ raw mirror), `intermediate/` (joins, country normalization), `marts/` (the analytical surface). Adapter-aware macros translate partition and cluster syntax between DuckDB and BigQuery.
+- **dbt** for the day-to-day modeling: `staging/` (one model per source indicator and one for OpenAQ raw mirror), `intermediate/` (joins, country normalization), `marts/` (the analytical surface). Adapter-aware macros translate partition and cluster syntax between PostgreSQL and BigQuery.
 
 ## Dashboard
 
@@ -256,7 +256,7 @@ cd data-engineering-zoomcamp/proyecto-clima-y-desarrollo
 make up
 ```
 
-This brings up Kestra, MinIO, Redpanda, PyFlink, Spark, DuckDB-backed dbt, and Metabase. Once the stack is healthy, Kestra triggers the first batch ingestion immediately.
+This brings up Kestra, MinIO, Redpanda, PyFlink, Spark, Postgres-backed dbt, and Metabase. Once the stack is healthy, Kestra triggers the first batch ingestion immediately.
 
 ### Cloud
 
@@ -277,7 +277,7 @@ Terraform provisions a GCS bucket, a BigQuery dataset, a Dataproc Serverless bat
 |---|---|---|
 | `STORAGE_BACKEND` | `minio` | `gcs` |
 | `STORAGE_ENDPOINT` | `http://minio:9000` | `https://storage.googleapis.com` |
-| `WAREHOUSE_BACKEND` | `duckdb` | `bigquery` |
+| `WAREHOUSE_BACKEND` | `postgres` | `bigquery` |
 | `STREAM_BACKEND` | `redpanda-local` | `redpanda-gce` |
 | `SPARK_BACKEND` | `local` | `dataproc` |
 | `DASHBOARD_BACKEND` | `metabase` | `looker-studio` |
@@ -313,7 +313,7 @@ This README is the starting point. The folders above and the code they contain a
 
 1. `env.template` and `docker-compose.yml` skeleton.
 2. `producer/` — World Bank batch ingestor (smallest end-to-end slice).
-3. `dbt/` — staging models on DuckDB.
+3. `dbt/` — staging models on Postgres.
 4. `producer/` — OpenAQ stream producer + Redpanda topic creation.
 5. `flink/` — PyFlink job consuming OpenAQ.
 6. `spark/` — historical backfill.

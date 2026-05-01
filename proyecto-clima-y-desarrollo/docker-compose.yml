@@ -1,0 +1,163 @@
+services:
+
+  # --- Database ---
+
+  postgres:
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-climate}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-climate}
+      POSTGRES_DB: ${POSTGRES_DB:-climate}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-climate}"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+
+  # --- Object storage (S3-compatible) ---
+
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    command: server /data --console-address ":9001"
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+
+  minio-init:
+    image: minio/mc:RELEASE.2025-08-13T08-35-41Z
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      STORAGE_BUCKET: ${STORAGE_BUCKET:-climate}
+    entrypoint:
+      - sh
+      - -c
+      - |
+        set -e
+        mc alias set local http://minio:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD"
+        mc mb --ignore-existing local/"$$STORAGE_BUCKET"
+        echo "Bucket $$STORAGE_BUCKET ready."
+    depends_on:
+      minio:
+        condition: service_healthy
+    restart: "no"
+
+  # --- Producer (triggered by Kestra, not auto-started) ---
+
+  worldbank-producer:
+    build: ./producer/worldbank
+    image: worldbank-producer
+    profiles: ["cli"]
+    environment:
+      STORAGE_ENDPOINT: ${STORAGE_ENDPOINT:-http://minio:9000}
+      STORAGE_BUCKET: ${STORAGE_BUCKET:-climate}
+      STORAGE_REGION: ${STORAGE_REGION:-us-east-1}
+      STORAGE_ACCESS_KEY: ${MINIO_ROOT_USER:-minio}
+      STORAGE_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      WORLDBANK_API_BASE_URL: ${WORLDBANK_API_BASE_URL:-https://api.worldbank.org/v2}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: ${POSTGRES_USER:-climate}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-climate}
+      POSTGRES_DB: ${POSTGRES_DB:-climate}
+    depends_on:
+      minio:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  # --- Orchestrator ---
+
+  kestra:
+    image: kestra/kestra:v1.3.10
+    command: server standalone
+    user: "root"
+    ports:
+      - "${KESTRA_PORT:-8080}:8080"
+    volumes:
+      - ./kestra/flows:/opt/kestra/flows:ro
+      - kestra-data:/app/storage
+      - ${DOCKER_SOCKET_DIR:-/var/run}/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/api/v1/configs >/dev/null"]
+      interval: 10s
+      retries: 20
+      start_period: 30s
+    environment:
+      KESTRA_CONFIGURATION: |
+        kestra:
+          repository:
+            type: memory
+          storage:
+            type: local
+            local:
+              base-path: /app/storage
+          queue:
+            type: memory
+          server:
+            basic-auth:
+              username: ${KESTRA_USER:-admin@kestra.io}
+              password: ${KESTRA_PASSWORD:-Admin1234!}
+          tutorial-flows:
+            enabled: false
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  kestra-flows-sync:
+    image: kestra/kestra:v1.3.10
+    entrypoint: ["/bin/sh", "-c"]
+    environment:
+      KESTRA_USER: ${KESTRA_USER:-admin@kestra.io}
+      KESTRA_PASSWORD: ${KESTRA_PASSWORD:-Admin1234!}
+    command:
+      - |
+        /app/kestra flow namespace update climate /opt/kestra/flows \
+          --server http://kestra:8080 \
+          --user "$${KESTRA_USER}:$${KESTRA_PASSWORD}"
+    volumes:
+      - ./kestra/flows:/opt/kestra/flows:ro
+    depends_on:
+      kestra:
+        condition: service_healthy
+    restart: "no"
+
+  # --- Schema (dbt on-run-start creates the raw schema and tables) ---
+
+  dbt-init:
+    build: ./dbt
+    environment:
+      WAREHOUSE_BACKEND: ${WAREHOUSE_BACKEND:-postgres}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: ${POSTGRES_USER:-climate}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-climate}
+      POSTGRES_DB: ${POSTGRES_DB:-climate}
+    command: ["run-operation", "create_raw_schema"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+networks:
+  default:
+    name: climate-net
+
+volumes:
+  pgdata:
+  kestra-data:
+  minio-data:

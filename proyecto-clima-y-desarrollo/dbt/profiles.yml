@@ -1,0 +1,20 @@
+climate:
+  target: "{{ env_var('WAREHOUSE_BACKEND', 'postgres') }}"
+  outputs:
+    postgres:
+      type: postgres
+      host: "{{ env_var('POSTGRES_HOST', 'postgres') }}"
+      port: "{{ env_var('POSTGRES_PORT', '5432') | int }}"
+      user: "{{ env_var('POSTGRES_USER', 'climate') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD', 'climate') }}"
+      dbname: "{{ env_var('POSTGRES_DB', 'climate') }}"
+      schema: public
+      threads: 4
+    bigquery:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('BIGQUERY_PROJECT', '') }}"
+      dataset: "{{ env_var('BIGQUERY_DATASET', 'climate') }}"
+      location: "{{ env_var('BIGQUERY_LOCATION', 'EU') }}"
+      keyfile: "{{ env_var('BIGQUERY_KEYFILE', '') }}"
+      threads: 4

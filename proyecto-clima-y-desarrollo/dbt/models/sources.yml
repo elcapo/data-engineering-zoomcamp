@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: worldbank
+    description: "Raw World Bank Indicators API payloads landed by the worldbank-load CLI."
+    schema: raw
+    tables:
+      - name: worldbank_indicators_raw
+        description: "One row per (indicator_code, country_iso3, year). Upserted by the loader."
+        columns:
+          - name: indicator_code
+            tests: [not_null]
+          - name: country_iso3
+            tests: [not_null]
+          - name: year
+            tests: [not_null]

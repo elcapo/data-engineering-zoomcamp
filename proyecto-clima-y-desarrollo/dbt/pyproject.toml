@@ -1,0 +1,9 @@
+[project]
+name = "climate-dbt"
+version = "0.1.0"
+description = "dbt project for the climate-and-development pipeline (Postgres local, BigQuery cloud)."
+requires-python = ">=3.12"
+dependencies = [
+    "dbt-postgres>=1.10.0",
+    "dbt-bigquery>=1.10.0",
+]

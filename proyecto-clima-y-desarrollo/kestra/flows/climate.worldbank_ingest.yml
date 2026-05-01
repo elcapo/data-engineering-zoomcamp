@@ -1,0 +1,74 @@
+id: worldbank-ingest
+namespace: climate
+
+description: |
+  Two-step batch ingestion of World Bank Indicators:
+    1. ingest: API → MinIO/S3 raw JSON
+    2. load:   S3 → Postgres raw.worldbank_indicators_raw (upsert)
+  Yearly schedule keeps the most recent year fresh; manual executions take
+  start_year / end_year / indicators inputs for backfills.
+
+inputs:
+  - id: start_year
+    type: INT
+    defaults: 2024
+  - id: end_year
+    type: INT
+    defaults: 2024
+  - id: indicators
+    type: STRING
+    required: false
+    description: "Optional comma-separated indicator codes; empty = use container default."
+
+triggers:
+  - id: yearly
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 3 1 7 *"  # July 1st 03:00 — World Bank typically refreshes mid-year
+    inputs:
+      start_year: "{{ now() | date('yyyy') | number - 1 }}"
+      end_year: "{{ now() | date('yyyy') | number - 1 }}"
+
+tasks:
+  - id: ingest
+    type: io.kestra.plugin.scripts.python.Commands
+    containerImage: worldbank-producer
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: climate-net
+      pullPolicy: NEVER
+    env:
+      STORAGE_ENDPOINT: "http://minio:9000"
+      STORAGE_BUCKET: "{{ envs.storage_bucket ?? 'climate' }}"
+    commands:
+      - >
+        worldbank-ingest
+        --start-year {{ inputs.start_year }}
+        --end-year {{ inputs.end_year }}
+        {{ (inputs.indicators is not null and inputs.indicators != '') ? '--indicators ' ~ inputs.indicators : '' }}
+    retry:
+      type: exponential
+      maxAttempt: 4
+      interval: PT30S
+      maxInterval: PT5M
+
+  - id: load
+    type: io.kestra.plugin.scripts.python.Commands
+    containerImage: worldbank-producer
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: climate-net
+      pullPolicy: NEVER
+    env:
+      STORAGE_ENDPOINT: "http://minio:9000"
+      STORAGE_BUCKET: "{{ envs.storage_bucket ?? 'climate' }}"
+      POSTGRES_HOST: "postgres"
+    commands:
+      - >
+        worldbank-load
+        --start-year {{ inputs.start_year }}
+        --end-year {{ inputs.end_year }}
+        {{ (inputs.indicators is not null and inputs.indicators != '') ? '--indicators ' ~ inputs.indicators : '' }}
+    retry:
+      type: constant
+      maxAttempt: 2
+      interval: PT15S
