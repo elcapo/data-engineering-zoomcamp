@@ -1,4 +1,4 @@
-.PHONY: init up down reset test smoke-test-worldbank smoke-test-openaq smoke-test-flink smoke-test-spark
+.PHONY: init up down reset test smoke-test-worldbank smoke-test-openaq smoke-test-flink smoke-test-spark smoke-test-marts
 
 init:
 	@[ -f .env ] || { \
@@ -38,3 +38,6 @@ smoke-test-flink: up
 
 smoke-test-spark: up
 	@./scripts/smoke-test-spark.sh
+
+smoke-test-marts: up
+	@./scripts/smoke-test-marts.sh

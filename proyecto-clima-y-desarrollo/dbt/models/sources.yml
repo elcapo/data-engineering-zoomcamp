@@ -14,3 +14,17 @@ sources:
             tests: [not_null]
           - name: year
             tests: [not_null]
+
+  - name: openaq
+    description: "OpenAQ measurements landed by Flink (live stream) and Spark (S3 backfill)."
+    schema: raw
+    tables:
+      - name: openaq_measurements
+        description: "One row per (location_id, parameter, datetime_utc). Upserted by both pipelines."
+        columns:
+          - name: location_id
+            tests: [not_null]
+          - name: parameter
+            tests: [not_null]
+          - name: datetime_utc
+            tests: [not_null]

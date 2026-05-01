@@ -17,8 +17,8 @@ The same codebase runs end-to-end in two modes: **fully local** with Docker Comp
 - [Transformations](#transformations)
 - [Dashboard](#dashboard)
 - [Reproducibility](#reproducibility)
-- [Project Structure (Planned)](#project-structure-planned)
-- [Status and Roadmap](#status-and-roadmap)
+- [Project Structure](#project-structure)
+- [External References](#external-references)
 
 ## The Problem
 
@@ -208,10 +208,10 @@ OpenAQ publishes the full historical archive in a public S3 bucket: `s3://openaq
 
 A dbt model `marts.country_year_environment` joins:
 
-- yearly World Bank indicators (`marts.worldbank_indicators`)
-- yearly aggregations of OpenAQ daily data (median PM2.5, days exceeding WHO thresholds, etc.)
+- World Bank indicators pivoted wide (`int_worldbank__indicators_pivoted`): one column per indicator (`gdp_per_capita_usd`, `co2_per_capita_t`, `gdp_growth_pct`, `urban_population_pct`, …).
+- OpenAQ aggregations (`int_openaq__country_year`): per-pollutant medians of the *daily* mean (so each day weights equally regardless of station polling cadence) plus `pm25_days_exceeding_who_daily` against the WHO 2021 threshold of 15 µg/m³.
 
-at the `country_iso3 × year` grain. This is the single table the dashboard queries.
+at the `country_iso3 × year` grain via FULL OUTER JOIN — the choropleth needs WB-only countries even when no OpenAQ stations exist there, and vice versa. ISO2→ISO3 reconciliation flows through the `country_iso_codes` dbt seed (~190 codes; both Spark and dbt use it as the single source of truth). On Postgres a `(country_iso3, year)` btree index is created via the model's `post_hook`; on BigQuery the equivalent partitioning is added by the cloud slice.
 
 ## Data Warehouse Design
 
@@ -276,6 +276,7 @@ Per-slice end-to-end checks are exposed as Make targets. Each one calls `make up
 | `make smoke-test-openaq` | OpenAQ stream | Requires `OPENAQ_API_KEY` in `.env`. Runs `openaq-poll --countries ES --max-locations 20`, then asserts the `openaq.measurements` topic has `cleanup.policy=compact` and that ≥1 message lands with the expected key (`<location>:<param>:<iso8601>`) and JSON shape. |
 | `make smoke-test-flink` | Flink streaming | Requires `OPENAQ_API_KEY` in `.env`. Waits for `flink-job-submitter` to finish, asserts ≥1 RUNNING job via the Flink REST API, then polls OpenAQ once and verifies that `raw.openaq_measurements` ends up with ≥1 row written by the Flink JDBC sink. The hourly/daily aggregation tables are not asserted on (event-time tumbling windows only close once the watermark advances past their end). |
 | `make smoke-test-spark` | OpenAQ backfill | No API key required (reads the public S3 dump anonymously). Runs `spark-backfill --locations 2178 --years 2023 --country-iso US` against a verified station ("Del Norte" in Albuquerque, NM), asserts the Spark log reports ≥1 normalized row, that ≥1 Parquet file landed under `openaq/cleansed/` in MinIO, and that `raw.openaq_measurements` has ≥1 row in the requested year window for the requested locations. Re-runs once more to verify the `ON CONFLICT DO NOTHING` upsert is idempotent. **Non-destructive**: never deletes existing rows — relies on the year window not overlapping with what Flink writes (current time). Override the scope with `SPARK_BACKFILL_LOCATIONS` / `SPARK_BACKFILL_YEARS` / `SPARK_BACKFILL_COUNTRY_ISO`. |
+| `make smoke-test-marts` | Join layer (dbt marts) | Loads matching slices on both sides — `worldbank-ingest` + `worldbank-load` for `NY.GDP.PCAP.CD/2022` and `spark-backfill` for `locations=2178 / year=2022 / US` — then runs `dbt seed country_iso_codes` and `dbt build --select +country_year_environment`. Asserts `marts.country_year_environment` has a row for `(USA, 2022)` with **both** `gdp_per_capita_usd` and `median_pm25_ugm3` populated (proves the FULL OUTER JOIN actually intersected), and that the Postgres `(country_iso3, year)` btree index was created via the model's `post_hook`. |
 
 The scripts live under `scripts/smoke-test-*.sh` and are safe to re-run; they upsert / consume from the start of the topic.
 
@@ -305,44 +306,43 @@ Terraform provisions a GCS bucket, a BigQuery dataset, a Dataproc Serverless bat
 
 A single `.env.local` and `.env.cloud` are checked in as templates; secrets are not.
 
-## Project Structure (Planned)
-
-The folders below will be created in follow-up tasks. Layout mirrors the GDELT project so reviewers familiar with it can navigate quickly.
+## Project Structure
 
 ```
 proyecto-clima-y-desarrollo/
 ├── README.md                  ← this file
-├── Makefile                   ← make up / down / reset
+├── Makefile                   ← make up / down / reset / smoke-test-*
 ├── docker-compose.yml         ← local stack
 ├── env.template               ← all env vars, both modes
-├── kestra/                    ← orchestration flows (YAML)
-├── producer/                  ← Python ingestors (World Bank batch + OpenAQ stream)
-├── flink/                     ← PyFlink jobs
-├── spark/                     ← PySpark jobs
-├── dbt/                       ← models, seeds, macros (dual adapter)
-├── metabase/                  ← exported dashboard JSON
-├── terraform/gcp/             ← cloud infrastructure
+├── kestra/
+│   └── flows/                 ← orchestration flows (YAML)
+├── producer/
+│   ├── worldbank/             ← Python ingestor + loader (World Bank API → MinIO → Postgres)
+│   └── openaq/                ← Python producer (OpenAQ /latest → Redpanda)
+├── flink/
+│   ├── jobs/                  ← PyFlink streaming jobs (consume Redpanda, write Postgres)
+│   ├── sql/                   ← Flink SQL templates (sources, sinks, inserts)
+│   └── tests/                 ← pytest unit tests
+├── spark/
+│   ├── jobs/                  ← PySpark backfill (OpenAQ S3 dump → MinIO Parquet → Postgres)
+│   └── tests/                 ← pytest unit tests
+├── dbt/
+│   ├── macros/                ← adapter-aware helpers (partition_by, cluster_by, median, …)
+│   ├── models/
+│   │   ├── staging/           ← thin views over raw schemas
+│   │   ├── intermediate/      ← per-source aggregations (OpenAQ yearly, World Bank pivoted)
+│   │   └── marts/             ← published surface (country_year_environment, worldbank_indicators)
+│   └── seeds/                 ← country_iso_codes (ISO2 ↔ ISO3 ↔ World Bank code)
+├── metabase/                  ← exported dashboard JSON (choropleth + GDP-vs-air time series)
+├── terraform/gcp/             ← cloud infrastructure (GCS, BigQuery, Dataproc, GCE)
+├── scripts/                   ← end-to-end smoke tests, one per slice
 └── docs/
     ├── english/               ← primary documentation
     ├── spanish/               ← translated learning-in-public articles
     └── resources/             ← architecture PNG, screenshots
 ```
 
-## Status and Roadmap
-
-This README is the starting point. The folders above and the code they contain are scheduled to be added in the following order:
-
-1. `env.template` and `docker-compose.yml` skeleton.
-2. `producer/` — World Bank batch ingestor (smallest end-to-end slice).
-3. `dbt/` — staging models on Postgres.
-4. `producer/` — OpenAQ stream producer + Redpanda topic creation.
-5. `flink/` — PyFlink job consuming OpenAQ.
-6. `spark/` — historical backfill from the OpenAQ S3 dump.
-7. `metabase/` — local dashboard with the two planned tiles.
-8. `terraform/gcp/` — cloud parity.
-9. `docs/` — learning-in-public articles, mirroring the GDELT and BOC pattern.
-
-External references:
+## External References
 
 - [World Bank Indicators API documentation](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation)
 - [OpenAQ API v3 documentation](https://docs.openaq.org/)

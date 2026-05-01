@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_openaq__measurements
+    description: "OpenAQ measurements with ISO3 reconciliation. Rows whose country_iso2 is missing from the seed are dropped."
+    columns:
+      - name: location_id
+        tests: [not_null]
+      - name: country_iso2
+        tests: [not_null]
+      - name: country_iso3
+        tests: [not_null]
+      - name: parameter
+        tests: [not_null]
+      - name: datetime_utc
+        tests: [not_null]
+      - name: value
+        tests: [not_null]
