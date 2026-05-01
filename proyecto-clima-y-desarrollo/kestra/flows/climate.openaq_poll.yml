@@ -1,0 +1,51 @@
+id: openaq-poll
+namespace: climate
+
+description: |
+  Polls the OpenAQ v3 API for the latest air-quality measurements at every
+  station in the configured countries and publishes one Kafka record per
+  measurement to Redpanda.
+
+  Re-publishing the same (location, parameter, datetime) key is a no-op
+  thanks to log compaction on the openaq.measurements topic.
+
+inputs:
+  - id: countries
+    type: STRING
+    required: false
+    description: "Optional ISO2 list (e.g. ES,FR); empty = use COUNTRIES env var."
+  - id: parameters
+    type: STRING
+    required: false
+    description: "Optional parameter list; empty = use PARAMETERS env var or default."
+
+triggers:
+  - id: every_15_min
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "*/15 * * * *"
+
+tasks:
+  - id: poll
+    type: io.kestra.plugin.scripts.python.Commands
+    containerImage: openaq-producer
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: climate-net
+      pullPolicy: NEVER
+    env:
+      OPENAQ_API_BASE_URL: "https://api.openaq.org"
+      OPENAQ_API_KEY: "{{ envs.openaq_api_key }}"
+      KAFKA_BOOTSTRAP_SERVERS: "redpanda:9092"
+      OPENAQ_TOPIC: "{{ envs.openaq_topic ?? 'openaq.measurements' }}"
+      COUNTRIES: "{{ envs.countries ?? '' }}"
+      PARAMETERS: "{{ envs.parameters ?? 'pm25,pm10,no2,o3,so2' }}"
+    commands:
+      - >
+        openaq-poll
+        {{ (inputs.countries is not null and inputs.countries != '') ? '--countries ' ~ inputs.countries : '' }}
+        {{ (inputs.parameters is not null and inputs.parameters != '') ? '--parameters ' ~ inputs.parameters : '' }}
+    retry:
+      type: exponential
+      maxAttempt: 3
+      interval: PT30S
+      maxInterval: PT3M

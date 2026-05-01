@@ -1,4 +1,4 @@
-.PHONY: init up down reset test smoke-test
+.PHONY: init up down reset test smoke-test smoke-test-openaq
 
 init:
 	@[ -f .env ] || { \
@@ -29,3 +29,6 @@ test:
 
 smoke-test: up
 	@./scripts/smoke-test.sh
+
+smoke-test-openaq: up
+	@./scripts/smoke-test-openaq.sh

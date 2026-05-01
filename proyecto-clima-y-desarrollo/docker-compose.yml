@@ -1,5 +1,56 @@
 services:
 
+  # --- Message Broker ---
+
+  redpanda:
+    image: redpandadata/redpanda:v26.1.4
+    command:
+      - redpanda
+      - start
+      - --smp=1
+      - --memory=512M
+      - --overprovisioned
+      - --kafka-addr=internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr=internal://redpanda:9092,external://localhost:${REDPANDA_PORT:-9092}
+    ports:
+      - "${REDPANDA_PORT:-9092}:19092"
+    volumes:
+      - redpanda-data:/var/lib/redpanda/data
+    healthcheck:
+      test: ["CMD", "rpk", "cluster", "health", "--api-urls=redpanda:9644"]
+      interval: 10s
+      retries: 5
+      start_period: 15s
+
+  redpanda-console:
+    image: redpandadata/console:v3.7.1
+    ports:
+      - "${REDPANDA_CONSOLE_PORT:-8081}:8080"
+    environment:
+      KAFKA_BROKERS: redpanda:9092
+    depends_on:
+      redpanda:
+        condition: service_healthy
+
+  redpanda-init:
+    image: redpandadata/redpanda:v26.1.4
+    entrypoint:
+      - rpk
+      - topic
+      - create
+      - openaq.measurements
+      - --brokers=redpanda:9092
+      - --partitions=1
+      - --replicas=1
+      - -c
+      - cleanup.policy=compact
+      - -c
+      - min.cleanable.dirty.ratio=0.5
+    depends_on:
+      redpanda:
+        condition: service_healthy
+    restart: "no"
+
   # --- Database ---
 
   postgres:
@@ -78,6 +129,21 @@ services:
       minio:
         condition: service_healthy
       postgres:
+        condition: service_healthy
+
+  openaq-producer:
+    build: ./producer/openaq
+    image: openaq-producer
+    profiles: ["cli"]
+    environment:
+      OPENAQ_API_BASE_URL: ${OPENAQ_API_BASE_URL:-https://api.openaq.org}
+      OPENAQ_API_KEY: ${OPENAQ_API_KEY:-}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-redpanda:9092}
+      OPENAQ_TOPIC: ${OPENAQ_TOPIC:-openaq.measurements}
+      COUNTRIES: ${COUNTRIES:-}
+      PARAMETERS: ${PARAMETERS:-pm25,pm10,no2,o3,so2}
+    depends_on:
+      redpanda:
         condition: service_healthy
 
   # --- Orchestrator ---
@@ -161,3 +227,4 @@ volumes:
   pgdata:
   kestra-data:
   minio-data:
+  redpanda-data:
