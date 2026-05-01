@@ -63,11 +63,29 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql
+      - ./scripts/postgres-init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-climate}"]
       interval: 10s
       retries: 5
       start_period: 10s
+
+  postgres-init:
+    image: postgres:18.3
+    entrypoint: ["/docker-entrypoint-initdb.d/01-create-metabase-db.sh"]
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      POSTGRES_USER: ${POSTGRES_USER:-climate}
+      POSTGRES_DB: ${POSTGRES_DB:-climate}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-climate}
+      METABASE_DB_NAME: ${METABASE_DB_NAME:-metabase_app}
+    volumes:
+      - ./scripts/postgres-init:/docker-entrypoint-initdb.d:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
 
   # --- Object storage (S3-compatible) ---
 
@@ -281,6 +299,53 @@ services:
       - flink-taskmanager
     restart: "no"
 
+  # --- BI / Dashboard ---
+
+  metabase:
+    image: metabase/metabase:v0.60.3.3
+    ports:
+      - "${METABASE_PORT:-3000}:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_HOST: postgres
+      MB_DB_PORT: "5432"
+      MB_DB_DBNAME: ${METABASE_DB_NAME:-metabase_app}
+      MB_DB_USER: ${POSTGRES_USER:-climate}
+      MB_DB_PASS: ${POSTGRES_PASSWORD:-climate}
+      MB_SITE_URL: ${METABASE_SITE_URL:-http://localhost:3000}
+      MB_PASSWORD_COMPLEXITY: weak
+    volumes:
+      - metabase-data:/metabase.db
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3000/api/health"]
+      interval: 10s
+      retries: 30
+      start_period: 60s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      postgres-init:
+        condition: service_completed_successfully
+
+  metabase-init:
+    build: ./metabase
+    image: metabase-init
+    environment:
+      METABASE_URL: http://metabase:3000
+      METABASE_ADMIN_EMAIL: ${METABASE_ADMIN_EMAIL:-admin@climate.local}
+      METABASE_ADMIN_PASSWORD: ${METABASE_ADMIN_PASSWORD:-ClimateAdmin1!}
+      METABASE_SITE_NAME: ${METABASE_SITE_NAME:-Climate Dashboard}
+      METABASE_WAREHOUSE_NAME: ${METABASE_WAREHOUSE_NAME:-climate-warehouse}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: ${POSTGRES_USER:-climate}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-climate}
+      POSTGRES_DB: ${POSTGRES_DB:-climate}
+    depends_on:
+      metabase:
+        condition: service_healthy
+    restart: "no"
+
   # --- Schema (dbt on-run-start creates the raw schema and tables) ---
 
   dbt-init:
@@ -307,3 +372,4 @@ volumes:
   kestra-data:
   minio-data:
   redpanda-data:
+  metabase-data:

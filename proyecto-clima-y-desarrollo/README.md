@@ -251,8 +251,17 @@ Two tiles, backed by `marts.country_year_environment`:
 
 The same SQL backs both tools:
 
-- **Metabase** in local mode (questions and dashboard exported as JSON, following the GDELT project's import/export pattern).
+- **Metabase** in local mode. Metabase 60+ ships an [official MCP server](https://www.metabase.com/docs/latest/ai/mcp), so dashboard authoring is driven from an LLM agent (Claude Code in our case) with no need for the GDELT-style "scripts that POST to /api/card" pattern. Reproducibility comes from Metabase's file-based serialization (`bin/metabase export|import`) — we commit the YAML in `metabase/serialized/`.
 - **Looker Studio** in cloud mode (connected directly to BigQuery; report shared via link).
+
+### Dashboard authoring workflow
+
+The Metabase service boots clean on `make up`: a `metabase-init` container creates the admin user and registers the `climate-warehouse` Postgres data source against the `marts` schema (idempotent — re-runs are no-ops). From there, two equivalent paths populate the dashboard:
+
+- **Path A — UI / Metabot.** Open `http://localhost:${METABASE_PORT:-3000}`, log in with the credentials in `.env`, build the two tiles (or ask Metabot in the UI to build them), then `make metabase-export` dumps the state to `metabase/serialized/`.
+- **Path B — Claude Code + Metabase MCP.** Register the MCP server (`claude mcp add metabase http://localhost:${METABASE_PORT:-3000}/api/mcp --transport streamable-http`), optionally clone [`metabase/agent-skills`](https://github.com/metabase/agent-skills), and ask the agent to build the tiles directly from the marts. Same `make metabase-export` step at the end.
+
+A fresh checkout reproduces the dashboard with `make up && make metabase-import`. The `import` target is a no-op if `metabase/serialized/` is still empty (initial state), so partial setups do not error.
 
 ## Reproducibility
 
@@ -277,6 +286,8 @@ Per-slice end-to-end checks are exposed as Make targets. Each one calls `make up
 | `make smoke-test-flink` | Flink streaming | Requires `OPENAQ_API_KEY` in `.env`. Waits for `flink-job-submitter` to finish, asserts ≥1 RUNNING job via the Flink REST API, then polls OpenAQ once and verifies that `raw.openaq_measurements` ends up with ≥1 row written by the Flink JDBC sink. The hourly/daily aggregation tables are not asserted on (event-time tumbling windows only close once the watermark advances past their end). |
 | `make smoke-test-spark` | OpenAQ backfill | No API key required (reads the public S3 dump anonymously). Runs `spark-backfill --locations 2178 --years 2023 --country-iso US` against a verified station ("Del Norte" in Albuquerque, NM), asserts the Spark log reports ≥1 normalized row, that ≥1 Parquet file landed under `openaq/cleansed/` in MinIO, and that `raw.openaq_measurements` has ≥1 row in the requested year window for the requested locations. Re-runs once more to verify the `ON CONFLICT DO NOTHING` upsert is idempotent. **Non-destructive**: never deletes existing rows — relies on the year window not overlapping with what Flink writes (current time). Override the scope with `SPARK_BACKFILL_LOCATIONS` / `SPARK_BACKFILL_YEARS` / `SPARK_BACKFILL_COUNTRY_ISO`. |
 | `make smoke-test-marts` | Join layer (dbt marts) | Loads matching slices on both sides — `worldbank-ingest` + `worldbank-load` for `NY.GDP.PCAP.CD/2022` and `spark-backfill` for `locations=2178 / year=2022 / US` — then runs `dbt seed country_iso_codes` and `dbt build --select +country_year_environment`. Asserts `marts.country_year_environment` has a row for `(USA, 2022)` with **both** `gdp_per_capita_usd` and `median_pm25_ugm3` populated (proves the FULL OUTER JOIN actually intersected), and that the Postgres `(country_iso3, year)` btree index was created via the model's `post_hook`. |
+| `make smoke-test-metabase` | BI / dashboard | Waits for `metabase-init` to bootstrap the admin user + `climate-warehouse` data source. Hits `/api/health`, logs in with `METABASE_ADMIN_PASSWORD` from `.env`, and asserts the warehouse data source is registered with `engine=postgres` pointing at the right database. Does not require `metabase/serialized/` to have content — the YAML import workflow (`make metabase-import`) is exercised separately when authoring tiles. |
+| `make smoke-test-terraform` | Cloud infrastructure | Runs `terraform init -backend=false` + `validate` + `fmt -check -recursive` against `terraform/gcp/` inside the official `hashicorp/terraform` Docker image. **No GCP credentials required** — verifies the HCL is syntactically valid, references resolve, and the formatting is canonical. Real `terraform plan` against a project is left for the operator's apply flow. |
 
 The scripts live under `scripts/smoke-test-*.sh` and are safe to re-run; they upsert / consume from the start of the topic.
 
@@ -333,8 +344,11 @@ proyecto-clima-y-desarrollo/
 │   │   ├── intermediate/      ← per-source aggregations (OpenAQ yearly, World Bank pivoted)
 │   │   └── marts/             ← published surface (country_year_environment, worldbank_indicators)
 │   └── seeds/                 ← country_iso_codes (ISO2 ↔ ISO3 ↔ World Bank code)
-├── metabase/                  ← exported dashboard JSON (choropleth + GDP-vs-air time series)
-├── terraform/gcp/             ← cloud infrastructure (GCS, BigQuery, Dataproc, GCE)
+├── metabase/
+│   ├── init.py                ← idempotent bootstrap (admin user + warehouse data source)
+│   ├── Dockerfile             ← image used by the metabase-init service
+│   └── serialized/            ← committed YAML for dashboard, questions, metrics
+├── terraform/gcp/             ← cloud infrastructure (GCS bucket, BigQuery dataset, IAM, VPC, GCE VM)
 ├── scripts/                   ← end-to-end smoke tests, one per slice
 └── docs/
     ├── english/               ← primary documentation

@@ -1,0 +1,14 @@
+project_id = "your-gcp-project-id"
+region     = "europe-west1"
+zone       = "europe-west1-b"
+
+# Optional: override the auto-generated bucket name.
+# bucket_name = "my-climate-data"
+
+# Required for SSH access to the orchestrator VM.
+ssh_public_key = "ssh-ed25519 AAAAC3Nz... operator@laptop"
+
+# Lock SSH and UI access down to your network. Leaving these empty disables
+# inbound access on those ports — connect via IAP / gcloud ssh instead.
+allowed_ssh_cidrs = ["203.0.113.42/32"]
+allowed_ui_cidrs  = ["203.0.113.42/32"]
