@@ -84,11 +84,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def build_spark() -> SparkSession:
-    return (
+    spark = (
         SparkSession.builder
         .appName("openaq-backfill")
+        .config("spark.sql.session.timeZone", "UTC")
         .getOrCreate()
     )
+    return spark
+
+
+# OpenAQ S3 dump stores datetimes as ISO 8601 with offset, e.g.
+# '2023-01-01T01:00:00-07:00' or '2023-01-01T01:00:00Z'. Spark's default
+# to_timestamp expects 'yyyy-MM-dd HH:mm:ss' and silently produces NULL on
+# this layout — see https://docs.openaq.org/aws/year-guide for the format.
+_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX"
 
 
 def normalize_dataframe(
@@ -106,7 +115,7 @@ def normalize_dataframe(
         F.col(column_map["parameter"]).cast(StringType()).alias("parameter"),
         F.col(column_map["unit"]).cast(StringType()).alias("unit"),
         F.col(column_map["value"]).cast(DoubleType()).alias("value"),
-        F.to_timestamp(F.col(column_map["datetime_utc"])).alias("datetime_utc"),
+        F.to_timestamp(F.col(column_map["datetime_utc"]), _DATETIME_FORMAT).alias("datetime_utc"),
         F.col(column_map["latitude"]).cast(DoubleType()).alias("latitude"),
         F.col(column_map["longitude"]).cast(DoubleType()).alias("longitude"),
     )
@@ -150,13 +159,11 @@ def upsert_to_postgres(
     derived columns when merging.
     """
     logger.info("Writing %d rows to staging table %s via JDBC ...", df.count(), staging_table)
-    pg_columns = [
+    staging_df = df.select(
         "location_id", "location_name", "country_iso", "sensor_id",
         "parameter", "unit", "value", "datetime_utc",
-    ]
-    staging_df = df.select(*pg_columns).withColumn("datetime_local", F.lit(None).cast(StringType()))
-    staging_df = staging_df.withColumn("latitude",  F.lit(None).cast(DoubleType()))
-    staging_df = staging_df.withColumn("longitude", F.lit(None).cast(DoubleType()))
+        "latitude", "longitude",
+    ).withColumn("datetime_local", F.lit(None).cast(StringType()))
 
     (
         staging_df.write

@@ -11,7 +11,7 @@ STORAGE_ENDPOINT="${STORAGE_ENDPOINT:-http://minio:9000}"
 STORAGE_ACCESS_KEY="${STORAGE_ACCESS_KEY:-${MINIO_ROOT_USER:-minio}}"
 STORAGE_SECRET_KEY="${STORAGE_SECRET_KEY:-${MINIO_ROOT_PASSWORD:-minioadmin}}"
 
-exec /opt/bitnami/spark/bin/spark-submit \
+exec /opt/spark/bin/spark-submit \
     --master "${SPARK_MASTER}" \
     --conf "spark.hadoop.fs.s3a.bucket.openaq-data-archive.aws.credentials.provider=org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider" \
     --conf "spark.hadoop.fs.s3a.bucket.openaq-data-archive.endpoint=s3.us-east-1.amazonaws.com" \

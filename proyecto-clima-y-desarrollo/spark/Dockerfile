@@ -1,10 +1,12 @@
-FROM bitnami/spark:3.5.4
+FROM apache/spark:3.5.8-python3
 
 USER root
 
-RUN install_packages curl
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
-WORKDIR /opt/bitnami/spark/jars
+WORKDIR /opt/spark/jars
 RUN curl -fSL -o hadoop-aws-3.3.4.jar \
         https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar && \
     curl -fSL -o aws-java-sdk-bundle-1.12.262.jar \
@@ -19,7 +21,7 @@ COPY jobs/ ./jobs/
 COPY submit-job.sh ./submit-job.sh
 RUN chmod +x ./submit-job.sh
 
-USER 1001
+USER 185
 
 ENTRYPOINT ["/opt/spark/submit-job.sh"]
 CMD ["--help"]
