@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# End-to-end smoke test for the World Bank slice.
+# End-to-end smoke test for the World Bank batch slice.
 # Runs ingest → load → dbt build for a single indicator/year and asserts
 # that data lands in MinIO, Postgres, and the staging view.
 

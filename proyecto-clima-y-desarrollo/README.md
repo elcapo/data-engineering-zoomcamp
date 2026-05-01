@@ -258,6 +258,17 @@ make up
 
 This brings up Kestra, MinIO, Redpanda, PyFlink, Spark, Postgres-backed dbt, and Metabase. Once the stack is healthy, Kestra triggers the first batch ingestion immediately.
 
+### Smoke tests
+
+Per-slice end-to-end checks are exposed as Make targets. Each one calls `make up` first, exercises a single slice with a minimal scope, and asserts on the side effects.
+
+| Target | Slice | What it does |
+|---|---|---|
+| `make smoke-test-worldbank` | World Bank batch | Runs `worldbank-ingest` + `worldbank-load` for `NY.GDP.PCAP.CD/2022`, then `dbt build --select stg_worldbank__indicators`. Asserts the JSON object lands in MinIO, ≥200 rows in `raw.worldbank_indicators_raw`, and the staging view is populated with the dbt tests green. |
+| `make smoke-test-openaq` | OpenAQ stream | Requires `OPENAQ_API_KEY` in `.env`. Runs `openaq-poll --countries ES --max-locations 20`, then asserts the `openaq.measurements` topic has `cleanup.policy=compact` and that ≥1 message lands with the expected key (`<location>:<param>:<iso8601>`) and JSON shape. |
+
+The scripts live under `scripts/smoke-test-*.sh` and are safe to re-run; they upsert / consume from the start of the topic.
+
 ### Cloud
 
 ```bash

@@ -1,4 +1,4 @@
-.PHONY: init up down reset test smoke-test smoke-test-openaq
+.PHONY: init up down reset test smoke-test-worldbank smoke-test-openaq
 
 init:
 	@[ -f .env ] || { \
@@ -27,8 +27,8 @@ reset:
 test:
 	cd producer/worldbank && uv run pytest
 
-smoke-test: up
-	@./scripts/smoke-test.sh
+smoke-test-worldbank: up
+	@./scripts/smoke-test-worldbank.sh
 
 smoke-test-openaq: up
 	@./scripts/smoke-test-openaq.sh
