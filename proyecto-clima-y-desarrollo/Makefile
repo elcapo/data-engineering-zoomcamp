@@ -1,6 +1,7 @@
 .PHONY: init up down reset test \
         smoke-test-worldbank smoke-test-openaq smoke-test-flink smoke-test-spark smoke-test-marts smoke-test-metabase smoke-test-terraform \
-        metabase-export metabase-import
+        metabase-export metabase-import \
+        render-architecture-diagram
 
 init:
 	@if [ ! -f .env ]; then \
@@ -56,6 +57,9 @@ smoke-test-metabase: up
 
 smoke-test-terraform:
 	@./scripts/smoke-test-terraform.sh
+
+render-architecture-diagram:
+	@./scripts/render-architecture-diagram.sh
 
 metabase-export:
 	@docker compose exec -T metabase rm -rf /tmp/serialized

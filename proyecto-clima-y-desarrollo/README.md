@@ -18,6 +18,7 @@ The same codebase runs end-to-end in two modes: **fully local** with Docker Comp
 - [Dashboard](#dashboard)
 - [Reproducibility](#reproducibility)
 - [Project Structure](#project-structure)
+- [Learning-in-public Articles](#learning-in-public-articles)
 - [External References](#external-references)
 
 ## The Problem
@@ -152,7 +153,7 @@ flowchart TB
 ```
 
 > If you have problems visualizing this diagram, check its pre-rendered version:
-> [Pre-rendered version of the architecture diagram](./docs/resources/charts/architecture.png) *(generated in a follow-up task)*
+> [Pre-rendered version of the architecture diagram](./docs/resources/charts/architecture.png) (regenerate with `make render-architecture-diagram`).
 
 The abstraction layer is intentionally thin:
 
@@ -350,10 +351,10 @@ proyecto-clima-y-desarrollo/
 │   └── serialized/            ← committed YAML for dashboard, questions, metrics
 ├── terraform/gcp/             ← cloud infrastructure (GCS bucket, BigQuery dataset, IAM, VPC, GCE VM)
 ├── scripts/                   ← end-to-end smoke tests, one per slice
-└── docs/
-    ├── english/               ← primary documentation
-    ├── spanish/               ← translated learning-in-public articles
-    └── resources/             ← architecture PNG, screenshots
+└── docs/                      ← learning-in-public articles + diagrams (start at docs/README.md)
+    ├── spanish/               ← Spanish versions of the articles
+    ├── english/               ← English versions of the articles
+    └── resources/charts/      ← architecture PNG (rendered from this README's Mermaid block)
 ```
 
 ## External References
