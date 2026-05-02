@@ -66,22 +66,9 @@ render-architecture-diagram:
 	@./scripts/render-architecture-diagram.sh
 
 metabase-export:
-	@docker compose exec -T metabase rm -rf /tmp/serialized
-	@docker compose exec -T metabase /app/bin/run_metabase.sh export /tmp/serialized
-	@rm -rf metabase/serialized.tmp && mkdir -p metabase/serialized.tmp
-	@docker compose cp metabase:/tmp/serialized/. metabase/serialized.tmp/
-	@find metabase/serialized -mindepth 1 -not -name 'README.md' -delete
-	@cp -r metabase/serialized.tmp/. metabase/serialized/ 2>/dev/null || true
-	@rm -rf metabase/serialized.tmp
-	@echo "✓ Exported Metabase content to metabase/serialized/"
+	@[ -n "$(DASHBOARD)" ] || { echo "Usage: make metabase-export DASHBOARD=<id|name|slug>"; exit 1; }
+	@python3 metabase/scripts/export-dashboard.py "$(DASHBOARD)"
 
 metabase-import:
-	@if [ -z "$$(find metabase/serialized -mindepth 1 -not -name 'README.md' 2>/dev/null)" ]; then \
-	  echo "metabase/serialized/ is empty (apart from README) — nothing to import."; \
-	  exit 0; \
-	fi
-	@docker compose exec -T metabase rm -rf /tmp/serialized
-	@docker compose exec -T metabase mkdir -p /tmp/serialized
-	@docker compose cp metabase/serialized/. metabase:/tmp/serialized/
-	@docker compose exec -T metabase /app/bin/run_metabase.sh import /tmp/serialized
-	@echo "✓ Imported Metabase content from metabase/serialized/"
+	@[ -n "$(DIR)" ] || { echo "Usage: make metabase-import DIR=<export-dir> [SUFFIX=' (imported)'] [COLLECTION=<id>]"; exit 1; }
+	@python3 metabase/scripts/import-dashboard.py "$(DIR)" $(if $(SUFFIX),--name-suffix "$(SUFFIX)") $(if $(COLLECTION),--collection-id $(COLLECTION))

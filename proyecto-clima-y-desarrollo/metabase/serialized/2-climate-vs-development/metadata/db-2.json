@@ -1,0 +1,614 @@
+{
+  "id": 2,
+  "name": "climate-warehouse",
+  "engine": "postgres",
+  "tables": [
+    {
+      "id": 19,
+      "name": "country_iso_codes",
+      "schema": "seeds",
+      "fields": [
+        {
+          "id": 155,
+          "name": "iso2",
+          "parent_id": null
+        },
+        {
+          "id": 156,
+          "name": "iso3",
+          "parent_id": null
+        },
+        {
+          "id": 157,
+          "name": "wb_code",
+          "parent_id": null
+        },
+        {
+          "id": 158,
+          "name": "country_name",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "country_year_environment",
+      "schema": "marts",
+      "fields": [
+        {
+          "id": 127,
+          "name": "country_iso3",
+          "parent_id": null
+        },
+        {
+          "id": 128,
+          "name": "country_name",
+          "parent_id": null
+        },
+        {
+          "id": 129,
+          "name": "year",
+          "parent_id": null
+        },
+        {
+          "id": 130,
+          "name": "gdp_per_capita_usd",
+          "parent_id": null
+        },
+        {
+          "id": 131,
+          "name": "gdp_growth_pct",
+          "parent_id": null
+        },
+        {
+          "id": 132,
+          "name": "co2_per_capita_t",
+          "parent_id": null
+        },
+        {
+          "id": 133,
+          "name": "energy_per_capita_kgoe",
+          "parent_id": null
+        },
+        {
+          "id": 134,
+          "name": "renewable_energy_pct",
+          "parent_id": null
+        },
+        {
+          "id": 135,
+          "name": "urban_population_pct",
+          "parent_id": null
+        },
+        {
+          "id": 136,
+          "name": "industry_value_added_pct",
+          "parent_id": null
+        },
+        {
+          "id": 137,
+          "name": "population_density",
+          "parent_id": null
+        },
+        {
+          "id": 138,
+          "name": "median_pm25_ugm3",
+          "parent_id": null
+        },
+        {
+          "id": 139,
+          "name": "median_pm10_ugm3",
+          "parent_id": null
+        },
+        {
+          "id": 140,
+          "name": "median_no2_ugm3",
+          "parent_id": null
+        },
+        {
+          "id": 141,
+          "name": "median_o3_ugm3",
+          "parent_id": null
+        },
+        {
+          "id": 142,
+          "name": "median_so2_ugm3",
+          "parent_id": null
+        },
+        {
+          "id": 143,
+          "name": "pm25_days_exceeding_who_daily",
+          "parent_id": null
+        },
+        {
+          "id": 144,
+          "name": "pm25_day_count",
+          "parent_id": null
+        },
+        {
+          "id": 145,
+          "name": "observation_day_count",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "int_openaq__country_year",
+      "schema": "intermediate",
+      "fields": [
+        {
+          "id": 104,
+          "name": "country_iso3",
+          "parent_id": null
+        },
+        {
+          "id": 105,
+          "name": "country_name",
+          "parent_id": null
+        },
+        {
+          "id": 106,
+          "name": "country_iso2",
+          "parent_id": null
+        },
+        {
+          "id": 107,
+          "name": "year",
+          "parent_id": null
+        },
+        {
+          "id": 108,
+          "name": "median_pm25_ugm3",
+          "parent_id": null
+        },
+        {
+          "id": 109,
+          "name": "median_pm10_ugm3",
+          "parent_id": null
+        },
+        {
+          "id": 110,
+          "name": "median_no2_ugm3",
+          "parent_id": null
+        },
+        {
+          "id": 111,
+          "name": "median_o3_ugm3",
+          "parent_id": null
+        },
+        {
+          "id": 112,
+          "name": "median_so2_ugm3",
+          "parent_id": null
+        },
+        {
+          "id": 113,
+          "name": "pm25_days_exceeding_who_daily",
+          "parent_id": null
+        },
+        {
+          "id": 114,
+          "name": "pm25_day_count",
+          "parent_id": null
+        },
+        {
+          "id": 115,
+          "name": "observation_day_count",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "int_worldbank__indicators_pivoted",
+      "schema": "intermediate",
+      "fields": [
+        {
+          "id": 116,
+          "name": "country_iso3",
+          "parent_id": null
+        },
+        {
+          "id": 117,
+          "name": "country_name",
+          "parent_id": null
+        },
+        {
+          "id": 118,
+          "name": "year",
+          "parent_id": null
+        },
+        {
+          "id": 119,
+          "name": "gdp_per_capita_usd",
+          "parent_id": null
+        },
+        {
+          "id": 120,
+          "name": "gdp_growth_pct",
+          "parent_id": null
+        },
+        {
+          "id": 121,
+          "name": "co2_per_capita_t",
+          "parent_id": null
+        },
+        {
+          "id": 122,
+          "name": "energy_per_capita_kgoe",
+          "parent_id": null
+        },
+        {
+          "id": 123,
+          "name": "renewable_energy_pct",
+          "parent_id": null
+        },
+        {
+          "id": 124,
+          "name": "urban_population_pct",
+          "parent_id": null
+        },
+        {
+          "id": 125,
+          "name": "industry_value_added_pct",
+          "parent_id": null
+        },
+        {
+          "id": 126,
+          "name": "population_density",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "openaq_daily",
+      "schema": "agg",
+      "fields": [
+        {
+          "id": 72,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 73,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 74,
+          "name": "country_iso",
+          "parent_id": null
+        },
+        {
+          "id": 75,
+          "name": "parameter",
+          "parent_id": null
+        },
+        {
+          "id": 76,
+          "name": "avg_value",
+          "parent_id": null
+        },
+        {
+          "id": 77,
+          "name": "sample_count",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "openaq_hourly",
+      "schema": "agg",
+      "fields": [
+        {
+          "id": 78,
+          "name": "window_start",
+          "parent_id": null
+        },
+        {
+          "id": 79,
+          "name": "window_end",
+          "parent_id": null
+        },
+        {
+          "id": 80,
+          "name": "country_iso",
+          "parent_id": null
+        },
+        {
+          "id": 81,
+          "name": "parameter",
+          "parent_id": null
+        },
+        {
+          "id": 82,
+          "name": "avg_value",
+          "parent_id": null
+        },
+        {
+          "id": 83,
+          "name": "sample_count",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "openaq_measurements",
+      "schema": "raw",
+      "fields": [
+        {
+          "id": 84,
+          "name": "location_id",
+          "parent_id": null
+        },
+        {
+          "id": 85,
+          "name": "location_name",
+          "parent_id": null
+        },
+        {
+          "id": 86,
+          "name": "country_iso",
+          "parent_id": null
+        },
+        {
+          "id": 87,
+          "name": "sensor_id",
+          "parent_id": null
+        },
+        {
+          "id": 88,
+          "name": "parameter",
+          "parent_id": null
+        },
+        {
+          "id": 89,
+          "name": "unit",
+          "parent_id": null
+        },
+        {
+          "id": 90,
+          "name": "value",
+          "parent_id": null
+        },
+        {
+          "id": 91,
+          "name": "datetime_utc",
+          "parent_id": null
+        },
+        {
+          "id": 92,
+          "name": "datetime_local",
+          "parent_id": null
+        },
+        {
+          "id": 93,
+          "name": "latitude",
+          "parent_id": null
+        },
+        {
+          "id": 94,
+          "name": "longitude",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "stg_openaq__measurements",
+      "schema": "staging",
+      "fields": [
+        {
+          "id": 159,
+          "name": "location_id",
+          "parent_id": null
+        },
+        {
+          "id": 160,
+          "name": "location_name",
+          "parent_id": null
+        },
+        {
+          "id": 161,
+          "name": "country_iso2",
+          "parent_id": null
+        },
+        {
+          "id": 162,
+          "name": "country_iso3",
+          "parent_id": null
+        },
+        {
+          "id": 163,
+          "name": "country_name",
+          "parent_id": null
+        },
+        {
+          "id": 164,
+          "name": "sensor_id",
+          "parent_id": null
+        },
+        {
+          "id": 165,
+          "name": "parameter",
+          "parent_id": null
+        },
+        {
+          "id": 166,
+          "name": "unit",
+          "parent_id": null
+        },
+        {
+          "id": 167,
+          "name": "value",
+          "parent_id": null
+        },
+        {
+          "id": 168,
+          "name": "datetime_utc",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "stg_worldbank__indicators",
+      "schema": "staging",
+      "fields": [
+        {
+          "id": 169,
+          "name": "indicator_code",
+          "parent_id": null
+        },
+        {
+          "id": 170,
+          "name": "country_iso3",
+          "parent_id": null
+        },
+        {
+          "id": 171,
+          "name": "country_name",
+          "parent_id": null
+        },
+        {
+          "id": 172,
+          "name": "year",
+          "parent_id": null
+        },
+        {
+          "id": 173,
+          "name": "value",
+          "parent_id": null
+        },
+        {
+          "id": 174,
+          "name": "unit",
+          "parent_id": null
+        },
+        {
+          "id": 175,
+          "name": "obs_status",
+          "parent_id": null
+        },
+        {
+          "id": 176,
+          "name": "ingested_at",
+          "parent_id": null
+        },
+        {
+          "id": 177,
+          "name": "source_object",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "worldbank_indicators",
+      "schema": "marts",
+      "fields": [
+        {
+          "id": 146,
+          "name": "indicator_code",
+          "parent_id": null
+        },
+        {
+          "id": 147,
+          "name": "country_iso3",
+          "parent_id": null
+        },
+        {
+          "id": 148,
+          "name": "country_name",
+          "parent_id": null
+        },
+        {
+          "id": 149,
+          "name": "year",
+          "parent_id": null
+        },
+        {
+          "id": 150,
+          "name": "value",
+          "parent_id": null
+        },
+        {
+          "id": 151,
+          "name": "unit",
+          "parent_id": null
+        },
+        {
+          "id": 152,
+          "name": "obs_status",
+          "parent_id": null
+        },
+        {
+          "id": 153,
+          "name": "ingested_at",
+          "parent_id": null
+        },
+        {
+          "id": 154,
+          "name": "source_object",
+          "parent_id": null
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "worldbank_indicators_raw",
+      "schema": "raw",
+      "fields": [
+        {
+          "id": 95,
+          "name": "indicator_code",
+          "parent_id": null
+        },
+        {
+          "id": 96,
+          "name": "country_iso3",
+          "parent_id": null
+        },
+        {
+          "id": 97,
+          "name": "country_name",
+          "parent_id": null
+        },
+        {
+          "id": 98,
+          "name": "year",
+          "parent_id": null
+        },
+        {
+          "id": 99,
+          "name": "value",
+          "parent_id": null
+        },
+        {
+          "id": 100,
+          "name": "unit",
+          "parent_id": null
+        },
+        {
+          "id": 101,
+          "name": "obs_status",
+          "parent_id": null
+        },
+        {
+          "id": 102,
+          "name": "ingested_at",
+          "parent_id": null
+        },
+        {
+          "id": 103,
+          "name": "source_object",
+          "parent_id": null
+        }
+      ]
+    }
+  ]
+}

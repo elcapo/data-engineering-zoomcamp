@@ -1,0 +1,252 @@
+{
+  "cache_invalidated_at": null,
+  "description": null,
+  "archived": false,
+  "view_count": 3,
+  "collection_position": null,
+  "source_card_id": null,
+  "table_id": null,
+  "can_run_adhoc_query": true,
+  "result_metadata": [
+    {
+      "database_type": "int4",
+      "semantic_type": null,
+      "lib/deduplicated-name": "year",
+      "lib/original-name": "year",
+      "name": "year",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "year",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "year",
+        {
+          "base-type": "type/Integer"
+        }
+      ],
+      "effective_type": "type/Integer",
+      "lib/desired-column-alias": "year",
+      "display_name": "year",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 2,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 2016.0,
+            "q1": 2016.0,
+            "q3": 2022.0,
+            "max": 2022.0,
+            "sd": 4.242640687119285,
+            "avg": 2019.0
+          }
+        }
+      },
+      "base_type": "type/Integer"
+    },
+    {
+      "database_type": "float8",
+      "semantic_type": null,
+      "lib/deduplicated-name": "gdp_index",
+      "lib/original-name": "gdp_index",
+      "name": "gdp_index",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "gdp_index",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "gdp_index",
+        {
+          "base-type": "type/Float"
+        }
+      ],
+      "effective_type": "type/Float",
+      "lib/desired-column-alias": "gdp_index",
+      "display_name": "gdp_index",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 2,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 99.99999999999999,
+            "q1": 99.99999999999999,
+            "q3": 132.99752497332358,
+            "max": 132.99752497332358,
+            "sd": 23.332773671009562,
+            "avg": 116.49876248666178
+          }
+        }
+      },
+      "base_type": "type/Float"
+    },
+    {
+      "database_type": "float8",
+      "semantic_type": null,
+      "lib/deduplicated-name": "pm25_index",
+      "lib/original-name": "pm25_index",
+      "name": "pm25_index",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "pm25_index",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "pm25_index",
+        {
+          "base-type": "type/Float"
+        }
+      ],
+      "effective_type": "type/Float",
+      "lib/desired-column-alias": "pm25_index",
+      "display_name": "pm25_index",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 2,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 100.0,
+            "q1": 100.0,
+            "q3": 200.0,
+            "max": 200.0,
+            "sd": 70.71067811865476,
+            "avg": 150.0
+          }
+        }
+      },
+      "base_type": "type/Float"
+    }
+  ],
+  "embedding_type": null,
+  "creator": {
+    "email": "admin@climate.local",
+    "first_name": "Climate",
+    "is_data_analyst": false,
+    "last_login": "2026-05-02T14:29:59.932331Z",
+    "is_qbnewb": true,
+    "is_superuser": true,
+    "id": 1,
+    "last_name": "Admin",
+    "tenant_id": null,
+    "date_joined": "2026-05-02T12:51:26.571189Z",
+    "common_name": "Climate Admin"
+  },
+  "initially_published_at": null,
+  "can_write": true,
+  "card_schema": 23,
+  "database_id": 2,
+  "enable_embedding": false,
+  "collection_id": 5,
+  "query_type": "native",
+  "name": "04 — Decoupling: GDP vs PM2.5 indexed (base 100)",
+  "last_query_start": "2026-05-02T14:24:36.465594Z",
+  "is_remote_synced": false,
+  "dashboard_count": 1,
+  "document_id": null,
+  "last_used_at": "2026-05-02T14:24:36.470565Z",
+  "dashboard": null,
+  "type": "question",
+  "dimensions": null,
+  "average_query_time": 26.333333333333332,
+  "creator_id": 1,
+  "can_restore": false,
+  "moderation_reviews": [],
+  "updated_at": "2026-05-02T14:19:43.231241Z",
+  "made_public_by_id": null,
+  "embedding_params": null,
+  "cache_ttl": null,
+  "dataset_query": {
+    "lib/type": "mbql/query",
+    "database": 2,
+    "stages": [
+      {
+        "template-tags": {
+          "country_iso3": {
+            "default": "USA",
+            "id": "country-iso3-tag",
+            "name": "country_iso3",
+            "display-name": "Country (ISO3)",
+            "type": "text",
+            "required": true
+          }
+        },
+        "lib/type": "mbql.stage/native",
+        "native": "WITH base AS (\n  SELECT country_iso3, year,\n         gdp_per_capita_usd, median_pm25_ugm3,\n         FIRST_VALUE(gdp_per_capita_usd) OVER (\n           PARTITION BY country_iso3 ORDER BY year\n         ) AS gdp_base,\n         FIRST_VALUE(median_pm25_ugm3) OVER (\n           PARTITION BY country_iso3 ORDER BY year\n         ) AS pm25_base\n  FROM marts.country_year_environment\n  WHERE country_iso3 = {{country_iso3}}\n    AND gdp_per_capita_usd IS NOT NULL\n    AND median_pm25_ugm3 IS NOT NULL\n)\nSELECT year,\n       100.0 * gdp_per_capita_usd / gdp_base  AS gdp_index,\n       100.0 * median_pm25_ugm3   / pm25_base AS pm25_index\nFROM base\nORDER BY year"
+      }
+    ]
+  },
+  "dimension_mappings": null,
+  "id": 43,
+  "legacy_query": null,
+  "parameter_mappings": [],
+  "can_manage_db": true,
+  "display": "line",
+  "archived_directly": false,
+  "entity_id": "8L4CWCO1z54ipqqN4tCvO",
+  "param_fields": {},
+  "collection_preview": true,
+  "last-edit-info": {
+    "id": 1,
+    "email": "admin@climate.local",
+    "first_name": "Climate",
+    "last_name": "Admin",
+    "timestamp": "2026-05-02T14:19:43.239374Z"
+  },
+  "visualization_settings": {
+    "graph.dimensions": [
+      "year"
+    ],
+    "graph.y_axis.title_text": "Index (base year = 100)",
+    "graph.x_axis.title_text": "Year",
+    "graph.metrics": [
+      "gdp_index",
+      "pm25_index"
+    ]
+  },
+  "collection": {
+    "authority_level": null,
+    "description": "Pollution vs development tiles for the climate-and-development project.",
+    "archived": false,
+    "workspace_id": null,
+    "slug": "climate_vs_development",
+    "archive_operation_id": null,
+    "name": "Climate vs Development",
+    "is_remote_synced": false,
+    "personal_owner_id": null,
+    "type": null,
+    "is_sample": false,
+    "id": 5,
+    "archived_directly": null,
+    "entity_id": "Vq2bFOgd0pcU2BpEWINpX",
+    "location": "/",
+    "namespace": null,
+    "is_personal": false,
+    "created_at": "2026-05-02T14:19:42.903367Z"
+  },
+  "metabase_version": "v0.60.3.3 (c734864)",
+  "parameters": [
+    {
+      "id": "country-iso3-tag",
+      "type": "category",
+      "target": [
+        "variable",
+        [
+          "template-tag",
+          "country_iso3"
+        ]
+      ],
+      "name": "Country (ISO3)",
+      "slug": "country_iso3",
+      "default": "USA",
+      "required": true
+    }
+  ],
+  "dashboard_id": null,
+  "created_at": "2026-05-02T14:19:43.231241Z",
+  "parameter_usage_count": 0,
+  "public_uuid": null,
+  "can_delete": false
+}

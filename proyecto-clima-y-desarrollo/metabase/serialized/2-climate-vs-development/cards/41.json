@@ -1,0 +1,252 @@
+{
+  "cache_invalidated_at": null,
+  "description": null,
+  "archived": false,
+  "view_count": 3,
+  "collection_position": null,
+  "source_card_id": null,
+  "table_id": null,
+  "can_run_adhoc_query": true,
+  "result_metadata": [
+    {
+      "database_type": "int4",
+      "semantic_type": null,
+      "lib/deduplicated-name": "year",
+      "lib/original-name": "year",
+      "name": "year",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "year",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "year",
+        {
+          "base-type": "type/Integer"
+        }
+      ],
+      "effective_type": "type/Integer",
+      "lib/desired-column-alias": "year",
+      "display_name": "year",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 17,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 2010.0,
+            "q1": 2013.75,
+            "q3": 2022.25,
+            "max": 2026.0,
+            "sd": 5.049752469181039,
+            "avg": 2018.0
+          }
+        }
+      },
+      "base_type": "type/Integer"
+    },
+    {
+      "database_type": "float8",
+      "semantic_type": null,
+      "lib/deduplicated-name": "gdp_growth_pct",
+      "lib/original-name": "gdp_growth_pct",
+      "name": "gdp_growth_pct",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "gdp_growth_pct",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "gdp_growth_pct",
+        {
+          "base-type": "type/Float"
+        }
+      ],
+      "effective_type": "type/Float",
+      "lib/desired-column-alias": "gdp_growth_pct",
+      "display_name": "gdp_growth_pct",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 16,
+          "nil%": 0.1176470588235294
+        },
+        "type": {
+          "type/Number": {
+            "min": -2.16302914036166,
+            "q1": 2.160650920100035,
+            "q3": 2.8639173249131,
+            "max": 6.05505293244555,
+            "sd": 1.614014165144785,
+            "avg": 2.40321825095423
+          }
+        }
+      },
+      "base_type": "type/Float"
+    },
+    {
+      "database_type": "float8",
+      "semantic_type": null,
+      "lib/deduplicated-name": "median_pm25_ugm3",
+      "lib/original-name": "median_pm25_ugm3",
+      "name": "median_pm25_ugm3",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "median_pm25_ugm3",
+      "source": "native",
+      "field_ref": [
+        "field",
+        "median_pm25_ugm3",
+        {
+          "base-type": "type/Float"
+        }
+      ],
+      "effective_type": "type/Float",
+      "lib/desired-column-alias": "median_pm25_ugm3",
+      "display_name": "median_pm25_ugm3",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 4,
+          "nil%": 0.823529411764706
+        },
+        "type": {
+          "type/Number": {
+            "min": 3.0,
+            "q1": 3.0971200980392157,
+            "q3": 5.347120098039216,
+            "max": 6.0,
+            "sd": 1.6315101224141764,
+            "avg": 4.129493464052287
+          }
+        }
+      },
+      "base_type": "type/Float"
+    }
+  ],
+  "embedding_type": null,
+  "creator": {
+    "email": "admin@climate.local",
+    "first_name": "Climate",
+    "is_data_analyst": false,
+    "last_login": "2026-05-02T14:29:59.932331Z",
+    "is_qbnewb": true,
+    "is_superuser": true,
+    "id": 1,
+    "last_name": "Admin",
+    "tenant_id": null,
+    "date_joined": "2026-05-02T12:51:26.571189Z",
+    "common_name": "Climate Admin"
+  },
+  "initially_published_at": null,
+  "can_write": true,
+  "card_schema": 23,
+  "database_id": 2,
+  "enable_embedding": false,
+  "collection_id": 5,
+  "query_type": "native",
+  "name": "02 — GDP growth vs PM2.5 (per country)",
+  "last_query_start": "2026-05-02T14:24:36.319844Z",
+  "is_remote_synced": false,
+  "dashboard_count": 1,
+  "document_id": null,
+  "last_used_at": "2026-05-02T14:24:36.324558Z",
+  "dashboard": null,
+  "type": "question",
+  "dimensions": null,
+  "average_query_time": 30.333333333333332,
+  "creator_id": 1,
+  "can_restore": false,
+  "moderation_reviews": [],
+  "updated_at": "2026-05-02T14:19:43.101368Z",
+  "made_public_by_id": null,
+  "embedding_params": null,
+  "cache_ttl": null,
+  "dataset_query": {
+    "lib/type": "mbql/query",
+    "database": 2,
+    "stages": [
+      {
+        "template-tags": {
+          "country_iso3": {
+            "default": "USA",
+            "id": "country-iso3-tag",
+            "name": "country_iso3",
+            "display-name": "Country (ISO3)",
+            "type": "text",
+            "required": true
+          }
+        },
+        "lib/type": "mbql.stage/native",
+        "native": "SELECT year,\n       gdp_growth_pct,\n       median_pm25_ugm3\nFROM marts.country_year_environment\nWHERE country_iso3 = {{country_iso3}}\nORDER BY year"
+      }
+    ]
+  },
+  "dimension_mappings": null,
+  "id": 41,
+  "legacy_query": null,
+  "parameter_mappings": [],
+  "can_manage_db": true,
+  "display": "line",
+  "archived_directly": false,
+  "entity_id": "DaINkb-NiWIV2zASaUA-K",
+  "param_fields": {},
+  "collection_preview": true,
+  "last-edit-info": {
+    "id": 1,
+    "email": "admin@climate.local",
+    "first_name": "Climate",
+    "last_name": "Admin",
+    "timestamp": "2026-05-02T14:19:43.122562Z"
+  },
+  "visualization_settings": {
+    "graph.dimensions": [
+      "year"
+    ],
+    "graph.y_axis.split_number_of_axes": 2,
+    "graph.x_axis.title_text": "Year",
+    "graph.metrics": [
+      "gdp_growth_pct",
+      "median_pm25_ugm3"
+    ]
+  },
+  "collection": {
+    "authority_level": null,
+    "description": "Pollution vs development tiles for the climate-and-development project.",
+    "archived": false,
+    "workspace_id": null,
+    "slug": "climate_vs_development",
+    "archive_operation_id": null,
+    "name": "Climate vs Development",
+    "is_remote_synced": false,
+    "personal_owner_id": null,
+    "type": null,
+    "is_sample": false,
+    "id": 5,
+    "archived_directly": null,
+    "entity_id": "Vq2bFOgd0pcU2BpEWINpX",
+    "location": "/",
+    "namespace": null,
+    "is_personal": false,
+    "created_at": "2026-05-02T14:19:42.903367Z"
+  },
+  "metabase_version": "v0.60.3.3 (c734864)",
+  "parameters": [
+    {
+      "id": "country-iso3-tag",
+      "type": "category",
+      "target": [
+        "variable",
+        [
+          "template-tag",
+          "country_iso3"
+        ]
+      ],
+      "name": "Country (ISO3)",
+      "slug": "country_iso3",
+      "default": "USA",
+      "required": true
+    }
+  ],
+  "dashboard_id": null,
+  "created_at": "2026-05-02T14:19:43.101368Z",
+  "parameter_usage_count": 0,
+  "public_uuid": null,
+  "can_delete": false
+}
