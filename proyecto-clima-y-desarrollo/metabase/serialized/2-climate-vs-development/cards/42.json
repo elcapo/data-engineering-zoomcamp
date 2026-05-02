@@ -1,8 +1,8 @@
 {
-  "cache_invalidated_at": null,
+  "cache_invalidated_at": "2026-05-02T16:12:13.971476Z",
   "description": null,
   "archived": false,
-  "view_count": 5,
+  "view_count": 10,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
@@ -180,12 +180,12 @@
         },
         "type": {
           "type/Number": {
-            "min": -4981.8125,
-            "q1": -1240.953125,
-            "q3": 35.650662263157095,
-            "max": 90.22542372881355,
-            "sd": 2241.8857164872857,
-            "avg": -971.8854532480949
+            "min": 6.0,
+            "q1": 8.025551192080027,
+            "q3": 42.5563559322034,
+            "max": 90.2254237288136,
+            "sd": 34.72853517499556,
+            "avg": 29.815905613683462
           }
         }
       },
@@ -197,7 +197,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "is_data_analyst": false,
-    "last_login": "2026-05-02T15:32:41.095876Z",
+    "last_login": "2026-05-02T16:40:37.126073Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
@@ -214,19 +214,19 @@
   "collection_id": 5,
   "query_type": "native",
   "name": "03 — GDP per capita vs PM2.5 (latest year)",
-  "last_query_start": "2026-05-02T15:24:45.080875Z",
+  "last_query_start": "2026-05-02T16:26:32.073243Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-05-02T15:24:45.085343Z",
+  "last_used_at": "2026-05-02T16:26:32.082667Z",
   "dashboard": null,
   "type": "question",
   "dimensions": null,
-  "average_query_time": 29.6,
+  "average_query_time": 27.5,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-05-02T14:19:43.174122Z",
+  "updated_at": "2026-05-02T16:12:13.969952Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -255,7 +255,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "last_name": "Admin",
-    "timestamp": "2026-05-02T14:19:43.187692Z"
+    "timestamp": "2026-05-02T16:12:13.999486Z"
   },
   "visualization_settings": {
     "graph.dimensions": [
@@ -265,8 +265,7 @@
     "graph.x_axis.title_text": "GDP per capita (USD, log)",
     "graph.y_axis.title_text": "Median PM2.5 (µg/m³)",
     "graph.tooltip_columns": [
-      "country_name",
-      "year"
+      "[\"name\",\"country_name\"]"
     ],
     "graph.metrics": [
       "median_pm25_ugm3"

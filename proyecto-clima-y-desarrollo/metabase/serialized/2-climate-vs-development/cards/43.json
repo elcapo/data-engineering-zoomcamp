@@ -2,7 +2,7 @@
   "cache_invalidated_at": null,
   "description": null,
   "archived": false,
-  "view_count": 4,
+  "view_count": 8,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
@@ -29,17 +29,17 @@
       "display_name": "year",
       "fingerprint": {
         "global": {
-          "distinct-count": 2,
+          "distinct-count": 3,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
             "min": 2016.0,
-            "q1": 2016.0,
-            "q3": 2022.0,
+            "q1": 2017.25,
+            "q3": 2021.75,
             "max": 2022.0,
-            "sd": 4.242640687119285,
-            "avg": 2019.0
+            "sd": 3.2145502536643185,
+            "avg": 2019.6666666666667
           }
         }
       },
@@ -66,17 +66,17 @@
       "display_name": "gdp_index",
       "fingerprint": {
         "global": {
-          "distinct-count": 2,
+          "distinct-count": 3,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
             "min": 99.99999999999999,
-            "q1": 99.99999999999999,
-            "q3": 132.99752497332358,
+            "q1": 105.45079933188431,
+            "q3": 130.198943061877,
             "max": 132.99752497332358,
-            "sd": 23.332773671009562,
-            "avg": 116.49876248666178
+            "sd": 16.780589180706475,
+            "avg": 118.26690743362029
           }
         }
       },
@@ -103,17 +103,17 @@
       "display_name": "pm25_index",
       "fingerprint": {
         "global": {
-          "distinct-count": 2,
+          "distinct-count": 3,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
             "min": 100.0,
-            "q1": 100.0,
-            "q3": 200.0,
-            "max": 200.0,
-            "sd": 70.71067811865476,
-            "avg": 150.0
+            "q1": 105.9278350515464,
+            "q3": 214.94845360824743,
+            "max": 245.36082474226805,
+            "sd": 77.9856761548987,
+            "avg": 156.3573883161512
           }
         }
       },
@@ -125,7 +125,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "is_data_analyst": false,
-    "last_login": "2026-05-02T15:32:41.095876Z",
+    "last_login": "2026-05-02T16:40:37.126073Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
@@ -142,15 +142,15 @@
   "collection_id": 5,
   "query_type": "native",
   "name": "04 — Decoupling: GDP vs PM2.5 indexed (base 100)",
-  "last_query_start": "2026-05-02T14:30:41.283122Z",
+  "last_query_start": "2026-05-02T16:26:32.07441Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-05-02T14:30:41.287458Z",
+  "last_used_at": "2026-05-02T16:26:32.082667Z",
   "dashboard": null,
   "type": "question",
   "dimensions": null,
-  "average_query_time": 24.25,
+  "average_query_time": 20.875,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],

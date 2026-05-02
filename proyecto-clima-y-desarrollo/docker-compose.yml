@@ -360,6 +360,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-climate}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-climate}
       POSTGRES_DB: ${POSTGRES_DB:-climate}
+    volumes:
+      - ./metabase/init.py:/init.py:ro
     depends_on:
       metabase:
         condition: service_healthy

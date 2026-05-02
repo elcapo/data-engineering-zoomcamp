@@ -1,7 +1,7 @@
 {
   "description": "Pollution vs development — choropleth, time series, scatter, decoupling.",
   "archived": false,
-  "view_count": 2,
+  "view_count": 11,
   "collection_position": null,
   "dashcards": [
     {
@@ -15,313 +15,7 @@
         "cache_invalidated_at": null,
         "description": null,
         "archived": false,
-        "view_count": 6,
-        "collection_position": null,
-        "source_card_id": null,
-        "table_id": null,
-        "result_metadata": [
-          {
-            "database_type": "text",
-            "semantic_type": "type/Country",
-            "lib/deduplicated-name": "country_iso3",
-            "lib/original-name": "country_iso3",
-            "name": "country_iso3",
-            "lib/source": "source/native",
-            "lib/source-column-alias": "country_iso3",
-            "source": "native",
-            "field_ref": [
-              "field",
-              "country_iso3",
-              {
-                "base-type": "type/Text"
-              }
-            ],
-            "effective_type": "type/Text",
-            "lib/desired-column-alias": "country_iso3",
-            "display_name": "country_iso3",
-            "fingerprint": {
-              "global": {
-                "distinct-count": 5,
-                "nil%": 0.0
-              },
-              "type": {
-                "type/Text": {
-                  "percent-json": 0.0,
-                  "percent-url": 0.0,
-                  "percent-email": 0.0,
-                  "percent-state": 0.0,
-                  "average-length": 3.0
-                }
-              }
-            },
-            "base_type": "type/Text"
-          },
-          {
-            "database_type": "float8",
-            "semantic_type": null,
-            "lib/deduplicated-name": "ratio_co2_pm25",
-            "lib/original-name": "ratio_co2_pm25",
-            "name": "ratio_co2_pm25",
-            "lib/source": "source/native",
-            "lib/source-column-alias": "ratio_co2_pm25",
-            "source": "native",
-            "field_ref": [
-              "field",
-              "ratio_co2_pm25",
-              {
-                "base-type": "type/Float"
-              }
-            ],
-            "effective_type": "type/Float",
-            "lib/desired-column-alias": "ratio_co2_pm25",
-            "display_name": "ratio_co2_pm25",
-            "fingerprint": {
-              "global": {
-                "distinct-count": 10,
-                "nil%": 0.0
-              },
-              "type": {
-                "type/Number": {
-                  "min": -0.0018527946475332584,
-                  "q1": 0.21233053621470097,
-                  "q3": 2.4029524804194167,
-                  "max": 3.6243330214459495,
-                  "sd": 1.3873817832188726,
-                  "avg": 1.1361107885095056
-                }
-              }
-            },
-            "base_type": "type/Float"
-          },
-          {
-            "database_type": "float8",
-            "semantic_type": null,
-            "lib/deduplicated-name": "co2_per_capita_t",
-            "lib/original-name": "co2_per_capita_t",
-            "name": "co2_per_capita_t",
-            "lib/source": "source/native",
-            "lib/source-column-alias": "co2_per_capita_t",
-            "source": "native",
-            "field_ref": [
-              "field",
-              "co2_per_capita_t",
-              {
-                "base-type": "type/Float"
-              }
-            ],
-            "effective_type": "type/Float",
-            "lib/desired-column-alias": "co2_per_capita_t",
-            "display_name": "co2_per_capita_t",
-            "fingerprint": {
-              "global": {
-                "distinct-count": 10,
-                "nil%": 0.0
-              },
-              "type": {
-                "type/Number": {
-                  "min": 3.63738680384754,
-                  "q1": 6.75922774879049,
-                  "q3": 14.3161154347115,
-                  "max": 15.5045482189269,
-                  "sd": 4.351032325674079,
-                  "avg": 9.035832673633784
-                }
-              }
-            },
-            "base_type": "type/Float"
-          },
-          {
-            "database_type": "float8",
-            "semantic_type": null,
-            "lib/deduplicated-name": "median_pm25_ugm3",
-            "lib/original-name": "median_pm25_ugm3",
-            "name": "median_pm25_ugm3",
-            "lib/source": "source/native",
-            "lib/source-column-alias": "median_pm25_ugm3",
-            "source": "native",
-            "field_ref": [
-              "field",
-              "median_pm25_ugm3",
-              {
-                "base-type": "type/Float"
-              }
-            ],
-            "effective_type": "type/Float",
-            "lib/desired-column-alias": "median_pm25_ugm3",
-            "display_name": "median_pm25_ugm3",
-            "fingerprint": {
-              "global": {
-                "distinct-count": 10,
-                "nil%": 0.0
-              },
-              "type": {
-                "type/Number": {
-                  "min": -4981.8125,
-                  "q1": 4.85,
-                  "q3": 17.459075107938276,
-                  "max": 90.22542372881355,
-                  "sd": 1582.5175353767722,
-                  "avg": -478.47496656465756
-                }
-              }
-            },
-            "base_type": "type/Float"
-          },
-          {
-            "database_type": "int4",
-            "semantic_type": null,
-            "lib/deduplicated-name": "year",
-            "lib/original-name": "year",
-            "name": "year",
-            "lib/source": "source/native",
-            "lib/source-column-alias": "year",
-            "source": "native",
-            "field_ref": [
-              "field",
-              "year",
-              {
-                "base-type": "type/Integer"
-              }
-            ],
-            "effective_type": "type/Integer",
-            "lib/desired-column-alias": "year",
-            "display_name": "year",
-            "fingerprint": {
-              "global": {
-                "distinct-count": 5,
-                "nil%": 0.0
-              },
-              "type": {
-                "type/Number": {
-                  "min": 2016.0,
-                  "q1": 2021.6180339887499,
-                  "q3": 2023.1314829081787,
-                  "max": 2024.0,
-                  "sd": 2.2335820757001272,
-                  "avg": 2021.9
-                }
-              }
-            },
-            "base_type": "type/Integer"
-          }
-        ],
-        "embedding_type": null,
-        "initially_published_at": null,
-        "can_write": true,
-        "card_schema": 23,
-        "database_id": 2,
-        "enable_embedding": false,
-        "collection_id": 5,
-        "query_type": "native",
-        "download_perms": "full",
-        "name": "01 — Choropleth: CO2/PM2.5 ratio",
-        "document_id": null,
-        "last_used_at": "2026-05-02T15:24:45.018062Z",
-        "type": "question",
-        "dimensions": null,
-        "query_average_duration": 47,
-        "creator_id": 1,
-        "moderation_reviews": [],
-        "updated_at": "2026-05-02T14:19:42.992778Z",
-        "made_public_by_id": null,
-        "embedding_params": null,
-        "cache_ttl": null,
-        "dataset_query": {
-          "lib/type": "mbql/query",
-          "database": 2,
-          "stages": [
-            {
-              "template-tags": {
-                "year": {
-                  "display-name": "Year",
-                  "id": "year-tag",
-                  "name": "year",
-                  "type": "number"
-                }
-              },
-              "lib/type": "mbql.stage/native",
-              "native": "SELECT country_iso3,\n       co2_per_capita_t / NULLIF(median_pm25_ugm3, 0) AS ratio_co2_pm25,\n       co2_per_capita_t,\n       median_pm25_ugm3,\n       year\nFROM marts.country_year_environment\nWHERE [[ year = {{year}} AND ]]\n      co2_per_capita_t IS NOT NULL\n  AND median_pm25_ugm3 IS NOT NULL"
-            }
-          ]
-        },
-        "dimension_mappings": null,
-        "id": 40,
-        "legacy_query": null,
-        "parameter_mappings": [],
-        "display": "map",
-        "archived_directly": false,
-        "entity_id": "1c3mPPWvEnR0pb5eeJTeJ",
-        "collection_preview": true,
-        "visualization_settings": {
-          "map.type": "region",
-          "map.region": "world_countries",
-          "map.dimension": [
-            "field",
-            "country_iso3",
-            null
-          ],
-          "map.metric": [
-            "field",
-            "ratio_co2_pm25",
-            null
-          ]
-        },
-        "metabase_version": "v0.60.3.3 (c734864)",
-        "parameters": [
-          {
-            "id": "year-tag",
-            "type": "number/=",
-            "target": [
-              "variable",
-              [
-                "template-tag",
-                "year"
-              ]
-            ],
-            "name": "Year",
-            "slug": "year"
-          }
-        ],
-        "dashboard_id": null,
-        "created_at": "2026-05-02T14:19:42.992778Z",
-        "public_uuid": null
-      },
-      "updated_at": "2026-05-02T14:19:43.34048Z",
-      "col": 0,
-      "id": 37,
-      "parameter_mappings": [
-        {
-          "parameter_id": "dash-year",
-          "card_id": 40,
-          "target": [
-            "variable",
-            [
-              "template-tag",
-              "year"
-            ]
-          ]
-        }
-      ],
-      "card_id": 40,
-      "entity_id": "xEP3h2aa4niQykQjxMqxg",
-      "visualization_settings": {},
-      "size_y": 8,
-      "dashboard_id": 2,
-      "created_at": "2026-05-02T14:19:43.34048Z",
-      "row": 0
-    },
-    {
-      "size_x": 12,
-      "dashboard_tab_id": null,
-      "series": [],
-      "inline_parameters": [],
-      "action_id": null,
-      "collection_authority_level": null,
-      "card": {
-        "cache_invalidated_at": null,
-        "description": null,
-        "archived": false,
-        "view_count": 4,
+        "view_count": 8,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -421,17 +115,17 @@
             "display_name": "median_pm25_ugm3",
             "fingerprint": {
               "global": {
-                "distinct-count": 4,
-                "nil%": 0.823529411764706
+                "distinct-count": 5,
+                "nil%": 0.7647058823529412
               },
               "type": {
                 "type/Number": {
-                  "min": 3.0,
-                  "q1": 3.0971200980392157,
-                  "q3": 5.347120098039216,
-                  "max": 6.0,
-                  "sd": 1.6315101224141764,
-                  "avg": 4.129493464052287
+                  "min": 4.11063829787234,
+                  "q1": 4.48031914893617,
+                  "q3": 8.95,
+                  "max": 11.9,
+                  "sd": 3.5428978145793426,
+                  "avg": 6.715159574468085
                 }
               }
             },
@@ -449,7 +143,7 @@
         "download_perms": "full",
         "name": "02 — GDP growth vs PM2.5 (per country)",
         "document_id": null,
-        "last_used_at": "2026-05-02T14:30:15.036562Z",
+        "last_used_at": "2026-05-02T16:26:32.082667Z",
         "type": "question",
         "dimensions": null,
         "query_average_duration": 37,
@@ -552,10 +246,10 @@
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": null,
+        "cache_invalidated_at": "2026-05-02T16:12:13.971476Z",
         "description": null,
         "archived": false,
-        "view_count": 5,
+        "view_count": 10,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -732,12 +426,12 @@
               },
               "type": {
                 "type/Number": {
-                  "min": -4981.8125,
-                  "q1": -1240.953125,
-                  "q3": 35.650662263157095,
-                  "max": 90.22542372881355,
-                  "sd": 2241.8857164872857,
-                  "avg": -971.8854532480949
+                  "min": 6.0,
+                  "q1": 8.025551192080027,
+                  "q3": 42.5563559322034,
+                  "max": 90.2254237288136,
+                  "sd": 34.72853517499556,
+                  "avg": 29.815905613683462
                 }
               }
             },
@@ -755,13 +449,13 @@
         "download_perms": "full",
         "name": "03 — GDP per capita vs PM2.5 (latest year)",
         "document_id": null,
-        "last_used_at": "2026-05-02T15:24:45.085343Z",
+        "last_used_at": "2026-05-02T16:26:32.082667Z",
         "type": "question",
         "dimensions": null,
-        "query_average_duration": 33,
+        "query_average_duration": 30,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-05-02T14:19:43.174122Z",
+        "updated_at": "2026-05-02T16:12:13.969952Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -791,8 +485,7 @@
           "graph.x_axis.title_text": "GDP per capita (USD, log)",
           "graph.y_axis.title_text": "Median PM2.5 (µg/m³)",
           "graph.tooltip_columns": [
-            "country_name",
-            "year"
+            "[\"name\",\"country_name\"]"
           ],
           "graph.metrics": [
             "median_pm25_ugm3"
@@ -827,7 +520,7 @@
         "cache_invalidated_at": null,
         "description": null,
         "archived": false,
-        "view_count": 4,
+        "view_count": 8,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -853,17 +546,17 @@
             "display_name": "year",
             "fingerprint": {
               "global": {
-                "distinct-count": 2,
+                "distinct-count": 3,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
                   "min": 2016.0,
-                  "q1": 2016.0,
-                  "q3": 2022.0,
+                  "q1": 2017.25,
+                  "q3": 2021.75,
                   "max": 2022.0,
-                  "sd": 4.242640687119285,
-                  "avg": 2019.0
+                  "sd": 3.2145502536643185,
+                  "avg": 2019.6666666666667
                 }
               }
             },
@@ -890,17 +583,17 @@
             "display_name": "gdp_index",
             "fingerprint": {
               "global": {
-                "distinct-count": 2,
+                "distinct-count": 3,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
                   "min": 99.99999999999999,
-                  "q1": 99.99999999999999,
-                  "q3": 132.99752497332358,
+                  "q1": 105.45079933188431,
+                  "q3": 130.198943061877,
                   "max": 132.99752497332358,
-                  "sd": 23.332773671009562,
-                  "avg": 116.49876248666178
+                  "sd": 16.780589180706475,
+                  "avg": 118.26690743362029
                 }
               }
             },
@@ -927,17 +620,17 @@
             "display_name": "pm25_index",
             "fingerprint": {
               "global": {
-                "distinct-count": 2,
+                "distinct-count": 3,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
                   "min": 100.0,
-                  "q1": 100.0,
-                  "q3": 200.0,
-                  "max": 200.0,
-                  "sd": 70.71067811865476,
-                  "avg": 150.0
+                  "q1": 105.9278350515464,
+                  "q3": 214.94845360824743,
+                  "max": 245.36082474226805,
+                  "sd": 77.9856761548987,
+                  "avg": 156.3573883161512
                 }
               }
             },
@@ -955,7 +648,7 @@
         "download_perms": "full",
         "name": "04 — Decoupling: GDP vs PM2.5 indexed (base 100)",
         "document_id": null,
-        "last_used_at": "2026-05-02T14:30:41.287458Z",
+        "last_used_at": "2026-05-02T16:26:32.082667Z",
         "type": "question",
         "dimensions": null,
         "query_average_duration": 34,
@@ -1049,6 +742,371 @@
       "dashboard_id": 2,
       "created_at": "2026-05-02T14:19:43.34048Z",
       "row": 8
+    },
+    {
+      "size_x": 12,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "cache_invalidated_at": "2026-05-02T16:40:21.011722Z",
+        "description": null,
+        "archived": false,
+        "view_count": 15,
+        "collection_position": null,
+        "source_card_id": null,
+        "table_id": null,
+        "result_metadata": [
+          {
+            "database_type": "text",
+            "semantic_type": "type/Country",
+            "lib/deduplicated-name": "country_iso2",
+            "lib/original-name": "country_iso2",
+            "name": "country_iso2",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "country_iso2",
+            "source": "native",
+            "field_ref": [
+              "field",
+              "country_iso2",
+              {
+                "base-type": "type/Text"
+              }
+            ],
+            "effective_type": "type/Text",
+            "lib/desired-column-alias": "country_iso2",
+            "display_name": "country_iso2",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 5,
+                "nil%": 0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0,
+                  "percent-url": 0,
+                  "percent-email": 0,
+                  "percent-state": 0.2,
+                  "average-length": 2
+                }
+              }
+            },
+            "base_type": "type/Text"
+          },
+          {
+            "database_type": "text",
+            "semantic_type": "type/Country",
+            "lib/deduplicated-name": "country_iso3",
+            "lib/original-name": "country_iso3",
+            "name": "country_iso3",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "country_iso3",
+            "source": "native",
+            "field_ref": [
+              "field",
+              "country_iso3",
+              {
+                "base-type": "type/Text"
+              }
+            ],
+            "effective_type": "type/Text",
+            "lib/desired-column-alias": "country_iso3",
+            "display_name": "country_iso3",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 5,
+                "nil%": 0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0,
+                  "percent-url": 0,
+                  "percent-email": 0,
+                  "percent-state": 0,
+                  "average-length": 3
+                }
+              }
+            },
+            "base_type": "type/Text"
+          },
+          {
+            "database_type": "text",
+            "semantic_type": "type/Country",
+            "lib/deduplicated-name": "country_name",
+            "lib/original-name": "country_name",
+            "name": "country_name",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "country_name",
+            "source": "native",
+            "field_ref": [
+              "field",
+              "country_name",
+              {
+                "base-type": "type/Text"
+              }
+            ],
+            "effective_type": "type/Text",
+            "lib/desired-column-alias": "country_name",
+            "display_name": "country_name",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 5,
+                "nil%": 0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0,
+                  "percent-url": 0,
+                  "percent-email": 0,
+                  "percent-state": 0,
+                  "average-length": 8.6
+                }
+              }
+            },
+            "base_type": "type/Text"
+          },
+          {
+            "database_type": "int4",
+            "semantic_type": null,
+            "lib/deduplicated-name": "latest_year",
+            "lib/original-name": "latest_year",
+            "name": "latest_year",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "latest_year",
+            "source": "native",
+            "field_ref": [
+              "field",
+              "latest_year",
+              {
+                "base-type": "type/Integer"
+              }
+            ],
+            "effective_type": "type/Integer",
+            "lib/desired-column-alias": "latest_year",
+            "display_name": "latest_year",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 3,
+                "nil%": 0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 2022,
+                  "q1": 2022.5,
+                  "q3": 2023.5,
+                  "max": 2024,
+                  "sd": 0.7071067811865476,
+                  "avg": 2023
+                }
+              }
+            },
+            "base_type": "type/Integer"
+          },
+          {
+            "database_type": "float8",
+            "semantic_type": null,
+            "lib/deduplicated-name": "co2_per_capita_t",
+            "lib/original-name": "co2_per_capita_t",
+            "name": "co2_per_capita_t",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "co2_per_capita_t",
+            "source": "native",
+            "field_ref": [
+              "field",
+              "co2_per_capita_t",
+              {
+                "base-type": "type/Float"
+              }
+            ],
+            "effective_type": "type/Float",
+            "lib/desired-column-alias": "co2_per_capita_t",
+            "display_name": "co2_per_capita_t",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 5,
+                "nil%": 0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 3.63738680384754,
+                  "q1": 5.978767512554753,
+                  "q3": 10.527135371889836,
+                  "max": 14.4177148825165,
+                  "sd": 3.995822743724265,
+                  "avg": 8.224886672247285
+                }
+              }
+            },
+            "base_type": "type/Float"
+          },
+          {
+            "database_type": "float8",
+            "semantic_type": null,
+            "lib/deduplicated-name": "median_pm25_ugm3",
+            "lib/original-name": "median_pm25_ugm3",
+            "name": "median_pm25_ugm3",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "median_pm25_ugm3",
+            "source": "native",
+            "field_ref": [
+              "field",
+              "median_pm25_ugm3",
+              {
+                "base-type": "type/Float"
+              }
+            ],
+            "effective_type": "type/Float",
+            "lib/desired-column-alias": "median_pm25_ugm3",
+            "display_name": "median_pm25_ugm3",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 5,
+                "nil%": 0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 6,
+                  "q1": 8.025551192080027,
+                  "q3": 42.5563559322034,
+                  "max": 90.2254237288136,
+                  "sd": 34.72853517499556,
+                  "avg": 29.815905613683462
+                }
+              }
+            },
+            "base_type": "type/Float"
+          },
+          {
+            "database_type": "float8",
+            "semantic_type": null,
+            "lib/deduplicated-name": "ratio_co2_pm25",
+            "lib/original-name": "ratio_co2_pm25",
+            "name": "ratio_co2_pm25",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "ratio_co2_pm25",
+            "source": "native",
+            "field_ref": [
+              "field",
+              "ratio_co2_pm25",
+              {
+                "base-type": "type/Float"
+              }
+            ],
+            "effective_type": "type/Float",
+            "lib/desired-column-alias": "ratio_co2_pm25",
+            "display_name": "ratio_co2_pm25",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 5,
+                "nil%": 0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 0.04031443304472879,
+                  "q1": 0.26968010768345885,
+                  "q3": 1.2110166012251808,
+                  "max": 2.4029524804194167,
+                  "sd": 0.9385749006832503,
+                  "avg": 0.7979284358485907
+                }
+              }
+            },
+            "base_type": "type/Float"
+          }
+        ],
+        "embedding_type": null,
+        "initially_published_at": null,
+        "can_write": true,
+        "card_schema": 23,
+        "database_id": 2,
+        "enable_embedding": false,
+        "collection_id": 5,
+        "query_type": "native",
+        "download_perms": "full",
+        "name": "01 — Choropleth: CO2/PM2.5 ratio",
+        "document_id": null,
+        "last_used_at": "2026-05-02T16:39:12.628567Z",
+        "type": "question",
+        "dimensions": null,
+        "query_average_duration": 41,
+        "creator_id": 1,
+        "moderation_reviews": [],
+        "updated_at": "2026-05-02T16:40:21.010757Z",
+        "made_public_by_id": null,
+        "embedding_params": null,
+        "cache_ttl": null,
+        "dataset_query": {
+          "lib/type": "mbql/query",
+          "database": 2,
+          "stages": [
+            {
+              "template-tags": {
+                "year": {
+                  "type": "number",
+                  "id": "year-tag",
+                  "name": "year",
+                  "display-name": "Year",
+                  "required": false
+                }
+              },
+              "lib/type": "mbql.stage/native",
+              "native": "WITH ranked AS (\n  SELECT country_iso3, country_name, year,\n         co2_per_capita_t, median_pm25_ugm3,\n         ROW_NUMBER() OVER (\n           PARTITION BY country_iso3 ORDER BY year DESC\n         ) AS rn\n  FROM marts.country_year_environment\n  WHERE co2_per_capita_t IS NOT NULL\n    AND median_pm25_ugm3 IS NOT NULL\n    AND median_pm25_ugm3 > 0\n    [[ AND year = {{year}} ]]\n)\nSELECT c.iso2                                      AS country_iso2,\n       r.country_iso3,\n       r.country_name,\n       r.year                                      AS latest_year,\n       r.co2_per_capita_t,\n       r.median_pm25_ugm3,\n       r.co2_per_capita_t / r.median_pm25_ugm3     AS ratio_co2_pm25\nFROM ranked r\nJOIN seeds.country_iso_codes c\n  ON c.iso3 = r.country_iso3\nWHERE r.rn = 1\nORDER BY country_iso2"
+            }
+          ]
+        },
+        "dimension_mappings": null,
+        "id": 40,
+        "legacy_query": null,
+        "parameter_mappings": [],
+        "display": "map",
+        "archived_directly": false,
+        "entity_id": "1c3mPPWvEnR0pb5eeJTeJ",
+        "collection_preview": true,
+        "visualization_settings": {
+          "map.type": "region",
+          "map.region": "world_countries",
+          "map.dimension": [
+            "field",
+            "country_iso2",
+            null
+          ],
+          "map.metric": "ratio_co2_pm25"
+        },
+        "metabase_version": "v0.60.3.3 (c734864)",
+        "parameters": [
+          {
+            "id": "year-tag",
+            "type": "number/=",
+            "target": [
+              "variable",
+              [
+                "template-tag",
+                "year"
+              ]
+            ],
+            "name": "Year",
+            "slug": "year",
+            "required": false,
+            "isMultiSelect": false
+          }
+        ],
+        "dashboard_id": null,
+        "created_at": "2026-05-02T14:19:42.992778Z",
+        "public_uuid": null
+      },
+      "updated_at": "2026-05-02T16:25:27.603099Z",
+      "col": 0,
+      "id": 37,
+      "parameter_mappings": [],
+      "card_id": 40,
+      "entity_id": "xEP3h2aa4niQykQjxMqxg",
+      "visualization_settings": {},
+      "size_y": 8,
+      "dashboard_id": 2,
+      "created_at": "2026-05-02T14:19:43.34048Z",
+      "row": 0
     }
   ],
   "embedding_type": null,
@@ -1067,13 +1125,15 @@
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-05-02T14:19:43.34048Z",
+  "updated_at": "2026-05-02T16:25:27.603099Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
-  "last_used_param_values": {},
+  "last_used_param_values": {
+    "dash-country": "USA"
+  },
   "id": 2,
-  "last_viewed_at": "2026-05-02T14:19:43.281183Z",
+  "last_viewed_at": "2026-05-02T16:26:32.055672Z",
   "position": null,
   "archived_directly": false,
   "entity_id": "KYOXVTbaUhRpFe6-QuMnq",
@@ -1083,7 +1143,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "last_name": "Admin",
-    "timestamp": "2026-05-02T14:19:43.416838Z"
+    "timestamp": "2026-05-02T16:25:27.644116Z"
   },
   "collection": {
     "authority_level": null,
@@ -1114,13 +1174,6 @@
       "type": "category",
       "default": "USA",
       "sectionId": "location"
-    },
-    {
-      "id": "dash-year",
-      "name": "Year",
-      "slug": "year",
-      "type": "number/=",
-      "sectionId": "number"
     }
   ],
   "auto_apply_filters": true,

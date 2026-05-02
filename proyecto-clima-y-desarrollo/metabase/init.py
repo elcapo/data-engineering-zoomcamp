@@ -148,6 +148,24 @@ def warehouse_already_registered(session_id: str) -> bool:
     return any(db.get("name") == DB_DISPLAY_NAME for db in databases)
 
 
+def remove_sample_databases(session_id: str) -> None:
+    """Delete any built-in Sample Database(s) so the SQL editor doesn't
+    silently fall back to one that lacks the project's `marts` schema."""
+    _, body = _request(
+        "GET", "/api/database",
+        headers={"X-Metabase-Session": session_id},
+    )
+    databases = (body or {}).get("data", body if isinstance(body, list) else [])
+    sample_ids = [db["id"] for db in databases if db.get("is_sample")]
+    for db_id in sample_ids:
+        logger.info("Removing built-in sample database id=%s", db_id)
+        _request(
+            "DELETE", f"/api/database/{db_id}",
+            headers={"X-Metabase-Session": session_id},
+            timeout=30.0,
+        )
+
+
 def register_warehouse(session_id: str) -> None:
     logger.info("Registering '%s' Postgres data source", DB_DISPLAY_NAME)
     payload = {
@@ -195,6 +213,8 @@ def main() -> None:
     else:
         register_warehouse(session_id)
         logger.info("Data source '%s' registered", DB_DISPLAY_NAME)
+
+    remove_sample_databases(session_id)
 
 
 if __name__ == "__main__":
