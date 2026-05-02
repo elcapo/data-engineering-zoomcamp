@@ -8,7 +8,7 @@ from dataclasses import dataclass
 DEFAULT_INDICATORS = [
     "NY.GDP.PCAP.CD",
     "NY.GDP.MKTP.KD.ZG",
-    "EN.ATM.CO2E.PC",
+    "EN.GHG.CO2.PC.CE.AR5",
     "EG.USE.PCAP.KG.OE",
     "EG.FEC.RNEW.ZS",
     "SP.URB.TOTL.IN.ZS",

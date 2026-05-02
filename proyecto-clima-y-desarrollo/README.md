@@ -52,7 +52,7 @@ https://api.worldbank.org/v2/country/all/indicator/NY.GDP.PCAP.CD?format=json&pe
 |---|---|---|
 | `NY.GDP.PCAP.CD` | GDP per capita | Current USD |
 | `NY.GDP.MKTP.KD.ZG` | GDP growth | Annual % |
-| `EN.ATM.CO2E.PC` | CO2 emissions per capita | Metric tons |
+| `EN.GHG.CO2.PC.CE.AR5` | CO2 emissions per capita (AR5, excl. LULUCF) | t CO2e/capita |
 | `EG.USE.PCAP.KG.OE` | Energy use per capita | kg of oil equivalent |
 | `EG.FEC.RNEW.ZS` | Renewable energy consumption | % of total final energy |
 | `SP.URB.TOTL.IN.ZS` | Urban population | % of total |
@@ -328,8 +328,15 @@ The smoke tests use minimal scopes (one indicator, one station). For the dashboa
 
 - **World Bank historical**: the production trigger only fires on July 1st (yearly cron). Open Kestra at `http://localhost:8080`, manually execute `climate.worldbank-ingest` with `start_year=2010`, `end_year=2024`, and the `indicators` field empty (uses the full default list).
 - **OpenAQ historical**: the live poller only captures data going forward. Run the Spark backfill once per country in your `COUNTRIES` list against the public OpenAQ S3 dump, with a multi-year window (e.g. `SPARK_BACKFILL_YEARS=2018,2019,2020,2021,2022,2023`). This is what gives the time-series tile its trend.
+
+If you want to run an initial backfill and you already configured your environment, just run:
+
+```bash
+make openaq-backfill-all
+```
+
 - **OpenAQ live stream**: already running every 15 min from step 3. No action needed.
-- **dbt build**: once raw tables have data, run `docker compose run --rm dbt build` to refresh staging → intermediate → marts.
+- **dbt build**: once raw tables have data, run `docker compose run --rm dbt-init build` to refresh staging → intermediate → marts (the `dbt-init` service is the same dbt image used at boot for `create_raw_schema`; `run --rm` overrides the command).
 
 ### 6. Build the dashboard
 

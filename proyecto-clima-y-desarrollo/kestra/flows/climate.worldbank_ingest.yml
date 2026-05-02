@@ -37,8 +37,11 @@ tasks:
       networkMode: climate-net
       pullPolicy: NEVER
     env:
-      STORAGE_ENDPOINT: "http://minio:9000"
+      STORAGE_ENDPOINT: "{{ envs.storage_endpoint ?? 'http://minio:9000' }}"
       STORAGE_BUCKET: "{{ envs.storage_bucket ?? 'climate' }}"
+      STORAGE_REGION: "{{ envs.storage_region ?? 'us-east-1' }}"
+      STORAGE_ACCESS_KEY: "{{ envs.storage_access_key }}"
+      STORAGE_SECRET_KEY: "{{ envs.storage_secret_key }}"
     commands:
       - >
         worldbank-ingest
@@ -59,9 +62,16 @@ tasks:
       networkMode: climate-net
       pullPolicy: NEVER
     env:
-      STORAGE_ENDPOINT: "http://minio:9000"
+      STORAGE_ENDPOINT: "{{ envs.storage_endpoint ?? 'http://minio:9000' }}"
       STORAGE_BUCKET: "{{ envs.storage_bucket ?? 'climate' }}"
-      POSTGRES_HOST: "postgres"
+      STORAGE_REGION: "{{ envs.storage_region ?? 'us-east-1' }}"
+      STORAGE_ACCESS_KEY: "{{ envs.storage_access_key }}"
+      STORAGE_SECRET_KEY: "{{ envs.storage_secret_key }}"
+      POSTGRES_HOST: "{{ envs.postgres_host ?? 'postgres' }}"
+      POSTGRES_PORT: "{{ envs.postgres_port ?? '5432' }}"
+      POSTGRES_USER: "{{ envs.postgres_user ?? 'climate' }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_password }}"
+      POSTGRES_DB: "{{ envs.postgres_db ?? 'climate' }}"
     commands:
       - >
         worldbank-load

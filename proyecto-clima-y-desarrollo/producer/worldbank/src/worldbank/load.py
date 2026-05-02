@@ -6,6 +6,8 @@ import argparse
 import logging
 import sys
 
+from botocore.exceptions import ClientError
+
 from worldbank.config import Settings, resolve_indicators
 from worldbank.db import connect, upsert_rows
 from worldbank.parse import parse_records
@@ -37,16 +39,24 @@ def run(start_year: int, end_year: int, indicators: list[str], settings: Setting
         raise ValueError(f"start_year ({start_year}) must be <= end_year ({end_year})")
     s3 = build_client(settings)
     total = 0
+    skipped = 0
     with connect(settings) as conn:
         for code in indicators:
             for year in range(start_year, end_year + 1):
                 key = object_key(code, year)
-                payload = get_json(s3, settings.storage_bucket, key)
+                try:
+                    payload = get_json(s3, settings.storage_bucket, key)
+                except ClientError as error:
+                    if error.response.get("Error", {}).get("Code") == "NoSuchKey":
+                        logger.warning("Skipping %s/%s: object not in storage (likely archived)", code, year)
+                        skipped += 1
+                        continue
+                    raise
                 rows = list(parse_records(payload, source_object=key))
                 inserted = upsert_rows(conn, rows)
                 total += inserted
                 logger.info("Loaded %d rows from %s", inserted, key)
-    logger.info("Load complete: %d rows", total)
+    logger.info("Load complete: %d rows (%d objects skipped)", total, skipped)
     return total
 
 

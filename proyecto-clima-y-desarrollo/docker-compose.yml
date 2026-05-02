@@ -210,6 +210,25 @@ services:
       retries: 20
       start_period: 30s
     environment:
+      # Variables exposed to flows as {{ envs.<lowercase_name> }}.
+      # Kestra 0.23+ autoloads env vars prefixed with ENV_ (default prefix
+      # changed from KESTRA_ to avoid collisions with Kestra's own config).
+      # The prefix is stripped and the rest is lowercased.
+      ENV_STORAGE_ENDPOINT: ${STORAGE_ENDPOINT:-http://minio:9000}
+      ENV_STORAGE_BUCKET: ${STORAGE_BUCKET:-climate}
+      ENV_STORAGE_REGION: ${STORAGE_REGION:-us-east-1}
+      ENV_STORAGE_ACCESS_KEY: ${MINIO_ROOT_USER:-minio}
+      ENV_STORAGE_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      ENV_POSTGRES_HOST: postgres
+      ENV_POSTGRES_PORT: "5432"
+      ENV_POSTGRES_USER: ${POSTGRES_USER:-climate}
+      ENV_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-climate}
+      ENV_POSTGRES_DB: ${POSTGRES_DB:-climate}
+      ENV_OPENAQ_API_KEY: ${OPENAQ_API_KEY:-}
+      ENV_OPENAQ_TOPIC: ${OPENAQ_TOPIC:-openaq.measurements}
+      ENV_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-redpanda:9092}
+      ENV_COUNTRIES: ${COUNTRIES:-}
+      ENV_PARAMETERS: ${PARAMETERS:-pm25,pm10,no2,o3,so2}
       KESTRA_CONFIGURATION: |
         kestra:
           repository:

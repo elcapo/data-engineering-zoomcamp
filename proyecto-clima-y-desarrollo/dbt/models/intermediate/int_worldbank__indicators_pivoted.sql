@@ -28,7 +28,7 @@ pivoted as (
             as gdp_per_capita_usd,
         max(case when indicator_code = 'NY.GDP.MKTP.KD.ZG'   then value end)
             as gdp_growth_pct,
-        max(case when indicator_code = 'EN.ATM.CO2E.PC'      then value end)
+        max(case when indicator_code = 'EN.GHG.CO2.PC.CE.AR5' then value end)
             as co2_per_capita_t,
         max(case when indicator_code = 'EG.USE.PCAP.KG.OE'   then value end)
             as energy_per_capita_kgoe,

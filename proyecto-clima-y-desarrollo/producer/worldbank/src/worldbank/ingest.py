@@ -6,7 +6,7 @@ import argparse
 import logging
 import sys
 
-from worldbank.api import fetch_indicator
+from worldbank.api import WorldBankIndicatorArchivedError, fetch_indicator
 from worldbank.config import Settings, resolve_indicators
 from worldbank.storage import build_client, object_key, put_json
 
@@ -36,15 +36,24 @@ def run(start_year: int, end_year: int, indicators: list[str], settings: Setting
         raise ValueError(f"start_year ({start_year}) must be <= end_year ({end_year})")
     client = build_client(settings)
     written: list[str] = []
+    skipped: list[str] = []
     for code in indicators:
         for year in range(start_year, end_year + 1):
-            payload = fetch_indicator(settings.api_base_url, code, year)
+            try:
+                payload = fetch_indicator(settings.api_base_url, code, year)
+            except WorldBankIndicatorArchivedError as error:
+                logger.warning("Skipping %s/%s: %s", code, year, error)
+                skipped.append(f"{code}/{year}")
+                continue
             key = object_key(code, year)
             put_json(client, settings.storage_bucket, key, payload)
             count = len(payload["records"])
             logger.info("Wrote s3://%s/%s (%d records)", settings.storage_bucket, key, count)
             written.append(key)
-    logger.info("Ingest complete: %d objects", len(written))
+    logger.info(
+        "Ingest complete: %d objects written, %d skipped",
+        len(written), len(skipped),
+    )
     return written
 
 

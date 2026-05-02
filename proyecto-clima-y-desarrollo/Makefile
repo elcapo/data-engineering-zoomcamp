@@ -1,5 +1,6 @@
 .PHONY: init up down reset test \
         smoke-test-worldbank smoke-test-openaq smoke-test-flink smoke-test-spark smoke-test-marts smoke-test-metabase smoke-test-terraform \
+        openaq-backfill-all \
         metabase-export metabase-import \
         render-architecture-diagram
 
@@ -57,6 +58,9 @@ smoke-test-metabase: up
 
 smoke-test-terraform:
 	@./scripts/smoke-test-terraform.sh
+
+openaq-backfill-all:
+	@./scripts/openaq-backfill-all.sh $(COUNTRIES_ARG) $(YEARS_ARG)
 
 render-architecture-diagram:
 	@./scripts/render-architecture-diagram.sh

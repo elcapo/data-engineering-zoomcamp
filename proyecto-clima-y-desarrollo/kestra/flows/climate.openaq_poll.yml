@@ -35,7 +35,7 @@ tasks:
     env:
       OPENAQ_API_BASE_URL: "https://api.openaq.org"
       OPENAQ_API_KEY: "{{ envs.openaq_api_key }}"
-      KAFKA_BOOTSTRAP_SERVERS: "redpanda:9092"
+      KAFKA_BOOTSTRAP_SERVERS: "{{ envs.kafka_bootstrap_servers ?? 'redpanda:9092' }}"
       OPENAQ_TOPIC: "{{ envs.openaq_topic ?? 'openaq.measurements' }}"
       COUNTRIES: "{{ envs.countries ?? '' }}"
       PARAMETERS: "{{ envs.parameters ?? 'pm25,pm10,no2,o3,so2' }}"

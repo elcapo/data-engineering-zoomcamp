@@ -35,7 +35,7 @@ class _FakeConn:
 def test_run_upserts_rows_from_each_object(
     monkeypatch, s3_client, settings, sample_payload,
 ):
-    for code in ("NY.GDP.PCAP.CD", "EN.ATM.CO2E.PC"):
+    for code in ("NY.GDP.PCAP.CD", "EN.GHG.CO2.PC.CE.AR5"):
         for year in (2021, 2022):
             put_json(s3_client, settings.storage_bucket, object_key(code, year), sample_payload)
 
@@ -51,7 +51,7 @@ def test_run_upserts_rows_from_each_object(
     total = load.run(
         start_year=2021,
         end_year=2022,
-        indicators=["NY.GDP.PCAP.CD", "EN.ATM.CO2E.PC"],
+        indicators=["NY.GDP.PCAP.CD", "EN.GHG.CO2.PC.CE.AR5"],
         settings=settings,
     )
 
