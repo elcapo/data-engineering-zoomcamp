@@ -31,6 +31,7 @@ from pyspark.sql.types import (
 from transforms import (
     assert_safe_token,
     build_input_paths,
+    filter_existing_paths,
     load_iso_seed,
     parse_csv_list,
     parse_year_range,
@@ -216,11 +217,21 @@ def run(args: argparse.Namespace) -> int:
     country_iso3 = iso_seed[country_iso2]
 
     input_paths = build_input_paths(source_bucket, location_ids, years)
-    logger.info("Reading %d S3 path(s): %s", len(input_paths), input_paths[:3])
+    logger.info("Built %d candidate S3 path(s): %s", len(input_paths), input_paths[:3])
 
     spark = build_spark()
     try:
-        raw = spark.read.option("header", "true").option("recursiveFileLookup", "true").csv(input_paths)
+        existing_paths = filter_existing_paths(spark, source_bucket, input_paths)
+        skipped = len(input_paths) - len(existing_paths)
+        if skipped:
+            logger.warning(
+                "Skipping %d non-existent (location, year) partition(s); reading %d.",
+                skipped, len(existing_paths),
+            )
+        if not existing_paths:
+            logger.warning("No existing partitions to read — backfill is a no-op for this scope.")
+            return 0
+        raw = spark.read.option("header", "true").option("recursiveFileLookup", "true").csv(existing_paths)
         normalized = normalize_dataframe(raw, country_iso2=country_iso2, country_iso3=country_iso3)
         normalized.cache()
         row_count = normalized.count()

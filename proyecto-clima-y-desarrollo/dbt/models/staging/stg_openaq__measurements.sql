@@ -14,6 +14,11 @@ with source as (
     from {{ source('openaq', 'openaq_measurements') }}
     where value is not null
       and country_iso is not null
+      -- OpenAQ uses negative sentinels (-9999, -9.999) for missing/errored
+      -- readings; some sensors also emit absurd positive spikes (>800k µg/m³).
+      -- Filter both so downstream medians stay in physical ranges.
+      and value >= 0
+      and value < 10000
 
 ),
 

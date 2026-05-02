@@ -376,6 +376,12 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-climate}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-climate}
       POSTGRES_DB: ${POSTGRES_DB:-climate}
+    volumes:
+      - ./dbt/models:/dbt/models:ro
+      - ./dbt/macros:/dbt/macros:ro
+      - ./dbt/seeds:/dbt/seeds:ro
+      - ./dbt/dbt_project.yml:/dbt/dbt_project.yml:ro
+      - ./dbt/profiles.yml:/dbt/profiles.yml:ro
     command: ["run-operation", "create_raw_schema"]
     depends_on:
       postgres:

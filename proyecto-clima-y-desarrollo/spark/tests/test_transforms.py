@@ -9,6 +9,7 @@ import pytest
 from transforms import (
     assert_safe_token,
     build_input_paths,
+    filter_existing_paths,
     load_iso_seed,
     parse_csv_list,
     parse_year_range,
@@ -114,3 +115,79 @@ class TestLoadIsoSeed:
         seed.write_text("iso2,iso3,wb_code,country_name\n", encoding="utf-8")
         with pytest.raises(ValueError, match="empty"):
             load_iso_seed(seed)
+
+
+class TestFilterExistingPaths:
+    def _make_fake_spark(self, location_years: dict[str, list[str]]):
+        """Build a fake Spark whose JVM mocks fs.listStatus per locationid dir."""
+        class FakePath:
+            def __init__(self, p): self._p = p
+            def getName(self):
+                return self._p.rstrip("/").rsplit("/", 1)[-1]
+            def __str__(self): return self._p
+
+        class FakeStatus:
+            def __init__(self, p): self._p = FakePath(p)
+            def getPath(self): return self._p
+
+        class FakeFS:
+            def exists(self, path):
+                p = str(path).rstrip("/") + "/"
+                # locationid=N/ exists iff N is in the map
+                for lid in location_years:
+                    if p.endswith(f"/locationid={lid}/"):
+                        return True
+                return False
+            def listStatus(self, path):
+                p = str(path).rstrip("/") + "/"
+                for lid, years in location_years.items():
+                    if p.endswith(f"/locationid={lid}/"):
+                        return [FakeStatus(f"{p}year={y}") for y in years]
+                return []
+
+        class FakeJVM:
+            class java:
+                class net:
+                    URI = staticmethod(lambda s: s)
+            class org:
+                class apache:
+                    class hadoop:
+                        class fs:
+                            Path = staticmethod(lambda s: FakePath(s))
+                            class FileSystem:
+                                @staticmethod
+                                def get(uri, conf): return FakeFS()
+
+        class FakeJSC:
+            def hadoopConfiguration(self): return object()
+
+        class FakeSC:
+            _jvm = FakeJVM
+            _jsc = FakeJSC()
+
+        class FakeSpark:
+            sparkContext = FakeSC()
+
+        return FakeSpark()
+
+    def test_drops_missing_partitions(self):
+        spark = self._make_fake_spark({"1": ["2022"], "2": ["2023"]})
+        candidates = [
+            "s3a://b/records/csv.gz/locationid=1/year=2022/",
+            "s3a://b/records/csv.gz/locationid=1/year=2099/",   # missing
+            "s3a://b/records/csv.gz/locationid=2/year=2023/",
+        ]
+        kept = filter_existing_paths(spark, "b", candidates)
+        assert sorted(kept) == [
+            "s3a://b/records/csv.gz/locationid=1/year=2022/",
+            "s3a://b/records/csv.gz/locationid=2/year=2023/",
+        ]
+
+    def test_skips_missing_location_entirely(self):
+        spark = self._make_fake_spark({"1": ["2022", "2023"]})
+        candidates = [
+            "s3a://b/records/csv.gz/locationid=1/year=2022/",
+            "s3a://b/records/csv.gz/locationid=999/year=2022/",  # whole loc missing
+        ]
+        kept = filter_existing_paths(spark, "b", candidates)
+        assert kept == ["s3a://b/records/csv.gz/locationid=1/year=2022/"]

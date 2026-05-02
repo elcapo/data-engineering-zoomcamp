@@ -2,7 +2,7 @@
   "cache_invalidated_at": null,
   "description": null,
   "archived": false,
-  "view_count": 3,
+  "view_count": 6,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
@@ -29,7 +29,7 @@
       "display_name": "country_iso3",
       "fingerprint": {
         "global": {
-          "distinct-count": 1,
+          "distinct-count": 5,
           "nil%": 0.0
         },
         "type": {
@@ -65,17 +65,17 @@
       "display_name": "ratio_co2_pm25",
       "fingerprint": {
         "global": {
-          "distinct-count": 2,
+          "distinct-count": 10,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 2.4029524804194167,
-            "q1": 2.4029524804194167,
-            "q3": 5.1681827396423,
-            "max": 5.1681827396423,
-            "sd": 1.9553130678387356,
-            "avg": 3.785567610030858
+            "min": -0.0018527946475332584,
+            "q1": 0.21233053621470097,
+            "q3": 2.4029524804194167,
+            "max": 3.6243330214459495,
+            "sd": 1.3873817832188726,
+            "avg": 1.1361107885095056
           }
         }
       },
@@ -102,17 +102,17 @@
       "display_name": "co2_per_capita_t",
       "fingerprint": {
         "global": {
-          "distinct-count": 2,
+          "distinct-count": 10,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 14.4177148825165,
-            "q1": 14.4177148825165,
-            "q3": 15.5045482189269,
+            "min": 3.63738680384754,
+            "q1": 6.75922774879049,
+            "q3": 14.3161154347115,
             "max": 15.5045482189269,
-            "sd": 0.7685072221953944,
-            "avg": 14.9611315507217
+            "sd": 4.351032325674079,
+            "avg": 9.035832673633784
           }
         }
       },
@@ -139,17 +139,17 @@
       "display_name": "median_pm25_ugm3",
       "fingerprint": {
         "global": {
-          "distinct-count": 2,
+          "distinct-count": 10,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 3.0,
-            "q1": 3.0,
-            "q3": 6.0,
-            "max": 6.0,
-            "sd": 2.1213203435596424,
-            "avg": 4.5
+            "min": -4981.8125,
+            "q1": 4.85,
+            "q3": 17.459075107938276,
+            "max": 90.22542372881355,
+            "sd": 1582.5175353767722,
+            "avg": -478.47496656465756
           }
         }
       },
@@ -176,17 +176,17 @@
       "display_name": "year",
       "fingerprint": {
         "global": {
-          "distinct-count": 2,
+          "distinct-count": 5,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
             "min": 2016.0,
-            "q1": 2016.0,
-            "q3": 2022.0,
-            "max": 2022.0,
-            "sd": 4.242640687119285,
-            "avg": 2019.0
+            "q1": 2021.6180339887499,
+            "q3": 2023.1314829081787,
+            "max": 2024.0,
+            "sd": 2.2335820757001272,
+            "avg": 2021.9
           }
         }
       },
@@ -198,8 +198,8 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "is_data_analyst": false,
-    "last_login": "2026-05-02T14:29:59.932331Z",
-    "is_qbnewb": true,
+    "last_login": "2026-05-02T15:32:41.095876Z",
+    "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
     "last_name": "Admin",
@@ -215,15 +215,15 @@
   "collection_id": 5,
   "query_type": "native",
   "name": "01 — Choropleth: CO2/PM2.5 ratio",
-  "last_query_start": "2026-05-02T14:29:58.372337Z",
+  "last_query_start": "2026-05-02T15:24:45.011279Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-05-02T14:24:36.264255Z",
+  "last_used_at": "2026-05-02T15:24:45.018062Z",
   "dashboard": null,
   "type": "question",
   "dimensions": null,
-  "average_query_time": 33.5,
+  "average_query_time": 35.333333333333336,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],

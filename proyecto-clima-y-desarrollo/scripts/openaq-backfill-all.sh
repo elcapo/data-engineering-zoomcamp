@@ -13,6 +13,10 @@
 #   OPENAQ_API_KEY          required to query the locations endpoint
 #   OPENAQ_API_BASE_URL     default https://api.openaq.org
 #   OPENAQ_PAGE_LIMIT       default 1000 (max accepted by the v3 API)
+#   OPENAQ_MAX_LOCATIONS    optional cap on locations passed to Spark per
+#                           country. Useful to keep one-off backfills short
+#                           (e.g. dashboard bootstrap) — the live poller and
+#                           future runs still cover the rest.
 #
 # Resume / idempotency:
 #   - Each per-country invocation is independent. Re-running this script after
@@ -37,6 +41,7 @@ COUNTRIES_ARG="${1:-${COUNTRIES:-}}"
 YEARS_ARG="${2:-${SPARK_BACKFILL_YEARS:-}}"
 API_BASE="${OPENAQ_API_BASE_URL:-https://api.openaq.org}"
 PAGE_LIMIT="${OPENAQ_PAGE_LIMIT:-1000}"
+MAX_LOCATIONS="${OPENAQ_MAX_LOCATIONS:-0}"
 LOG_DIR="${LOG_DIR:-logs/openaq-backfill}"
 
 step() { printf "\n\033[1;36m▶ %s\033[0m\n" "$*"; }
@@ -125,7 +130,13 @@ for ISO in "${COUNTRY_LIST[@]}"; do
     EMPTY+=("$ISO")
     continue
   fi
-  ok "[$ISO] $COUNT location id(s)"
+  if [ "$MAX_LOCATIONS" -gt 0 ] && [ "$COUNT" -gt "$MAX_LOCATIONS" ]; then
+    LOCS=$(printf '%s' "$LOCS" | tr ',' '\n' | head -n "$MAX_LOCATIONS" | paste -sd ',' -)
+    ok "[$ISO] capped $COUNT → $MAX_LOCATIONS location id(s) (OPENAQ_MAX_LOCATIONS)"
+    COUNT="$MAX_LOCATIONS"
+  else
+    ok "[$ISO] $COUNT location id(s)"
+  fi
 
   LOG_FILE="$LOG_DIR/${ISO}.log"
   step "[$ISO] running spark-backfill (years=$YEARS_ARG, locations=$COUNT) → $LOG_FILE"

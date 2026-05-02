@@ -104,6 +104,56 @@ def build_input_paths(
     return paths
 
 
+_PATH_RE = re.compile(r"^s3a://([^/]+)/records/csv\.gz/locationid=(\d+)/year=(\d+)/?$")
+
+
+def filter_existing_paths(spark, bucket: str, paths: list[str]) -> list[str]:
+    """Drop paths that don't exist in the source bucket.
+
+    PySpark's read.csv(paths) raises AnalysisException atomically if any path
+    is missing — and the OpenAQ S3 dump is sparse (not every (location, year)
+    combo exists). We use the JVM-side Hadoop FileSystem so no extra Python
+    deps (boto3) are needed; hadoop-aws is already on the classpath.
+
+    For efficiency, we list each `locationid=N/` directory once (one HTTP call)
+    and check membership locally instead of doing one `exists` per (location,
+    year) pair (which would be ~6× more network calls).
+    """
+    sc = spark.sparkContext
+    URI = sc._jvm.java.net.URI
+    Path_ = sc._jvm.org.apache.hadoop.fs.Path
+    FileSystem = sc._jvm.org.apache.hadoop.fs.FileSystem
+    fs = FileSystem.get(URI(f"s3a://{bucket}"), sc._jsc.hadoopConfiguration())
+
+    # Group candidate paths by location for one list call per location.
+    by_loc: dict[str, list[str]] = {}
+    unparseable: list[str] = []
+    for p in paths:
+        m = _PATH_RE.match(p)
+        if m:
+            by_loc.setdefault(m.group(2), []).append(p)
+        else:
+            unparseable.append(p)
+
+    # Fall back to per-path exists for paths that don't match the layout.
+    kept = [p for p in unparseable if fs.exists(Path_(p))]
+
+    for lid, candidates in by_loc.items():
+        loc_dir = f"s3a://{bucket}/records/csv.gz/locationid={lid}/"
+        if not fs.exists(Path_(loc_dir)):
+            continue
+        existing_years: set[str] = set()
+        for status in fs.listStatus(Path_(loc_dir)):
+            child = status.getPath().getName()  # e.g. "year=2022"
+            if child.startswith("year="):
+                existing_years.add(child[len("year="):])
+        for cand in candidates:
+            year = _PATH_RE.match(cand).group(3)
+            if year in existing_years:
+                kept.append(cand)
+    return kept
+
+
 def load_iso_seed(seed_path: Path) -> dict[str, str]:
     """Read the ISO2 → ISO3 mapping CSV used by both Spark and dbt seeds."""
     mapping: dict[str, str] = {}

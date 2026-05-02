@@ -2,7 +2,7 @@
   "cache_invalidated_at": null,
   "description": null,
   "archived": false,
-  "view_count": 3,
+  "view_count": 5,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
@@ -29,7 +29,7 @@
       "display_name": "country_iso3",
       "fingerprint": {
         "global": {
-          "distinct-count": 1,
+          "distinct-count": 5,
           "nil%": 0.0
         },
         "type": {
@@ -65,7 +65,7 @@
       "display_name": "country_name",
       "fingerprint": {
         "global": {
-          "distinct-count": 1,
+          "distinct-count": 5,
           "nil%": 0.0
         },
         "type": {
@@ -74,7 +74,7 @@
             "percent-url": 0.0,
             "percent-email": 0.0,
             "percent-state": 0.0,
-            "average-length": 13.0
+            "average-length": 8.6
           }
         }
       },
@@ -101,17 +101,17 @@
       "display_name": "year",
       "fingerprint": {
         "global": {
-          "distinct-count": 1,
+          "distinct-count": 3,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
             "min": 2022.0,
-            "q1": 2022.0,
-            "q3": 2022.0,
-            "max": 2022.0,
-            "sd": null,
-            "avg": 2022.0
+            "q1": 2022.5,
+            "q3": 2023.5,
+            "max": 2024.0,
+            "sd": 0.7071067811865476,
+            "avg": 2023.0
           }
         }
       },
@@ -138,17 +138,17 @@
       "display_name": "gdp_per_capita_usd",
       "fingerprint": {
         "global": {
-          "distinct-count": 1,
+          "distinct-count": 5,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 76657.2488844403,
-            "q1": 76657.2488844403,
-            "q3": 76657.2488844403,
+            "min": 6034.27208964673,
+            "q1": 11221.951702189908,
+            "q3": 60246.8873387719,
             "max": 76657.2488844403,
-            "sd": null,
-            "avg": 76657.2488844403
+            "sd": 31077.453046102415,
+            "avg": 32921.04945243867
           }
         }
       },
@@ -175,17 +175,17 @@
       "display_name": "median_pm25_ugm3",
       "fingerprint": {
         "global": {
-          "distinct-count": 1,
+          "distinct-count": 5,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 6.0,
-            "q1": 6.0,
-            "q3": 6.0,
-            "max": 6.0,
-            "sd": null,
-            "avg": 6.0
+            "min": -4981.8125,
+            "q1": -1240.953125,
+            "q3": 35.650662263157095,
+            "max": 90.22542372881355,
+            "sd": 2241.8857164872857,
+            "avg": -971.8854532480949
           }
         }
       },
@@ -197,8 +197,8 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "is_data_analyst": false,
-    "last_login": "2026-05-02T14:29:59.932331Z",
-    "is_qbnewb": true,
+    "last_login": "2026-05-02T15:32:41.095876Z",
+    "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
     "last_name": "Admin",
@@ -214,15 +214,15 @@
   "collection_id": 5,
   "query_type": "native",
   "name": "03 — GDP per capita vs PM2.5 (latest year)",
-  "last_query_start": "2026-05-02T14:24:36.384689Z",
+  "last_query_start": "2026-05-02T15:24:45.080875Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-05-02T14:24:36.393184Z",
+  "last_used_at": "2026-05-02T15:24:45.085343Z",
   "dashboard": null,
   "type": "question",
   "dimensions": null,
-  "average_query_time": 33.333333333333336,
+  "average_query_time": 29.6,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],

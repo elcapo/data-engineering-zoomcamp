@@ -1,7 +1,7 @@
 {
   "description": "Pollution vs development — choropleth, time series, scatter, decoupling.",
   "archived": false,
-  "view_count": 0,
+  "view_count": 2,
   "collection_position": null,
   "dashcards": [
     {
@@ -15,7 +15,7 @@
         "cache_invalidated_at": null,
         "description": null,
         "archived": false,
-        "view_count": 3,
+        "view_count": 6,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -41,7 +41,7 @@
             "display_name": "country_iso3",
             "fingerprint": {
               "global": {
-                "distinct-count": 1,
+                "distinct-count": 5,
                 "nil%": 0.0
               },
               "type": {
@@ -77,17 +77,17 @@
             "display_name": "ratio_co2_pm25",
             "fingerprint": {
               "global": {
-                "distinct-count": 2,
+                "distinct-count": 10,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": 2.4029524804194167,
-                  "q1": 2.4029524804194167,
-                  "q3": 5.1681827396423,
-                  "max": 5.1681827396423,
-                  "sd": 1.9553130678387356,
-                  "avg": 3.785567610030858
+                  "min": -0.0018527946475332584,
+                  "q1": 0.21233053621470097,
+                  "q3": 2.4029524804194167,
+                  "max": 3.6243330214459495,
+                  "sd": 1.3873817832188726,
+                  "avg": 1.1361107885095056
                 }
               }
             },
@@ -114,17 +114,17 @@
             "display_name": "co2_per_capita_t",
             "fingerprint": {
               "global": {
-                "distinct-count": 2,
+                "distinct-count": 10,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": 14.4177148825165,
-                  "q1": 14.4177148825165,
-                  "q3": 15.5045482189269,
+                  "min": 3.63738680384754,
+                  "q1": 6.75922774879049,
+                  "q3": 14.3161154347115,
                   "max": 15.5045482189269,
-                  "sd": 0.7685072221953944,
-                  "avg": 14.9611315507217
+                  "sd": 4.351032325674079,
+                  "avg": 9.035832673633784
                 }
               }
             },
@@ -151,17 +151,17 @@
             "display_name": "median_pm25_ugm3",
             "fingerprint": {
               "global": {
-                "distinct-count": 2,
+                "distinct-count": 10,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": 3.0,
-                  "q1": 3.0,
-                  "q3": 6.0,
-                  "max": 6.0,
-                  "sd": 2.1213203435596424,
-                  "avg": 4.5
+                  "min": -4981.8125,
+                  "q1": 4.85,
+                  "q3": 17.459075107938276,
+                  "max": 90.22542372881355,
+                  "sd": 1582.5175353767722,
+                  "avg": -478.47496656465756
                 }
               }
             },
@@ -188,17 +188,17 @@
             "display_name": "year",
             "fingerprint": {
               "global": {
-                "distinct-count": 2,
+                "distinct-count": 5,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
                   "min": 2016.0,
-                  "q1": 2016.0,
-                  "q3": 2022.0,
-                  "max": 2022.0,
-                  "sd": 4.242640687119285,
-                  "avg": 2019.0
+                  "q1": 2021.6180339887499,
+                  "q3": 2023.1314829081787,
+                  "max": 2024.0,
+                  "sd": 2.2335820757001272,
+                  "avg": 2021.9
                 }
               }
             },
@@ -216,10 +216,10 @@
         "download_perms": "full",
         "name": "01 — Choropleth: CO2/PM2.5 ratio",
         "document_id": null,
-        "last_used_at": "2026-05-02T14:24:36.264255Z",
+        "last_used_at": "2026-05-02T15:24:45.018062Z",
         "type": "question",
         "dimensions": null,
-        "query_average_duration": 49,
+        "query_average_duration": 47,
         "creator_id": 1,
         "moderation_reviews": [],
         "updated_at": "2026-05-02T14:19:42.992778Z",
@@ -321,7 +321,7 @@
         "cache_invalidated_at": null,
         "description": null,
         "archived": false,
-        "view_count": 3,
+        "view_count": 4,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -449,7 +449,7 @@
         "download_perms": "full",
         "name": "02 — GDP growth vs PM2.5 (per country)",
         "document_id": null,
-        "last_used_at": "2026-05-02T14:24:36.324558Z",
+        "last_used_at": "2026-05-02T14:30:15.036562Z",
         "type": "question",
         "dimensions": null,
         "query_average_duration": 37,
@@ -555,7 +555,7 @@
         "cache_invalidated_at": null,
         "description": null,
         "archived": false,
-        "view_count": 3,
+        "view_count": 5,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -581,7 +581,7 @@
             "display_name": "country_iso3",
             "fingerprint": {
               "global": {
-                "distinct-count": 1,
+                "distinct-count": 5,
                 "nil%": 0.0
               },
               "type": {
@@ -617,7 +617,7 @@
             "display_name": "country_name",
             "fingerprint": {
               "global": {
-                "distinct-count": 1,
+                "distinct-count": 5,
                 "nil%": 0.0
               },
               "type": {
@@ -626,7 +626,7 @@
                   "percent-url": 0.0,
                   "percent-email": 0.0,
                   "percent-state": 0.0,
-                  "average-length": 13.0
+                  "average-length": 8.6
                 }
               }
             },
@@ -653,17 +653,17 @@
             "display_name": "year",
             "fingerprint": {
               "global": {
-                "distinct-count": 1,
+                "distinct-count": 3,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
                   "min": 2022.0,
-                  "q1": 2022.0,
-                  "q3": 2022.0,
-                  "max": 2022.0,
-                  "sd": null,
-                  "avg": 2022.0
+                  "q1": 2022.5,
+                  "q3": 2023.5,
+                  "max": 2024.0,
+                  "sd": 0.7071067811865476,
+                  "avg": 2023.0
                 }
               }
             },
@@ -690,17 +690,17 @@
             "display_name": "gdp_per_capita_usd",
             "fingerprint": {
               "global": {
-                "distinct-count": 1,
+                "distinct-count": 5,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": 76657.2488844403,
-                  "q1": 76657.2488844403,
-                  "q3": 76657.2488844403,
+                  "min": 6034.27208964673,
+                  "q1": 11221.951702189908,
+                  "q3": 60246.8873387719,
                   "max": 76657.2488844403,
-                  "sd": null,
-                  "avg": 76657.2488844403
+                  "sd": 31077.453046102415,
+                  "avg": 32921.04945243867
                 }
               }
             },
@@ -727,17 +727,17 @@
             "display_name": "median_pm25_ugm3",
             "fingerprint": {
               "global": {
-                "distinct-count": 1,
+                "distinct-count": 5,
                 "nil%": 0.0
               },
               "type": {
                 "type/Number": {
-                  "min": 6.0,
-                  "q1": 6.0,
-                  "q3": 6.0,
-                  "max": 6.0,
-                  "sd": null,
-                  "avg": 6.0
+                  "min": -4981.8125,
+                  "q1": -1240.953125,
+                  "q3": 35.650662263157095,
+                  "max": 90.22542372881355,
+                  "sd": 2241.8857164872857,
+                  "avg": -971.8854532480949
                 }
               }
             },
@@ -755,10 +755,10 @@
         "download_perms": "full",
         "name": "03 — GDP per capita vs PM2.5 (latest year)",
         "document_id": null,
-        "last_used_at": "2026-05-02T14:24:36.393184Z",
+        "last_used_at": "2026-05-02T15:24:45.085343Z",
         "type": "question",
         "dimensions": null,
-        "query_average_duration": 35,
+        "query_average_duration": 33,
         "creator_id": 1,
         "moderation_reviews": [],
         "updated_at": "2026-05-02T14:19:43.174122Z",
@@ -827,7 +827,7 @@
         "cache_invalidated_at": null,
         "description": null,
         "archived": false,
-        "view_count": 3,
+        "view_count": 4,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -955,7 +955,7 @@
         "download_perms": "full",
         "name": "04 — Decoupling: GDP vs PM2.5 indexed (base 100)",
         "document_id": null,
-        "last_used_at": "2026-05-02T14:24:36.470565Z",
+        "last_used_at": "2026-05-02T14:30:41.287458Z",
         "type": "question",
         "dimensions": null,
         "query_average_duration": 34,
