@@ -16,6 +16,7 @@ The same codebase runs end-to-end in two modes: **fully local** with Docker Comp
 - [Data Warehouse Design](#data-warehouse-design)
 - [Transformations](#transformations)
 - [Dashboard](#dashboard)
+- [Getting Started](#getting-started)
 - [Reproducibility](#reproducibility)
 - [Project Structure](#project-structure)
 - [Learning-in-public Articles](#learning-in-public-articles)
@@ -263,6 +264,89 @@ The Metabase service boots clean on `make up`: a `metabase-init` container creat
 - **Path B — Claude Code + Metabase MCP.** Register the MCP server (`claude mcp add metabase http://localhost:${METABASE_PORT:-3000}/api/mcp --transport streamable-http`), optionally clone [`metabase/agent-skills`](https://github.com/metabase/agent-skills), and ask the agent to build the tiles directly from the marts. Same `make metabase-export` step at the end.
 
 A fresh checkout reproduces the dashboard with `make up && make metabase-import`. The `import` target is a no-op if `metabase/serialized/` is still empty (initial state), so partial setups do not error.
+
+## Getting Started
+
+This project combines **batch** data (yearly World Bank indicators) with **near real-time** data (OpenAQ measurements polled every 15 minutes), so a complete first run is more involved than a single `make up`. The two halves bootstrap on different cadences, and the dashboard only becomes meaningful once both have populated `marts.country_year_environment` with overlapping country/year keys. Plan on a one-off setup pass with manual triggers for the historical loads, then steady-state automation takes over.
+
+### 1. Pick a country list
+
+OpenAQ polling does nothing without `COUNTRIES`. Choose a set that spans development levels **and** has real OpenAQ station coverage — picking countries with no stations leaves half of the join empty. The default suggestion in `env.template` is:
+
+```
+COUNTRIES=US,DE,CN,MX,IN,ZA
+```
+
+| ISO2 | Why it earns the slot |
+|---|---|
+| `US` | Highly developed; thousands of EPA stations; large internal contrast |
+| `DE` | Highly developed; UBA real-time network; clean EU baseline |
+| `CN` | Middle-income, fast-growing; textbook GDP-vs-PM2.5 case |
+| `MX` | Middle-income; ZMVM has a dense reference-grade network |
+| `IN` | Lower-income; world-leading PM2.5; CPCB publishes hundreds of stations |
+| `ZA` | Lower-income; SAAQIS publishes; best sub-Saharan coverage |
+
+Bangladesh, Pakistan and Nigeria pollute more than South Africa but their OpenAQ coverage is sparse — the dashboard would render an empty half. If `ZA` underperforms in your run, swap in `BR` as a second middle-income with broad coverage.
+
+### 2. Configure `.env`
+
+```bash
+cp env.template .env   # or: make init   (generates random passwords)
+```
+
+Then, at minimum:
+
+- Set `OPENAQ_API_KEY` (free, register at <https://explore.openaq.org/register>).
+- Uncomment and set `COUNTRIES` (see step 1).
+
+### 3. Bring up the stack
+
+```bash
+make up
+```
+
+This boots Kestra, MinIO, Redpanda, PyFlink, Spark, Postgres + dbt, and Metabase, and runs `metabase-init` to create the admin user and register the warehouse data source. The OpenAQ Kestra trigger starts polling every 15 minutes from this moment forward.
+
+### 4. Verify each slice with the smoke tests
+
+Each pipeline slice has a self-contained end-to-end check that asserts on real side effects:
+
+```bash
+make smoke-test-worldbank    # batch: API → MinIO → Postgres → dbt staging
+make smoke-test-openaq       # stream: producer → Redpanda
+make smoke-test-flink        # stream: Redpanda → Flink → Postgres
+make smoke-test-spark        # backfill: S3 dump → MinIO → Postgres
+make smoke-test-marts        # join: dbt build → marts.country_year_environment
+make smoke-test-metabase     # BI: Metabase health + data source registered
+```
+
+Run them once before loading real volume — they catch broker, JDBC, dbt and Metabase wiring issues with minimal scope.
+
+### 5. Load real volume
+
+The smoke tests use minimal scopes (one indicator, one station). For the dashboard you need actual breadth:
+
+- **World Bank historical**: the production trigger only fires on July 1st (yearly cron). Open Kestra at `http://localhost:8080`, manually execute `climate.worldbank-ingest` with `start_year=2010`, `end_year=2024`, and the `indicators` field empty (uses the full default list).
+- **OpenAQ historical**: the live poller only captures data going forward. Run the Spark backfill once per country in your `COUNTRIES` list against the public OpenAQ S3 dump, with a multi-year window (e.g. `SPARK_BACKFILL_YEARS=2018,2019,2020,2021,2022,2023`). This is what gives the time-series tile its trend.
+- **OpenAQ live stream**: already running every 15 min from step 3. No action needed.
+- **dbt build**: once raw tables have data, run `docker compose run --rm dbt build` to refresh staging → intermediate → marts.
+
+### 6. Build the dashboard
+
+`metabase/serialized/` is empty on first checkout, so `make metabase-import` is a no-op. Build the two tiles via either path documented in [Dashboard authoring workflow](#dashboard-authoring-workflow):
+
+- **Path A** — Metabase UI / Metabot at `http://localhost:3000`, then `make metabase-export`.
+- **Path B** — Claude Code with the Metabase MCP server registered, then `make metabase-export`.
+
+Commit `metabase/serialized/` so future `make metabase-import` runs reproduce the dashboard from scratch.
+
+### 7. Steady state
+
+After the one-off pass, the stack runs on its own:
+
+- Kestra keeps polling OpenAQ every 15 minutes.
+- World Bank refreshes yearly (or trigger manually mid-year if needed).
+- A nightly `dbt build` keeps marts in sync (run it on cron or from Kestra — not wired up by default).
 
 ## Reproducibility
 
