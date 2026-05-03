@@ -1,8 +1,8 @@
 {
-  "cache_invalidated_at": null,
+  "cache_invalidated_at": "2026-05-03T19:17:58.414087Z",
   "description": null,
   "archived": false,
-  "view_count": 8,
+  "view_count": 14,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
@@ -125,7 +125,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "is_data_analyst": false,
-    "last_login": "2026-05-02T16:40:37.126073Z",
+    "last_login": "2026-05-03T19:19:47.639829Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
@@ -142,19 +142,19 @@
   "collection_id": 5,
   "query_type": "native",
   "name": "04 — Decoupling: GDP vs PM2.5 indexed (base 100)",
-  "last_query_start": "2026-05-02T16:26:32.07441Z",
+  "last_query_start": "2026-05-03T19:18:22.78567Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-05-02T16:26:32.082667Z",
+  "last_used_at": "2026-05-03T19:18:22.792659Z",
   "dashboard": null,
   "type": "question",
   "dimensions": null,
-  "average_query_time": 20.875,
+  "average_query_time": 21.428571428571427,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-05-02T14:19:43.231241Z",
+  "updated_at": "2026-05-03T19:17:58.412408Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -163,18 +163,18 @@
     "database": 2,
     "stages": [
       {
+        "lib/type": "mbql.stage/native",
         "template-tags": {
-          "country_iso3": {
-            "default": "USA",
-            "id": "country-iso3-tag",
-            "name": "country_iso3",
-            "display-name": "Country (ISO3)",
+          "country_iso2": {
             "type": "text",
+            "default": "US",
+            "id": "country-iso2-tag",
+            "name": "country_iso2",
+            "display-name": "Country (ISO2)",
             "required": true
           }
         },
-        "lib/type": "mbql.stage/native",
-        "native": "WITH base AS (\n  SELECT country_iso3, year,\n         gdp_per_capita_usd, median_pm25_ugm3,\n         FIRST_VALUE(gdp_per_capita_usd) OVER (\n           PARTITION BY country_iso3 ORDER BY year\n         ) AS gdp_base,\n         FIRST_VALUE(median_pm25_ugm3) OVER (\n           PARTITION BY country_iso3 ORDER BY year\n         ) AS pm25_base\n  FROM marts.country_year_environment\n  WHERE country_iso3 = {{country_iso3}}\n    AND gdp_per_capita_usd IS NOT NULL\n    AND median_pm25_ugm3 IS NOT NULL\n)\nSELECT year,\n       100.0 * gdp_per_capita_usd / gdp_base  AS gdp_index,\n       100.0 * median_pm25_ugm3   / pm25_base AS pm25_index\nFROM base\nORDER BY year"
+        "native": "WITH base AS (\n  SELECT m.country_iso3, m.year,\n         m.gdp_per_capita_usd, m.median_pm25_ugm3,\n         FIRST_VALUE(m.gdp_per_capita_usd) OVER (\n           PARTITION BY m.country_iso3 ORDER BY m.year\n         ) AS gdp_base,\n         FIRST_VALUE(m.median_pm25_ugm3) OVER (\n           PARTITION BY m.country_iso3 ORDER BY m.year\n         ) AS pm25_base\n  FROM marts.country_year_environment m\n  JOIN seeds.country_iso_codes c\n    ON c.iso3 = m.country_iso3\n  WHERE c.iso2 = {{country_iso2}}\n    AND m.gdp_per_capita_usd IS NOT NULL\n    AND m.median_pm25_ugm3 IS NOT NULL\n)\nSELECT year,\n       100.0 * gdp_per_capita_usd / gdp_base  AS gdp_index,\n       100.0 * median_pm25_ugm3   / pm25_base AS pm25_index\nFROM base\nORDER BY year"
       }
     ]
   },
@@ -193,7 +193,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "last_name": "Admin",
-    "timestamp": "2026-05-02T14:19:43.239374Z"
+    "timestamp": "2026-05-03T19:17:58.44696Z"
   },
   "visualization_settings": {
     "graph.dimensions": [
@@ -229,18 +229,18 @@
   "metabase_version": "v0.60.3.3 (c734864)",
   "parameters": [
     {
-      "id": "country-iso3-tag",
+      "id": "country-iso2-tag",
       "type": "category",
       "target": [
         "variable",
         [
           "template-tag",
-          "country_iso3"
+          "country_iso2"
         ]
       ],
-      "name": "Country (ISO3)",
-      "slug": "country_iso3",
-      "default": "USA",
+      "name": "Country (ISO2)",
+      "slug": "country_iso2",
+      "default": "US",
       "required": true
     }
   ],

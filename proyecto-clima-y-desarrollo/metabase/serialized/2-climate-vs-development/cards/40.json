@@ -1,8 +1,8 @@
 {
-  "cache_invalidated_at": "2026-05-02T16:40:21.011722Z",
+  "cache_invalidated_at": "2026-05-03T18:32:52.519992Z",
   "description": null,
   "archived": false,
-  "view_count": 15,
+  "view_count": 25,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
@@ -29,16 +29,16 @@
       "display_name": "country_iso2",
       "fingerprint": {
         "global": {
-          "distinct-count": 5,
-          "nil%": 0
+          "distinct-count": 6,
+          "nil%": 0.0
         },
         "type": {
           "type/Text": {
-            "percent-json": 0,
-            "percent-url": 0,
-            "percent-email": 0,
-            "percent-state": 0.2,
-            "average-length": 2
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.3333333333333333,
+            "average-length": 2.0
           }
         }
       },
@@ -65,16 +65,16 @@
       "display_name": "country_iso3",
       "fingerprint": {
         "global": {
-          "distinct-count": 5,
-          "nil%": 0
+          "distinct-count": 6,
+          "nil%": 0.0
         },
         "type": {
           "type/Text": {
-            "percent-json": 0,
-            "percent-url": 0,
-            "percent-email": 0,
-            "percent-state": 0,
-            "average-length": 3
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.0,
+            "average-length": 3.0
           }
         }
       },
@@ -101,16 +101,16 @@
       "display_name": "country_name",
       "fingerprint": {
         "global": {
-          "distinct-count": 5,
-          "nil%": 0
+          "distinct-count": 6,
+          "nil%": 0.0
         },
         "type": {
           "type/Text": {
-            "percent-json": 0,
-            "percent-url": 0,
-            "percent-email": 0,
-            "percent-state": 0,
-            "average-length": 8.6
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.0,
+            "average-length": 8.0
           }
         }
       },
@@ -138,16 +138,16 @@
       "fingerprint": {
         "global": {
           "distinct-count": 3,
-          "nil%": 0
+          "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 2022,
-            "q1": 2022.5,
-            "q3": 2023.5,
-            "max": 2024,
-            "sd": 0.7071067811865476,
-            "avg": 2023
+            "min": 2022.0,
+            "q1": 2022.5485837703548,
+            "q3": 2023.4514162296452,
+            "max": 2024.0,
+            "sd": 0.6324555320336759,
+            "avg": 2023.0
           }
         }
       },
@@ -174,17 +174,17 @@
       "display_name": "co2_per_capita_t",
       "fingerprint": {
         "global": {
-          "distinct-count": 5,
-          "nil%": 0
+          "distinct-count": 6,
+          "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 3.63738680384754,
-            "q1": 5.978767512554753,
-            "q3": 10.527135371889836,
+            "min": 2.09622858892568,
+            "q1": 3.63738680384754,
+            "q3": 9.23027553501428,
             "max": 14.4177148825165,
-            "sd": 3.995822743724265,
-            "avg": 8.224886672247285
+            "sd": 4.362723289772322,
+            "avg": 7.203443658360352
           }
         }
       },
@@ -211,17 +211,17 @@
       "display_name": "median_pm25_ugm3",
       "fingerprint": {
         "global": {
-          "distinct-count": 5,
-          "nil%": 0
+          "distinct-count": 6,
+          "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 6,
-            "q1": 8.025551192080027,
-            "q3": 42.5563559322034,
-            "max": 90.2254237288136,
-            "sd": 34.72853517499556,
-            "avg": 29.815905613683462
+            "min": 6.0,
+            "q1": 8.700734922773371,
+            "q3": 26.666666666666668,
+            "max": 90.22542372881355,
+            "sd": 31.128428654244445,
+            "avg": 28.987036287264953
           }
         }
       },
@@ -248,17 +248,17 @@
       "display_name": "ratio_co2_pm25",
       "fingerprint": {
         "global": {
-          "distinct-count": 5,
-          "nil%": 0
+          "distinct-count": 6,
+          "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 0.04031443304472879,
-            "q1": 0.26968010768345885,
-            "q3": 1.2110166012251808,
+            "min": 0.04031443304472881,
+            "q1": 0.08438009804985955,
+            "q3": 0.8137046414937688,
             "max": 2.4029524804194167,
-            "sd": 0.9385749006832503,
-            "avg": 0.7979284358485907
+            "sd": 0.8885926027994759,
+            "avg": 0.6790037128821355
           }
         }
       },
@@ -270,7 +270,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "is_data_analyst": false,
-    "last_login": "2026-05-02T16:40:37.126073Z",
+    "last_login": "2026-05-03T19:19:47.639829Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
@@ -287,19 +287,19 @@
   "collection_id": 5,
   "query_type": "native",
   "name": "01 — Choropleth: CO2/PM2.5 ratio",
-  "last_query_start": "2026-05-02T16:39:12.623579Z",
+  "last_query_start": "2026-05-03T19:18:22.779919Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-05-02T16:39:12.628567Z",
+  "last_used_at": "2026-05-03T19:18:22.792659Z",
   "dashboard": null,
   "type": "question",
   "dimensions": null,
-  "average_query_time": 33.666666666666664,
+  "average_query_time": 39.2,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-05-02T16:40:21.010757Z",
+  "updated_at": "2026-05-03T18:32:52.517298Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -337,7 +337,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "last_name": "Admin",
-    "timestamp": "2026-05-02T16:40:21.038676Z"
+    "timestamp": "2026-05-03T18:32:52.558707Z"
   },
   "visualization_settings": {
     "map.type": "region",
@@ -347,7 +347,14 @@
       "country_iso2",
       null
     ],
-    "map.metric": "ratio_co2_pm25"
+    "map.metric": "ratio_co2_pm25",
+    "map.colors": [
+      "rgb(252, 218, 218)",
+      "rgb(246, 169, 169)",
+      "rgb(241, 120, 120)",
+      "rgb(236, 71, 71)",
+      "hsl(0, 82.9%, 43.2%)"
+    ]
   },
   "collection": {
     "authority_level": null,

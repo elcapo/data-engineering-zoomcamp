@@ -1,8 +1,8 @@
 {
-  "cache_invalidated_at": null,
+  "cache_invalidated_at": "2026-05-03T19:09:02.178924Z",
   "description": null,
   "archived": false,
-  "view_count": 8,
+  "view_count": 23,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
@@ -29,17 +29,17 @@
       "display_name": "year",
       "fingerprint": {
         "global": {
-          "distinct-count": 17,
+          "distinct-count": 37,
           "nil%": 0.0
         },
         "type": {
           "type/Number": {
-            "min": 2010.0,
-            "q1": 2013.75,
-            "q3": 2022.25,
+            "min": 1990.0,
+            "q1": 1998.75,
+            "q3": 2017.25,
             "max": 2026.0,
-            "sd": 5.049752469181039,
-            "avg": 2018.0
+            "sd": 10.824355254086345,
+            "avg": 2008.0
           }
         }
       },
@@ -66,17 +66,17 @@
       "display_name": "gdp_growth_pct",
       "fingerprint": {
         "global": {
-          "distinct-count": 16,
-          "nil%": 0.1176470588235294
+          "distinct-count": 36,
+          "nil%": 0.05405405405405405
         },
         "type": {
           "type/Number": {
-            "min": -2.16302914036166,
-            "q1": 2.160650920100035,
-            "q3": 2.8639173249131,
+            "min": -2.57650022958367,
+            "q1": 1.91543876086956,
+            "q3": 3.512760363649455,
             "max": 6.05505293244555,
-            "sd": 1.614014165144785,
-            "avg": 2.40321825095423
+            "sd": 1.732312404698379,
+            "avg": 2.499746170685459
           }
         }
       },
@@ -103,17 +103,17 @@
       "display_name": "pm25_annual_satellite_ugm3",
       "fingerprint": {
         "global": {
-          "distinct-count": 5,
-          "nil%": 0.7647058823529412
+          "distinct-count": 32,
+          "nil%": 0.1621621621621622
         },
         "type": {
           "type/Number": {
-            "min": 4.11063829787234,
-            "q1": 4.48031914893617,
-            "q3": 8.95,
-            "max": 11.9,
-            "sd": 3.5428978145793426,
-            "avg": 6.715159574468085
+            "min": 7.17602147949022,
+            "q1": 8.812294702652062,
+            "q3": 13.28295628259515,
+            "max": 14.1040671222385,
+            "sd": 2.3958377180831025,
+            "avg": 11.05759793299803
           }
         }
       },
@@ -125,7 +125,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "is_data_analyst": false,
-    "last_login": "2026-05-02T16:40:37.126073Z",
+    "last_login": "2026-05-03T19:19:47.639829Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
@@ -142,19 +142,19 @@
   "collection_id": 5,
   "query_type": "native",
   "name": "02 — GDP growth vs PM2.5 (per country)",
-  "last_query_start": "2026-05-02T16:26:32.079313Z",
+  "last_query_start": "2026-05-03T19:18:22.785422Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-05-02T16:26:32.082667Z",
+  "last_used_at": "2026-05-03T19:18:22.792659Z",
   "dashboard": null,
   "type": "question",
   "dimensions": null,
-  "average_query_time": 24.5,
+  "average_query_time": 23.956521739130434,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-05-02T14:19:43.101368Z",
+  "updated_at": "2026-05-03T19:09:02.177081Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -163,17 +163,17 @@
     "database": 2,
     "stages": [
       {
+        "lib/type": "mbql.stage/native",
         "template-tags": {
           "country_iso2": {
+            "type": "text",
             "default": "US",
             "id": "country-iso2-tag",
             "name": "country_iso2",
             "display-name": "Country (ISO2)",
-            "type": "text",
             "required": true
           }
         },
-        "lib/type": "mbql.stage/native",
         "native": "SELECT m.year,\n       m.gdp_growth_pct,\n       m.pm25_annual_satellite_ugm3\nFROM marts.country_year_environment m\nJOIN seeds.country_iso_codes c\n  ON c.iso3 = m.country_iso3\nWHERE c.iso2 = {{country_iso2}}\nORDER BY m.year"
       }
     ]
@@ -193,7 +193,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "last_name": "Admin",
-    "timestamp": "2026-05-02T14:19:43.122562Z"
+    "timestamp": "2026-05-03T19:09:02.210278Z"
   },
   "visualization_settings": {
     "graph.dimensions": [
