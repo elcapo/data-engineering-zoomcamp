@@ -75,10 +75,10 @@ Worldwide air quality measurements aggregated from government stations and refer
 | `o3` | ppm / µg/m³ | Photochemical pollution |
 | `so2` | ppm / µg/m³ | Industrial and shipping proxy |
 
-License: per-source, mostly open. Update cadence: continuous; the API exposes a `/measurements` endpoint that lists records in a polling-friendly window. We treat this as a stream by polling at a high frequency from the producer and pushing every new record to Redpanda.
+License: per-source, mostly open. Update cadence: continuous via the `/measurements` endpoint.
 
 > [!NOTE]
-> OpenAQ is not a true push stream — there is no websocket or webhook. A Kestra-scheduled producer polls the API on a short interval and publishes records to Redpanda keyed by `(location_id, parameter, datetime_utc)`. The topic uses log compaction, so re-publishing the same key is a no-op and no external dedupe state is required. From the broker downstream, the pipeline is fully streaming.
+> OpenAQ exposes no websocket or webhook, so a Kestra-scheduled poller publishes to Redpanda with key `(location_id, parameter, datetime_utc)` and log compaction makes re-publishes idempotent — no external dedupe state needed. Downstream of the broker the flow is fully streaming.
 
 ## Architecture: Local and Cloud, Same Code
 
@@ -238,7 +238,7 @@ at the `country_iso3 × year` grain via FULL OUTER JOIN — the choropleth needs
 
 Two layers, by design:
 
-- **PySpark** for the heavy and one-off lifting: initial historical backfill of OpenAQ (millions of rows), country-code reconciliation across ISO2 / ISO3 / World Bank codes, format normalization. Runs in a container locally and on Dataproc Serverless in cloud mode.
+- **PySpark** for one-off heavy lifting: initial historical backfill of OpenAQ (millions of rows), country-code reconciliation across ISO2 / ISO3 / World Bank codes, format normalization. Runs in a container locally and on Dataproc Serverless in cloud mode.
 - **dbt** for the day-to-day modeling: `staging/` (one model per source indicator and one for OpenAQ raw mirror), `intermediate/` (joins, country normalization), `marts/` (the analytical surface). Adapter-aware macros translate partition and cluster syntax between PostgreSQL and BigQuery.
 
 ## Dashboard
@@ -265,7 +265,7 @@ Metabase 60+ ships an [official MCP server](https://www.metabase.com/docs/latest
 
 ## Getting Started
 
-This project combines **batch** data (yearly World Bank indicators) with **near real-time** data (OpenAQ measurements polled every 15 minutes), so a complete first run is more involved than a single `make up`. The two halves bootstrap on different cadences, and the dashboard only becomes meaningful once both have populated `marts.country_year_environment` with overlapping country/year keys. Plan on a one-off setup pass with manual triggers for the historical loads, then steady-state automation takes over.
+Batch (yearly World Bank) and near real-time (OpenAQ every 15 min) bootstrap at different cadences, so the first run is not a single `make up`: it needs a one-off pass with manual triggers for the historical loads. After that, automation keeps `marts.country_year_environment` in sync.
 
 ### 1. Pick a country list
 
