@@ -97,22 +97,22 @@
           {
             "database_type": "float8",
             "semantic_type": null,
-            "lib/deduplicated-name": "median_pm25_ugm3",
-            "lib/original-name": "median_pm25_ugm3",
-            "name": "median_pm25_ugm3",
+            "lib/deduplicated-name": "pm25_annual_satellite_ugm3",
+            "lib/original-name": "pm25_annual_satellite_ugm3",
+            "name": "pm25_annual_satellite_ugm3",
             "lib/source": "source/native",
-            "lib/source-column-alias": "median_pm25_ugm3",
+            "lib/source-column-alias": "pm25_annual_satellite_ugm3",
             "source": "native",
             "field_ref": [
               "field",
-              "median_pm25_ugm3",
+              "pm25_annual_satellite_ugm3",
               {
                 "base-type": "type/Float"
               }
             ],
             "effective_type": "type/Float",
-            "lib/desired-column-alias": "median_pm25_ugm3",
-            "display_name": "median_pm25_ugm3",
+            "lib/desired-column-alias": "pm25_annual_satellite_ugm3",
+            "display_name": "pm25_annual_satellite_ugm3",
             "fingerprint": {
               "global": {
                 "distinct-count": 5,
@@ -159,17 +159,17 @@
           "stages": [
             {
               "template-tags": {
-                "country_iso3": {
-                  "default": "USA",
-                  "id": "country-iso3-tag",
-                  "name": "country_iso3",
-                  "display-name": "Country (ISO3)",
+                "country_iso2": {
+                  "default": "US",
+                  "id": "country-iso2-tag",
+                  "name": "country_iso2",
+                  "display-name": "Country (ISO2)",
                   "type": "text",
                   "required": true
                 }
               },
               "lib/type": "mbql.stage/native",
-              "native": "SELECT year,\n       gdp_growth_pct,\n       median_pm25_ugm3\nFROM marts.country_year_environment\nWHERE country_iso3 = {{country_iso3}}\nORDER BY year"
+              "native": "SELECT m.year,\n       m.gdp_growth_pct,\n       m.pm25_annual_satellite_ugm3\nFROM marts.country_year_environment m\nJOIN seeds.country_iso_codes c\n  ON c.iso3 = m.country_iso3\nWHERE c.iso2 = {{country_iso2}}\nORDER BY m.year"
             }
           ]
         },
@@ -189,24 +189,24 @@
           "graph.x_axis.title_text": "Year",
           "graph.metrics": [
             "gdp_growth_pct",
-            "median_pm25_ugm3"
+            "pm25_annual_satellite_ugm3"
           ]
         },
         "metabase_version": "v0.60.3.3 (c734864)",
         "parameters": [
           {
-            "id": "country-iso3-tag",
+            "id": "country-iso2-tag",
             "type": "category",
             "target": [
               "variable",
               [
                 "template-tag",
-                "country_iso3"
+                "country_iso2"
               ]
             ],
-            "name": "Country (ISO3)",
-            "slug": "country_iso3",
-            "default": "USA",
+            "name": "Country (ISO2)",
+            "slug": "country_iso2",
+            "default": "US",
             "required": true
           }
         ],
@@ -225,7 +225,7 @@
             "variable",
             [
               "template-tag",
-              "country_iso3"
+              "country_iso2"
             ]
           ]
         }

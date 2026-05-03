@@ -14,6 +14,7 @@ DEFAULT_INDICATORS = [
     "SP.URB.TOTL.IN.ZS",
     "NV.IND.TOTL.ZS",
     "EN.POP.DNST",
+    "EN.ATM.PM25.MC.M3",
 ]
 
 

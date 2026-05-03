@@ -39,7 +39,9 @@ pivoted as (
         max(case when indicator_code = 'NV.IND.TOTL.ZS'      then value end)
             as industry_value_added_pct,
         max(case when indicator_code = 'EN.POP.DNST'         then value end)
-            as population_density
+            as population_density,
+        max(case when indicator_code = 'EN.ATM.PM25.MC.M3'   then value end)
+            as pm25_annual_satellite_ugm3
 
     from src
     group by country_iso3, year
