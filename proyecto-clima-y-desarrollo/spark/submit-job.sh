@@ -15,6 +15,12 @@ exec /opt/spark/bin/spark-submit \
     --master "${SPARK_MASTER}" \
     --conf "spark.hadoop.fs.s3a.bucket.openaq-data-archive.aws.credentials.provider=org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider" \
     --conf "spark.hadoop.fs.s3a.bucket.openaq-data-archive.endpoint=s3.us-east-1.amazonaws.com" \
+    --conf "spark.hadoop.fs.s3a.connection.maximum=512" \
+    --conf "spark.hadoop.fs.s3a.threads.max=64" \
+    --conf "spark.hadoop.fs.s3a.attempts.maximum=10" \
+    --conf "spark.hadoop.fs.s3a.retry.limit=10" \
+    --conf "spark.hadoop.fs.s3a.connection.establish.timeout=30000" \
+    --conf "spark.hadoop.fs.s3a.connection.timeout=300000" \
     --conf "spark.hadoop.fs.s3a.bucket.${STORAGE_BUCKET}.endpoint=${STORAGE_ENDPOINT}" \
     --conf "spark.hadoop.fs.s3a.bucket.${STORAGE_BUCKET}.access.key=${STORAGE_ACCESS_KEY}" \
     --conf "spark.hadoop.fs.s3a.bucket.${STORAGE_BUCKET}.secret.key=${STORAGE_SECRET_KEY}" \
