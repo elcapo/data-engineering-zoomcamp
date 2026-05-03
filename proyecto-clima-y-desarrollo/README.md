@@ -246,24 +246,25 @@ Two layers, by design:
 
 ## Dashboard
 
-Two tiles, backed by `marts.country_year_environment`:
+Five panels organized in four narrative sections, all backed by `marts.country_year_environment` and the `country_iso_codes` seed:
 
-1. **Choropleth: development vs lived environment.** A world map where each country is colored by the ratio of CO2 per capita (World Bank) to median PM2.5 (OpenAQ) for the latest available year. Outliers in either direction tell the project's story.
-2. **Time series: GDP growth vs air-quality trend.** For a user-selected country, two overlaid lines: GDP growth (annual %) and the rolling 12-month median PM2.5. Reveals whether economic accelerations coincide with air quality changes.
+1. **Global view — emissions vs. exposure** (choropleth). World map where each country is colored by the ratio of CO2 per capita to annual mean PM2.5. Dark red = high emissions per capita against relatively clean air (typical of wealthy economies that have offshored heavy industry); pale = the inverse. Tells the climate-justice story in a single tile.
+2. **How air quality has evolved (1990–2020)** (line chart). One line per country tracking annual mean PM2.5 (µg/m³). Reads inflections against policy events — the U.S. Clean Air Act Amendments, the EU Industrial Emissions Directive, China's 2013 Action Plan, India's NCAP — and against the WHO 2021 guideline of 5 µg/m³ (every country shown sits above it).
+3. **Today's trade-off — wealth vs. air quality** (bubble scatter). One bubble per country in its most recent reported year: GDP per capita on a log X-axis, annual mean PM2.5 on Y, bubble size = log of population so India and China stand out without crushing smaller nations. Surfaces the ~3 billion people in the upper-left quadrant: low income, exposure many times the WHO guideline.
+4. **Decoupling analysis — did growth get cleaner?** (paired index lines, side by side). Both panels are rebased to 100 in 1990: GDP per capita per country (log Y axis to keep China's 33× growth visually next to the West's 2–3×) and PM2.5 per country. Reading them together separates strong decouplers (DE/MX/US: wealth roughly tripled, PM2.5 roughly halved) from late decouplers (CN: PM2.5 peaked around 2013 then dropped) from countries where both still rise (IN).
 
-The same SQL backs both tools:
+![Dashboard](./dashboard.png)
 
-- **Metabase** in local mode. Metabase 60+ ships an [official MCP server](https://www.metabase.com/docs/latest/ai/mcp), so dashboard authoring is driven from an LLM agent (Claude Code in our case). Reproducibility uses a small pair of API-driven Python scripts (`metabase/scripts/export-dashboard.py` and `import-dashboard.py`) — Metabase's built-in `export`/`import` is Enterprise-only, and the scripts work on the Community edition that ships in Docker. Exported state lives in `metabase/serialized/<id>-<slug>/` (`dashboard.json`, per-card JSON under `cards/`, and a `metadata/db-*.json` map of database/table/field ids that the importer remaps by name).
-- **Looker Studio** in cloud mode (connected directly to BigQuery; report shared via link).
+> [!NOTE]
+> The PM2.5 series in all four sections comes from the **World Bank satellite-derived** `EN.ATM.PM25.MC.M3` indicator (annual, country-level, 1990–2020), not from the OpenAQ stream. The long historical span and clean country coverage of the satellite series made it the right fit.
 
-### Dashboard authoring workflow
+### Looker Studio: provisioned but not implemented
 
-The Metabase service boots clean on `make up`: a `metabase-init` container creates the admin user and registers the `climate-warehouse` Postgres data source against the `marts` schema (idempotent — re-runs are no-ops). From there, two equivalent paths populate the dashboard:
+The cloud slice provisions everything a Looker Studio report would need — BigQuery dataset, IAM bindings, the `DASHBOARD_BACKEND=looker-studio` toggle — but the report itself has not been authored. To reach parity the fastest path is to port the five Metabase cards directly: each card's SQL lives under `metabase/serialized/2-climate-vs-development/cards/<id>.json` at `dataset_query.stages[0].native`, and runs essentially unchanged against BigQuery once the schema-qualified references (`marts.country_year_environment`, `seeds.country_iso_codes`) are pointed at the cloud dataset. The dbt marts produce the same column shape on both backends, so no semantic-layer translation is required — only a Looker Studio data source and a copy of each query into a chart.
 
-- **Path A — UI / Metabot.** Open `http://localhost:${METABASE_PORT:-3000}`, log in with the credentials in `.env`, build the tiles (or ask Metabot in the UI to build them), then `make metabase-export DASHBOARD="<dashboard name|id|slug>"` dumps the state under `metabase/serialized/<id>-<slug>/`.
-- **Path B — Claude Code + Metabase MCP.** Register the MCP server (`claude mcp add metabase http://localhost:${METABASE_PORT:-3000}/api/mcp --transport streamable-http`), optionally clone [`metabase/agent-skills`](https://github.com/metabase/agent-skills), and ask the agent to build the tiles directly from the marts. Same `make metabase-export DASHBOARD="..."` step at the end.
+### Metabase authoring and reproducibility
 
-A fresh checkout reproduces the dashboard with `make up && make metabase-import DIR=metabase/serialized/<id>-<slug>` (optionally `COLLECTION=<id>` to land it inside a specific collection, or `SUFFIX=" (imported)"` to append a tag to the new dashboard/card names — useful when re-importing alongside an existing copy). The importer remaps database/table/field ids by name, so the slug in `<id>-<slug>` is documentary and a different db id on the target instance is fine.
+Metabase 60+ ships an [official MCP server](https://www.metabase.com/docs/latest/ai/mcp), so dashboard authoring can be driven from an LLM agent (Claude Code in our case). Reproducibility uses a small pair of API-driven Python scripts (`metabase/scripts/export-dashboard.py` and `import-dashboard.py`) — Metabase's built-in `export`/`import` is Enterprise-only, and the scripts work on the Community edition that ships in Docker. Exported state lives in `metabase/serialized/<id>-<slug>/` (`dashboard.json`, per-card JSON under `cards/`, and a `metadata/db-*.json` map of database/table/field ids that the importer remaps by name).
 
 ## Getting Started
 
@@ -338,16 +339,7 @@ make openaq-backfill-all
 - **OpenAQ live stream**: already running every 15 min from step 3. No action needed.
 - **dbt build**: once raw tables have data, run `docker compose run --rm dbt-init build` to refresh staging → intermediate → marts (the `dbt-init` service is the same dbt image used at boot for `create_raw_schema`; `run --rm` overrides the command).
 
-### 6. Build the dashboard
-
-If `metabase/serialized/` already has an exported dashboard (this repo ships with `2-climate-vs-development/`), reproduce it with `make metabase-import DIR=metabase/serialized/2-climate-vs-development`. To author a new dashboard from scratch use either path documented in [Dashboard authoring workflow](#dashboard-authoring-workflow):
-
-- **Path A** — Metabase UI / Metabot at `http://localhost:3000`, then `make metabase-export DASHBOARD="<name|id|slug>"`.
-- **Path B** — Claude Code with the Metabase MCP server registered, then `make metabase-export DASHBOARD="..."`.
-
-Commit the resulting `metabase/serialized/<id>-<slug>/` directory so future `make metabase-import DIR=...` runs reproduce the dashboard from scratch.
-
-### 7. Steady state
+### 6. Steady state
 
 After the one-off pass, the stack runs on its own:
 
