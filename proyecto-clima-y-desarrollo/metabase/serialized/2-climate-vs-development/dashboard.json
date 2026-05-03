@@ -1,7 +1,7 @@
 {
   "description": "Pollution vs development — choropleth, time series, scatter, decoupling.",
   "archived": false,
-  "view_count": 35,
+  "view_count": 43,
   "collection_position": null,
   "dashcards": [
     {
@@ -12,10 +12,10 @@
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": "2026-05-03T19:33:38.330261Z",
+        "cache_invalidated_at": "2026-05-03T20:02:03.418955Z",
         "description": null,
         "archived": false,
-        "view_count": 32,
+        "view_count": 34,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -140,15 +140,15 @@
         "collection_id": 5,
         "query_type": "native",
         "download_perms": "full",
-        "name": "02a — PM2.5 anual por país (WB satellite)",
+        "name": "PM2.5 anual por país (WB satellite)",
         "document_id": null,
-        "last_used_at": "2026-05-03T19:47:44.340901Z",
+        "last_used_at": "2026-05-03T20:02:27.570188Z",
         "type": "question",
         "dimensions": null,
         "query_average_duration": null,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-05-03T19:33:38.329242Z",
+        "updated_at": "2026-05-03T20:02:03.41731Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -212,7 +212,7 @@
         "created_at": "2026-05-02T14:19:43.101368Z",
         "public_uuid": null
       },
-      "updated_at": "2026-05-03T19:58:37.304986Z",
+      "updated_at": "2026-05-03T20:07:26.255023Z",
       "col": 0,
       "id": 38,
       "parameter_mappings": [
@@ -234,7 +234,7 @@
       "size_y": 8,
       "dashboard_id": 2,
       "created_at": "2026-05-02T14:19:43.34048Z",
-      "row": 12
+      "row": 26
     },
     {
       "size_x": 12,
@@ -244,10 +244,10 @@
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": "2026-05-03T19:58:37.043982Z",
+        "cache_invalidated_at": "2026-05-03T20:02:03.568999Z",
         "description": null,
         "archived": false,
-        "view_count": 23,
+        "view_count": 25,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -372,15 +372,15 @@
         "collection_id": 5,
         "query_type": "native",
         "download_perms": "full",
-        "name": "04a — Índice GDP per capita (base 100) por país",
+        "name": "Índice GDP per capita (base 100) por país",
         "document_id": null,
-        "last_used_at": "2026-05-03T19:47:44.340901Z",
+        "last_used_at": "2026-05-03T20:02:27.570188Z",
         "type": "question",
         "dimensions": null,
         "query_average_duration": null,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-05-03T19:58:37.042911Z",
+        "updated_at": "2026-05-03T20:02:03.568008Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -445,7 +445,7 @@
         "created_at": "2026-05-02T14:19:43.231241Z",
         "public_uuid": null
       },
-      "updated_at": "2026-05-03T19:49:04.905173Z",
+      "updated_at": "2026-05-03T20:07:26.255023Z",
       "col": 0,
       "id": 40,
       "parameter_mappings": [
@@ -467,7 +467,7 @@
       "size_y": 8,
       "dashboard_id": 2,
       "created_at": "2026-05-02T14:19:43.34048Z",
-      "row": 28
+      "row": 57
     },
     {
       "size_x": 24,
@@ -477,106 +477,270 @@
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": "2026-05-03T19:58:37.140631Z",
+        "cache_invalidated_at": "2026-05-03T20:02:03.489262Z",
         "description": null,
         "archived": false,
-        "view_count": 26,
+        "view_count": 28,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
         "result_metadata": [
           {
-            "name": "country_iso2",
             "database_type": "text",
-            "base_type": "type/Text",
-            "display_name": "country_iso2",
             "semantic_type": "type/Country",
+            "lib/deduplicated-name": "country_iso2",
+            "lib/original-name": "country_iso2",
+            "name": "country_iso2",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "country_iso2",
+            "source": "native",
             "field_ref": [
               "field",
               "country_iso2",
               {
                 "base-type": "type/Text"
               }
-            ]
+            ],
+            "effective_type": "type/Text",
+            "lib/desired-column-alias": "country_iso2",
+            "display_name": "country_iso2",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 6,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0.0,
+                  "percent-url": 0.0,
+                  "percent-email": 0.0,
+                  "percent-state": 0.3333333333333333,
+                  "average-length": 2.0
+                }
+              }
+            },
+            "base_type": "type/Text"
           },
           {
-            "name": "country_name",
             "database_type": "text",
-            "base_type": "type/Text",
-            "display_name": "country_name",
             "semantic_type": "type/Country",
+            "lib/deduplicated-name": "country_name",
+            "lib/original-name": "country_name",
+            "name": "country_name",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "country_name",
+            "source": "native",
             "field_ref": [
               "field",
               "country_name",
               {
                 "base-type": "type/Text"
               }
-            ]
+            ],
+            "effective_type": "type/Text",
+            "lib/desired-column-alias": "country_name",
+            "display_name": "country_name",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 6,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0.0,
+                  "percent-url": 0.0,
+                  "percent-email": 0.0,
+                  "percent-state": 0.0,
+                  "average-length": 8.0
+                }
+              }
+            },
+            "base_type": "type/Text"
           },
           {
-            "name": "year",
             "database_type": "int4",
-            "base_type": "type/Integer",
-            "display_name": "year",
+            "semantic_type": null,
+            "lib/deduplicated-name": "year",
+            "lib/original-name": "year",
+            "name": "year",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "year",
+            "source": "native",
             "field_ref": [
               "field",
               "year",
               {
                 "base-type": "type/Integer"
               }
-            ]
+            ],
+            "effective_type": "type/Integer",
+            "lib/desired-column-alias": "year",
+            "display_name": "year",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 1,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 2020.0,
+                  "q1": 2020.0,
+                  "q3": 2020.0,
+                  "max": 2020.0,
+                  "sd": 0.0,
+                  "avg": 2020.0
+                }
+              }
+            },
+            "base_type": "type/Integer"
           },
           {
-            "name": "gdp_per_capita_usd",
             "database_type": "float8",
-            "base_type": "type/Float",
-            "display_name": "gdp_per_capita_usd",
+            "semantic_type": null,
+            "lib/deduplicated-name": "gdp_per_capita_usd",
+            "lib/original-name": "gdp_per_capita_usd",
+            "name": "gdp_per_capita_usd",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "gdp_per_capita_usd",
+            "source": "native",
             "field_ref": [
               "field",
               "gdp_per_capita_usd",
               {
                 "base-type": "type/Float"
               }
-            ]
+            ],
+            "effective_type": "type/Float",
+            "lib/desired-column-alias": "gdp_per_capita_usd",
+            "display_name": "gdp_per_capita_usd",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 6,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 1907.04251637669,
+                  "q1": 5580.60383075189,
+                  "q3": 47394.8734504469,
+                  "max": 63515.9491807833,
+                  "sd": 25840.071725323425,
+                  "avg": 22977.867254619894
+                }
+              }
+            },
+            "base_type": "type/Float"
           },
           {
-            "name": "pm25_annual_satellite_ugm3",
             "database_type": "float8",
-            "base_type": "type/Float",
-            "display_name": "pm25_annual_satellite_ugm3",
+            "semantic_type": null,
+            "lib/deduplicated-name": "pm25_annual_satellite_ugm3",
+            "lib/original-name": "pm25_annual_satellite_ugm3",
+            "name": "pm25_annual_satellite_ugm3",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "pm25_annual_satellite_ugm3",
+            "source": "native",
             "field_ref": [
               "field",
               "pm25_annual_satellite_ugm3",
               {
                 "base-type": "type/Float"
               }
-            ]
+            ],
+            "effective_type": "type/Float",
+            "lib/desired-column-alias": "pm25_annual_satellite_ugm3",
+            "display_name": "pm25_annual_satellite_ugm3",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 6,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 7.81485752365112,
+                  "q1": 10.2876894329414,
+                  "q3": 34.8105237153218,
+                  "max": 48.3948115195574,
+                  "sd": 15.75159237448552,
+                  "avg": 23.342215909694037
+                }
+              }
+            },
+            "base_type": "type/Float"
           },
           {
-            "name": "population_total",
             "database_type": "float8",
-            "base_type": "type/Float",
-            "display_name": "population_total",
+            "semantic_type": null,
+            "lib/deduplicated-name": "population_total",
+            "lib/original-name": "population_total",
+            "name": "population_total",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "population_total",
+            "source": "native",
             "field_ref": [
               "field",
               "population_total",
               {
                 "base-type": "type/Float"
               }
-            ]
+            ],
+            "effective_type": "type/Float",
+            "lib/desired-column-alias": "population_total",
+            "display_name": "population_total",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 6,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 60562381.0,
+                  "q1": 83160871.0,
+                  "q3": 1402617695.0,
+                  "max": 1411100000.0,
+                  "sd": 655821592.8280702,
+                  "avg": 569302953.5
+                }
+              }
+            },
+            "base_type": "type/Float"
           },
           {
-            "name": "log_population",
             "database_type": "float8",
-            "base_type": "type/Float",
-            "display_name": "log_population",
+            "semantic_type": null,
+            "lib/deduplicated-name": "log_population",
+            "lib/original-name": "log_population",
+            "name": "log_population",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "log_population",
+            "source": "native",
             "field_ref": [
               "field",
               "log_population",
               {
                 "base-type": "type/Float"
               }
-            ]
+            ],
+            "effective_type": "type/Float",
+            "lib/desired-column-alias": "log_population",
+            "display_name": "log_population",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 6,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 17.91918448270105,
+                  "q1": 18.23628749468471,
+                  "q3": 21.061606109843773,
+                  "max": 21.06763537902799,
+                  "sd": 1.3916262598795481,
+                  "avg": 19.4270333992021
+                }
+              }
+            },
+            "base_type": "type/Float"
           }
         ],
         "embedding_type": null,
@@ -588,15 +752,15 @@
         "collection_id": 5,
         "query_type": "native",
         "download_perms": "full",
-        "name": "03 — GDP vs PM2.5 (latest year, bubble = log population)",
+        "name": "GDP vs PM2.5 (latest year, bubble = log population)",
         "document_id": null,
-        "last_used_at": "2026-05-03T19:47:44.340901Z",
+        "last_used_at": "2026-05-03T20:02:27.570188Z",
         "type": "question",
         "dimensions": null,
         "query_average_duration": null,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-05-03T19:58:37.139293Z",
+        "updated_at": "2026-05-03T20:02:03.4868Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -669,7 +833,7 @@
         "created_at": "2026-05-02T14:19:43.174122Z",
         "public_uuid": null
       },
-      "updated_at": "2026-05-03T19:49:04.905173Z",
+      "updated_at": "2026-05-03T20:07:26.255023Z",
       "col": 0,
       "id": 39,
       "parameter_mappings": [
@@ -691,7 +855,7 @@
       "size_y": 8,
       "dashboard_id": 2,
       "created_at": "2026-05-02T14:19:43.34048Z",
-      "row": 20
+      "row": 40
     },
     {
       "size_x": 24,
@@ -701,107 +865,269 @@
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": "2026-05-03T19:58:37.206613Z",
+        "cache_invalidated_at": "2026-05-03T20:02:03.340739Z",
         "description": null,
         "archived": false,
-        "view_count": 31,
+        "view_count": 33,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
         "result_metadata": [
           {
-            "name": "country_iso2",
             "database_type": "text",
-            "base_type": "type/Text",
-            "display_name": "country_iso2",
             "semantic_type": "type/Country",
+            "lib/deduplicated-name": "country_iso2",
+            "lib/original-name": "country_iso2",
+            "name": "country_iso2",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "country_iso2",
+            "source": "native",
             "field_ref": [
               "field",
               "country_iso2",
               {
                 "base-type": "type/Text"
               }
-            ]
+            ],
+            "effective_type": "type/Text",
+            "lib/desired-column-alias": "country_iso2",
+            "display_name": "country_iso2",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 187,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0.0,
+                  "percent-url": 0.0,
+                  "percent-email": 0.0,
+                  "percent-state": 0.106951871657754,
+                  "average-length": 2.0
+                }
+              }
+            },
+            "base_type": "type/Text"
           },
           {
-            "name": "country_iso3",
             "database_type": "text",
-            "base_type": "type/Text",
-            "display_name": "country_iso3",
             "semantic_type": "type/Country",
+            "lib/deduplicated-name": "country_iso3",
+            "lib/original-name": "country_iso3",
+            "name": "country_iso3",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "country_iso3",
+            "source": "native",
             "field_ref": [
               "field",
               "country_iso3",
               {
                 "base-type": "type/Text"
               }
-            ]
+            ],
+            "effective_type": "type/Text",
+            "lib/desired-column-alias": "country_iso3",
+            "display_name": "country_iso3",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 187,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0.0,
+                  "percent-url": 0.0,
+                  "percent-email": 0.0,
+                  "percent-state": 0.0,
+                  "average-length": 3.0
+                }
+              }
+            },
+            "base_type": "type/Text"
           },
           {
-            "name": "country_name",
             "database_type": "text",
-            "base_type": "type/Text",
-            "display_name": "country_name",
             "semantic_type": "type/Country",
+            "lib/deduplicated-name": "country_name",
+            "lib/original-name": "country_name",
+            "name": "country_name",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "country_name",
+            "source": "native",
             "field_ref": [
               "field",
               "country_name",
               {
                 "base-type": "type/Text"
               }
-            ]
+            ],
+            "effective_type": "type/Text",
+            "lib/desired-column-alias": "country_name",
+            "display_name": "country_name",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 187,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Text": {
+                  "percent-json": 0.0,
+                  "percent-url": 0.0,
+                  "percent-email": 0.0,
+                  "percent-state": 0.005347593582887701,
+                  "average-length": 9.133689839572192
+                }
+              }
+            },
+            "base_type": "type/Text"
           },
           {
-            "name": "latest_year",
             "database_type": "int4",
-            "base_type": "type/Integer",
-            "display_name": "latest_year",
+            "semantic_type": null,
+            "lib/deduplicated-name": "latest_year",
+            "lib/original-name": "latest_year",
+            "name": "latest_year",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "latest_year",
+            "source": "native",
             "field_ref": [
               "field",
               "latest_year",
               {
                 "base-type": "type/Integer"
               }
-            ]
+            ],
+            "effective_type": "type/Integer",
+            "lib/desired-column-alias": "latest_year",
+            "display_name": "latest_year",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 1,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 2020.0,
+                  "q1": 2020.0,
+                  "q3": 2020.0,
+                  "max": 2020.0,
+                  "sd": 0.0,
+                  "avg": 2020.0
+                }
+              }
+            },
+            "base_type": "type/Integer"
           },
           {
-            "name": "co2_per_capita_t",
             "database_type": "float8",
-            "base_type": "type/Float",
-            "display_name": "co2_per_capita_t",
+            "semantic_type": null,
+            "lib/deduplicated-name": "co2_per_capita_t",
+            "lib/original-name": "co2_per_capita_t",
+            "name": "co2_per_capita_t",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "co2_per_capita_t",
+            "source": "native",
             "field_ref": [
               "field",
               "co2_per_capita_t",
               {
                 "base-type": "type/Float"
               }
-            ]
+            ],
+            "effective_type": "type/Float",
+            "lib/desired-column-alias": "co2_per_capita_t",
+            "display_name": "co2_per_capita_t",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 186,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 0.0,
+                  "q1": 0.6560755650217434,
+                  "q3": 5.0796720587790105,
+                  "max": 71.7401079136691,
+                  "sd": 7.353158690534431,
+                  "avg": 4.422506117851124
+                }
+              }
+            },
+            "base_type": "type/Float"
           },
           {
-            "name": "pm25_annual_satellite_ugm3",
             "database_type": "float8",
-            "base_type": "type/Float",
-            "display_name": "pm25_annual_satellite_ugm3",
+            "semantic_type": null,
+            "lib/deduplicated-name": "pm25_annual_satellite_ugm3",
+            "lib/original-name": "pm25_annual_satellite_ugm3",
+            "name": "pm25_annual_satellite_ugm3",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "pm25_annual_satellite_ugm3",
+            "source": "native",
             "field_ref": [
               "field",
               "pm25_annual_satellite_ugm3",
               {
                 "base-type": "type/Float"
               }
-            ]
+            ],
+            "effective_type": "type/Float",
+            "lib/desired-column-alias": "pm25_annual_satellite_ugm3",
+            "display_name": "pm25_annual_satellite_ugm3",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 187,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 4.89518090216668,
+                  "q1": 13.125790965574463,
+                  "q3": 30.428264580946863,
+                  "max": 85.1223455605238,
+                  "sd": 15.122301401773122,
+                  "avg": 24.23077860280669
+                }
+              }
+            },
+            "base_type": "type/Float"
           },
           {
-            "name": "ratio_co2_pm25",
             "database_type": "float8",
-            "base_type": "type/Float",
-            "display_name": "ratio_co2_pm25",
+            "semantic_type": null,
+            "lib/deduplicated-name": "ratio_co2_pm25",
+            "lib/original-name": "ratio_co2_pm25",
+            "name": "ratio_co2_pm25",
+            "lib/source": "source/native",
+            "lib/source-column-alias": "ratio_co2_pm25",
+            "source": "native",
             "field_ref": [
               "field",
               "ratio_co2_pm25",
               {
                 "base-type": "type/Float"
               }
-            ]
+            ],
+            "effective_type": "type/Float",
+            "lib/desired-column-alias": "ratio_co2_pm25",
+            "display_name": "ratio_co2_pm25",
+            "fingerprint": {
+              "global": {
+                "distinct-count": 186,
+                "nil%": 0.0
+              },
+              "type": {
+                "type/Number": {
+                  "min": 0.0,
+                  "q1": 0.025403884543330455,
+                  "q3": 0.3565979665921859,
+                  "max": 9.790249604231166,
+                  "sd": 0.8152174831532704,
+                  "avg": 0.32438639688869797
+                }
+              }
+            },
+            "base_type": "type/Float"
           }
         ],
         "embedding_type": null,
@@ -813,15 +1139,15 @@
         "collection_id": 5,
         "query_type": "native",
         "download_perms": "full",
-        "name": "01 — Choropleth: CO2/PM2.5 ratio",
+        "name": "Choropleth: CO2/PM2.5 ratio",
         "document_id": null,
-        "last_used_at": "2026-05-03T19:47:44.340901Z",
+        "last_used_at": "2026-05-03T20:02:27.570188Z",
         "type": "question",
         "dimensions": null,
-        "query_average_duration": null,
+        "query_average_duration": 36,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-05-03T19:58:37.205735Z",
+        "updated_at": "2026-05-03T20:02:03.339901Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -891,7 +1217,7 @@
         "created_at": "2026-05-02T14:19:42.992778Z",
         "public_uuid": null
       },
-      "updated_at": "2026-05-03T19:49:04.905173Z",
+      "updated_at": "2026-05-03T20:07:26.255023Z",
       "col": 0,
       "id": 37,
       "parameter_mappings": [],
@@ -901,7 +1227,7 @@
       "size_y": 12,
       "dashboard_id": 2,
       "created_at": "2026-05-02T14:19:43.34048Z",
-      "row": 0
+      "row": 6
     },
     {
       "size_x": 12,
@@ -911,10 +1237,10 @@
       "action_id": null,
       "collection_authority_level": null,
       "card": {
-        "cache_invalidated_at": null,
+        "cache_invalidated_at": "2026-05-03T20:02:03.635378Z",
         "description": null,
         "archived": false,
-        "view_count": 8,
+        "view_count": 10,
         "collection_position": null,
         "source_card_id": null,
         "table_id": null,
@@ -1039,15 +1365,15 @@
         "collection_id": 5,
         "query_type": "native",
         "download_perms": "full",
-        "name": "04b — Índice PM2.5 satelital (base 100) por país",
+        "name": "Índice PM2.5 satelital (base 100) por país",
         "document_id": null,
-        "last_used_at": "2026-05-03T19:47:44.340901Z",
+        "last_used_at": "2026-05-03T20:02:27.570188Z",
         "type": "question",
         "dimensions": null,
         "query_average_duration": null,
         "creator_id": 1,
         "moderation_reviews": [],
-        "updated_at": "2026-05-03T19:35:21.411908Z",
+        "updated_at": "2026-05-03T20:02:03.634299Z",
         "made_public_by_id": null,
         "embedding_params": null,
         "cache_ttl": null,
@@ -1111,7 +1437,7 @@
         "created_at": "2026-05-03T19:35:21.411908Z",
         "public_uuid": null
       },
-      "updated_at": "2026-05-03T19:49:04.905173Z",
+      "updated_at": "2026-05-03T20:07:26.255023Z",
       "col": 12,
       "id": 46,
       "parameter_mappings": [
@@ -1133,7 +1459,135 @@
       "size_y": 8,
       "dashboard_id": 2,
       "created_at": "2026-05-03T19:36:15.086048Z",
-      "row": 28
+      "row": 57
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-05-03T20:07:26.255023Z",
+      "col": 0,
+      "id": 47,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "absIum6v5EV8zPePaF38R",
+      "visualization_settings": {
+        "virtual_card": {
+          "name": null,
+          "display": "text",
+          "visualization_settings": {},
+          "dataset_query": {},
+          "archived": false
+        },
+        "text": "## Global view — emissions vs. exposure\n\n**How to read.** Each country is colored by its CO2 emissions per capita divided by its annual mean PM2.5 exposure. **Darker red = high ratio**: a country emits a lot of greenhouse gas per person while its population breathes relatively clean air — typical of wealthy economies that have moved heavy industry abroad. **Pale shades = low ratio**: low per-capita emissions but heavy local PM2.5 exposure — typical of lower-income countries where pollution is dominated by transport, biomass burning and agriculture.\n\n**Context.** This ratio captures the inequality at the core of climate policy. The 1992 **UN Framework Convention on Climate Change** codified the principle of *\"common but differentiated responsibilities\"*: industrialized nations bear the historical responsibility for the cumulative CO2 stock in the atmosphere, while many lower-income nations carry today's immediate health burden of poor local air quality. The 2015 **Paris Agreement** reinforced this asymmetry by requiring developed countries to lead emissions reductions and provide climate finance to developing countries."
+      },
+      "size_y": 6,
+      "dashboard_id": 2,
+      "created_at": "2026-05-03T20:07:26.255023Z",
+      "row": 0
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-05-03T20:07:26.255023Z",
+      "col": 0,
+      "id": 50,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "cmZAaGZSZDpqo5le7L2OL",
+      "visualization_settings": {
+        "virtual_card": {
+          "name": null,
+          "display": "text",
+          "visualization_settings": {},
+          "dataset_query": {},
+          "archived": false
+        },
+        "text": "## Decoupling analysis — did growth get cleaner?\n\n**How to read.** Both charts are rebased to **100 in 1990** (or the first available year). **Above 100 = grew, below 100 = shrank.** Read both panels side by side for the same country: did GDP per capita grow without PM2.5 also rising? Note the **logarithmic Y-axis** on the GDP chart — it lets China's 33× growth coexist visually with the slower trajectories of mature economies.\n\n**Three regimes are visible.**\n- **Strong decoupling — DE, MX, US.** GDP indexed climbs to 200–280 while PM2.5 falls to ~50. Wealth roughly tripled; air pollution roughly halved. The **IPCC** cites this pattern as evidence that growth and emissions can be uncoupled.\n- **Late decoupling with a peak — CN.** GDP exploded (33×). PM2.5 climbed to 120 (worse than the 1990 baseline) before dropping back to 70 after 2013. China paid for two decades of growth with worsening air, then reversed course.\n- **No decoupling yet — IN, ZA.** GDP grew modestly, PM2.5 stayed flat or rose. India is roughly where China was in 2008 — at the inflection point.\n\n**Carbon-market context.** The **European Union Emissions Trading System (EU ETS, 2005)** is one mechanism behind the EU's strong decoupling: by pricing CO2 and tightening the cap each year, it pushed power generation and heavy industry to cleaner technologies. **China** launched its national ETS in 2021 (initially covering power generation only); **India** is piloting a Carbon Credit Trading Scheme (CCTS) from 2024. Historically, the Kyoto Protocol's **Clean Development Mechanism (1997–2020)** financed over 7,800 projects, with offset credits flowing predominantly from China and India to developed nations — effectively letting wealthy economies pay for emissions reductions abroad while continuing to emit at home."
+      },
+      "size_y": 9,
+      "dashboard_id": 2,
+      "created_at": "2026-05-03T20:07:26.255023Z",
+      "row": 48
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-05-03T20:07:26.255023Z",
+      "col": 0,
+      "id": 49,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "adYIwM7Y-AMXC_Fw04zUM",
+      "visualization_settings": {
+        "virtual_card": {
+          "name": null,
+          "display": "text",
+          "visualization_settings": {},
+          "dataset_query": {},
+          "archived": false
+        },
+        "text": "## Today's trade-off — wealth vs. air quality\n\n**How to read.** Each bubble is one country in its most recent reported year. **X-axis** (log scale) is GDP per capita in current USD; **Y-axis** is annual mean PM2.5 exposure (µg/m³, satellite). **Bubble size** is the natural log of total population, so India and China stand out without crushing smaller nations. **Color** identifies the country.\n\n**Why log population.** On a linear scale India (~1.4 B) would render ~23× larger than South Africa (~63 M). The log compression keeps every country legible while still signaling that roughly **3 billion people** live in the upper-left quadrant — high PM2.5, low income — where exposure exceeds 5× the WHO guideline.\n\n**Reference points.** Most European cities sit at 8–12 µg/m³; Delhi has reported daily means over 100 µg/m³ during winter inversions. The **Air Quality Life Index** (University of Chicago) estimates that meeting the WHO guideline globally would add ~2.3 years to average life expectancy."
+      },
+      "size_y": 6,
+      "dashboard_id": 2,
+      "created_at": "2026-05-03T20:07:26.255023Z",
+      "row": 34
+    },
+    {
+      "size_x": 24,
+      "dashboard_tab_id": null,
+      "series": [],
+      "inline_parameters": [],
+      "action_id": null,
+      "collection_authority_level": null,
+      "card": {
+        "query_average_duration": null,
+        "download_perms": "none"
+      },
+      "updated_at": "2026-05-03T20:07:26.255023Z",
+      "col": 0,
+      "id": 48,
+      "parameter_mappings": [],
+      "card_id": null,
+      "entity_id": "BZpntuNWeOUEYDHaQgRIF",
+      "visualization_settings": {
+        "virtual_card": {
+          "name": null,
+          "display": "text",
+          "visualization_settings": {},
+          "dataset_query": {},
+          "archived": false
+        },
+        "text": "## How air quality has evolved (1990–2020)\n\n**How to read.** Each line is one country's annual mean PM2.5 exposure (µg/m³, satellite-derived). **Down means improvement, up means worsening.** The **WHO 2021 guideline is 5 µg/m³** annual mean — every country shown is currently above it.\n\n**Stories visible in the chart.**\n- **Western trend (US, DE).** Steady decline since the early 1990s, driven by the U.S. **Clean Air Act Amendments (1990)** and the EU's **Industrial Emissions Directive (2010)**, building on the 1996 IPPC Directive.\n- **China's arc.** PM2.5 climbed through the 2000s, peaked around 2013, then dropped sharply. The 2013 inflection coincides with China's **Air Pollution Prevention and Control Action Plan** (\"Ten Measures\"), reinforced in 2018 by the **Three-Year Action Plan**: forced coal shutdowns, vehicle restrictions, and heavy-industry relocation.\n- **India.** Still climbing through the 2010s. The **National Clean Air Programme (NCAP, 2019)** targets a 20–30% reduction by 2024 vs. a 2017 baseline; the satellite series ends in 2020 so the verdict is still pending.\n- **2020 dip.** Visible across multiple countries — temporary effect of **COVID-19 lockdowns**. Wuhan and Shanghai saw drops of >30% in PM2.5 during spring 2020."
+      },
+      "size_y": 8,
+      "dashboard_id": 2,
+      "created_at": "2026-05-03T20:07:26.255023Z",
+      "row": 18
     }
   ],
   "embedding_type": null,
@@ -1158,7 +1612,7 @@
   "cache_ttl": null,
   "last_used_param_values": {},
   "id": 2,
-  "last_viewed_at": "2026-05-03T19:47:44.315952Z",
+  "last_viewed_at": "2026-05-03T20:02:27.533618Z",
   "position": null,
   "archived_directly": false,
   "entity_id": "KYOXVTbaUhRpFe6-QuMnq",
@@ -1168,7 +1622,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "last_name": "Admin",
-    "timestamp": "2026-05-03T19:58:37.348436Z"
+    "timestamp": "2026-05-03T20:07:26.304695Z"
   },
   "collection": {
     "authority_level": null,

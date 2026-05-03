@@ -1,106 +1,268 @@
 {
-  "cache_invalidated_at": "2026-05-03T19:58:37.206613Z",
+  "cache_invalidated_at": "2026-05-03T20:02:03.340739Z",
   "description": null,
   "archived": false,
-  "view_count": 31,
+  "view_count": 33,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
   "can_run_adhoc_query": true,
   "result_metadata": [
     {
-      "name": "country_iso2",
       "database_type": "text",
-      "base_type": "type/Text",
-      "display_name": "country_iso2",
       "semantic_type": "type/Country",
+      "lib/deduplicated-name": "country_iso2",
+      "lib/original-name": "country_iso2",
+      "name": "country_iso2",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "country_iso2",
+      "source": "native",
       "field_ref": [
         "field",
         "country_iso2",
         {
           "base-type": "type/Text"
         }
-      ]
+      ],
+      "effective_type": "type/Text",
+      "lib/desired-column-alias": "country_iso2",
+      "display_name": "country_iso2",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 187,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.106951871657754,
+            "average-length": 2.0
+          }
+        }
+      },
+      "base_type": "type/Text"
     },
     {
-      "name": "country_iso3",
       "database_type": "text",
-      "base_type": "type/Text",
-      "display_name": "country_iso3",
       "semantic_type": "type/Country",
+      "lib/deduplicated-name": "country_iso3",
+      "lib/original-name": "country_iso3",
+      "name": "country_iso3",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "country_iso3",
+      "source": "native",
       "field_ref": [
         "field",
         "country_iso3",
         {
           "base-type": "type/Text"
         }
-      ]
+      ],
+      "effective_type": "type/Text",
+      "lib/desired-column-alias": "country_iso3",
+      "display_name": "country_iso3",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 187,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.0,
+            "average-length": 3.0
+          }
+        }
+      },
+      "base_type": "type/Text"
     },
     {
-      "name": "country_name",
       "database_type": "text",
-      "base_type": "type/Text",
-      "display_name": "country_name",
       "semantic_type": "type/Country",
+      "lib/deduplicated-name": "country_name",
+      "lib/original-name": "country_name",
+      "name": "country_name",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "country_name",
+      "source": "native",
       "field_ref": [
         "field",
         "country_name",
         {
           "base-type": "type/Text"
         }
-      ]
+      ],
+      "effective_type": "type/Text",
+      "lib/desired-column-alias": "country_name",
+      "display_name": "country_name",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 187,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Text": {
+            "percent-json": 0.0,
+            "percent-url": 0.0,
+            "percent-email": 0.0,
+            "percent-state": 0.005347593582887701,
+            "average-length": 9.133689839572192
+          }
+        }
+      },
+      "base_type": "type/Text"
     },
     {
-      "name": "latest_year",
       "database_type": "int4",
-      "base_type": "type/Integer",
-      "display_name": "latest_year",
+      "semantic_type": null,
+      "lib/deduplicated-name": "latest_year",
+      "lib/original-name": "latest_year",
+      "name": "latest_year",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "latest_year",
+      "source": "native",
       "field_ref": [
         "field",
         "latest_year",
         {
           "base-type": "type/Integer"
         }
-      ]
+      ],
+      "effective_type": "type/Integer",
+      "lib/desired-column-alias": "latest_year",
+      "display_name": "latest_year",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 1,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 2020.0,
+            "q1": 2020.0,
+            "q3": 2020.0,
+            "max": 2020.0,
+            "sd": 0.0,
+            "avg": 2020.0
+          }
+        }
+      },
+      "base_type": "type/Integer"
     },
     {
-      "name": "co2_per_capita_t",
       "database_type": "float8",
-      "base_type": "type/Float",
-      "display_name": "co2_per_capita_t",
+      "semantic_type": null,
+      "lib/deduplicated-name": "co2_per_capita_t",
+      "lib/original-name": "co2_per_capita_t",
+      "name": "co2_per_capita_t",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "co2_per_capita_t",
+      "source": "native",
       "field_ref": [
         "field",
         "co2_per_capita_t",
         {
           "base-type": "type/Float"
         }
-      ]
+      ],
+      "effective_type": "type/Float",
+      "lib/desired-column-alias": "co2_per_capita_t",
+      "display_name": "co2_per_capita_t",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 186,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 0.0,
+            "q1": 0.6560755650217434,
+            "q3": 5.0796720587790105,
+            "max": 71.7401079136691,
+            "sd": 7.353158690534431,
+            "avg": 4.422506117851124
+          }
+        }
+      },
+      "base_type": "type/Float"
     },
     {
-      "name": "pm25_annual_satellite_ugm3",
       "database_type": "float8",
-      "base_type": "type/Float",
-      "display_name": "pm25_annual_satellite_ugm3",
+      "semantic_type": null,
+      "lib/deduplicated-name": "pm25_annual_satellite_ugm3",
+      "lib/original-name": "pm25_annual_satellite_ugm3",
+      "name": "pm25_annual_satellite_ugm3",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "pm25_annual_satellite_ugm3",
+      "source": "native",
       "field_ref": [
         "field",
         "pm25_annual_satellite_ugm3",
         {
           "base-type": "type/Float"
         }
-      ]
+      ],
+      "effective_type": "type/Float",
+      "lib/desired-column-alias": "pm25_annual_satellite_ugm3",
+      "display_name": "pm25_annual_satellite_ugm3",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 187,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 4.89518090216668,
+            "q1": 13.125790965574463,
+            "q3": 30.428264580946863,
+            "max": 85.1223455605238,
+            "sd": 15.122301401773122,
+            "avg": 24.23077860280669
+          }
+        }
+      },
+      "base_type": "type/Float"
     },
     {
-      "name": "ratio_co2_pm25",
       "database_type": "float8",
-      "base_type": "type/Float",
-      "display_name": "ratio_co2_pm25",
+      "semantic_type": null,
+      "lib/deduplicated-name": "ratio_co2_pm25",
+      "lib/original-name": "ratio_co2_pm25",
+      "name": "ratio_co2_pm25",
+      "lib/source": "source/native",
+      "lib/source-column-alias": "ratio_co2_pm25",
+      "source": "native",
       "field_ref": [
         "field",
         "ratio_co2_pm25",
         {
           "base-type": "type/Float"
         }
-      ]
+      ],
+      "effective_type": "type/Float",
+      "lib/desired-column-alias": "ratio_co2_pm25",
+      "display_name": "ratio_co2_pm25",
+      "fingerprint": {
+        "global": {
+          "distinct-count": 186,
+          "nil%": 0.0
+        },
+        "type": {
+          "type/Number": {
+            "min": 0.0,
+            "q1": 0.025403884543330455,
+            "q3": 0.3565979665921859,
+            "max": 9.790249604231166,
+            "sd": 0.8152174831532704,
+            "avg": 0.32438639688869797
+          }
+        }
+      },
+      "base_type": "type/Float"
     }
   ],
   "embedding_type": null,
@@ -108,7 +270,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "is_data_analyst": false,
-    "last_login": "2026-05-03T19:58:53.530728Z",
+    "last_login": "2026-05-03T20:07:39.593735Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
@@ -124,20 +286,20 @@
   "enable_embedding": false,
   "collection_id": 5,
   "query_type": "native",
-  "name": "01 — Choropleth: CO2/PM2.5 ratio",
-  "last_query_start": "2026-05-03T19:47:44.187248Z",
+  "name": "Choropleth: CO2/PM2.5 ratio",
+  "last_query_start": "2026-05-03T20:02:27.553421Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-05-03T19:47:44.340901Z",
+  "last_used_at": "2026-05-03T20:02:27.570188Z",
   "dashboard": null,
   "type": "question",
   "dimensions": null,
-  "average_query_time": 43.903225806451616,
+  "average_query_time": 42.93939393939394,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-05-03T19:58:37.205735Z",
+  "updated_at": "2026-05-03T20:02:03.339901Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -175,7 +337,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "last_name": "Admin",
-    "timestamp": "2026-05-03T19:58:37.233329Z"
+    "timestamp": "2026-05-03T20:02:03.358233Z"
   },
   "visualization_settings": {
     "map.type": "region",
