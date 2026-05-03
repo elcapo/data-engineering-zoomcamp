@@ -1,8 +1,8 @@
 {
-  "cache_invalidated_at": "2026-05-03T19:19:07.501966Z",
+  "cache_invalidated_at": "2026-05-03T19:45:14.337974Z",
   "description": null,
   "archived": false,
-  "view_count": 17,
+  "view_count": 22,
   "collection_position": null,
   "source_card_id": null,
   "table_id": null,
@@ -74,6 +74,32 @@
           "base-type": "type/Float"
         }
       ]
+    },
+    {
+      "name": "population_total",
+      "database_type": "float8",
+      "base_type": "type/Float",
+      "display_name": "population_total",
+      "field_ref": [
+        "field",
+        "population_total",
+        {
+          "base-type": "type/Float"
+        }
+      ]
+    },
+    {
+      "name": "log_population",
+      "database_type": "float8",
+      "base_type": "type/Float",
+      "display_name": "log_population",
+      "field_ref": [
+        "field",
+        "log_population",
+        {
+          "base-type": "type/Float"
+        }
+      ]
     }
   ],
   "embedding_type": null,
@@ -81,7 +107,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "is_data_analyst": false,
-    "last_login": "2026-05-03T19:19:47.639829Z",
+    "last_login": "2026-05-03T19:45:25.706169Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
@@ -97,20 +123,20 @@
   "enable_embedding": false,
   "collection_id": 5,
   "query_type": "native",
-  "name": "03 — GDP per capita vs PM2.5 (latest year)",
-  "last_query_start": "2026-05-03T19:18:22.780185Z",
+  "name": "03 — GDP vs PM2.5 (latest year, bubble = log population)",
+  "last_query_start": "2026-05-03T19:42:31.357489Z",
   "is_remote_synced": false,
   "dashboard_count": 1,
   "document_id": null,
-  "last_used_at": "2026-05-03T19:18:22.792659Z",
+  "last_used_at": "2026-05-03T19:42:31.497166Z",
   "dashboard": null,
   "type": "question",
   "dimensions": null,
-  "average_query_time": 27.41176470588235,
+  "average_query_time": 25.772727272727273,
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-05-03T19:19:07.500976Z",
+  "updated_at": "2026-05-03T19:45:14.336811Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -119,8 +145,17 @@
     "database": 2,
     "stages": [
       {
+        "native": "WITH ranked AS (\n  SELECT m.country_iso3, m.country_name, m.year,\n         m.gdp_per_capita_usd, m.median_pm25_ugm3, m.population_total,\n         ROW_NUMBER() OVER (\n           PARTITION BY m.country_iso3 ORDER BY m.year DESC\n         ) AS rn\n  FROM marts.country_year_environment m\n  WHERE m.gdp_per_capita_usd IS NOT NULL\n    AND m.median_pm25_ugm3 IS NOT NULL\n    AND m.population_total IS NOT NULL\n)\nSELECT c.iso2 AS country_iso2,\n       r.country_name, r.year,\n       r.gdp_per_capita_usd, r.median_pm25_ugm3,\n       r.population_total,\n       LN(r.population_total) AS log_population\nFROM ranked r\nJOIN seeds.country_iso_codes c\n  ON c.iso3 = r.country_iso3\nWHERE r.rn = 1\n  AND c.iso2 IN ('US','DE','CN','MX','IN','ZA')\n  [[ AND c.iso2 IN ({{country_iso2}}) ]]\nORDER BY country_iso2",
         "lib/type": "mbql.stage/native",
-        "native": "WITH ranked AS (\n  SELECT m.country_iso3, m.country_name, m.year,\n         m.gdp_per_capita_usd, m.median_pm25_ugm3,\n         ROW_NUMBER() OVER (\n           PARTITION BY m.country_iso3 ORDER BY m.year DESC\n         ) AS rn\n  FROM marts.country_year_environment m\n  WHERE m.gdp_per_capita_usd IS NOT NULL\n    AND m.median_pm25_ugm3 IS NOT NULL\n)\nSELECT c.iso2 AS country_iso2,\n       r.country_name, r.year,\n       r.gdp_per_capita_usd, r.median_pm25_ugm3\nFROM ranked r\nJOIN seeds.country_iso_codes c\n  ON c.iso3 = r.country_iso3\nWHERE r.rn = 1\nORDER BY country_iso2"
+        "template-tags": {
+          "country_iso2": {
+            "type": "text",
+            "id": "country-iso2-tag",
+            "name": "country_iso2",
+            "display-name": "Countries (ISO2)",
+            "required": false
+          }
+        }
       }
     ]
   },
@@ -139,20 +174,26 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "last_name": "Admin",
-    "timestamp": "2026-05-03T19:19:07.53111Z"
+    "timestamp": "2026-05-03T19:45:14.365047Z"
   },
   "visualization_settings": {
-    "graph.dimensions": [
-      "gdp_per_capita_usd"
-    ],
-    "graph.x_axis.scale": "log",
-    "graph.x_axis.title_text": "GDP per capita (USD, log)",
     "graph.y_axis.title_text": "Median PM2.5 (µg/m³)",
-    "graph.tooltip_columns": [
-      "[\"name\",\"country_name\"]"
-    ],
+    "graph.show_values": true,
+    "scatter.bubble": "log_population",
+    "graph.x_axis.title_text": "GDP per capita (USD, log)",
+    "graph.label_value_frequency": "all",
     "graph.metrics": [
       "median_pm25_ugm3"
+    ],
+    "graph.tooltip_columns": [
+      "[\"name\",\"country_name\"]",
+      "[\"name\",\"population_total\"]",
+      "[\"name\",\"year\"]"
+    ],
+    "graph.x_axis.scale": "log",
+    "graph.dimensions": [
+      "gdp_per_capita_usd",
+      "country_iso2"
     ]
   },
   "collection": {
@@ -176,7 +217,23 @@
     "created_at": "2026-05-02T14:19:42.903367Z"
   },
   "metabase_version": "v0.60.3.3 (c734864)",
-  "parameters": [],
+  "parameters": [
+    {
+      "id": "country-iso2-tag",
+      "type": "category",
+      "target": [
+        "variable",
+        [
+          "template-tag",
+          "country_iso2"
+        ]
+      ],
+      "name": "Countries (ISO2)",
+      "slug": "country_iso2",
+      "required": false,
+      "isMultiSelect": true
+    }
+  ],
   "dashboard_id": null,
   "created_at": "2026-05-02T14:19:43.174122Z",
   "parameter_usage_count": 0,

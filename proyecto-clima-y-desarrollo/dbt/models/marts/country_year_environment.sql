@@ -39,6 +39,7 @@ joined as (
         wb.industry_value_added_pct,
         wb.population_density,
         wb.pm25_annual_satellite_ugm3,
+        wb.population_total,
 
         aq.median_pm25_ugm3,
         aq.median_pm10_ugm3,

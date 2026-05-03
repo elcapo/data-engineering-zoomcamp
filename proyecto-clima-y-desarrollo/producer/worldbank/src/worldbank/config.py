@@ -15,6 +15,7 @@ DEFAULT_INDICATORS = [
     "NV.IND.TOTL.ZS",
     "EN.POP.DNST",
     "EN.ATM.PM25.MC.M3",
+    "SP.POP.TOTL",
 ]
 
 

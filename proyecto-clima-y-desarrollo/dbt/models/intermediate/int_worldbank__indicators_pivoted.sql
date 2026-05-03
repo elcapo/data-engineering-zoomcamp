@@ -41,7 +41,9 @@ pivoted as (
         max(case when indicator_code = 'EN.POP.DNST'         then value end)
             as population_density,
         max(case when indicator_code = 'EN.ATM.PM25.MC.M3'   then value end)
-            as pm25_annual_satellite_ugm3
+            as pm25_annual_satellite_ugm3,
+        max(case when indicator_code = 'SP.POP.TOTL'         then value end)
+            as population_total
 
     from src
     group by country_iso3, year

@@ -91,6 +91,11 @@
           "parent_id": null
         },
         {
+          "id": 179,
+          "name": "pm25_annual_satellite_ugm3",
+          "parent_id": null
+        },
+        {
           "id": 138,
           "name": "median_pm25_ugm3",
           "parent_id": null
@@ -257,6 +262,11 @@
         {
           "id": 126,
           "name": "population_density",
+          "parent_id": null
+        },
+        {
+          "id": 178,
+          "name": "pm25_annual_satellite_ugm3",
           "parent_id": null
         }
       ]
