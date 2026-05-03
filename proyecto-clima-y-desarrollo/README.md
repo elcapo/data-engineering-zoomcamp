@@ -19,7 +19,6 @@ The same codebase runs end-to-end in two modes: **fully local** with Docker Comp
 - [Getting Started](#getting-started)
 - [Reproducibility](#reproducibility)
 - [Project Structure](#project-structure)
-- [Learning-in-public Articles](#learning-in-public-articles)
 - [External References](#external-references)
 
 ## The Problem
@@ -53,6 +52,7 @@ https://api.worldbank.org/v2/country/all/indicator/NY.GDP.PCAP.CD?format=json&pe
 | `NY.GDP.PCAP.CD` | GDP per capita | Current USD |
 | `NY.GDP.MKTP.KD.ZG` | GDP growth | Annual % |
 | `EN.GHG.CO2.PC.CE.AR5` | CO2 emissions per capita (AR5, excl. LULUCF) | t CO2e/capita |
+| `EN.ATM.PM25.MC.M3` | PM2.5 air pollution, mean annual exposure (satellite-derived) | µg/m³ |
 | `EG.USE.PCAP.KG.OE` | Energy use per capita | kg of oil equivalent |
 | `EG.FEC.RNEW.ZS` | Renewable energy consumption | % of total final energy |
 | `SP.URB.TOTL.IN.ZS` | Urban population | % of total |
@@ -82,7 +82,7 @@ License: per-source, mostly open. Update cadence: continuous; the API exposes a 
 
 ## Architecture: Local and Cloud, Same Code
 
-The pipeline is designed around three swappable backends. A single `.env` file selects between local and cloud implementations; every component reads its target from environment variables and adapts its connection string. No `if cloud else local` branches in the source code.
+The pipeline is designed around five swappable backends (object storage, data warehouse, stream broker, Spark runtime and dashboard). A single `.env` file selects between local and cloud implementations; every component reads its target from environment variables and adapts its connection string. No `if cloud else local` branches in the source code.
 
 ```mermaid
 flowchart TB
@@ -153,9 +153,6 @@ flowchart TB
     L_C_Flink_C_DWH_0@{ curve: linear }
 ```
 
-> If you have problems visualizing this diagram, check its pre-rendered version:
-> [Pre-rendered version of the architecture diagram](./docs/resources/charts/architecture.png) (regenerate with `make render-architecture-diagram`).
-
 The abstraction layer is intentionally thin:
 
 - **Object storage**: both MinIO and GCS expose an S3-compatible API. The code uses `boto3` against an endpoint URL that comes from `STORAGE_ENDPOINT`.
@@ -175,7 +172,7 @@ The abstraction layer is intentionally thin:
 | Batch transformations (heavy) | Spark (container) | Dataproc Serverless | Initial cleansing, country-code reconciliation, historical reprocessing |
 | Batch transformations (modeling) | dbt + PostgreSQL | dbt + BigQuery | `staging` → `intermediate` → `marts` SQL models |
 | Data warehouse | PostgreSQL | BigQuery | Source of truth for the dashboard; partitioned and clustered |
-| Dashboard | Metabase | Looker Studio | Two tiles backed by `marts.country_year_environment` |
+| Dashboard | Metabase (implemented) | Looker Studio (infra only — report not authored) | Five panels backed by `marts.country_year_environment` |
 | IaC | Docker Compose | Terraform (GCP) | Reproducible environment definition |
 
 Build-time tooling: **uv** installs Python dependencies; **Docker Compose** orchestrates the local stack; **Terraform** provisions the cloud stack.
@@ -210,8 +207,8 @@ OpenAQ publishes the full historical archive in a public S3 bucket: `s3://openaq
 
 A dbt model `marts.country_year_environment` joins:
 
-- World Bank indicators pivoted wide (`int_worldbank__indicators_pivoted`): one column per indicator (`gdp_per_capita_usd`, `co2_per_capita_t`, `gdp_growth_pct`, `urban_population_pct`, …).
-- OpenAQ aggregations (`int_openaq__country_year`): per-pollutant medians of the *daily* mean (so each day weights equally regardless of station polling cadence) plus `pm25_days_exceeding_who_daily` against the WHO 2021 threshold of 15 µg/m³.
+- World Bank indicators pivoted wide (`int_worldbank__indicators_pivoted`): one column per indicator (`gdp_per_capita_usd`, `co2_per_capita_t`, `gdp_growth_pct`, `urban_population_pct`, `pm25_annual_satellite_ugm3`, …).
+- OpenAQ aggregations (`int_openaq__country_year`): per-pollutant medians of the *daily* mean (so each day weights equally regardless of station polling cadence), exposed in the mart as `median_pm25_ugm3` plus `pm25_days_exceeding_who_daily` against the WHO 2021 threshold of 15 µg/m³.
 
 at the `country_iso3 × year` grain via FULL OUTER JOIN — the choropleth needs WB-only countries even when no OpenAQ stations exist there, and vice versa. ISO2→ISO3 reconciliation flows through the `country_iso_codes` dbt seed (~190 codes; both Spark and dbt use it as the single source of truth). On Postgres a `(country_iso3, year)` btree index is created via the model's `post_hook`; on BigQuery the equivalent partitioning is added by the cloud slice.
 
@@ -349,15 +346,7 @@ After the one-off pass, the stack runs on its own:
 
 ## Reproducibility
 
-### Local
-
-```bash
-git clone https://github.com/elcapo/data-engineering-zoomcamp/
-cd data-engineering-zoomcamp/proyecto-clima-y-desarrollo
-make up
-```
-
-This brings up Kestra, MinIO, Redpanda, PyFlink, Spark, Postgres-backed dbt, and Metabase. Once the stack is healthy, Kestra triggers the first batch ingestion immediately.
+For the local one-command bring-up (`git clone && make up`) and the manual historical-load triggers, see [Getting Started](#getting-started). This section covers the verification harness, the cloud apply flow, and the backend-switching matrix.
 
 ### Smoke tests
 
@@ -434,11 +423,7 @@ proyecto-clima-y-desarrollo/
 │   ├── scripts/               ← export-dashboard.py / import-dashboard.py (CE-compatible API serializer)
 │   └── serialized/            ← committed JSON exports (dashboard.json + cards/ + metadata/)
 ├── terraform/gcp/             ← cloud infrastructure (GCS bucket, BigQuery dataset, IAM, VPC, GCE VM)
-├── scripts/                   ← end-to-end smoke tests, one per slice
-└── docs/                      ← learning-in-public articles + diagrams (start at docs/README.md)
-    ├── spanish/               ← Spanish versions of the articles
-    ├── english/               ← English versions of the articles
-    └── resources/charts/      ← architecture PNG (rendered from this README's Mermaid block)
+└── scripts/                   ← end-to-end smoke tests, one per slice
 ```
 
 ## External References
