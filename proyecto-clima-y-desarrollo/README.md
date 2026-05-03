@@ -257,11 +257,11 @@ Five panels organized in four narrative sections, all backed by `marts.country_y
 
 ### Looker Studio: provisioned but not implemented
 
-The cloud slice provisions everything a Looker Studio report would need — BigQuery dataset, IAM bindings, the `DASHBOARD_BACKEND=looker-studio` toggle — but the report itself has not been authored. To reach parity the fastest path is to port the five Metabase cards directly: each card's SQL lives under `metabase/serialized/2-climate-vs-development/cards/<id>.json` at `dataset_query.stages[0].native`, and runs essentially unchanged against BigQuery once the schema-qualified references (`marts.country_year_environment`, `seeds.country_iso_codes`) are pointed at the cloud dataset. The dbt marts produce the same column shape on both backends, so no semantic-layer translation is required — only a Looker Studio data source and a copy of each query into a chart.
+The cloud slice provisions everything a Looker Studio report would need — BigQuery dataset, IAM bindings, the `DASHBOARD_BACKEND=looker-studio` toggle — but the report itself has not been authored. To reach parity the fastest path is to port the five Metabase cards directly: each card's SQL lives under [metabase/serialized/](metabase/serialized/2-climate-vs-development/).
 
 ### Metabase authoring and reproducibility
 
-Metabase 60+ ships an [official MCP server](https://www.metabase.com/docs/latest/ai/mcp), so dashboard authoring can be driven from an LLM agent (Claude Code in our case). Reproducibility uses a small pair of API-driven Python scripts (`metabase/scripts/export-dashboard.py` and `import-dashboard.py`) — Metabase's built-in `export`/`import` is Enterprise-only, and the scripts work on the Community edition that ships in Docker. Exported state lives in `metabase/serialized/<id>-<slug>/` (`dashboard.json`, per-card JSON under `cards/`, and a `metadata/db-*.json` map of database/table/field ids that the importer remaps by name).
+Metabase 60+ ships an [official MCP server](https://www.metabase.com/docs/latest/ai/mcp), so dashboard authoring can be driven from an LLM agent. Reproducibility uses a small pair of API-driven Python scripts executable via `make metabase-import` and `make metabase-export` respectively.
 
 ## Getting Started
 
