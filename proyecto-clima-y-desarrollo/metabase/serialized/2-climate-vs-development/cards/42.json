@@ -1,5 +1,5 @@
 {
-  "cache_invalidated_at": "2026-05-03T19:45:14.337974Z",
+  "cache_invalidated_at": "2026-05-03T19:58:37.140631Z",
   "description": null,
   "archived": false,
   "view_count": 26,
@@ -9,261 +9,97 @@
   "can_run_adhoc_query": true,
   "result_metadata": [
     {
-      "database_type": "text",
-      "semantic_type": "type/Country",
-      "lib/deduplicated-name": "country_iso2",
-      "lib/original-name": "country_iso2",
       "name": "country_iso2",
-      "lib/source": "source/native",
-      "lib/source-column-alias": "country_iso2",
-      "source": "native",
+      "database_type": "text",
+      "base_type": "type/Text",
+      "display_name": "country_iso2",
+      "semantic_type": "type/Country",
       "field_ref": [
         "field",
         "country_iso2",
         {
           "base-type": "type/Text"
         }
-      ],
-      "effective_type": "type/Text",
-      "lib/desired-column-alias": "country_iso2",
-      "display_name": "country_iso2",
-      "fingerprint": {
-        "global": {
-          "distinct-count": 6,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/Text": {
-            "percent-json": 0.0,
-            "percent-url": 0.0,
-            "percent-email": 0.0,
-            "percent-state": 0.3333333333333333,
-            "average-length": 2.0
-          }
-        }
-      },
-      "base_type": "type/Text"
+      ]
     },
     {
-      "database_type": "text",
-      "semantic_type": "type/Country",
-      "lib/deduplicated-name": "country_name",
-      "lib/original-name": "country_name",
       "name": "country_name",
-      "lib/source": "source/native",
-      "lib/source-column-alias": "country_name",
-      "source": "native",
+      "database_type": "text",
+      "base_type": "type/Text",
+      "display_name": "country_name",
+      "semantic_type": "type/Country",
       "field_ref": [
         "field",
         "country_name",
         {
           "base-type": "type/Text"
         }
-      ],
-      "effective_type": "type/Text",
-      "lib/desired-column-alias": "country_name",
-      "display_name": "country_name",
-      "fingerprint": {
-        "global": {
-          "distinct-count": 6,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/Text": {
-            "percent-json": 0.0,
-            "percent-url": 0.0,
-            "percent-email": 0.0,
-            "percent-state": 0.0,
-            "average-length": 8.0
-          }
-        }
-      },
-      "base_type": "type/Text"
+      ]
     },
     {
-      "database_type": "int4",
-      "semantic_type": null,
-      "lib/deduplicated-name": "year",
-      "lib/original-name": "year",
       "name": "year",
-      "lib/source": "source/native",
-      "lib/source-column-alias": "year",
-      "source": "native",
+      "database_type": "int4",
+      "base_type": "type/Integer",
+      "display_name": "year",
       "field_ref": [
         "field",
         "year",
         {
           "base-type": "type/Integer"
         }
-      ],
-      "effective_type": "type/Integer",
-      "lib/desired-column-alias": "year",
-      "display_name": "year",
-      "fingerprint": {
-        "global": {
-          "distinct-count": 2,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/Number": {
-            "min": 2022.0,
-            "q1": 2022.5,
-            "q3": 2023.0,
-            "max": 2023.0,
-            "sd": 0.408248290463863,
-            "avg": 2022.8333333333333
-          }
-        }
-      },
-      "base_type": "type/Integer"
+      ]
     },
     {
-      "database_type": "float8",
-      "semantic_type": null,
-      "lib/deduplicated-name": "gdp_per_capita_usd",
-      "lib/original-name": "gdp_per_capita_usd",
       "name": "gdp_per_capita_usd",
-      "lib/source": "source/native",
-      "lib/source-column-alias": "gdp_per_capita_usd",
-      "source": "native",
+      "database_type": "float8",
+      "base_type": "type/Float",
+      "display_name": "gdp_per_capita_usd",
       "field_ref": [
         "field",
         "gdp_per_capita_usd",
         {
           "base-type": "type/Float"
         }
-      ],
-      "effective_type": "type/Float",
-      "lib/desired-column-alias": "gdp_per_capita_usd",
-      "display_name": "gdp_per_capita_usd",
-      "fingerprint": {
-        "global": {
-          "distinct-count": 6,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/Number": {
-            "min": 2530.12031278204,
-            "q1": 6034.27208964673,
-            "q3": 54776.7668235491,
-            "max": 76657.2488844403,
-            "sd": 30469.246065642255,
-            "avg": 27801.75768850918
-          }
-        }
-      },
-      "base_type": "type/Float"
+      ]
     },
     {
+      "name": "pm25_annual_satellite_ugm3",
       "database_type": "float8",
-      "semantic_type": null,
-      "lib/deduplicated-name": "median_pm25_ugm3",
-      "lib/original-name": "median_pm25_ugm3",
-      "name": "median_pm25_ugm3",
-      "lib/source": "source/native",
-      "lib/source-column-alias": "median_pm25_ugm3",
-      "source": "native",
+      "base_type": "type/Float",
+      "display_name": "pm25_annual_satellite_ugm3",
       "field_ref": [
         "field",
-        "median_pm25_ugm3",
+        "pm25_annual_satellite_ugm3",
         {
           "base-type": "type/Float"
         }
-      ],
-      "effective_type": "type/Float",
-      "lib/desired-column-alias": "median_pm25_ugm3",
-      "display_name": "median_pm25_ugm3",
-      "fingerprint": {
-        "global": {
-          "distinct-count": 6,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/Number": {
-            "min": 6.0,
-            "q1": 8.700734922773373,
-            "q3": 24.842689655172407,
-            "max": 26.666666666666668,
-            "sd": 8.306906472674505,
-            "avg": 16.838729996381026
-          }
-        }
-      },
-      "base_type": "type/Float"
+      ]
     },
     {
-      "database_type": "float8",
-      "semantic_type": null,
-      "lib/deduplicated-name": "population_total",
-      "lib/original-name": "population_total",
       "name": "population_total",
-      "lib/source": "source/native",
-      "lib/source-column-alias": "population_total",
-      "source": "native",
+      "database_type": "float8",
+      "base_type": "type/Float",
+      "display_name": "population_total",
       "field_ref": [
         "field",
         "population_total",
         {
           "base-type": "type/Float"
         }
-      ],
-      "effective_type": "type/Float",
-      "lib/desired-column-alias": "population_total",
-      "display_name": "population_total",
-      "fingerprint": {
-        "global": {
-          "distinct-count": 6,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/Number": {
-            "min": 63212384.0,
-            "q1": 83287273.0,
-            "q3": 1410710000.0,
-            "max": 1438069596.0,
-            "sd": 663825884.7015117,
-            "avg": 576506055.5
-          }
-        }
-      },
-      "base_type": "type/Float"
+      ]
     },
     {
-      "database_type": "float8",
-      "semantic_type": null,
-      "lib/deduplicated-name": "log_population",
-      "lib/original-name": "log_population",
       "name": "log_population",
-      "lib/source": "source/native",
-      "lib/source-column-alias": "log_population",
-      "source": "native",
+      "database_type": "float8",
+      "base_type": "type/Float",
+      "display_name": "log_population",
       "field_ref": [
         "field",
         "log_population",
         {
           "base-type": "type/Float"
         }
-      ],
-      "effective_type": "type/Float",
-      "lib/desired-column-alias": "log_population",
-      "display_name": "log_population",
-      "fingerprint": {
-        "global": {
-          "distinct-count": 6,
-          "nil%": 0.0
-        },
-        "type": {
-          "type/Number": {
-            "min": 17.962010789288605,
-            "q1": 18.23780631035019,
-            "q3": 21.067358960698986,
-            "max": 21.08656749284882,
-            "sd": 1.3856408780805805,
-            "avg": 19.44358135170842
-          }
-        }
-      },
-      "base_type": "type/Float"
+      ]
     }
   ],
   "embedding_type": null,
@@ -271,7 +107,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "is_data_analyst": false,
-    "last_login": "2026-05-03T19:50:00.168101Z",
+    "last_login": "2026-05-03T19:58:53.530728Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
@@ -300,7 +136,7 @@
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-05-03T19:45:14.336811Z",
+  "updated_at": "2026-05-03T19:58:37.139293Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -309,14 +145,14 @@
     "database": 2,
     "stages": [
       {
-        "native": "WITH ranked AS (\n  SELECT m.country_iso3, m.country_name, m.year,\n         m.gdp_per_capita_usd, m.median_pm25_ugm3, m.population_total,\n         ROW_NUMBER() OVER (\n           PARTITION BY m.country_iso3 ORDER BY m.year DESC\n         ) AS rn\n  FROM marts.country_year_environment m\n  WHERE m.gdp_per_capita_usd IS NOT NULL\n    AND m.median_pm25_ugm3 IS NOT NULL\n    AND m.population_total IS NOT NULL\n)\nSELECT c.iso2 AS country_iso2,\n       r.country_name, r.year,\n       r.gdp_per_capita_usd, r.median_pm25_ugm3,\n       r.population_total,\n       LN(r.population_total) AS log_population\nFROM ranked r\nJOIN seeds.country_iso_codes c\n  ON c.iso3 = r.country_iso3\nWHERE r.rn = 1\n  AND c.iso2 IN ('US','DE','CN','MX','IN','ZA')\n  [[ AND c.iso2 IN ({{country_iso2}}) ]]\nORDER BY country_iso2",
         "lib/type": "mbql.stage/native",
+        "native": "WITH ranked AS (\n  SELECT m.country_iso3, m.country_name, m.year,\n         m.gdp_per_capita_usd, m.pm25_annual_satellite_ugm3, m.population_total,\n         ROW_NUMBER() OVER (\n           PARTITION BY m.country_iso3 ORDER BY m.year DESC\n         ) AS rn\n  FROM marts.country_year_environment m\n  WHERE m.gdp_per_capita_usd IS NOT NULL\n    AND m.pm25_annual_satellite_ugm3 IS NOT NULL\n    AND m.population_total IS NOT NULL\n)\nSELECT c.iso2 AS country_iso2,\n       r.country_name, r.year,\n       r.gdp_per_capita_usd, r.pm25_annual_satellite_ugm3,\n       r.population_total,\n       LN(r.population_total) AS log_population\nFROM ranked r\nJOIN seeds.country_iso_codes c\n  ON c.iso3 = r.country_iso3\nWHERE r.rn = 1\n  AND c.iso2 IN ('US','DE','CN','MX','IN','ZA')\n  [[ AND c.iso2 IN ({{country_iso2}}) ]]\nORDER BY country_iso2",
         "template-tags": {
           "country_iso2": {
+            "display-name": "Countries (ISO2)",
             "type": "text",
             "id": "country-iso2-tag",
             "name": "country_iso2",
-            "display-name": "Countries (ISO2)",
             "required": false
           }
         }
@@ -338,16 +174,16 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "last_name": "Admin",
-    "timestamp": "2026-05-03T19:45:14.365047Z"
+    "timestamp": "2026-05-03T19:58:37.158859Z"
   },
   "visualization_settings": {
-    "graph.y_axis.title_text": "Median PM2.5 (µg/m³)",
+    "graph.y_axis.title_text": "PM2.5 satellite annual (µg/m³)",
     "graph.show_values": true,
     "scatter.bubble": "log_population",
     "graph.x_axis.title_text": "GDP per capita (USD, log)",
     "graph.label_value_frequency": "all",
     "graph.metrics": [
-      "median_pm25_ugm3"
+      "pm25_annual_satellite_ugm3"
     ],
     "graph.tooltip_columns": [
       "[\"name\",\"country_name\"]",

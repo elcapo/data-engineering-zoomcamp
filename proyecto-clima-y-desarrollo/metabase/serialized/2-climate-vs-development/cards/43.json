@@ -1,5 +1,5 @@
 {
-  "cache_invalidated_at": "2026-05-03T19:35:21.33982Z",
+  "cache_invalidated_at": "2026-05-03T19:58:37.043982Z",
   "description": null,
   "archived": false,
   "view_count": 23,
@@ -124,7 +124,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "is_data_analyst": false,
-    "last_login": "2026-05-03T19:50:00.168101Z",
+    "last_login": "2026-05-03T19:58:53.530728Z",
     "is_qbnewb": false,
     "is_superuser": true,
     "id": 1,
@@ -153,7 +153,7 @@
   "creator_id": 1,
   "can_restore": false,
   "moderation_reviews": [],
-  "updated_at": "2026-05-03T19:35:21.33831Z",
+  "updated_at": "2026-05-03T19:58:37.042911Z",
   "made_public_by_id": null,
   "embedding_params": null,
   "cache_ttl": null,
@@ -191,7 +191,7 @@
     "email": "admin@climate.local",
     "first_name": "Climate",
     "last_name": "Admin",
-    "timestamp": "2026-05-03T19:35:21.365266Z"
+    "timestamp": "2026-05-03T19:58:37.070486Z"
   },
   "visualization_settings": {
     "graph.dimensions": [
@@ -199,7 +199,8 @@
       "country_iso2"
     ],
     "graph.x_axis.title_text": "Year",
-    "graph.y_axis.title_text": "GDP per capita (base year = 100)",
+    "graph.y_axis.title_text": "GDP per capita (base year = 100, log scale)",
+    "graph.y_axis.scale": "log",
     "graph.metrics": [
       "gdp_index"
     ]
