@@ -37,7 +37,7 @@ boc-raw/
 | `main_boc.download_issues_from_pdf` | Descarga el PDF del boletín (para boletines antiguos publicados sólo en PDF, p. ej. 2002/084 o 2006/071) y lo guarda en `boc-raw` |
 | `main_boc.extract_issues` | Wrapper que intenta `extract_issues_from_html` y, si falla, recurre a `extract_issues_from_pdf` |
 | `main_boc.extract_issues_from_html` | Parsea el HTML con `issue-parser` y carga el listado de disposiciones en PostgreSQL |
-| `main_boc.extract_issues_from_pdf` | Parsea el PDF con `issue-reader` y carga el listado de disposiciones en PostgreSQL |
+| `main_boc.extract_issues_from_pdf` | Parsea el PDF con `issue-reader`, carga el listado de disposiciones en PostgreSQL y dispara automáticamente `extract_documents_from_issue_pdf` para extraer el cuerpo de cada disposición del propio PDF del boletín (los boletines PDF-only no publican PDFs por disposición) |
 
 ## Salida
 

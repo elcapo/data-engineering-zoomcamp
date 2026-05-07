@@ -59,13 +59,16 @@ json_str = read_to_json("boc-2001-121.pdf", indent=2)
       "identifier": null,
       "pdf": "https://www.gobiernodecanarias.org/boc/2001/121/boc-2001-121.pdf",
       "html": null,
-      "signature": null
+      "signature": null,
+      "start_page": 14274
     }
   ]
 }
 ```
 
 Los campos `metadata`, `identifier`, `html` y `signature` se reservan para futura expansión y actualmente son `null`.
+
+`start_page` es el número de página impreso del BOC (no el índice 0 de la página dentro del PDF) en el que comienza el cuerpo de la disposición, según aparece en la referencia "Página N" del sumario. Se usa para localizar la disposición dentro del PDF del boletín cuando éste se publicó como un único documento.
 
 ## Arquitectura
 
@@ -119,7 +122,7 @@ Maneja los PDFs del BOC a partir de 2006 (p. ej. `boc-2006-071.pdf`), que tienen
 pytest
 ```
 
-45 tests que cubren la API pública, la detección de formato, la extracción de metadatos, el conteo de disposiciones, la integridad del texto y el manejo de maquetación a dos columnas. Los PDFs de referencia son `examples/boc-2001-121.pdf` (formato 2001, 55 disposiciones) y `examples/boc-2006-071.pdf` (formato 2006, 14 disposiciones).
+53 tests que cubren la API pública, la detección de formato, la extracción de metadatos, el conteo de disposiciones, la integridad del texto, la captura de `start_page` y el manejo de maquetación a dos columnas. Los PDFs de referencia son `examples/boc-2001-121.pdf` (formato 2001, 55 disposiciones) y `examples/boc-2006-071.pdf` (formato 2006, 14 disposiciones).
 
 ## Ejemplos
 

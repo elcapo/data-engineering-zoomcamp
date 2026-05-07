@@ -1,0 +1,260 @@
+id: extract_documents_from_issue_pdf
+namespace: boc
+description: |
+  Parse a whole-bulletin PDF (e.g. 2006/071) into per-disposition records.
+
+  Some old issues were not split into per-disposition PDFs: the BOC published
+  the entire bulletin as a single multi-disposition PDF where each
+  disposition is introduced by its global number printed in bold. In that
+  layout the standard **extract_documents_from_pdf** flow does not apply
+  (there is no per-disposition PDF to download), so this flow operates at
+  the **issue** level instead.
+
+  Steps:
+    1. **read**: downloads **issues/YEAR-NNN.pdf.gz** from MinIO.
+    2. **decompress**: decompresses the GZIP file.
+    3. **extract_split_load**: a single Python task that
+       - calls **document_reader.read_all** to split the bulletin into one
+         Markdown per disposition (one global number per disposition);
+       - compresses and uploads each Markdown to
+         **boc-markdown/documents/YEAR/NNN/boc-a-YEAR-NNN-NUMBER.md.gz**;
+       - merges every record into **boc_dataset.document** via dlt
+         (merge on `year` + `issue` + `number`);
+       - inserts one row per disposition into **boc_log.extraction_log**.
+    4. **ensure_fts**: adds the `body_tsv` generated tsvector and its GIN
+       index to **boc_dataset.document** if not yet present.
+
+  Inputs:
+    - **year**: the year of the boletín.
+    - **issue**: the issue number within that year.
+
+inputs:
+  - id: year
+    type: INT
+    required: true
+    displayName: Year
+
+  - id: issue
+    type: INT
+    required: true
+    displayName: Issue
+
+variables:
+  issue_padded: "{{ inputs.issue < 10 ? '00' ~ inputs.issue : inputs.issue < 100 ? '0' ~ inputs.issue : inputs.issue }}"
+  uncompressed_file: "issues/{{ inputs.year }}-{{ render(vars.issue_padded) }}.pdf"
+  compressed_file: "{{ render(vars.uncompressed_file) }}.gz"
+
+tasks:
+  - id: log
+    type: io.kestra.plugin.core.log.Log
+    message: "Extract documents from issue PDF running for year: {{ inputs.year }} and issue: {{ inputs.issue }}"
+
+  - id: label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      year: "{{ inputs.year }}"
+      issue: "{{ render(vars.issue_padded) }}"
+
+  - id: read
+    type: io.kestra.plugin.minio.Download
+    endpoint: "{{ envs.minio_endpoint }}"
+    accessKeyId: "{{ envs.minio_user }}"
+    secretKeyId: "{{ envs.minio_password }}"
+    bucket: "{{ envs.minio_raw_bucket }}"
+    key: "{{ render(vars.compressed_file) }}"
+
+  - id: decompress
+    type: io.kestra.plugin.compress.FileDecompress
+    from: "{{ outputs.read.uri }}"
+    compression: GZIP
+
+  - id: extract_split_load
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    inputFiles:
+      bulletin.pdf: "{{ outputs.decompress.uri }}"
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+      MINIO_ENDPOINT: "{{ envs.minio_endpoint }}"
+      MINIO_USER: "{{ envs.minio_user }}"
+      MINIO_PASSWORD: "{{ envs.minio_password }}"
+      MINIO_MARKDOWN_BUCKET: "{{ envs.minio_markdown_bucket }}"
+      YEAR: "{{ inputs.year }}"
+      ISSUE: "{{ inputs.issue }}"
+      ISSUE_PADDED: "{{ render(vars.issue_padded) }}"
+    script: |
+      import gzip
+      import io
+      import os
+      import re
+      from urllib.parse import urlparse
+
+      import dlt
+      import psycopg2
+      import yaml
+      from document_reader import read_all
+      from minio import Minio
+
+      year = int(os.environ["YEAR"])
+      issue = int(os.environ["ISSUE"])
+      issue_padded = os.environ["ISSUE_PADDED"]
+
+      # 1. Split the bulletin PDF into one Markdown per disposition.
+      markdowns = read_all("bulletin.pdf")
+      if not markdowns:
+          raise SystemExit(
+              f"document-reader returned no dispositions for year={year}, issue={issue}"
+          )
+
+      # 2. Connect to MinIO for per-disposition uploads.
+      endpoint = urlparse(os.environ["MINIO_ENDPOINT"])
+      minio = Minio(
+          endpoint.netloc,
+          access_key=os.environ["MINIO_USER"],
+          secret_key=os.environ["MINIO_PASSWORD"],
+          secure=endpoint.scheme == "https",
+      )
+      markdown_bucket = os.environ["MINIO_MARKDOWN_BUCKET"]
+
+      records = []
+      object_keys = []
+      for ordinal, markdown in enumerate(markdowns, start=1):
+          # Parse frontmatter and body from the Markdown document.
+          parts = markdown.split("---\n", 2)
+          frontmatter = yaml.safe_load(parts[1]) if len(parts) == 3 else {}
+          md_body = parts[2].strip() if len(parts) == 3 else markdown
+
+          title = None
+          body = md_body
+          if md_body.startswith("# "):
+              lines = md_body.split("\n", 2)
+              title = lines[0][2:].strip()
+              body = lines[2].strip() if len(lines) > 2 else ""
+
+          number = frontmatter.get("number")
+          if number is None:
+              raise SystemExit(
+                  f"Disposition #{ordinal} of {year}/{issue_padded} has no number in frontmatter"
+              )
+
+          object_key = (
+              f"documents/{year}/{issue_padded}/"
+              f"boc-a-{year}-{issue_padded}-{int(number):04d}.md.gz"
+          )
+
+          # Upload the Markdown gzipped to boc-markdown.
+          payload = gzip.compress(markdown.encode("utf-8"))
+          minio.put_object(
+              markdown_bucket,
+              object_key,
+              io.BytesIO(payload),
+              length=len(payload),
+              content_type="application/gzip",
+          )
+
+          records.append({
+              "year":         frontmatter.get("year") or year,
+              "issue":        frontmatter.get("issue") or issue,
+              "number":       int(number),
+              "disposition":  ordinal,
+              "document":     None,
+              "date":         frontmatter.get("date"),
+              "entity":       frontmatter.get("entity"),
+              "section":      frontmatter.get("section"),
+              "subsection":   None,
+              "organization": frontmatter.get("organization"),
+              "identifier":   frontmatter.get("identifier"),
+              "pdf":          frontmatter.get("pdf"),
+              "signature":    None,
+              "title":        title,
+              "body":         body,
+          })
+          object_keys.append((object_key, ordinal))
+
+      # 3. Bulk merge into boc_dataset.document via dlt.
+      host = os.environ["POSTGRES_HOST"]
+      db = os.environ["POSTGRES_DB"]
+      user = os.environ["POSTGRES_USER"]
+      pwd = os.environ["POSTGRES_PASSWORD"]
+
+      @dlt.resource(
+          name="document",
+          write_disposition="merge",
+          primary_key=["year", "issue", "number"],
+          columns={
+              "year": {"data_type": "bigint"},
+              "issue": {"data_type": "bigint"},
+              "number": {"data_type": "bigint"},
+              "disposition": {"data_type": "bigint"},
+          },
+      )
+      def document_data():
+          yield from records
+
+      pipeline = dlt.pipeline(
+          pipeline_name=f"document_{year}_{issue}",
+          destination=dlt.destinations.postgres(
+              f"postgresql://{user}:{pwd}@{host}:5432/{db}"
+          ),
+          dataset_name="boc_dataset",
+      )
+      pipeline.run(document_data)
+
+      # 4. Log one extraction row per disposition.
+      conn = psycopg2.connect(host=host, dbname=db, user=user, password=pwd)
+      conn.autocommit = True
+      with conn.cursor() as cur:
+          for object_key, ordinal in object_keys:
+              cur.execute(
+                  "INSERT INTO boc_log.extraction_log (object_key, entity_type, year, issue, disposition) "
+                  "VALUES (%s, %s, %s, %s, %s) "
+                  "ON CONFLICT (object_key) DO UPDATE SET extracted_at = now()",
+                  (object_key, "document", year, issue, ordinal),
+              )
+      conn.close()
+
+  - id: ensure_fts
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: boc-python:latest
+    pythonVersion: "python: 3.11"
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      networkMode: boc-postgres-network
+    env:
+      POSTGRES_HOST: "{{ envs.postgres_data_host }}"
+      POSTGRES_DB: "{{ envs.postgres_data_db }}"
+      POSTGRES_USER: "{{ envs.postgres_data_user }}"
+      POSTGRES_PASSWORD: "{{ envs.postgres_data_password }}"
+    script: |
+      import os
+      import psycopg2
+
+      conn = psycopg2.connect(
+          host=os.environ["POSTGRES_HOST"],
+          dbname=os.environ["POSTGRES_DB"],
+          user=os.environ["POSTGRES_USER"],
+          password=os.environ["POSTGRES_PASSWORD"],
+      )
+      conn.autocommit = True
+      with conn.cursor() as cur:
+          cur.execute("""
+              ALTER TABLE boc_dataset.document
+                ADD COLUMN IF NOT EXISTS body_tsv tsvector
+                  GENERATED ALWAYS AS (
+                    to_tsvector('spanish',
+                      coalesce(title, '') || ' ' || coalesce(body, '')
+                    )
+                  ) STORED
+          """)
+          cur.execute("""
+              CREATE INDEX IF NOT EXISTS document_body_tsv_idx
+                ON boc_dataset.document USING gin(body_tsv)
+          """)
+      conn.close()

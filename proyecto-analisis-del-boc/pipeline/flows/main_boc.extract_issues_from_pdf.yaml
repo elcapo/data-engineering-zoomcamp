@@ -25,7 +25,12 @@ description: |
     2. **decompress**: decompresses the GZIP file.
     3. **parse**: runs `issue-reader` to extract the boletín data as **issue.json**.
     4. **load**: uses dlt to merge the record into **boc_dataset.issue** (and its child table).
-    5. **log_extraction**: upserts a row in **boc_log.extraction_log** (entity_type = `issue_pdf`).
+    5. **ensure_fulltext_search**: ensures the FTS index on **issue__dispositions.summary**.
+    6. **log_extraction**: upserts a row in **boc_log.extraction_log** (entity_type = `issue_pdf`).
+    7. **call_extract_documents_from_issue_pdf**: invokes the per-disposition
+       extractor for the same year+issue so each disposition is also stored in
+       **boc_dataset.document**. The bulletin PDF is the only source of the
+       full body of every disposition for these old boletines.
 
 inputs:
   - id: year
@@ -207,3 +212,13 @@ tasks:
           )
 
       conn.close()
+
+  - id: call_extract_documents_from_issue_pdf
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: boc
+    flowId: extract_documents_from_issue_pdf
+    inputs:
+      year: "{{ inputs.year }}"
+      issue: "{{ inputs.issue }}"
+    wait: true
+    transmitFailed: true

@@ -34,12 +34,13 @@ boc-raw/
 
 | Flujo | Descripción |
 |-------|-------------|
-| `main_boc.download_documents` | Wrapper que intenta `download_documents_from_html` y, si falla, recurre a `download_documents_from_pdf` |
+| `main_boc.download_documents` | Wrapper. Si la URL en `issue__dispositions.pdf` apunta al PDF del boletín completo (caso 2006/071) termina sin hacer nada — la extracción ya la hizo `extract_documents_from_issue_pdf` a nivel de boletín. En caso contrario intenta `download_documents_from_html` y, si falla, recurre a `download_documents_from_pdf` |
 | `main_boc.download_documents_from_html` | Descarga el HTML de la disposición desde `gobiernodecanarias.org/boc/...` y lo guarda en `boc-raw` |
 | `main_boc.download_documents_from_pdf` | Busca la URL del PDF en `boc_dataset.issue__dispositions` (el BOC usa a veces números globales distintos para HTML y PDF), descarga el PDF desde `sede.gobiernodecanarias.org/boc/...` y lo guarda en `boc-raw` |
 | `main_boc.extract_documents` | Wrapper que intenta `extract_documents_from_html` y, si falla, recurre a `extract_documents_from_pdf` |
 | `main_boc.extract_documents_from_html` | Convierte el HTML a Markdown con `document-parser`, lo guarda en `boc-markdown` y carga los datos en PostgreSQL |
-| `main_boc.extract_documents_from_pdf` | Convierte el PDF a Markdown con `document-reader`, lo guarda en `boc-markdown` y carga los datos en PostgreSQL |
+| `main_boc.extract_documents_from_pdf` | Convierte el PDF de **una** disposición a Markdown con `document-reader`, lo guarda en `boc-markdown` y carga los datos en PostgreSQL |
+| `main_boc.extract_documents_from_issue_pdf` | Para boletines antiguos publicados como un único PDF con todas las disposiciones (p. ej. 2006/071): lee `issues/YEAR-NNN.pdf.gz`, parte el flujo de texto por número global con `document-reader`, sube un Markdown por disposición a `boc-markdown` y carga las **N** filas en PostgreSQL en una sola pasada |
 
 ## Salida
 

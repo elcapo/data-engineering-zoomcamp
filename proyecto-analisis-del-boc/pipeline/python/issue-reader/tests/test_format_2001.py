@@ -110,3 +110,18 @@ class TestDispositions:
         for d in result["dispositions"]:
             assert d["html"] is None
             assert d["signature"] is None
+
+    def test_all_have_start_page(self, result):
+        for d in result["dispositions"]:
+            assert isinstance(d["start_page"], int)
+            assert d["start_page"] > 0
+
+    def test_first_disposition_start_page(self, result):
+        assert result["dispositions"][0]["start_page"] == 14274
+
+    def test_last_disposition_start_page(self, result):
+        assert result["dispositions"][-1]["start_page"] == 14339
+
+    def test_start_pages_are_monotonic(self, result):
+        pages = [d["start_page"] for d in result["dispositions"]]
+        assert pages == sorted(pages)

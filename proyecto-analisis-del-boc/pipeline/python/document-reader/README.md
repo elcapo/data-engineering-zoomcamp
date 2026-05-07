@@ -1,8 +1,13 @@
 # document-reader
 
-Lee el PDF de una disposición individual del Boletín Oficial de Canarias y lo convierte a Markdown con frontmatter YAML.
+Lee un PDF del Boletín Oficial de Canarias y lo convierte a Markdown con frontmatter YAML.
 
-Esta herramienta es la análoga a [`document-parser`](../document-parser) pero opera sobre PDFs en lugar de HTML, igual que [`issue-reader`](../issue-reader) hace para los boletines completos cuando no hay HTML disponible. Algunos años del BOC publican las disposiciones únicamente como PDF (sin página HTML acompañante) y `document-reader` permite generar el Markdown estándar a partir de ese PDF.
+Existen dos formatos de entrada:
+
+- **PDF por disposición** (era moderna, p. ej. `boc-a-2019-229-5624.pdf`). Cada PDF contiene una sola disposición. Lo gestiona `FormatModernReader`.
+- **PDF del boletín completo** (p. ej. `boc-2006-071.pdf`, hermano de los ejemplos de `issue-reader`). Algunos boletines antiguos no se publicaron como PDFs por disposición sino como un único PDF a dos columnas con todas las disposiciones del boletín. Cada disposición aparece introducida por su número global (p. ej. `473`, `474`, `475`…) en negrita, seguido por el título en cursiva. Lo gestiona `Format2006Reader`, que parte el flujo de texto en cada número global y devuelve una lista de disposiciones.
+
+`document-reader` detecta el formato automáticamente y dispatcha al lector correcto.
 
 ## Instalación
 
@@ -24,11 +29,17 @@ uv run document-reader boc-a-2019-229-5624.pdf -o disposicion.md
 ### API Python
 
 ```python
-from document_reader import read
+from document_reader import read, read_all
 
+# PDF por disposición (formato moderno) → un único Markdown.
 markdown = read("boc-a-2019-229-5624.pdf")
-print(markdown)
+
+# PDF de boletín completo (formato 2006) → un Markdown por disposición.
+for md in read_all("boc-2006-071.pdf"):
+    print(md)
 ```
+
+`read_all` también funciona con PDFs por disposición; en ese caso devuelve una lista con un solo elemento.
 
 ## Salida
 
@@ -70,18 +81,41 @@ HACE SABER: que en este Juzgado se ha dictado sentencia en los autos que luego s
 
 Los campos opcionales se omiten cuando no se pueden extraer del PDF.
 
-## Estrategia de parseo
+## Arquitectura
 
-El PDF se lee con `pdfplumber` y los caracteres se agrupan en líneas visuales con tolerancia vertical de 3 pt para fusionar las versales pequeñas (`HACE SABER:`, `FALLO:`) con su línea de cuerpo. Cada línea queda anotada con su fuente dominante y tamaño mediano.
+```
+document_reader/
+├── reader.py             # API pública: read(), read_all(), read_file()
+├── cli.py                # Punto de entrada CLI
+└── formats/
+    ├── __init__.py       # Lista READERS (más específico primero)
+    ├── base.py           # Document, FormatReader (ABC), build_markdown
+    ├── format_modern.py  # FormatModernReader — PDFs por disposición
+    └── format_2006.py    # Format2006Reader — boletín completo a 2 columnas
+```
 
-A partir de las anotaciones de fuente se aplica la siguiente clasificación:
+`reader.py` recorre `READERS` y usa el primer lector cuyo `detect()` devuelve `True`. Cada lector implementa `read(pdf) -> list[Document]`; los PDFs por disposición devuelven un único `Document`, los boletines completos devuelven uno por disposición.
 
+### FormatModernReader
+
+Para PDFs como `boc-a-2019-229-5624.pdf`. Estrategia:
+
+- **Detección**: cualquier página contiene el identificador canónico `boc-a-AAAA-NNN-NNNN` en el pie.
 - **Cabecera** (parte superior, 9 pt): contiene "Boletín Oficial de Canarias núm. NN" y la fecha. De aquí se extraen el año, el número de boletín y la fecha de publicación.
 - **Pie** (parte inferior, 7 pt): contiene la URL canónica con el identificador `boc-a-AAAA-NNN-NNNN`. De aquí se extrae el código CVE y se construye la URL del PDF.
-- **Sección** (Times-Bold ≥ 13 pt): la primera línea en negrita grande del documento.
-- **Organización** (Times-Bold 11 pt): la siguiente línea en negrita.
-- **Título** (Times-Bold + Times-Italic): la línea que comienza por el número de la disposición seguido del texto en cursiva. Las líneas siguientes en cursiva pura se concatenan como continuación del título.
-- **Cuerpo** (Times-Roman 11 pt): el resto del texto. Las líneas se agrupan en párrafos detectando los huecos verticales mayores de ~1.6× la altura típica de línea. Las palabras partidas con guión entre líneas (`tempo- ral`) se reconstruyen.
+- **Sección** (Times-Bold ≥ 13 pt), **organización** (Times-Bold 11 pt), **título** (Times-Bold + Times-Italic), **cuerpo** (Times-Roman 11 pt): clasificación por fuente y tamaño.
+- **Cuerpo**: las líneas se agrupan en párrafos detectando los huecos verticales mayores de ~1.6× la altura típica de línea. Las palabras partidas con guión entre líneas (`tempo- ral`) se reconstruyen.
+
+### Format2006Reader
+
+Para boletines completos como `boc-2006-071.pdf`, donde **todas** las disposiciones comparten un único PDF a dos columnas. Estrategia:
+
+- **Detección**: cualquiera de las primeras páginas contiene la cabecera interior `Boletín Oficial de Canarias núm. NN, <fecha> de <año>`.
+- **Lectura por columnas**: los caracteres se separan en columna izquierda (x < 290 pt) y columna derecha. Cada columna se lee íntegra de arriba abajo antes de pasar a la siguiente.
+- **Salto del sumario**: el sumario termina en la última referencia "Página N" de cada columna; las líneas hasta esa marca se descartan. El cuerpo empieza al ver la primera cabecera de sección a 13 pt.
+- **Partido por número global**: la frontera entre disposiciones es la línea cuyo primer carácter es Times-Bold y cuyo texto empieza por un entero (p. ej. `473ORDEN…`). El número se extrae del prefijo y el resto pasa al título; las líneas en cursiva inmediatamente posteriores se concatenan como continuación del título.
+- **Organización**: las líneas en negrita aisladas (no cabecera de sección) se acumulan como organización para la siguiente disposición. Una nueva línea en negrita cierra la disposición actual.
+- **Cuerpo**: todo lo que no sea sección, organización o título acumula como párrafos del cuerpo, agrupados igual que en el lector moderno.
 
 ## Tests
 
@@ -89,6 +123,7 @@ A partir de las anotaciones de fuente se aplica la siguiente clasificación:
 uv run pytest
 ```
 
-Los PDFs de referencia están en `examples/`:
+51 tests cubren ambos lectores. PDFs de referencia:
 
-- `boc-a-2019-229-5624.pdf` — edicto judicial de 2019, una sola página.
+- `examples/boc-a-2019-229-5624.pdf` — edicto judicial de 2019, una sola página (FormatModernReader).
+- `../issue-reader/examples/boc-2006-071.pdf` — boletín completo con 14 disposiciones a dos columnas (Format2006Reader).

@@ -120,3 +120,18 @@ class TestDispositions:
         for d in result["dispositions"]:
             assert "NIVEL:" not in (d["summary"] or "")
             assert "D I S PO N G O" not in (d["summary"] or "")
+
+    def test_all_have_start_page(self, result):
+        for d in result["dispositions"]:
+            assert isinstance(d["start_page"], int)
+            assert d["start_page"] > 0
+
+    def test_first_disposition_start_page(self, result):
+        assert result["dispositions"][0]["start_page"] == 6815
+
+    def test_last_disposition_start_page(self, result):
+        assert result["dispositions"][-1]["start_page"] == 7031
+
+    def test_start_pages_are_monotonic(self, result):
+        pages = [d["start_page"] for d in result["dispositions"]]
+        assert pages == sorted(pages)

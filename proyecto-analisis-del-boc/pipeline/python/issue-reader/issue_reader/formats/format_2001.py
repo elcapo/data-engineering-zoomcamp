@@ -144,10 +144,13 @@ def _parse_dispositions(lines: list[dict], pdf_url: str | None = None) -> list[d
     current_subsection: str | None = None
     current_org: str | None = None
     pending_text_parts: list[str] = []
+    pending_page: int | None = None
     seen_sections: set[str] = set()
 
     def _flush() -> None:
+        nonlocal pending_page
         if not pending_text_parts:
+            pending_page = None
             return
         summary = " ".join(pending_text_parts)
         summary = " ".join(summary.split())
@@ -164,8 +167,10 @@ def _parse_dispositions(lines: list[dict], pdf_url: str | None = None) -> list[d
             "pdf": pdf_url,
             "html": None,
             "signature": None,
+            "start_page": pending_page,
         })
         pending_text_parts.clear()
+        pending_page = None
 
     for line in lines:
         text = line["text"]
@@ -181,6 +186,7 @@ def _parse_dispositions(lines: list[dict], pdf_url: str | None = None) -> list[d
             before = text[: m_page.start()].strip()
             if before:
                 pending_text_parts.append(before)
+            pending_page = int(m_page.group(1))
             _flush()
             continue
 
