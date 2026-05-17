@@ -32,9 +32,9 @@ SELECT
   MAX(disposition) AS last_document,
   COUNT(*) AS document_count,
   SUM(CASE WHEN whole_bulletin OR downloaded_at IS NOT NULL THEN 1 ELSE 0 END) AS completed_downloads,
-  SUM(CASE WHEN extracted_at IS NOT NULL THEN 1 ELSE 0 END) AS completed_extractions,
+  SUM(CASE WHEN whole_bulletin OR extracted_at IS NOT NULL THEN 1 ELSE 0 END) AS completed_extractions,
   COUNT(*) - SUM(CASE WHEN whole_bulletin OR downloaded_at IS NOT NULL THEN 1 ELSE 0 END) AS missing_downloads,
-  COUNT(*) - SUM(CASE WHEN extracted_at IS NOT NULL THEN 1 ELSE 0 END) AS missing_extractions
+  COUNT(*) - SUM(CASE WHEN whole_bulletin OR extracted_at IS NOT NULL THEN 1 ELSE 0 END) AS missing_extractions
 FROM disposition_state
 GROUP BY year, issue
 ORDER BY year DESC, issue DESC
