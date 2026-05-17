@@ -6,7 +6,7 @@ INSERT INTO boc_metrics.processed_bulletins
  FROM boc_log.download_log AS l
  JOIN boc_log.extraction_log AS e
    ON e.entity_type = l.entity_type AND e.year = l.year AND e.issue = l.issue
- WHERE l.entity_type = 'issue' AND e.extracted_at IS NOT NULL
+ WHERE l.entity_type IN ('issue', 'issue_pdf') AND e.extracted_at IS NOT NULL
  ORDER BY l.year DESC, l.issue DESC
  LIMIT 5)
 UNION ALL
@@ -14,6 +14,6 @@ UNION ALL
  FROM boc_log.download_log AS l
  JOIN boc_log.extraction_log AS e
    ON e.entity_type = l.entity_type AND e.year = l.year AND e.issue = l.issue
- WHERE l.entity_type = 'issue' AND e.extracted_at IS NOT NULL
+ WHERE l.entity_type IN ('issue', 'issue_pdf') AND e.extracted_at IS NOT NULL
  ORDER BY l.year ASC, l.issue ASC
  LIMIT 5)

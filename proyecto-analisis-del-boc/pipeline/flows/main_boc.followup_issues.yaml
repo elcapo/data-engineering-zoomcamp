@@ -3,6 +3,10 @@ namespace: boc
 description: |
   Query the **view_followup_issues** view for years with pending downloads or extractions and trigger **backfill_issues** for each one.
 
+  PDF-only bulletins (logged with `entity_type='issue_pdf'`) are recognised
+  by the view alongside the regular HTML ones (`entity_type='issue'`), so
+  they are not re-triggered on every cron tick once downloaded and extracted.
+
   Inputs:
     - **limit**: maximum number of years to process.
 

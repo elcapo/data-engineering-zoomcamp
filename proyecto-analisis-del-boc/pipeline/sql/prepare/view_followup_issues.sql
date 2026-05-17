@@ -9,7 +9,7 @@ SELECT
   MAX(y.issue) + 1 - MIN(y.issue) - SUM(CASE WHEN dl.downloaded_at IS NOT NULL THEN 1 ELSE 0 END) AS missing_downloads,
   MAX(y.issue) + 1 - MIN(y.issue) - SUM(CASE WHEN el.extracted_at IS NOT NULL THEN 1 ELSE 0 END) AS missing_extractions
 FROM boc_dataset.year AS y
-LEFT JOIN boc_log.download_log AS dl ON dl.entity_type = 'issue' AND dl.year = y.year AND dl.issue = y.issue
-LEFT JOIN boc_log.extraction_log AS el ON el.entity_type = 'issue' AND el.year = y.year AND el.issue = y.issue
+LEFT JOIN boc_log.download_log AS dl ON dl.entity_type IN ('issue', 'issue_pdf') AND dl.year = y.year AND dl.issue = y.issue
+LEFT JOIN boc_log.extraction_log AS el ON el.entity_type IN ('issue', 'issue_pdf') AND el.year = y.year AND el.issue = y.issue
 GROUP BY y.year
 ORDER BY y.year DESC

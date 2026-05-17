@@ -3,6 +3,11 @@ namespace: boc
 description: |
   Query the **view_followup_documents** view for issues with pending downloads or extractions and trigger **backfill_documents** for each one.
 
+  Dispositions of whole-bulletin PDFs (where `issue__dispositions.pdf`
+  points to `boc-YEAR-NNN.pdf`) are counted as already downloaded by the
+  view, since their content is extracted at the issue level by
+  **extract_documents_from_issue_pdf**.
+
   Inputs:
     - **limit**: maximum number of issues to process.
 

@@ -6,7 +6,7 @@ SELECT
     ROUND(100.0 * COUNT(dl.issue) / NULLIF(COUNT(*), 0), 1) AS percentage
 FROM boc_dataset.year y
 LEFT JOIN boc_log.download_log dl ON
-    dl.entity_type = 'issue' AND
+    dl.entity_type IN ('issue', 'issue_pdf') AND
     dl.year = y.year AND
     dl.issue = y.issue
 GROUP BY y.year
